@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div #mapCanvas id="map_canvas"></div>
+  <div>
+    <ion-row class="vertical-center" padding>
+      <ion-col size="12" size-sm="5">
+        <p>{{ "ABOUT.MAIN_ADDRESS" | translate }}</p>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <app-footer></app-footer>
+</ion-content>

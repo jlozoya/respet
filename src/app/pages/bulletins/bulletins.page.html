@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-row>
+    <ion-col size-xs="12" size-md="8" offset-md="2">
+
+      <ion-row>
+        <ion-col size-xs="12" size-md="6" *ngFor="let bulletin of bulletins">
+          <ion-card color="light" class="border">
+            <img *ngIf="bulletin" [src]="bulletin.media?.url" [alt]="bulletin.media?.alt"
+            onerror="this.src='./assets/imgs/bulletin/newspaper.png'">
+            <ion-card-content text-wrap>
+              <p text-right><small>{{ bulletin.date }}</small></p>
+              <h1>{{ bulletin.title }}</h1>
+              <p>{{ bulletin.description }}</p>
+            </ion-card-content>
+            <ion-button *ngIf="userRole == 'admin'" style="position:absolute; top: 10px; right: 10px;"
+            color="primary" (click)="presentPopover($event, bulletin);$event.stopPropagation();">
+              <ion-icon slot="icon-only" name="more"></ion-icon>
+            </ion-button>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+    </ion-col>
+  </ion-row>
+
+  <ion-fab *ngIf="userRole == 'admin'"  vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="modalBulletin()" color="primary">
+      <ion-icon name="create"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-infinite-scroll (ionInfinite)="doScrollDown($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

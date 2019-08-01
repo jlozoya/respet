@@ -1,0 +1,90 @@
+<ion-app>
+  <ion-menu side="start" *ngIf="!loggedIn">
+    <ion-header>
+      <ion-toolbar color="dark-accent">
+        <ion-title color="light">{{ "NAV.MENU" | translate }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+
+      <ion-list lines="full">
+        <ion-list-header>
+          <ion-text>
+            {{ "NAV.SURF" | translate }}
+          </ion-text>
+        </ion-list-header>
+        <ion-menu-toggle>
+          <ion-item button *ngFor="let page of informationPages" (click)="openPage(page)">
+            <ion-icon slot="start" [name]="page.icon" [color]="isActive(page)"></ion-icon>
+            {{ page.title | translate }}
+          </ion-item>
+          <ion-item button *ngFor="let page of loggedOutPages" (click)="openPage(page)">
+            <ion-icon slot="start" [name]="page.icon" [color]="isActive(page)"></ion-icon>
+            {{ page.title | translate }}
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+      <ion-button *ngFor="let item of langSelector" [disabled]="item.selected" color="light" (click)="changeLang(item)">
+        {{ item.title }}
+      </ion-button>
+    </ion-content>
+  </ion-menu>
+
+  <ion-menu side="start" *ngIf="loggedIn">
+    <ion-header>
+      <ion-toolbar color="dark-accent">
+        <ion-title color="light">{{ "NAV.MENU" | translate }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list lines="full">
+        <ion-menu-toggle>
+          <ion-item button (click)="goToAccount()" *ngIf="user">
+            <ion-avatar item-left>
+              <img [src]="user.media?.url" alt="avatar" onerror="this.src='./assets/imgs/avatar.png'">
+            </ion-avatar>
+            <ion-label text-wrap style="margin-left: 5px;">
+              <ion-text>
+                <h2>{{ user.name }}</h2>
+              </ion-text>
+              <ion-text>
+                <p>{{ user.email }}</p>
+              </ion-text>
+            </ion-label>
+          </ion-item>
+          <ion-list-header>
+            <ion-text>
+              {{ "NAV.SURF" | translate }}
+            </ion-text>
+          </ion-list-header>
+          <ion-item button *ngFor="let page of informationPages" (click)="openPage(page)">
+            <ion-icon slot="start" [name]="page.icon" [color]="isActive(page)"></ion-icon>
+            {{ page.title | translate }}
+          </ion-item>
+          <ion-list-header>
+            <ion-text>
+              {{ "NAV.ACCOUNT" | translate }}
+            </ion-text>
+          </ion-list-header>
+          <div *ngIf="user?.role == 'admin'">
+            <ion-item button *ngFor="let page of adminPages" (click)="openPage(page)">
+              <ion-icon slot="start" [name]="page.icon" [color]="isActive(page)"></ion-icon>
+              {{ page.title | translate }}
+            </ion-item>
+          </div>
+          <ion-item button *ngFor="let page of loggedInPages" (click)="openPage(page)">
+            <ion-icon slot="start" [name]="page.icon" [color]="isActive(page)"></ion-icon>
+            {{ page.title | translate }}
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+      <ion-button *ngFor="let item of langSelector" [disabled]="item.selected" color="light" (click)="changeLang(item)">
+        {{ item.title }}
+      </ion-button>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet main></ion-router-outlet>
+</ion-app>

@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center>
+  <ion-slides pager="true" #mySlider>
+    <ion-slide *ngFor="let img of imgs">
+      <div class="responsive">
+        <img [src]="img.url" [alt]="img.alt">
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

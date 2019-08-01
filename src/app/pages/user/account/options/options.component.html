@@ -1,0 +1,38 @@
+<ion-button expand="block" fill="outline" color="google"
+*ngIf="!hasLinked.google && user?.grant_type != 'google'"
+(click)="addSocialLink('google')">
+  <ion-icon name="logo-google"></ion-icon>
+  <span style="margin-left: 4px;">{{ "LINK_WITH" | translate }} google</span>
+</ion-button>
+<ion-button expand="block" fill="outline" color="google"
+*ngIf="hasLinked.google && user?.grant_type != 'google'" (click)="removeSocialLink('google')">
+  <ion-icon name="logo-google"></ion-icon>
+  <span style="margin-left: 4px;">{{ "UNLINK_FROM" | translate }} google</span>
+</ion-button>
+
+<ion-button expand="block" fill="outline" color="facebook"
+*ngIf="!hasLinked.facebook && user?.grant_type != 'facebook'"
+(click)="addSocialLink('facebook')">
+  <ion-icon name="logo-facebook"></ion-icon>
+  <span style="margin-left: 4px;">{{ "LINK_WITH" | translate }} facebook</span>
+</ion-button>
+<ion-button expand="block" fill="outline" color="facebook"
+*ngIf="hasLinked.facebook && user?.grant_type != 'facebook'" (click)="removeSocialLink('facebook')">
+  <ion-icon name="logo-facebook"></ion-icon>
+  <span style="margin-left: 4px;">{{ "UNLINK_FROM" | translate }} facebook</span>
+</ion-button>
+
+<ion-button expand="block" fill="outline" type="button" *ngIf="user?.grant_type == 'password'"
+(click)="changePassword();">
+  {{ "CHANGE_PASSWORD" | translate }}
+</ion-button>
+
+<ion-item *ngIf="user && user.role == 'admin'" color="light">
+  <ion-label>{{ "ROLE" | translate }}</ion-label>
+  <ion-select [(ngModel)]="user.role" name="role" cancelText="{{ 'CANCEL' | translate }}"
+  okText="{{ 'ACCEPT' | translate }}" (ionChange)="changeRole($event)">
+    <ion-select-option value="visitor">{{ "VISITOR" | translate }}</ion-select-option>
+    <ion-select-option value="user">{{ "USER" | translate }}</ion-select-option>
+    <ion-select-option value="admin">{{ "ADMIN" | translate }}</ion-select-option>
+  </ion-select>
+</ion-item>

@@ -1,0 +1,18 @@
+$categories: (
+  'found': #880E4F,
+  'lost': #B71C1C,
+  'on_adoption': #4A148C,
+  'on_sale': #004D40,
+  'on_hold': #212121,
+  'other': #263238
+);
+
+@function auxiliary-categories() {
+  @return map-remove($categories);
+}
+
+@each $track, $value in auxiliary-categories() {
+  ion-card[track=#{$track}] {
+    border-left: 3px solid $value;
+  }
+}

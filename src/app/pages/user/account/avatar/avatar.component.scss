@@ -1,0 +1,19 @@
+:host {
+  img {
+    max-width: 150px;
+    border-radius: 50%;
+  }
+  // On img drag
+  .opacity-blur {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+    -webkit-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+  }
+  .onDrag {
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+    opacity: 0.9;
+  }
+}

@@ -1,0 +1,85 @@
+// http://ionicframework.com/docs/theming/
+@import "~@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+/* Eczar */
+
+@font-face {
+  font-family: 'Eczar';
+  font-weight: normal;
+  font-style: normal;
+  src: url('./assets/fonts/eczar/Eczar-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Eczar';
+  font-weight: bold;
+  font-style: normal;
+  src: url('./assets/fonts/eczar/Eczar-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Eczar';
+  font-weight: bolder;
+  font-style: normal;
+  src: url('./assets/fonts/eczar/Eczar-ExtraBold.ttf') format('truetype');
+}
+
+/* Roboto Condensed */
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: bold;
+  font-style: normal;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: bold;
+  font-style: italic;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: normal;
+  font-style: italic;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: normal;
+  font-style: italic;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: lighter;
+  font-style: normal;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: lighter;
+  font-style: italic;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-weight: normal;
+  font-style: normal;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Regular.ttf') format('truetype');
+}

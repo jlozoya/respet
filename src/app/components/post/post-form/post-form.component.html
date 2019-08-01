@@ -1,0 +1,145 @@
+<ion-card padding (drop)="onDrop($event)" (dragenter)="onDragEnter($event)"
+(dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+[ngClass]="dragClasses" class="zoom">
+  <form [hidden]="!postForm || !user" [formGroup]="postForm" (ngSubmit)="sendPost()">
+
+    <ion-list>
+      <ion-item button (click)="goToAccount()" *ngIf="user">
+        <ion-avatar item-left>
+          <img *ngIf="user" [src]="user.media?.url" alt="avatar" onerror="this.src='./assets/imgs/avatar.png'">
+        </ion-avatar>
+        <ion-label text-wrap style="margin-left: 5px;">
+          <ion-text>
+            <h2>{{ user.name }}</h2>
+          </ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ "PET_DESCRIPTION" | translate }}*</ion-label>
+        <ion-textarea type="text" formControlName="description" name="description"
+        (keyup.enter)="sendPost()"></ion-textarea>
+      </ion-item>
+      <control-messages [control]="postForm.controls.description"></control-messages>
+
+      <ion-item>
+        <ion-label>{{ "PET_STATE" | translate }}*</ion-label>
+        <ion-select formControlName="state" name="state" cancelText="{{ 'CANCEL' | translate }}"
+        okText="{{ 'ACCEPT' | translate }}">
+          <ion-select-option value="found">{{ "FOUND" | translate }}</ion-select-option>
+          <ion-select-option value="lost">{{ "LOST" | translate }}</ion-select-option>
+          <ion-select-option value="on_adoption">{{ "ON_ADOPTION" | translate }}</ion-select-option>
+          <!--<ion-select-option value="on_sale">{{ "ON_SALE" | translate }}</ion-select-option>-->
+          <ion-select-option value="on_hold">{{ "ON_HOLD" | translate }}</ion-select-option>
+          <ion-select-option value="other">{{ "OTHER" | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <control-messages [control]="postForm.controls.state"></control-messages>
+
+      <ion-item [hidden]="!addDirection">
+        <ion-label position="stacked">{{ "DIRECTION_ACCURACY" | translate }}</ion-label>
+        <ion-range type="text" formControlName="direction_accuracy" name="direction_accuracy"
+        min="0" max="1000" step="2" pin="true" (ionChange)="setMapCircle($event)">
+        </ion-range>
+      </ion-item>
+
+      <span [hidden]="!addDirection" formGroupName="direction">
+
+        <ion-item>
+          <ion-label position="stacked">{{ "COUNTRY" | translate }}</ion-label>
+          <ion-input type="text" formControlName="country" name="country"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ "ESTATE" | translate }}</ion-label>
+          <ion-input type="text" formControlName="administrative_area_level_1"
+          name="administrative_area_level_1">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ "TOWN" | translate }}</ion-label>
+          <ion-input type="text" formControlName="administrative_area_level_2"
+          name="administrative_area_level_2"
+          (ionBlur)="getGoogleDirection()">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ "STREET" | translate }}</ion-label>
+          <ion-input type="text" formControlName="route" name="route"
+          (ionBlur)="getGoogleDirection()">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ "STREET_NUMBER" | translate }}</ion-label>
+          <ion-input type="text" formControlName="street_number" name="street_number"
+          (ionBlur)="getGoogleDirection()">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ "ZIP_CODE" | translate }}</ion-label>
+          <ion-input type="number" formControlName="postal_code" name="postal_code">
+          </ion-input>
+        </ion-item>
+
+        <div #mapCanvas id="map_canvas"></div>
+      </span>
+    </ion-list>
+
+    <div *ngIf="files.length" class="thumnails">
+      <div class="list-thumbnail">
+        <div class="img-thumb" *ngFor="let file of files">
+          <img [src]="file.url" [alt]="file.alt">
+          <ion-icon name="close-circle-outline" class="close-icon" color="danger"
+          (click)="removeFile(file); $event.stopPropagation;"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <label *ngIf="isBrowser">
+      <ion-button type="button" shape="round" color="secondary">
+        <ion-icon slot="start" name="images"></ion-icon>
+        <ion-text style="padding-left: 5px;">{{ "ADD_PHOTOS" | translate }}</ion-text>
+      </ion-button>
+      <input type="file" style="display: none;" multiple (change)="selectFiles($event)">
+    </label>
+    <ion-button *ngIf="!isBrowser" type="button" shape="round" color="secondary"
+    (click)="selectFiles()">
+      <ion-icon slot="start" name="images"></ion-icon>
+      <ion-text style="padding-left: 5px;">{{ "ADD_PHOTOS" | translate }}</ion-text>
+    </ion-button>
+
+    <ion-button type="button" shape="round" color="secondary" (click)="addDirection = addDirection ? false : true;">
+      <ion-icon slot="start" name="map"></ion-icon>
+      <ion-text style="padding-left: 5px;">{{ "ADD_DIRECTION" | translate }}</ion-text>
+    </ion-button>
+
+    <ion-button type="button" shape="round" color="secondary" (click)="expanded = !expanded;">
+      <ion-icon name="more"></ion-icon>
+    </ion-button>
+
+    <div class='expand-wrapper' [class.collapsed]="!expanded">
+      <ion-button type="button" shape="round" color="secondary" (click)="addEmailsPhones('email')">
+        <ion-text>{{ "PRIVACY_CONFIG.ADD_EMAILS" | translate }}</ion-text>
+      </ion-button>
+
+      <ion-button type="button" shape="round" color="secondary" (click)="addEmailsPhones('phone')">
+        <ion-text>{{ "PRIVACY_CONFIG.ADD_PHONES" | translate }}</ion-text>
+      </ion-button>
+    </div>
+
+    <ion-button type="submit" expand="block" [disabled]="!isReadyToSend">
+      <span *ngIf="!postId">{{ "SHARE" | translate }}</span>
+      <span *ngIf="postId">{{ "UPDATE" | translate }}</span>
+    </ion-button>
+  </form>
+  <div *ngIf="!user">
+    <ion-button type="button" expand="block" color="secondary" (click)="goToLogin()">
+      <ion-icon slot="start" name="log-in"></ion-icon>
+      <ion-text style="padding-left: 5px;">{{ "NAV.LOGIN" | translate }}</ion-text>
+    </ion-button>
+  </div>
+</ion-card>

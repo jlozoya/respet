@@ -1,0 +1,114 @@
+<ion-toolbar class="footer-style">
+  <ion-row>
+    <ion-col size-xs="12" size-sm="6">
+
+      <div class="logo">
+        <img src="./assets/imgs/icon.png" alt="icon">
+      </div>
+
+      <ion-row responsive-sm>
+
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" color="cyan"
+          (click)="goToAbout()">
+            <ion-icon name="compass"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" color="facebook"
+          (click)="goToFacebook()">
+            <ion-icon name="logo-facebook"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" color="instagram"
+          (click)="goToInstagram()">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" color="google"
+          (click)="goToMail()">
+            <ion-icon name="mail"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+      <ion-row responsive-sm>
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" (click)="goToPolitics('end_user_agreement')">
+            {{ "LEGAL" | translate }}
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" fill="outline" type="button" style="padding-left: 5px;"
+          (click)="goToPolitics('privacy')">{{ "PRIVACY" | translate }}</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row responsive-sm>
+        <ion-col>
+          <p>{{ "FOOTER.PHONE" | translate }}
+            <a href="tel:+526188134955" class="Blondie">
+              +52-6188134955
+            </a>
+          </p>
+          <p>{{ "FOOTER.DIRECTION" | translate }}</p>
+          <p>{{ "FOOTER.DEVELOPED" | translate }}
+            <a href="https://github.com/jlozoya">
+              {{ "FOOTER.DEVELOPED_BY" | translate }}
+            </a>
+            {{ "FOOTER.BASED_ON" | translate }}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+
+    <ion-col size-xs="12" size-sm="6" align-self-auto>
+
+      <ion-item>
+        {{ 'CONTACT_US' | translate }}
+      </ion-item>
+
+      <ion-list>
+
+        <form [formGroup]="supportForm" (ngSubmit)="submitContact()">
+
+          <ion-item>
+            <ion-label position="stacked">{{ "NAME" | translate }}*</ion-label>
+            <ion-input formControlName="name" name="name" type="text">
+            </ion-input>
+          </ion-item>
+          <control-messages [control]="supportForm.controls.name"></control-messages>
+
+          <ion-item>
+            <ion-label position="stacked">{{ "PHONE" | translate }}</ion-label>
+            <ion-input formControlName="phone" name="phone" type="tel">
+            </ion-input>
+          </ion-item>
+          <control-messages [control]="supportForm.controls.phone"></control-messages>
+
+          <ion-item>
+            <ion-label position="stacked">{{ "EMAIL" | translate }}*</ion-label>
+            <ion-input formControlName="email" name="email" type="email">
+            </ion-input>
+          </ion-item>
+          <control-messages [control]="supportForm.controls.email"></control-messages>
+
+          <ion-item>
+            <ion-label position="stacked">{{ "MESSAGE" | translate }}*</ion-label>
+            <ion-textarea formControlName="message" name="message" type="text">
+            </ion-textarea>
+          </ion-item>
+          <control-messages [control]="supportForm.controls.email"></control-messages>
+
+          <ion-button expand="block" type="submit" color="primary">{{ "SEND" | translate }}</ion-button>
+        </form>
+
+      </ion-list>
+
+    </ion-col>
+  </ion-row>
+</ion-toolbar>

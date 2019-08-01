@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center padding>
+  <form (ngSubmit)="add()" (keydown.enter)="$event.preventDefault()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">{{ name | translate }}</ion-label>
+        <ion-input clearInput [type]="type" [name]="type" [(ngModel)]="text" (keyup.enter)="filterValues()"></ion-input>
+        <ion-button slot="end" color="dark-accent" style="width: 36px; height: 36px;" (click)="filterValues()">
+          <ion-icon name="add-circle-outline" slot="icon-only" color="light"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-button type="submit" expand="block">{{ "ADD" | translate }}</ion-button>
+    </ion-list>
+  </form>
+  <ion-chip *ngFor="let value of toSave" (click)="openLink(value)">
+    {{ value }}
+    <ion-icon name="close-circle-outline" (click)="remove(value);$event.stopPropagation();"></ion-icon>
+  </ion-chip>
+  <span *ngIf="type === 'email' && userContact && userContact.contact">
+    <ion-chip *ngFor="let value of userContact.contact.emails" color="primary" (click)="openLink(value.email, 'email')">
+      {{ value.email }}
+      <ion-icon name="close-circle-outline" (click)="deleteEmailPhone(value, 'email');$event.stopPropagation();"></ion-icon>
+    </ion-chip>
+  </span>
+  <span *ngIf="type === 'phone' && userContact && userContact.contact">
+    <ion-chip *ngFor="let value of userContact.contact.phones" color="primary" (click)="openLink(value.phone, 'phone')">
+      {{ value.phone }}
+      <ion-icon name="close-circle-outline" (click)="deleteEmailPhone(value, 'phone');$event.stopPropagation();"></ion-icon>
+    </ion-chip>
+  </span>
+</ion-content>

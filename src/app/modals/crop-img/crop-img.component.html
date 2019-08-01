@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="returnImg()">
+        <ion-icon name="checkmark"></ion-icon>
+        {{ "ACCEPT" | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center padding>
+  <image-cropper
+    [imageBase64]="imageBase64"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="aspectRatio"
+    [resizeToWidth]="targetWidth"
+    (imageCroppedBase64)="imageCropped($event)">
+  </image-cropper>
+</ion-content>

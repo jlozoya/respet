@@ -1,0 +1,36 @@
+<ion-card *ngIf="post" [attr.track]="post.state | lowercase">
+  <ion-card-header>
+    <ion-item *ngIf="post && post.user" button (click)="goToAccount(post.user)">
+      <ion-avatar item-left>
+        <img [src]="post.user.media?.url" alt="avatar" onerror="this.src='./assets/imgs/avatar.png'">
+      </ion-avatar>
+      <ion-label text-wrap style="margin-left: 5px;">
+        <ion-text>
+          <h2>{{ post.user.name }}</h2>
+          <small>{{ post.updated_at }}</small>
+        </ion-text>
+      </ion-label>
+      <ion-button *ngIf="user" slot="end" color="light" (click)="openPop($event); $event.stopPropagation();">
+        <ion-icon slot="icon-only" name="more"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-card-header>
+
+  <app-gallery *ngIf="post && post.id" source="post" [source_id]="post.id" [imgs]="post.media"></app-gallery>
+
+  <ion-card-content style="position: relative;">
+    <p>{{ post.description }}</p>
+    <ion-button color="light" (click)="presentActionSheet(post)">
+      <ion-icon name="share"></ion-icon>
+      <ion-text style="padding-left: 5px;">{{ "SHARE" | translate }}</ion-text>
+    </ion-button>
+
+    <ion-button *ngIf="post && post.direction && post.direction.lat && post.direction.lat != '0.0000000'
+    && post.direction.lng != '0.0000000'"
+    color="light" (click)="openMap(post)">
+      <ion-icon name="map"></ion-icon>
+      <ion-text style="padding-left: 5px;">{{ "SEE_ON_MAP" | translate }}</ion-text>
+    </ion-button>
+
+  </ion-card-content>
+</ion-card>

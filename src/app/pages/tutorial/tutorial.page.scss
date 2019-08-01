@@ -1,0 +1,25 @@
+:host {
+  .slide-height {
+    height: 100%;
+  }
+  .slide-image {
+    width: 100%;
+    max-width: 230px;
+    height: auto;
+  }
+  .slide-title {
+    margin-top: 2.8rem;
+  }
+  b {
+    font-weight: 500;
+  }
+  p, h1, h2, h3, h4, h5, h6 {
+    padding: 0 40px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ion-color-dark);
+    b {
+      color: var(--ion-color-dark);
+    }
+  }
+}

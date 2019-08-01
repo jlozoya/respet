@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title>{{ "NAV.TERMS_AND_CONDITIONS" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 [ngSwitch]="segment">
+      <div *ngSwitchCase="'pays'">
+        <h2>
+          {{ "T_AND_C.PAYS.TITLE_1" | translate }}
+        </h2>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_1" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_2" | translate }}
+          <a href="https://www.openpay.mx">
+            https://www.openpay.mx
+          </a>
+          {{ "T_AND_C.PAYS.PARAGRAPH_3" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_4" | translate }}
+          <a (click)="scrollTo('contact')">
+            {{ "T_AND_C.PAYS.CONTACT" | translate }}.
+          </a>
+          {{ "T_AND_C.PAYS.PARAGRAPH_5" | translate }}
+        </p>
+        <h2>
+          {{ "T_AND_C.PAYS.TITLE_2" | translate }}
+        </h2>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_6" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_7" | translate }}
+          <a (click)="scrollTo('contact')">
+            {{ "T_AND_C.PAYS.CONTACT" | translate }}.
+          </a>
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_8" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_9" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_10" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_11" | translate }}
+        </p>
+        <h2>
+          {{ "T_AND_C.PAYS.TITLE_3" | translate }}
+        </h2>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_12" | translate }}
+          <strong>
+            {{ "T_AND_C.PAYS.PARAGRAPH_13" | translate }}
+          </strong>
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_14" | translate }}
+          <a (click)="scrollTo('contact')">
+            {{ "T_AND_C.PAYS.CONTACT" | translate }}.
+          </a>
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_15" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_16" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_17" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_18" | translate }}
+        </p>
+        <h2>
+          {{ "T_AND_C.PAYS.TITLE_4" | translate }}
+        </h2>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_19" | translate }}
+        </p>
+        <p>
+          {{ "T_AND_C.PAYS.PARAGRAPH_20" | translate }}
+        </p>
+      </div>
+      <div *ngSwitchDefault>
+        {{ "T_AND_C.DEFAULT" | translate }}
+      </div>
+    </ion-col>
+  </ion-row>
+  <app-footer id="contact"></app-footer>
+</ion-content>

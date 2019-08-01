@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center padding>
+
+  <label *ngIf="isBrowser">
+    <img [src]="img" alt="bulletin" onerror="this.src='./assets/imgs/avatar.png'"
+    *ngIf="isBrowser">
+    <input type="file" style="display: none;" (change)="getBulletinImg($event)">
+  </label>
+  <img [src]="img" alt="bulletin" onerror="this.src='./assets/imgs/avatar.png'"
+  *ngIf="!isBrowser" (click)="getBulletinImg()">
+
+  <form margin-top [formGroup]="bulletinForm" (ngSubmit)="sendBulletin()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">{{ "BULLETIN.MODALS.BULLETIN.TITLE" | translate }}</ion-label>
+        <ion-input type="text" formControlName="title" name="title"></ion-input>
+      </ion-item>
+      <control-messages [control]="bulletinForm.controls.title"></control-messages>
+
+      <ion-item>
+        <ion-label position="stacked">
+          {{ "BULLETIN.MODALS.BULLETIN.DESCRIPTION" | translate }}
+        </ion-label>
+        <ion-textarea type="text" formControlName="description" name="description"></ion-textarea>
+      </ion-item>
+      <control-messages [control]="bulletinForm.controls.description"></control-messages>
+
+      <ion-item>
+        <ion-label position="stacked">{{ "BULLETIN.MODALS.BULLETIN.DATE" | translate }}</ion-label>
+        <ion-datetime formControlName="date" displayFormat="DD/MM/YYYY"
+          cancelText="{{ 'CANCEL' | translate}}" doneText="{{ 'ACCEPT' | translate}}">
+        </ion-datetime>
+      </ion-item>
+      <control-messages [control]="bulletinForm.controls.date"></control-messages>
+    </ion-list>
+
+    <ion-button type="submit" expand="block" color="primary" [disabled]="!isReadyToSubmit">
+      {{ "BULLETIN.MODALS.BULLETIN.SEND" | translate }}
+    </ion-button>
+
+  </form>
+</ion-content>

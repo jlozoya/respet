@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss(null)">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center padding>
+
+  <app-post-form [postId]="postId" (appPostSend)="dismiss($event)"></app-post-form>
+
+</ion-content>

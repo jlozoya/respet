@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title color="light">{{ "NAV.SIGNUP" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-progress-bar [type]="progress.type" [value]="progress.value"></ion-progress-bar>
+
+<ion-content>
+
+	<div class="logo">
+		<img src="./assets/imgs/landing.png" alt="landing.png">
+  </div>
+
+  <ion-row>
+    <ion-col size-xs="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+
+      <form [formGroup]="signupForm" (ngSubmit)="doSignup()">
+        <ion-row>
+          <ion-col>
+            <ion-list>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "NAME" | translate }}*</ion-label>
+                <ion-input formControlName="name" name="name" type="text" (keyup.enter)="doSignup()">
+                </ion-input>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.name"></control-messages>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "FIRST_NAME" | translate }}*</ion-label>
+                <ion-input formControlName="first_name" name="first_name" type="text" (keyup.enter)="doSignup()">
+                </ion-input>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.first_name"></control-messages>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "LAST_NAME" | translate }}*</ion-label>
+                <ion-input formControlName="last_name" name="last_name" type="text" (keyup.enter)="doSignup()">
+                </ion-input>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.last_name"></control-messages>
+
+              <ion-item>
+                <ion-label>{{ "GENDER" | translate }}</ion-label>
+                <ion-select formControlName="gender" name="gender" cancelText="{{ 'CANCEL' | translate}}"
+                okText="{{ 'ACCEPT' | translate}}" (keyup.enter)="doSignup()">
+                  <ion-select-option value="male">{{ "MALE" | translate }}</ion-select-option>
+                  <ion-select-option value="female">{{ "FEMALE" | translate }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.gender"></control-messages>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "EMAIL" | translate }}*</ion-label>
+                <ion-input formControlName="email" name="email" type="email"
+                (keyup.enter)="doSignup()">
+                </ion-input>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.email"></control-messages>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "PASSWORD" | translate }}*</ion-label>
+                <ion-input formControlName="password" name="password" type="password" #password
+                (keyup.enter)="doSignup()">
+                </ion-input>
+                <ion-icon slot="end" name="eye" [color]="isPrimary ? 'primary' : 'dark'"
+                style="z-index: 2" (click)="showPassword(password)"></ion-icon>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.password"></control-messages>
+
+              <ion-item>
+                <ion-label position="stacked">{{ "PASSWORD" | translate }}*</ion-label>
+                <ion-input formControlName="password_d" name="password_d" type="password" #passwordRe
+                (keyup.enter)="doSignup()">
+                </ion-input>
+                <ion-icon slot="end" name="eye" [color]="isPrimaryRe ? 'primary' : 'dark'"
+                style="z-index: 2" (click)="showPasswordRe(passwordRe)"></ion-icon>
+              </ion-item>
+              <control-messages [control]="signupForm.controls.password_d"></control-messages>
+
+            </ion-list>
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row>
+
+          <ion-col size-xs="12">
+            <ion-button expand="block" type="submit" color="primary" [disabled]="!isReadyToSend">
+              {{ "SIGNUP" | translate }}
+            </ion-button>
+          </ion-col>
+
+        </ion-row>
+      </form>
+
+      <ion-row responsive-sm align-items-center center>
+        <ion-col size-xs="6">
+
+          <ion-button expand="block" fill="outline" type="button" color="google" (click)="googleLogin()">
+            <ion-icon name="logo-googleplus"></ion-icon>
+            <span style="margin-left: 4px;">Google</span>
+          </ion-button>
+
+        </ion-col>
+        <ion-col size-xs="6">
+
+          <ion-button expand="block" fill="outline" type="button" color="facebook" (click)="facebookLogin()">
+            <ion-icon name="logo-facebook"></ion-icon>
+            <span style="margin-left: 4px;">Facebook</span>
+          </ion-button>
+
+        </ion-col>
+      </ion-row>
+
+      <p>{{ "BY_CLICKING_TO_REGISTER" | translate }} <a (click)="goToPolitics('end_user_agreement')">
+        {{ "TERMS_AND_CONDITIONS" | translate }}</a> {{ "OF_BT" | translate }}.</p>
+      <p>{{ "READ_THE_PRIVACY_POLICY" | translate }}<a (click)="goToPolitics('privacy')">
+        {{ "PRIVACY_POLICY" | translate }}</a>.</p>
+    </ion-col>
+  </ion-row>
+</ion-content>

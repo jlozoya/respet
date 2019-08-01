@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title color="light">{{ "NAV.PRIVACY_CONFIG" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size-xs="12" size-sm="6" size-md="4">
+      <ion-list>
+
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.SHOW_EMAIL" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.show_main_email"
+          (click)="updateUserPermissions('show_main_email', userPermissions.show_main_email)"></ion-toggle>
+        </ion-item>
+
+        <ion-chip *ngIf="userContact && userContact.contact" color="primary" (click)="openLink(userContact.contact.email, 'email')">
+          {{ userContact.contact.email }}
+        </ion-chip>
+
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.SHOW_EMAILS" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.show_alternative_emails"
+          (click)="updateUserPermissions('show_alternative_emails', userPermissions.show_alternative_emails)"></ion-toggle>
+        </ion-item>
+
+        <ion-button text-wrap expand="block" (click)="addEmailsPhones('email')">
+          {{ "PRIVACY_CONFIG.ADD_EMAILS" | translate }}
+        </ion-button>
+
+        <span *ngIf="userContact && userContact.contact">
+          <ion-chip *ngFor="let value of userContact.contact.emails" color="primary" (click)="openLink(value.email, 'email')">
+            {{ value.email }}
+            <ion-icon name="close-circle-outline" (click)="deleteEmailPhone(value, 'email');$event.stopPropagation();"></ion-icon>
+          </ion-chip>
+        </span>
+
+      </ion-list>
+    </ion-col>
+
+    <ion-col size-xs="12" size-sm="6" size-md="4">
+      <ion-list>
+
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.SHOW_PHONE" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.show_main_phone"
+          (click)="updateUserPermissions('show_main_phone', userPermissions.show_main_phone)"></ion-toggle>
+        </ion-item>
+
+        <ion-chip *ngIf="userContact && userContact.contact" color="primary" (click)="openLink(userContact.contact.phone, 'phone')">
+          {{ userContact.contact.phone }}
+        </ion-chip>
+
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.SHOW_PHONES" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.show_alternative_phones"
+          (click)="updateUserPermissions('show_alternative_phones', userPermissions.show_alternative_phones)"></ion-toggle>
+        </ion-item>
+
+        <ion-button text-wrap expand="block" (click)="addEmailsPhones('tel')">
+          {{ "PRIVACY_CONFIG.ADD_PHONES" | translate }}
+        </ion-button>
+
+        <span *ngIf="userContact && userContact.contact">
+          <ion-chip *ngFor="let value of userContact.contact.phones" color="primary" (click)="openLink(value.phone, 'phone')">
+            {{ value.phone }}
+            <ion-icon name="close-circle-outline" (click)="deleteEmailPhone(value, 'phone');$event.stopPropagation();"></ion-icon>
+          </ion-chip>
+        </span>
+
+      </ion-list>
+    </ion-col>
+
+    <ion-col size-xs="12" size-sm="6" size-md="4">
+      <ion-list>
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.SHOW_ADDRESS" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.show_address"
+          (click)="updateUserPermissions('show_address', userPermissions.show_address)"></ion-toggle>
+        </ion-item>
+
+        <ion-item>
+          <ion-label text-wrap>{{ "PRIVACY_CONFIG.RECEIVE_MAIL_ADDS" | translate }}</ion-label>
+          <ion-toggle [(ngModel)]="userPermissions.receive_mail_adds"
+          (click)="updateUserPermissions('receive_mail_adds', userPermissions.receive_mail_adds)"></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>

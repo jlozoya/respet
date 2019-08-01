@@ -1,0 +1,141 @@
+<form padding [formGroup]="userForm" (ngSubmit)="updateUser()">
+  <ion-row>
+    <ion-col size-xs="12" size-sm="6">
+
+      <ion-item color="light">
+        <h1>{{ "ACCOUNT.GENERAL_INFORMATION" | translate }}</h1>
+      </ion-item>
+
+      <ion-list>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "NAME" | translate }}*</ion-label>
+          <ion-input formControlName="name" name="name" type="text">
+          </ion-input>
+        </ion-item>
+        <control-messages [control]="userForm.controls.name"></control-messages>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "FIRST_NAME" | translate }}*</ion-label>
+          <ion-input formControlName="first_name" name="first_name" type="text">
+          </ion-input>
+        </ion-item>
+        <control-messages [control]="userForm.controls.first_name"></control-messages>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "LAST_NAME" | translate }}*</ion-label>
+          <ion-input formControlName="last_name" name="last_name" type="text">
+          </ion-input>
+        </ion-item>
+        <control-messages [control]="userForm.controls.last_name"></control-messages>
+
+        <ion-item color="light">
+          <ion-label>{{ "GENDER" | translate }}</ion-label>
+          <ion-select formControlName="gender" name="gender"
+          cancelText="{{ 'CANCEL' | translate}}" okText="{{ 'ACCEPT' | translate}}">
+            <ion-select-option value="male">{{ "MALE" | translate }}</ion-select-option>
+            <ion-select-option value="female">{{ "FEMALE" | translate }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <control-messages [control]="userForm.controls.gender"></control-messages>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "BIRTHDAY" | translate }}</ion-label>
+          <ion-datetime formControlName="birthday" displayFormat="DD/MM/YYYY"
+            cancelText="{{ 'CANCEL' | translate}}" doneText="{{ 'ACCEPT' | translate}}">
+          </ion-datetime>
+        </ion-item>
+        <control-messages [control]="userForm.controls.birthday"></control-messages>
+
+        <ion-item color="light">
+          <ion-label>{{ "LANG_SELECTOR" | translate }}</ion-label>
+          <ion-select formControlName="lang" (ionChange)="setLang()"
+            color="dark" cancelText="{{ 'CANCEL' | translate}}" okText="{{ 'ACCEPT' | translate}}">
+            <ion-select-option value="es">{{ "SPANISH" | translate }}</ion-select-option>
+            <ion-select-option value="en">{{ "ENGLISH" | translate }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <control-messages [control]="userForm.controls.lang"></control-messages>
+
+      </ion-list>
+
+      <ion-item color="light">
+        <h1>{{ "ACCOUNT.CONTACT_INFORMATION" | translate }}</h1>
+      </ion-item>
+
+      <ion-list>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "PHONE" | translate }}</ion-label>
+          <ion-input formControlName="phone" name="phone" type="tel">
+          </ion-input>
+        </ion-item>
+        <control-messages [control]="userForm.controls.phone"></control-messages>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "EMAIL" | translate }}*</ion-label>
+          <ion-input formControlName="email" name="email" type="email">
+          </ion-input>
+        </ion-item>
+        <control-messages [control]="userForm.controls.email"></control-messages>
+
+      </ion-list>
+    </ion-col>
+
+    <ion-col size-xs="12" size-sm="6">
+
+      <ion-item color="light">
+        <h1>{{ "ACCOUNT.DIRECTION" | translate }}</h1>
+      </ion-item>
+
+      <ion-list formGroupName="address">
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "COUNTRY" | translate }}</ion-label>
+          <ion-input formControlName="country" name="country" type="text">
+          </ion-input>
+        </ion-item>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "ESTATE" | translate }}</ion-label>
+          <ion-input formControlName="administrative_area_level_1"
+          name="administrative_area_level_1" type="text">
+          </ion-input>
+        </ion-item>
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "TOWN" | translate }}</ion-label>
+          <ion-input formControlName="administrative_area_level_2"
+          name="administrative_area_level_2" type="text">
+          </ion-input>
+        </ion-item>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "STREET" | translate }}</ion-label>
+          <ion-input formControlName="route" name="route" type="text">
+          </ion-input>
+        </ion-item>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "STREET_NUMBER" | translate }}</ion-label>
+          <ion-input formControlName="street_number" name="street_number" type="text"
+          (ionBlur)="getGoogleDirection()">
+          </ion-input>
+        </ion-item>
+
+        <ion-item color="light">
+          <ion-label position="stacked">{{ "ZIP_CODE" | translate }}</ion-label>
+          <ion-input formControlName="postal_code" name="postal_code" type="number">
+          </ion-input>
+        </ion-item>
+
+      </ion-list>
+      <div #mapCanvas id="map_canvas"></div>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-button expand="block" type="submit" color="dark" [disabled]="!isReadyToUpdate">
+    {{ "UPDATE" | translate }}
+  </ion-button>
+
+</form>

@@ -1,0 +1,880 @@
+{
+  "PRESS_AGAIN_TO_EXIT": "Pulsa de nuevo para salir",
+  "BACK_BUTTON_TEXT": "Atras",
+  "CANCEL": "Cancelar",
+  "ACCEPT": "Aceptar",
+  "NAME": "Nombre de usuario",
+  "FIRST_NAME": "Primer nombre",
+  "LAST_NAME": "Apellido",
+  "GENDER": "Genero",
+  "BIRTHDAY": "Fecha de nacimiento",
+  "MALE": "Hombre",
+  "FEMALE": "Mujer",
+  "UNKNOWN": "Desconocido",
+  "MALES": "Hombres",
+  "FEMALES": "Mujeres",
+  "AGE": "Edad",
+  "SOURCE": "Fuente",
+  "UNKNOWNS": "Desconocidos",
+  "PHONE": "Teléfono",
+  "EMAIL": "Email",
+  "MESSAGE": "Mensaje",
+  "PASSWORD": "Contraseña",
+  "LOGIN": "Iniciar sesión",
+  "SINGING": "Creando cuenta",
+  "SIGNUP": "Registrarme",
+  "FORGOT_PASSWORD": "Olvide mi contraseña",
+  "IS_LOGIN": "Iniciando sesión",
+  "IS_LINKING": "Vinculando cuenta",
+  "CONTACT_US": "Contactanos",
+  "SEND": "Enviar",
+  "LANG_SELECTOR": "Idioma",
+  "ENGLISH": "Ingles",
+  "SPANISH": "Español",
+  "SENDING_MESSAGE": "Enviando su mensaje",
+  "MESSAGE_SENT": "Mensaje enviado",
+  "RECOVERING_PASSWORD": "Recuperando contraseña",
+  "COUNTRY": "País",
+  "ESTATE": "Estado",
+  "TOWN": "Ciudad",
+  "STREET": "Calle",
+  "STREET_NUMBER": "Número",
+  "ZIP_CODE": "Numero postal",
+  "LAT": "Latitud",
+  "LNG": "Longitud",
+  "UPDATE": "Actualizar",
+  "UPDATING_IMG": "Actualizando imagen",
+  "AGES": "Edades",
+  "CHILDREN": "Niños",
+  "TEENS": "Adolecentes",
+  "YOUNG_ADULTS": "Adultos jóvenes",
+  "ADULTS": "Adultos",
+  "USERS": "Usuarios",
+  "LAST_WEEK": "Última semana",
+  "LAST_MONTH": "Último mes",
+  "LAST_YEAR": "Último año",
+  "SEARCH": "Buscar",
+  "ROLE": "Rol",
+  "VISITOR": "Visitante",
+  "USER": "Usuario",
+  "ADMIN": "Administrador",
+  "OTHER": "Otro",
+  "LEGAL": "Legal",
+  "PRIVACY": "Privacidad",
+  "BY_CLICKING_TO_REGISTER": "Al hacer clic o en los botones para acceder con Facebook, Google o en Registrarme, acepta los",
+  "BY_CLICKING_TO_SOCIAL": "Si no tiene una cuenta, al hacer clic o en los botones para acceder con Facebook o Google acepta los",
+  "TERMS_AND_CONDITIONS": "Términos y Condiciones de uso",
+  "READ_THE_PRIVACY_POLICY": "Para obtener más información sobre cómo ResPet recopila, utiliza, comparte y protege sus datos personales, lea la",
+  "PRIVACY_POLICY": "Política de Privacidad",
+  "OF_BT": "de ResPet",
+  "IS_PAYING": "Realizando cargo",
+  "DOWNLOAD_MY_INFO": "Descargar mi información",
+  "DELETE_MY_ACCOUNT": "Eliminar mi cuenta",
+  "CHANGE_PASSWORD": "Cambiar contraseña",
+  "DISCONNECT": "Desconectar",
+  "PULSATIONS": "Pulsaciones",
+  "HOW_CAN_WE_HELP_YOU": "¿Comó podemos ayudarte??",
+  "LINK_WITH": "Víncular con",
+  "UNLINK_FROM": "Desvincular de",
+  "SHARE": "Compartir",
+  "DIRECTION_ACCURACY": "Precisión de la ubicación en metros",
+  "PET_DESCRIPTION": "Descripción de la mascota",
+  "PET_STATE": "Estado de la mascota",
+  "ADD_DIRECTION": "Agregar ubicación",
+  "FOUND": "Encontrado",
+  "LOST": "Perdido",
+  "ON_ADOPTION": "En adopción",
+  "ON_SALE": "En venta",
+  "ON_HOLD": "Bajo resguardo",
+  "ADD_PHOTOS": "Agregar fotos",
+  "CONTACT_INFORMATION": "Información de contacto",
+  "EMAILS": "Emails",
+  "PHONES": "Teléfonos",
+  "ADD": "Agregar",
+  "SEE_ON_MAP": "Ver en un mapa",
+  "DELETE": "Eliminar",
+  "REPORT": "Reportar",
+  "NAV_TO_MAIN_PAGE": "Navegar a la página principal",
+  "BLUETOOTH": {
+    "NAME": "Nombre",
+    "ID": "ID",
+    "ADDRESS": "Dirección",
+    "NOT_FOUND": "No se encontró ningún dispositivo bluetooth asegúrese de que esta activado y arrastre hacia abajo para buscar de nuevo",
+    "CONNECTED": "Se conectó con el dispositivo",
+    "NOT_CONNECTED": "El Bluetooth no está conectado",
+    "NOT_DEVICES_FOUND": "No se encontraron dispositivos bluetooth",
+    "NOT_AVAILABLE_IN_THIS_DEVICE": "El bluetooth no esta disponible en este dispositivo",
+    "NOT_AVAILABLE": "El bluetooth no esta disponible",
+    "CANNOT_CONNECT": "No se puede conectar el bluetooth",
+    "SEARCHING": "Buscando dispositivos bluetooth",
+    "ALERTS": {
+      "CONNECT": {
+        "TITLE": "Conectar",
+        "MESSAGE": "Conectar con este dispositivo"
+      },
+      "RECONNECT": {
+        "TITLE": "Reconectar",
+        "MESSAGE": "Conectar con este dispositivo"
+      }
+    }
+  },
+  "BULLETIN": {
+    "SEE_MORE": "Ver más",
+    "MODALS": {
+      "BULLETIN": {
+        "TITLE": "Titulo",
+        "DESCRIPTION": "Descripción",
+        "DATE": "Fecha",
+        "SEND": "Enviar",
+        "UPLOAD": "Subiendo",
+        "UPDATE": "Actualizando"
+      }
+    },
+    "POPS": {
+      "ADMIN_BULLETIN": {
+        "UPDATE": "Actualizar noticia",
+        "DELETE": "Eliminar noticia"
+      }
+    },
+    "ALERTS": {
+      "DELETE_BULLETIN": {
+        "TITLE": "Eliminar noticia",
+        "MESSAGE": "¿Estás seguro de que deseas eliminar esta noticia?"
+      }
+    }
+  },
+  "ADD_EMAIL_PHONES": {
+    "SOME_WRONG_VALUES": "Algunos valores incorrectos",
+    "NOTHING_TO_SEND": "Nada que guardar"
+  },
+  "UPDATES": {
+    "EMAIL_SUCCESS": "Email actualizado",
+    "LANGUAGE_SUCCESS": "Idioma actualizado",
+    "DIRECTION_SUCCESS": "Se actualizo la dirección con éxito",
+    "NAME_SUCCESS": "Se actualizo el nombre de usuario con éxito",
+    "FIRST_NAME_SUCCESS": "Se actualizo el nombre con éxito",
+    "LAST_NAME_SUCCESS": "Se actualizo el apellido con éxito",
+    "GENERO_SUCCESS": "Se actualizo el genero con éxito",
+    "PHONE_NUMBER_SUCCESS": "Se actualizo el número de teléfono",
+    "BIRTHDAY_SUCCESS": "Se actualizo la fecha de cumpleaños con éxito"
+  },
+  "MAIN": {
+    "GREETING": "Hola, ¿Qué podemos hacer por ti?"
+  },
+  "ABOUT": {
+    "MAIN_ADDRESS": "Puedes encontrar nuestra sede en la calle Victoria 343 norte, zona centro codigo postal 34000 Durango, Dgo."
+  },
+  "ACCOUNT": {
+    "TITLE": "Cuenta",
+    "GENERAL_INFORMATION": "Información general",
+    "CONTACT_INFORMATION": "Información de contacto",
+    "DIRECTION": "Dirección"
+  },
+  "PRIVACY_CONFIG": {
+    "SHOW_EMAIL": "Mostrar correo electrónico principal",
+    "SHOW_EMAILS": "Mostrar correos electrónicos alternativos",
+    "SHOW_PHONE": "Mostrar teléfono principal",
+    "SHOW_PHONES": "Mostrar teléfonos alternativos",
+    "SHOW_ADDRESS": "Mostrar dirección",
+    "RECEIVE_MAIL_ADDS": "Recibe correos electrónicos con anuncios",
+    "ADD_EMAILS": "Agregar correos alternativos",
+    "ADD_PHONES": "Agregar teléfonos alternativos"
+  },
+  "NAV": {
+    "APP_NAME": "ResPet",
+    "WALL": "Muro",
+    "MENU": "Menú",
+    "ACCOUNT": "Cuenta",
+    "ABOUT_US": "Nosotros",
+    "ERROR": "Error",
+    "COURSES": "Cursos",
+    "CONTACT": "Contacto",
+    "CONTENT": "Contenido",
+    "CONNECTION": "Conexión",
+    "LOGIN": "Iniciar sesión",
+    "SIGNUP": "Registrarme",
+    "PRESENTATION": "Presentación",
+    "LOGOUT": "Cerrar sesión",
+    "USERS": "Usuarios",
+    "SURF": "Navegar",
+    "READINGS": "Lecturas",
+    "ANALYTICS": "Información",
+    "PRICING": "Precios",
+    "PRIVACY_CONFIG": "Configuración de privacidad",
+    "TERMS_AND_CONDITIONS": "Términos y condiciones"
+  },
+  "SERVER": {
+    "UNAUTHORIZED": "La conexión fue rechazada",
+    "INCORRECT_USER": "Usuario o contraseña incorrectos",
+    "USER_NOT_REGISTRED": "Usuario no registrado",
+    "USER_ALREADY_EXISTS": "Ese correo ya esta registrado",
+    "WRONG_USER": "Usuario incorrecto",
+    "EMAIL_NOT_FOUND": "Email no encontrado",
+    "EMAIL_READY": "Le enviamos un mensaje a su correo",
+    "ERROR": "Ocurrió un error",
+    "FILE_SAVED": "Archivo almacenado con éxito",
+    "NO_SESION": "Tienes que iniciar sesión para hacer eso",
+    "BAD_TOKEN": "Clave incorrecta",
+    "USER_ALREADY_IN_ORGANIZATION": "Ya estás en una organización",
+    "NOT_ENOUGH_RIGHTS": "No tienes suficientes permisos",
+    "USER_SOCIAL_ALREADY_USED": "Esta cuenta está vinculada con otro usuario",
+    "WRONG_TOKEN": "Token invalido",
+    "SOCIAL_LINK_DELETED": "Vínculo eliminado",
+    "WRONG_SOCIAL_LINK_ID": "Ocurrió un error eliminando el vínculo"
+  },
+  "ERRORS": {
+    "LOGIN": "Error iniciando sesión",
+    "SIGNIN": "Error registrando tu usuario",
+    "NO_CONNECTION": "No tienes conexión",
+    "SENDING_MESSAGE": "Error enviando su mensaje",
+    "RECOVERING_PASSWORD": "Error recuperando la contraseña",
+    "CAMERA_ERROR": "Error al capturar la imagen",
+    "FILE_SAVE_ERROR": "Error al almacenar el archivo",
+    "FILE_NO_IMAGE": "Error el archivo que selecciono no es una imagen",
+    "FILE_MAX_4MG": "Error el archivo que selecciono supera el tamaño máximo de 4MB",
+    "NO_DATA": "No se encontro información",
+    "NOT_IS_YOUR_ACCOUNT": "No es tu perfil"
+  },
+  "ERRORS_PAGE": {
+    "SOMETHING_WENT_WRONG": {
+      "TITLE": "Error",
+      "MESSAGE": "Algo salió mal."
+    },
+    "NOT_FOUND": {
+      "TITLE": "Error",
+      "MESSAGE": "No encontramos la página solicitada."
+    },
+    "UNAUTHORIZED": {
+      "TITLE": "No autorizado",
+      "MESSAGE": "No tienes permiso para entrar a la página solicitada."
+    }
+  },
+  "FORM": {
+    "REQUIRED": "Este campo es requerido",
+    "CREDIT_CARD": "Número de tarjeta de crédito invalido",
+    "EMAIL": "Email invalido",
+    "PASSWORD": "Minimo 6 caracteres y un número",
+    "MIN": "Longitud mínima",
+    "MAX": "Longitud máxima",
+    "EMAIL_ALREADY_REGISTERED": "Correo electrónico ya registrado",
+    "EMAIL_ALREADY_REQUESTED": "Correo electrónico ya solicitado",
+    "SUCCESS": "Acción realizada con éxito",
+    "FAIL": "Fallo al realizar la acción",
+    "INVALID": "Un campo en el formulario es inválido",
+    "INVALID_EMAIL": "No es una dirección de correo valida",
+    "PASSWORD_MIN_6": "La clave debe tener al menos 6 caracteres",
+    "PASSWORD_MAX_16": "La clave no puede tener más de 16 caracteres",
+    "PASSWORD_MIN_NUMBER": "La clave debe tener al menos un carácter numérico",
+    "PASSWORD_NOT_MATCH": "La contraseña no coincide",
+    "NAME_MIN_LENGTH_5": "El nombre debe tener al menos cinco caracteres",
+    "SELECT_CATEGORY": "Selecciona una categoría",
+    "NAME_NOT_AVAILABLE": "Nombre no disponible",
+    "MISSED_ABOUT": "La descripción es requerida",
+    "PHONE": "Número de teléfono invalido",
+    "CHECK_YOUR_EMAIL": "Revisa tu correo por favor"
+  },
+  "ALERTS": {
+    "RECOVER_PASSWORD": {
+      "TITLE": "Recuperar contraseña",
+      "MESSAGE": "Le enviaremos un correo para que restablezca su contraseña"
+    },
+    "RECOVER_PASSWORD_BY_EMAIL": {
+      "TITLE": "Recuperar contraseña",
+      "MESSAGE": "Escribe tu correo electrónico para recuperar tu contraseña"
+    },
+    "DELETE_USER": {
+      "TITLE": "Eliminar mi cuenta",
+      "MESSAGE": "La información de su cuenta será completamente eliminada por lo que será irrecuperable y no le podremos dar seguimiento a lo que se haya comprado a través de la misma."
+    },
+    "REPORT_PET": {
+      "TITLE": "Reportar contenido",
+      "MESSAGE": "Agrega una descripción de por qué quieres reportar este contenido.",
+      "SUCCESS": "Reporte agregado con éxito",
+      "FAIL": "Ocurrió un error realizando el reporte"
+    },
+    "DELETE_PET": {
+      "TITLE": "Eliminar publicación",
+      "MESSAGE": "¿Estas seguro de que deseas eliminar esta publicación?"
+    },
+    "DELETE_FILE": {
+      "TITLE": "Eliminar archivo",
+      "MESSAGE": "¿Estas seguro de que deseas eliminar este archivo?"
+    }
+  },
+  "IMG": {
+    "UPLOADING": "Subiendo",
+    "CHANGE_IMAGE": "Actualizar imagen",
+    "SHEET": {
+      "TITLE": "Seleccionar origen de la imagen",
+      "USE_LIBRARY": "Cargar desde la biblioteca",
+      "USE_CAMERA": "Usar la cámara"
+    }
+  },
+  "TUTORIAL": {
+    "SKIP_BUTTON": "Saltar",
+    "LOGIN_BUTTON": "Iniciar sesión",
+    "SIGN_UP_BUTTON": "Registrarme",
+    "CONTINUE_BUTTON": "Continuar",
+    "SLIDE_1": {
+      "TITLE": "Bienvenido",
+      "DESCRIPTION": "Parece que es tu primera vez por aquí, nos da mucho gusto, puedes presionar el botón para saltar la introducción en cualquier momento."
+    },
+    "SLIDE_2": {
+      "TITLE": "¿Ya tienes una cuenta de usuario?",
+      "DESCRIPTION": "¿Qué te parece si inicias sesión?"
+    },
+    "SLIDE_3": {
+      "TITLE": "¿No tienes una cuenta de usuario?",
+      "DESCRIPTION": "¿Qué tal si creas una nueva?"
+    },
+    "SLIDE_4": {
+      "TITLE": "¿Listo para empezar?"
+    }
+  },
+  "FOOTER": {
+    "PHONE": "Teléfono de contacto",
+    "DIRECTION": "ResPet Calle Victoria 343 norte CP 34000 Durango Dgo. México",
+    "DEVELOPED": "Sitio web desarrollado por",
+    "DEVELOPED_BY": "Juan Lozoya",
+    "BASED_ON": "basado en Ionic"
+  },
+  "OPENPAY": {
+    "CREDIT_CARDS": "Tarjetas de credito",
+    "DEBIT_CARDS": "Tarjetas de debito",
+    "CARD_HOLDER_NAME": "Nombre del titular",
+    "NAME_AS_IN_THE_CARD": "Nombre como aparece en la tarjeta",
+    "CARD_NUMBER": "Número de tarjeta",
+    "EXPIRATION_DATE": "Fecha de expiración",
+    "MONTH": "Mes: XX",
+    "YEAR": "Año: XX",
+    "CSV": "Código de seguridad",
+    "PAY": "Pagar",
+    "YOU_ACCEPT_ON_PAYING": "Al hacer clic en el botón para pagar usted acepta los",
+    "PAY_TERMS_AND_CONDITIONS": "términos y condiciones de pagos",
+    "CHARGE_SUCCESSFUL": "Cargo realizado con éxito",
+    "REQUIRED": {
+      "HOLDER_NAME": "Se requiere el nombre del tarjetahabiente",
+      "CARD_NUMBER": "Se requiere el número de la tarjeta",
+      "EXPIRATION_DATE": "La fecha de expiración es requerida"
+    },
+    "INVALID": {
+      "CARD_NUMBER": "Numeración de la tarjeta invalida",
+      "MONTH": "Mes de expiración invalido",
+      "DATE": "La fecha de expiración ya paso",
+      "CVV": "Código de seguridad invalido"
+    },
+    "ERROR": "Ocurrió un error"
+  },
+  "MERCADOPAGO": {
+    "PAY": "Pagar",
+    "EMAIL": "Email",
+    "EG_EMAIL": "Eg. miEmail@miEmail.com",
+    "CREDIT_CARD_NUMBER": "Numero de tarjeta",
+    "EG_CREDIT_CARD_NUMBER": "Eg. 4000 0000 0000 0000",
+    "SECURITY_CODE": "Código de seguridad",
+    "EXPIRATION_MONTH": "Mes de expiración",
+    "EXPIRATION_YEAR": "Año de expiración",
+    "CARD_HOLDER_NAME": "Nombre del tarjetahabiente",
+    "HAS_A_EU_IDENTIFICATION": "Tiene una identificación estadounidense",
+    "DOCUMENT_TYPE": "Tipo de documento",
+    "DOCUMENT_NUMBER": "Numero de identificación",
+    "INSTALLMENTS": "Plazos",
+    "ISSUER": "Emisor",
+    "CHOOSE": "Elija uno:",
+    "ERROR": "Ocurrió un error",
+    "CARD": {
+      "NUMBER_NULL": "Ingresa el número de tarjeta",
+      "EXPIRATION_MONTH_NULL": "Ingresa el mes de expiración",
+      "EXPIRATION_YEAR_NULL": "Ingresa el año de expiración",
+      "CARD_ISSUER_ID_NULL": "Ingresa el banco emisor",
+      "HOLDER_NAME_NULL": "Ingresa nombre del tarjetahabiente",
+      "SECURITY_CODE_NULL": "Ingresa el código de seguridad"
+    },
+    "DOC": {
+      "TYPE_NULL": "Ingresa el tipo de documento",
+      "SUBTYPE_NULL": "Ingresa el tipo de documento",
+      "NUMBER_NULL": "Ingresa el número del documento de identificación"
+    },
+    "INVALID": {
+      "CARD_NUMBER": "Número de tarjeta invalido",
+      "SECURITY_CODE": "Código de seguridad invalido",
+      "HOLDER_NAME": "Nombre del tarjetahabiente invalido",
+      "DOC_TYPE": "Tipo de documento invalido",
+      "DOC_SUBTYPE": "Subtipo de documento invalido",
+      "DOC_NUMBER": "Número del documento de identificación invalido",
+      "EXPIRATION_MONTH": "Mes de expiración invalido",
+      "EXPIRATION_YEAR": "Año de expiración invalido"
+    }
+  },
+  "POLITICS": {
+    "END_USER_AGREEMENT": {
+      "TITLE_1": "Acuerdo de usuario final",
+      "TITLE_2": "Términos y condiciones de uso de ResPet",
+      "VALIDITY_DATE": "En vigencia a partir del 31 de mayo de 2018",
+      "INDEX": {
+        "INTRODUCTION": "Introducción",
+        "CHANGE": "Cambios en los Contratos",
+        "ENJOY": "Disfrute de ResPet",
+        "RIGHTS": "Derechos que le otorgamos",
+        "THIRD_PARTIES": "Aplicaciones de terceros",
+        "CONTENT": "Contenido generado por usuarios",
+        "OUR_RIGHTS": "Derechos que usted nos otorga",
+        "GUIDELINES": "Lineamientos para el usuario",
+        "VIOLATION": "Violación y denuncia del Contenido de usuario",
+        "LIMITATIONS_AND_MODIFICATION": "Limitaciones y modificaciones del Servicio",
+        "ASSISTANCE": "Asistencia al Cliente",
+        "PAYMENTS": "Pagos, cancelaciones y período de reembolso",
+        "VALIDITY": "Vigencia y terminación",
+        "WARRANTY": "Garantía y exención de responsabilidad",
+        "LIMITATIONS": "Limitaciones",
+        "THIRD_PARTY_RIGHTS": "Derechos de terceros",
+        "CONTRACT": "Contrato completo",
+        "DIVISIBILITY": "Divisibilidad y renuncia",
+        "SESSION": "Sesión",
+        "COMPENSATION": "Indemnización",
+        "LAW": "Ley aplicable, arbitraje obligatorio y jurisdicción",
+        "CONTACT": "Contacto"
+      },
+      "PRESENTATION": "Bienvenido a nuestros Términos y condiciones de uso. Los Términos y condiciones de uso son importantes y afectan sus derechos legales, por lo que le recomendamos que los lea detenidamente al igual que a nuestra Política de privacidad y otros términos mencionados en este documento. Comencemos…",
+      "INTRODUCTION": {
+        "TITLE": "Introducción",
+        "PARAGRAPH_1": "Gracias por elegir ResPet (\"ResPet\", \"nosotros\", \"nos\", \"nuestro\"). Al inscribirse o usar de otra manera el servicio, los sitios web y las aplicaciones de software de ResPet (colectivamente, el \"servicio ResPet\" o el \"Servicio\") o al acceder a cualquier contenido o material que ResPet publique a través del Servicio (el \"Contenido\"), está celebrando un contrato vinculante con la sociedad ResPet que se especifica al final de este documento. El servicio ResPet también incluye a la comunidad de soporte de ResPet, como se describe en detalle en la sección Comunidad de soporte de ResPet.",
+        "PARAGRAPH_2": "El servicio ResPet incluye funciones sociales e interactivas. El uso del servicio ResPet depende de diferentes requisitos técnicos.",
+        "PARAGRAPH_3": "Su contrato con nosotros consta de estos Términos y condiciones de uso (\"Términos\") y de nuestra Política de privacidad. (Los Términos, la Política de privacidad y otros términos que acepte, según lo dispuesto en la sección Contrato completo, se denominarán de ahora en más los \"Contratos\".) Si desea revisar los términos de los Contratos, podrá encontrar la versión vigente de los Contratos en el sitio web de ResPet. Confirma que ha leído y comprendido los Contratos, que acepta estos Contratos y que los cumplirá. Si no está de acuerdo con los Contratos, o no puede cumplir con ellos, no utilice el servicio ResPet ni su contenido.",
+        "PARAGRAPH_4": "Por favor lea los Contratos detenidamente. Incluyen información importante sobre los servicios ResPet que le brindamos, como también, información sobre cargos, impuestos y tarifas que le cobraremos. Los Contratos incluyen información sobre futuros cambios en los Contratos, controles de exportación, renovaciones automáticas, limitación de la responsabilidad, información privada, una renuncia de demanda colectiva y una resolución de disputa mediante arbitraje en vez de en un tribunal.",
+        "PARAGRAPH_5": "Toda información que proporcione durante el proceso de inscripción, podrá modificarla durante ese mismo proceso; para ello, deberá regresar a las pantallas anteriores y modificar los datos erróneos.",
+        "PARAGRAPH_6": "Para usar el servicio ResPet y acceder a su Contenido, debe tener (1) 18 años o más, o 11 años o más y tener el consentimiento de los padres o del tutor legal respecto de los Contratos (excepto según lo estipulado en la siguiente tabla), (2) tener capacidad para celebrar un contrato vinculante con nosotros y que ninguna ley vigente le impida hacerlo y (3) ser residente de un país que brinde el Servicio. Además, deberá garantizar que toda la información de inscripción que le proporcione a ResPet es veraz, fiel y completa, y acepta que será así en todo momento."
+      },
+      "CHANGE": {
+        "TITLE": "Cambios en los Contratos",
+        "PARAGRAPH_1": "Ocasionalmente y a nuestra discreción, podemos implementar cambios en los Acuerdos. Si implementamos cambios importantes en los Acuerdos, le notificaremos de forma oportuna según las circunstancias, por ejemplo, mostraremos un aviso destacado en el Servicio o le enviaremos un correo electrónico. En algunos casos, le notificaremos anticipadamente, y su uso continuo del Servicio una vez implementados los cambios constituirá su aceptación de los cambios. Por lo tanto, asegúrese de leer el aviso detenidamente. Si no desea seguir usando el Servicio conforme al nuevo Acuerdo, puede rescindir los Acuerdos y contactarse con nosotros a través del formulario de contacto de Atención al Cliente."
+      },
+      "ENJOY": {
+        "TITLE": "Disfrute de ResPet",
+        "PARAGRAPH_1": "A continuación, encontrará información sobre las diferentes opciones disponibles para disfrutar de ResPet.",
+        "SUB_TITLE_1": "Nuestros servicios y suscripciones pagas",
+        "PARAGRAPH_2": "ResPet ofrece cursos y capacitaciones presenciales diversas, entre los servicios de ResPet se ofrece el uso de esta plataforma para propósitos varios. Ciertos servicios ResPet son gratuitos. Pero para otros servicios de ResPet, deberá realizar el pago antes de usarlos. Los servicios ResPet a los que puede acceder después de realizar un pago actualmente se denominan \"Suscripciones de paga\". El servicio ResPet gratuito se denomina actualmente \"Servicio gratuito\". Para obtener más información sobre nuestros servicios, visite nuestro sitio web.",
+        "SUB_TITLE_2": "Códigos y otras ofertas pre-pagadas",
+        "PARAGRAPH_3": "Si adquirió o recibió un código, tarjeta de regalo, oferta pre-pagada u otra oferta proporcionada o vendida por o en nombre de ResPet acceder a alguno de nuestros productos (\"Código\"), se podrán aplicar los términos y condiciones adicionales que le hayan presentado con el Código para acceder al Servicio, los cuales usted acepta cumplir.",
+        "SUB_TITLE_3": "Pruebas",
+        "PARAGRAPH_4": "Cada tanto es posible que ofrezcamos, o que otros lo ofrezcan en nuestro nombre, pruebas de suscripciones de paga durante un tiempo determinado (una \"Prueba\"), pero no tendrá que realizar el pago un monto menor. ResPet se reserva el derecho, a su entera discreción, a determinar tu elegibilidad para recibir una Prueba y, sujeto a las leyes vigentes, a retirar o modificar una Prueba en cualquier momento, sin previo aviso y sin responsabilidad alguna, en la medida que lo permita la ley, en el entendido que, los derechos de los usuarios que ya esten disfrutando de una oferta no se veran modificados o afectados hasta en tanto el plazo ofrecido en dicha oferta se cumpla.",
+        "PARAGRAPH_5": "Para algunas Pruebas, le pediremos que proporcione los datos de pago para comenzar la Prueba. AL FINALIZAR DICHAS PRUEBAS, PODEMOS COMENZAR A COBRARLE AUTOMÁTICAMENTE POR LA SUSCRIPCIÓN PAGADA CORRESPONDIENTE EL PRIMER DÍA SIGUIENTE DE FINALIZAR EL PERÍODO DE PRUEBA Y MENSUALMENTE. AL PROPORCIONAR LOS DATOS DE PAGO EN LA PRUEBA, USTED ACEPTA EL COBRO DEL CARGO CON ESTOS DATOS DE PAGO. SI NO DESEA QUE LE COBREN, DEBERÁ CANCELAR LA SUSCRIPCIÓN PAGADA CORRESPONDIENTE A TRAVÉS DE LA PÁGINA DE SUSCRIPCIÓN DE SU CUENTA ResPet O CERRAR SU CUENTA ResPet ANTES DE QUE FINALICE LA PRUEBA. SI NO DESEA QUE LE SIGAN COBRANDO UN CARGO MENSUAL, DEBERÁ CANCELAR LA SUSCRIPCIÓN PAGADA CORRESPONDIENTE A TRAVÉS DE LA PÁGINA DE SUSCRIPCIÓN DE SU CUENTA ResPet O CERRAR SU CUENTA ResPet ANTES DE QUE FINALICE EL MES EN CURSO. LAS SUSCRIPCIONES PAGAS NO PUEDEN CANCELARSE ANTES DE QUE FINALICE EL PERÍODO QUE YA HA PAGADO Y, SALVO SEGÚN LO DISPUESTO EN ESTOS TÉRMINOS, ResPet NO REINTEGRARÁ NINGUNA TARIFA QUE HAYA PAGADO. LA SECCIÓN LIMITACIONES ESTIPULA TÉRMINOS ADICIONALES SOBRE LA CANCELACIÓN DE LA SUSCRIPCIÓN PAGADA."
+      },
+      "RIGHTS": {
+        "TITLE": "Derechos que le otorgamos",
+        "PARAGRAPH_1": "El servicio ResPet y su Contenido son propiedad de ResPet o los licenciantes de ResPet. Le otorgamos una licencia limitada, no exclusiva y revocable para que utilice el servicio ResPet, y una licencia limitada, no exclusiva y revocable para hacer uso personal, no comercial y de entretenimiento del Contenido (la \"Licencia\"). Esta Licencia permanecerá vigente hasta que usted o ResPet la cancelen. Declara y acepta que usará el Contenido para fines personales y que no redistribuirá ni transferirá el servicio ResPet ni su Contenido.",
+        "PARAGRAPH_2": "Las aplicaciones de software de ResPet y todo el Contenido se otorgan usted mediante licencia, no se venden, y ResPet y sus licenciantes conservan la titularidad de todas las copias de las aplicaciones de software de ResPet y su Contenido, incluso después de instalarlas en su computadora personal, dispositivo móvil, tableta y cualquier otro dispositivo similar (\"Dispositivos\").",
+        "PARAGRAPH_3": "Todas las marcas registradas de ResPet, las marcas de servicio, los nombres comerciales, los logotipos, los nombres de dominio y cualquier otra característica de la marca ResPet (\"Características de la marca ResPet\") son propiedad exclusiva de ResPet y sus licenciantes. Los Contratos no le otorgan ningún derecho para usar las características de la marca ResPet para fines comerciales o no comerciales.",
+        "PARAGRAPH_4": "Acepta cumplir nuestras Lineamientos para el usuario y no usar el servicio ResPet, su Contenido ni ninguna otra parte incluida en el presente documento de ninguna manera que no esté expresamente autorizada por los Contratos. Salvo los derechos expresamente otorgados mediante estos Contratos, ResPet no otorga derechos, títulos ni intereses en el servicio ResPet o su Contenido.",
+        "PARAGRAPH_5": "Los software de terceros (por ejemplo, bibliotecas de software de código abierto) incluidos en el servicio ResPet se le otorgan en virtud de los Contratos o en virtud de los términos de licencia de la biblioteca de terceros, tal como se indica en la sección Configuración o Ayuda de nuestro cliente móvil o de escritorio y en nuestro sitio web."
+      },
+      "THIRD_PARTIES": {
+        "TITLE": "Aplicaciones de terceros",
+        "PARAGRAPH_1": "El servicio ResPet está integrado con aplicaciones, sitios web y servicios de terceros (\"Aplicaciones de terceros\") para que pongan a su disposición contenido, productos o servicios. Estas Aplicaciones de terceros pueden tener sus propios términos y condiciones de uso y políticas de privacidad, y el uso de estas Aplicaciones de terceros se regirá por dichos términos y condiciones y políticas de privacidad y estará sujeto a estos. Comprende y acepta que ResPet no apoya ni es responsable de los comportamientos, características o contenidos de las Aplicaciones de terceros ni de ninguna transacción que usted pueda realizar con el proveedor de dicha Aplicación."
+      },
+      "CONTENT": {
+        "TITLE": "Contenido generado por usuarios",
+        "PARAGRAPH_1": "Los usuarios de ResPet pueden publicar, cargar o contribuir (\"publicar\") contenido en el Servicio (que puede incluir, por ejemplo, fotos, textos, mensajes, información y otro tipo de contenido) (\"Contenido de usuario\"). Para que no queden dudas, el \"Contenido de usuario\" incluye cualquier contenido que se publique en la comunidad ResPet así como cualquier otra sección del servicio ResPet.",
+        "PARAGRAPH_2": "Respecto al Contenido de usuario que publica en ResPet, (1) tiene derecho a publicar cualquier Contenido de usuario y (2) que dicho Contenido de usuario o su uso por ResPet, según se contempla en los Contratos, no constituye una violación de estos Contratos, la ley vigente, ni la propiedad intelectual (que incluye, sin limitación, derecho de autor), publicidad, personalidad ni otros derechos de terceros, ni implica afiliación o adhesión con usted o su Contenido de usuario por parte de ResPet o de cualquier artista, banda, etiqueta, entidad o persona sin contar con el consentimiento por escrito de dicha persona o entidad.",
+        "PARAGRAPH_3": "Aunque no tenga obligación de hacerlo, ResPet puede supervisar, revisar o editar el Contenido de usuario. En todos los casos, ResPet se reserva el derecho a eliminar o cancelar el acceso, por cualquier o sin ningún motivo, al Contenido de usuario, que incluye de manera enunciativa más no limitativa Contenido de usuario que, a criterio de ResPet, viola estos Contratos. ResPet puede tomar estas medidas sin previo aviso a usted o a terceros de manera anticipada. La eliminación o cancelación del acceso de su Contenido de usuario quedará a nuestro criterio, y no afirmamos que eliminaremos o cancelaremos el acceso a ningún Contenido de usuario específico.",
+        "PARAGRAPH_4": "Usted es el único responsable de todo el Contenido de usuario que publique. ResPet no se responsabilizará por ninguna opinión incluida en ningún Contenido de usuario, ni tampoco avalará estas opiniones. ACEPTA QUE SI ALGUIEN PRESENTA UNA RECLAMACIÓN EN CONTRA DE ResPet RELACIONADA CON EL CONTENIDO DE USUARIO QUE USTED PUBLICÓ, USTED, EN LA MEDIDA QUE LO PERMITA LA LEY LOCAL, INDEMNIZARÁ Y EXIMIRÁ A ResPet CONTRA TODO DAÑO, PÉRDIDA Y GASTOS DE CUALQUIER ÍNDOLE (INCLUSO COSTOS Y HONORARIOS RAZONABLES DEL ABOGADO) QUE PUDIERAN SURGIR DE DICHA RECLAMACIÓN."
+      },
+      "OUR_RIGHTS": {
+        "TITLE": "Derechos que usted nos otorga",
+        "PARAGRAPH_1": "De acuerdo con los derechos que le hemos otorgado en virtud de los Contratos, usted nos otorga los siguientes derechos: (1) permitir que el Servicio ResPet use el procesador, el ancho de banda y el hardware de almacenamiento de su dispositivo para facilitar el funcionamiento del Servicio, (2) ofrecerle a usted publicidad y otro tipo de información y (3) permitir que nuestros socios comerciales realicen lo mismo. En cualquier parte del servicio ResPet, el Contenido que vea, incluso en esta selección y ubicación, puede verse afectado por cuestiones comerciales, que incluyen contratos con terceros. Cierto contenido con licencia o proporcionado a ResPet (por ejemplo, podcasts) puede incluir anuncios publicitarios como parte del contenido. En esos casos, ResPet pondrá a su disposición dicho contenido sin modificaciones.",
+        "PARAGRAPH_2": "Si aporta comentarios, ideas o sugerencias a ResPet relacionadas con el servicio ResPet o su Contenido (\"Comentarios\"), acepta que los Comentarios no sean confidenciales y autoriza a ResPet a usarlos sin restricciones y sin solicitarle un pago. Los Comentarios son un tipo de Contenido de usuario.",
+        "PARAGRAPH_3": "Usted le otorga a ResPet una licencia no exclusiva, transferible, sub-licenciable, sin regalías, indefinida (o en aquellas jurisdicciones que no lo permiten, durante un período de igual duración que estos Contratos, más veinte [20] años), irrevocable, totalmente paga y universal para usar, reproducir, poner a disposición del público (p. ej., crear o mostrar), publicar, traducir, modificar, crear trabajos derivados y distribuir cualquier Contenido de usuario relacionado con el Servicio a través de cualquier medio, ya sea solo o en combinación con otro contenido o material, de cualquier modo y por cualquier medio, método o tecnología, ya sea que existan actualmente o que se creen en un futuro. Además de los derechos específicamente otorgados por el presente, usted conserva la titularidad de todos los derechos, que incluye los derechos de propiedad intelectual, del Contenido de usuario. Si corresponde y la ley vigente lo permite, usted también acepta renunciar a cualquier \"derecho moral\" (o a su equivalente según la ley vigente), como su derecho a que lo identifiquen como el autor del Contenido de usuario, que incluye Comentarios, y su derecho a objetar el trato despectivo de dicho Contenido de usuario."
+      },
+      "GUIDELINES": {
+        "TITLE": "Lineamientos para el usuario",
+        "PARAGRAPH_1": "ResPet respeta los derechos de propiedad intelectual y espera que usted haga lo mismo. Hemos establecido algunas reglas básicas que deberá respetar al usar el Servicio para asegurar que ResPet siga siendo agradable para todos. Por favor respete estas reglas y sugiera a otros que también lo hagan.",
+        "PARAGRAPH_2": "Las siguientes acciones no están permitidas bajo ninguna circunstancia:",
+        "PARAGRAPH_3": "Copiar, redistribuir, reproducir, \"copiar o pegar\" (ripping), grabar, transferir, mostrar al público, transmitir o poner a disposición del público alguna parte del servicio ResPet o su Contenido, o utilizar el servicio ResPet o su Contenido de alguna otra manera que no esté expresamente permitido en virtud de estos Contratos o la ley vigente o que, de alguna manera, infrinja los derechos de propiedad intelectual (como los derechos de autor) del servicio ResPet o su Contenido o de alguna parte de este.",
+        "PARAGRAPH_4": "Usar el servicio ResPet para importar o copiar archivos locales que usted no tenga derecho legal a importar o copiar de esta manera.",
+        "PARAGRAPH_5": "Transferir copias de Contenido caché desde un dispositivo autorizado a otro dispositivo por cualquier medio que se realice.",
+        "PARAGRAPH_6": "Usar técnicas de ingeniería inversa, descompilar, desensamblar, modificar o crear obras derivadas basadas en el servicio ResPet, su Contenido o en alguna parte de este, a menos que lo permita la ley.",
+        "PARAGRAPH_7": "Evadir cualquier tecnología utilizada por ResPet, sus licenciantes o terceros para proteger el Contenido o el Servicio.",
+        "PARAGRAPH_8": "Vender, alquilar, sub-licenciar o arrendar alguna parte del servicio o su Contenido.",
+        "PARAGRAPH_9": "Evadir las restricciones territoriales impuestas por ResPet o sus licenciantes.",
+        "PARAGRAPH_10": "Incrementar de manera ficticia el recuento de reproducciones o manipular de otra manera los Servicios mediante una secuencia de comandos u otro proceso automatizado.",
+        "PARAGRAPH_11": "Eliminar o alterar cualquier derecho de autor, marca registrada o aviso de propiedad intelectual incluido en el Servicio ResPet o proporcionado a través de este (incluso a fin de ocultar o modificar las indicaciones de titularidad o la fuente del Contenido).",
+        "PARAGRAPH_12": "Proporcionar su contraseña a otra persona o usar el nombre de usuario y contraseña de otra persona.",
+        "PARAGRAPH_13": "\"Rastrear\" el servicio ResPet o usar medios automatizados (como por ejemplo, bots, scrapers y spiders) para recopilar información de ResPet.",
+        "PARAGRAPH_14": "Vender una cuenta de usuario o aceptar alguna compensación o pago monetario o similar para modificar el nombre de una cuenta o el contenido de alguna cuenta.",
+        "PARAGRAPH_15": "Respete a ResPet, a los propietarios del Contenido y a los otros usuarios del servicio ResPet. No participe en actividades, publique Contenido de usuario ni registre o use un nombre de usuario que tenga las siguientes características o que incluya material que:",
+        "PARAGRAPH_16": "Es ofensivo, abusivo, difamatorio, pornográfico, amenazador u obsceno.",
+        "PARAGRAPH_17": "Es ilegal, tiene como objetivo fomentar o cometer un acto ilegal de cualquier tipo, incluidas las violaciones a los derechos de propiedad intelectual, los derechos de privacidad o los derechos de propiedad de ResPet o de un tercero.",
+        "PARAGRAPH_18": "Incluye su contraseña o incluye la contraseña de otro usuario o los datos personales de terceros o tiene como objetivo solicitar dichos datos personales.",
+        "PARAGRAPH_19": "Incluye contenido malintencionado, como malware, troyanos o virus, o impide de otro modo el acceso de un usuario al Servicio.",
+        "PARAGRAPH_20": "Tiene como fin acosar o intimidar a otros usuarios.",
+        "PARAGRAPH_21": "Usurpa o tergiversa su afiliación con otro usuario, persona o entidad, o resulta de otro modo fraudulento, falso, engañoso o erróneo.",
+        "PARAGRAPH_22": "Utiliza medios automatizados para ficticiamente promocionar el contenido.",
+        "PARAGRAPH_23": "Implica la transmisión de correos masivos no deseados u otras formas de correo masivo (\"spam\"), correo basura, mensajes en cadena o elementos similares, incluso a través de la bandeja de entrada de ResPet.",
+        "PARAGRAPH_24": "Incluye actividades comerciales o de ventas, como publicidad, concursos, promociones sorteos o esquemas piramidales, que no están expresamente autorizados por ResPet.",
+        "PARAGRAPH_25": "Incluye enlaces a referencias o promociona de otro modo productos o servicios comerciales, salvo que estén expresamente autorizados por ResPet.",
+        "PARAGRAPH_26": "Interfiere con el Servicio ResPet o de alguna manera lo perjudica, manipula, viola o intenta investigar, explorar o examinar vulnerabilidades en el Servicio o en los sistemas o redes informáticas de ResPet, en las reglas de uso o en cualquier componente de seguridad, medida de autenticación de ResPet o cualquier otra medida de seguridad correspondiente al Servicio, el Contenido o a una parte de este.",
+        "PARAGRAPH_27": "Entra en conflicto con los Contratos, según lo determinado por ResPet.",
+        "PARAGRAPH_28": "Usted comprende y acepta que publicar dicho Contenido de usuario puede provocar la terminación o suspensión inmediata de su cuenta ResPet. También acepta que ResPet también puede recuperar su nombre de usuario por cualquier motivo.",
+        "PARAGRAPH_29": "Sea precavido al usar el servicio ResPet y lo que comparte en él. El servicio ResPet incluye funciones sociales e interactivas, que incluyen la posibilidad de publicar Contenido de usuario, compartir contenidos y hacer que cierta información suya sea pública. Recuerde que la información pública o compartida la pueden usar o volver a compartir otros usuarios en ResPet o en la web, por lo que le recomendamos que use ResPet con precaución y tenga en cuenta la configuración de su cuenta. ResPet no es responsable de su decisión de publicar material en el Servicio.",
+        "PARAGRAPH_30": "Su contraseña protege su cuenta de usuario, y usted es el único responsable de que ésta se mantenga confidencial y segura. Comprende que es responsable del uso que se haga de su nombre de usuario y contraseña en el Servicio. Si pierde o le roban su nombre de usuario o contraseña, o si cree que alguien accedió a su cuenta sin autorización, notifíquenos de inmediato y cambie su contraseña lo antes posible."
+      },
+      "VIOLATION": {
+        "TITLE": "Violación y denuncia de contenido de usuario",
+        "PARAGRAPH_1": "ResPet respeta los derechos de los titulares de propiedad intelectual. Si cree que algún Contenido infringe sus derechos de propiedad intelectual, o cualquier otro derecho, consulte la política de derecho de autor de ResPet. Si el titular del derecho de autor le notifica a ResPet que algún contenido infringe derecho de autor, ResPet puede, a su entera discreción, tomar medidas sin notificar previamente al proveedor de dicho Contenido. Si el proveedor cree que el contenido no implica una violación, puede enviar una contra-notificación a ResPet y solicitar que restauren el contenido eliminado.",
+        "PARAGRAPH_2": "Si considera que algún Contenido no cumple con las Lineamientos para el usuario, complete nuestro formulario de avisos."
+      },
+      "LIMITATIONS_AND_MODIFICATION": {
+        "TITLE": "Limitaciones y modificaciones del Servicio",
+        "PARAGRAPH_1": "ResPet hará todo lo posible por que el servicio ResPet esté siempre en funcionamiento. No obstante, ciertas dificultades técnicas o de mantenimiento ocasionales pueden provocar la interrupción temporal del Servicio. En la medida que lo permita la ley, ResPet se reserva el derecho de modificar o suspender, periódicamente y en cualquier momento, ya sea de forma permanente o temporal, funciones y características del Servicio ResPet, con o sin previo aviso, sin responsabilidad ante usted, excepto cuando lo prohíba la ley, por cualquier interrupción, modificación o interrupción del servicio ResPet o por cualquier función o característica de este. No obstante lo anterior, si ha realizado un pago anticipado de tarifas por suscripciones paga que ResPet suspenderá permanentemente antes de que finalice el período de pago anticipado (definido en la sección Pagos, cancelaciones y período de reembolso), ResPet reintegrará el monto ya pagado por el período de pago anticipado después de dicha cancelación. Comprende y acepta que ResPet no tiene la obligación de mantener, brindar soporte, actualizar ni mejorar el Servicio ni de proporcionar todo o en parte del contenido a través del Servicio. Esta sección se implementará en la medida que lo permita la ley aplicable. ResPet y los propietarios de los Contenidos pueden eliminar, esporádicamente, cualquier Contenido sin previo aviso en la medida que lo permita la ley aplicable."
+      },
+      "ASSISTANCE": {
+        "TITLE": "Asistencia al Cliente",
+        "PARAGRAPH_1": "Para recibir asistencia al cliente sobre temas relacionados con pagos y cuentas (\"Consultas del servicio de Asistencia al Cliente\"), envíe un \"Ticket\" al departamento de Atención al Cliente mediante el formulario de contacto de Atención al Cliente que se encuentra en la sección \"Contacto\" en nuestro sitio web. Haremos todo lo posible para responder todas las consultas del servicio de Asistencia al Cliente en un plazo razonable, pero no podemos asegurar ni garantizar que responderemos determinadas consultas en un plazo específico ni que podremos responder todas las consultas satisfactoriamente."
+      },
+      "PAYMENTS": {
+        "TITLE": "Pagos, cancelaciones y período de reembolso",
+        "PARAGRAPH_1": "Las Suscripciones de Pagase pueden adquirir directamente de ResPet, ya sea (1) mediante una tarifa de suscripción o (2) mediante un pago anticipado que le otorga acceso al servicio ResPet durante un período de tiempo específico (\"Período de pago anticipado\"). Si adquirió una Suscripción de paga con un código, la Suscripción de paga finalizará automáticamente al finalizar el Período de pago anticipado, o cuando el saldo del pago anticipado no sea suficiente para pagar el Servicio.",
+        "PARAGRAPH_2": "Al inscribirse en una Suscripción de paga, de prueba o de Código en línea, autoriza a que le otorguen acceso al Servicio de ResPet inmediatamente. Puede cambiar de opinión y recibir un reintegro del importe total abonado en un plazo de catorce (14) días a partir del día que se inscribió al servicio correspondiente (el \"Período de Reembolso\"). Pero si en algún momento del Período de Reflexión accedió a ResPet, no recibirá ningún reintegro.",
+        "PARAGRAPH_3": "Salvo que haya adquirido la Suscripción de paga como si fuera un Período de pago anticipado, el pago que realizó a ResPet se renovará automáticamente al finalizar el período de suscripción, a menos que cancele la Suscripción de paga a través de la página de inscripción antes de que finalice el período de suscripción actual. La cancelación entrará en vigencia el día siguiente del último día del período de suscripción actual, y usted pasará a la categoría de Servicio gratuito. No obstante, si cancela el pago o la Suscripción de paga o alguno de los Contratos (1) después de acceder a ResPet durante el Período de reembolso o (2) una vez finalizado el Período de reembolso (según corresponda) o (3) antes de que finalice el período de suscripción actual, no reintegraremos los montos de suscripción ya abonados. El método de reembolso dependerá del método de pago.",
+        "PARAGRAPH_4": "Si desea recibir un reintegro total de los montos abonados antes de que finalice el Período de reembolso, debe comunicarse con Asistencia al Cliente.",
+        "PARAGRAPH_5": "Si ha adquirido su Suscripción de paga a través de un tercero, su suscripción también se ve sujeta a los términos de su contrato con ese tercero (además de a estos Términos). Para cancelar su suscripción, usted tiene que cancelar directamente con ese tercero.",
+        "PARAGRAPH_6": "ResPet puede modificar, periódicamente, el precio de las Suscripciones de paga, del Período de pago anticipado (para los períodos que todavía no se hayan abonado) o de los Códigos y le informará cualquier modificación que realice en los precios con anticipación y, si corresponde, cómo aceptar esos cambios. Los cambios de precios para las Suscripciones de paga entrarán en vigencia al comenzar el siguiente período de suscripción después de la fecha en que se realizó el cambio de precio. En la medida que lo permita le ley local, si usted sigue usando el servicio ResPet después de que el cambio de precio entra en vigencia, constituirá una aceptación del nuevo precio. Si no está de acuerdo con el cambio de precio, tiene derecho a rechazar el cambio y cancelar la suscripción al servicio ResPet antes de que el cambio de precio entre en vigencia. Por lo tanto, asegúrese de leer atentamente la notificación del cambio de precio atentamente."
+      },
+      "VALIDITY": {
+        "TITLE": "Vigencia y terminación",
+        "PARAGRAPH_1": "Los Contratos se seguirán aplicando hasta que usted o ResPet los rescindan. Sin embargo, usted reconoce y acepta que la licencia indefinida que se le otorgó en relación con el Contenido de usuario, incluidos los comentarios, es irrevocable y, por lo tanto, seguirá vigente después del vencimiento o rescisión de alguno de los Contratos por el motivo que fuere. ResPet puede rescindir los Contratos o suspender su acceso al servicio ResPet en cualquier momento, incluso el uso no autorizado, ya sea real o supuesto, del servicio ResPet o de su contenido o el incumplimiento de los Contratos. Si usted o ResPet rescinden los Contratos, o si ResPet suspende su acceso al servicio ResPet, acepta que ResPet no será responsable ante usted y que no deberá reintegrar ningún monto que ya haya pagado, en la medida que lo permita la ley vigente. Para obtener información sobre cómo cancelar su cuenta ResPet, comuníquese con nosotros a través del formulario de contacto de Atención al Cliente que se encuentra disponible en la página \"Contacto\". Esta sección se implementará en la medida que lo permita la ley aplicable. Usted puede rescindir los Contratos en cualquier momento.",
+        "PARAGRAPH_2": "Las secciones del presente documento y otras secciones del Contrato que, explícitamente o por su carácter deben seguir vigentes después de rescindir los Contratos, seguirán vigentes después de la cancelación."
+      },
+      "WARRANTY": {
+        "TITLE": "Garantía y exención de responsabilidad",
+        "PARAGRAPH_1": "NOS ESFORZAMOS POR BRINDAR EL MEJOR SERVICIO POSIBLE; AÚN ASÍ, USTED COMPRENDE Y ACEPTA QUE EL SERVICIO ResPet SE PROPORCIONA \"EN EL ESTADO EN EL QUE ESTÁ\" Y \"SEGÚN DISPONIBILIDAD\", SIN GARANTÍA EXPRESA NI IMPLÍCITA Y SIN NINGÚN TIPO DE CONDICIÓN. USTED UTILIZA EL SERVICIO ResPet POR SU CUENTA Y RIESGO. EN LA MEDIDA QUE LO PERMITA LA LEY VIGENTE, ResPet Y TODOS LOS PROPIETARIOS DE CONTENIDOS NO HACEN NINGUNA DECLARACIÓN Y NIEGAN TODA GARANTÍA O CONDICIÓN DE CALIDAD ÓPTIMA, COMERCIALIZACIÓN E IDONEIDAD PARA DETERMINADO FIN O DE NO INFRACCIÓN. NI ResPet NI LOS PROPIETARIOS DE CONTENIDO GARANTIZAN QUE EL SERVICIO ResPet NO TIENE MALWARE U OTROS COMPONENTES MALICIOSOS. ADEMÁS, ResPet NO DECLARA, AVALA, GARANTIZA NI ASUME RESPONSABILIDAD ALGUNA POR APLICACIONES DE TERCEROS, EL CONTENIDO DE APLICACIONES DE TERCEROS (O EL CONTENIDO DE ESTAS), EL CONTENIDO DE USUARIO O CUALQUIER OTRO PRODUCTO O SERVICIO PROMOCIONADO U OFRECIDO POR TERCEROS EN EL SERVICIO ResPet O A TRAVÉS DE ESTE, O EN CUALQUIER SITIO WEB VINCULADO, O QUE APAREZCA EN CUALQUIER CARTEL O PUBLICIDAD. USTED COMPRENDE Y ACEPTA QUE ResPet NO ES RESPONSABLE DE NINGUNA TRANSACCIÓN ENTRE USTED Y PROVEEDORES EXTERNOS DE APLICACIONES DE TERCEROS, PRODUCTOS O SERVICIOS PROMOCIONADOS U OFRECIDOS A TRAVÉS DEL SERVICIO ResPet. AL IGUAL QUE CON CUALQUIER COMPRA QUE REALICE DE UN PRODUCTO O SERVICIO A TRAVÉS DE CUALQUIER MEDIO O EN CUALQUIER LUGAR, USTED DEBE USAR EL SENTIDO COMÚN Y SER CAUTELOSO CUANDO CORRESPONDA. NINGUNA SUGERENCIA O INFORMACIÓN QUE HAYA RECIBIDO POR PARTE DE ResPet, YA SEA POR ESCRITO O VERBALMENTE, CONSTITUIRÁ UNA GARANTÍA EN NOMBRE DE ResPet A ESTOS EFECTOS. ES POSIBLE QUE ALGUNOS ASPECTOS DE ESTA SECCIÓN NO SE APLIQUEN EN ALGUNAS JURISDICCIONES SI LO PROHÍBE LA LEY VIGENTE.",
+        "PARAGRAPH_2": "ESTO NO AFECTA SUS DERECHOS LEGALES COMO CONSUMIDOR."
+      },
+      "LIMITATIONS": {
+        "TITLE": "Limitaciones",
+        "PARAGRAPH_1": "USTED ACEPTA QUE, EN LA MEDIDA QUE LO PERMITA LA LEY VIGENTE, SU ÚNICA Y EXCLUSIVA SOLUCIÓN EN CASO DE PROBLEMAS O INCONFORMIDAD CON EL SERVICIO ResPet ES DESINSTALAR EL SOFTWARE DE ResPet Y DEJAR DE USAR EL SERVICIO. AUNQUE ResPet NO ASUMA NINGUNA RESPONSABILIDAD POR LAS APLICACIONES DE TERCEROS O EL CONTENIDO DE ESTOS, Y AUNQUE SU RELACIÓN CON DICHAS APLICACIONES DE TERCEROS PUEDA ESTAR REGIDA POR CONTRATOS INDEPENDIENTES CELEBRADOS CON ESTOS TERCEROS, EN LA MEDIDA QUE LO PERMITA LA LEY VIGENTE, SU ÚNICA SOLUCIÓN RESPECTO A ResPet ANTE CUALQUIER PROBLEMA O INCONFORMIDAD CON LAS APLICACIONES DE TERCEROS O SU CONTENIDO ES DESINSTALAR Y DEJAR DE USAR DICHAS APLICACIONES O SERVICIOS.",
+        "PARAGRAPH_2": "EN LA MEDIDA QUE LO PERMITA LA LEY VIGENTE, EN NINGÚN CASO ResPet, SUS AUTORIDADES, ACCIONISTAS, EMPLEADOS, AGENTES, DIRECTORES, SUBSIDIARIAS, FILIALES, SUCESORES, CESIONARIOS, PROVEEDORES O LICENCIANTES SE RESPONSABILIZARÁN POR (1) CUALQUIER DAÑO INDIRECTO, ESPECIAL, INCIDENTAL, PUNITIVO, EJEMPLAR O CONSECUENTE, (2) POR LA PÉRDIDA DE USO, DATOS, NEGOCIOS O GANANCIAS (DIRECTAS O INDIRECTAS) QUE, EN TODOS LOS CASOS, SEAN RESULTADO DE USAR O NO PODER USAR EL SERVICIO ResPet, LAS APLICACIONES DE TERCEROS, O EL CONTENIDO DE LAS APLICACIONES DE TERCEROS, INDEPENDIENTEMENTE DEL MARCO LEGAL, SIN IMPORTAR QUE ResPet HAYA ADVERTIDO LA POSIBILIDAD DE DICHOS DAÑOS, Y AUN CUANDO UNA POSIBLE SOLUCIÓN NO CUMPLA CON SU FIN ESENCIAL, O (3) EL CONJUNTO DE RESPONSABILIDADES POR TODOS LOS RECLAMOS RELATIVOS AL SERVICIO DE ResPet, APLICACIONES DE TERCEROS O AL CONTENIDO DE LAS APLICACIONES DE TERCEROS MÁS ALLÁ DE LOS MONTOS QUE USTED LE HAYA PAGADO A ResPet DURANTE LOS DOCE MESES EN CUESTIÓN, EN LA MEDIDA QUE LO PERMITA LA LEY.",
+        "PARAGRAPH_3": "Nada en estos Contratos elimina o limita la responsabilidad de ResPet en caso de fraude, declaración falsa, muerte o lesiones personales causadas por su negligencia y, si lo exige la ley vigente, negligencia grave. Es posible que algunos aspectos de esta sección no se apliquen en algunas jurisdicciones si lo prohíbe la ley vigente."
+      },
+      "THIRD_PARTY_RIGHTS": {
+        "TITLE": "Derechos de terceros",
+        "PARAGRAPH_1": "Usted reconoce y acepta que los propietarios del Contenido y ciertos distribuidores (como proveedores de tiendas de aplicaciones) serán considerados beneficiarios de los Contratos y tienen derecho a aplicar los Contratos directamente en contra suya. Salvo en los casos establecidos en esta sección, los Contratos solo le otorgan derechos a usted y a ResPet, y en ningún caso, los Contratos crearán derechos de terceros beneficiarios. Es más, el derecho a cancelar, rescindir o aceptar cualquier variación, renuncia o resolución de los Contratos no está sujeta al consentimiento de otra persona.",
+        "PARAGRAPH_2": "Si descargó la aplicación de la tienda App Store de Apple, Inc. (\"Apple\") o si usa la aplicación en un dispositivo iOS, acepta que ha leído, comprendido y acepta el siguiente aviso sobre Apple. Este Contrato es entre usted y ResPet solamente, no con Apple, y Apple no es responsable del Servicio ni del contenido en este. Apple no tiene obligación de proporcionar ningún servicio de mantenimiento y soporte con respecto al Servicio. En caso de que el Servicio no cumpla con las garantías aplicables, usted debe notificar a Apple, y Apple le reintegrará el precio de compra correspondiente a la aplicación y, en la medida que lo permita la ley vigente, Apple no tendrá ningún tipo de obligación de garantía respecto del Servicio. Apple no es responsable de las reclamaciones realizadas por usted o terceros sobre el Servicio o su posesión o uso del Servicio, que incluye lo siguiente: (1) reclamos sobre responsabilidad civil en cuanto a productos, (2) cualquier reclamo que el Servicio no cumpla conforme a cualquier requisito legal o reglamentario y (3) reclamos que surjan en virtud de leyes de protección del consumidor o alguna legislación similar. Apple no es responsable de investigar, defender, solucionar ni eliminar los reclamos de terceros de que el Servicio y su posesión y uso de la aplicación infringen los derechos de propiedad intelectual del tercero. Usted acepta cumplir con todos los términos de terceros al usar el Servicio. Apple, y las subsidiarias de Apple, son terceros beneficiarios de este Contrato y al aceptar este Contrato, Apple tendrá derecho (y se considerará que aceptó el derecho) a hacer cumplir este Contrato en contra de usted como tercero beneficiario de este Contrato. Por el presente, usted declara y garantiza que (1) no reside en un país que está sujeto a embargos del gobierno estadounidense o que el gobierno estadounidense lo haya designado como país \"que avala el terrorismo\" y (2) que no está incluido en ninguna lista del gobierno estadounidense de partes prohibidas o restringidas."
+      },
+      "CONTRACT": {
+        "TITLE": "Contrato completo",
+        "PARAGRAPH_1": "Salvo en los casos estipulados en esta sección, o según lo acordado explícitamente por escrito entre usted y ResPet, los Contratos constituyen todos los términos y condiciones acordados entre usted y ResPet y sustituyen todos los contratos previos relacionados con el objeto de estos Contratos, ya sean verbales o escritos.",
+        "PARAGRAPH_2": "Sin embargo, tenga en cuenta que otros aspectos de uso del servicio ResPet pueden estar regidos por contratos adicionales. Como por ejemplo, el acceso al servicio ResPet por una tarjeta de regalo o por pruebas gratuitas o con descuento. Cuando recibe una oferta por dichos aspectos de uso, se le entregará un acuerdo adicional, y es posible que deba aceptar términos adicionales. Algunos de esos términos adicionales se encuentran disponibles en el sitio web de ResPet. Siempre que haya un conflicto irreconciliable entre cualquiera de los términos adicionales y estos Términos, los términos adicionales regirán."
+      },
+      "DIVISIBILITY":{
+        "TITLE": "Divisibilidad y renuncia",
+        "PARAGRAPH_1": "Salvo que se estipule en estos Contratos, si por algún motivo o en alguna medida, alguna cláusula de los Contratos se considera inválida o sin fuerza ejecutoria, dicha invalidez o falta de fuerza ejecutoria no afectará ni generará la invalidez o la falta de fuerza ejecutoria del resto de las cláusulas de los Contratos, y se hará cumplir la aplicación de dicha cláusula en la medida que lo permita la ley.",
+        "PARAGRAPH_2": "El hecho de que ResPet o los terceros beneficiarios no hagan cumplir los Contratos o las cláusulas de estos, no anulará el derecho de ResPet o de los terceros beneficiarios correspondientes a hacerlo."
+      },
+      "SESSION": {
+        "TITLE": "Sesión",
+        "PARAGRAPH_1": "ResPet podrá ceder estos Contratos o cualquiera de sus partes, y puede delegar cualquiera de sus obligaciones en virtud de los Contratos. Usted no podrá ceder a terceros estos Contratos ni cualquiera de sus partes, como tampoco podrá transmitir o sub-licenciar sus derechos en virtud de estos Contratos."
+      },
+      "COMPENSATION": {
+        "TITLE": "Indemnización",
+        "PARAGRAPH_1": "En la medida que lo permita la ley vigente, usted acepta indemnizar y eximir a ResPet contra todo daño, pérdida y gasto de cualquier índole (incluso costos y honorarios razonables del abogado) que surjan de lo siguiente: (1) El violar este Contrato, (2) cualquier Contenido de usuario, (3) cualquier actividad en la que participe en o a través del servicio ResPet y (4) violar cualquier ley o los derechos de terceros."
+      },
+      "LAW": {
+        "TITLE": "Ley aplicable, arbitraje obligatorio y jurisdicción",
+        "SUB_TITLE_1": "Ley/jurisdicción vigente",
+        "PARAGRAPH_1": "Además, usted y ResPet aceptan la jurisdicción de los que correspondan para resolver cualquier disputa, reclamo o controversia que surja en relación con estos Contratos (y cualquier disputa/reclamo no contractual que surja por estos o en relación con estos). (En algunos casos.",
+        "SUB_TITLE_2": "RENUNCIA DE DEMANDA COLECTIVA",
+        "PARAGRAPH_2": "EN LA MEDIDA QUE LO PERMITA LA LEY VIGENTE, USTED Y ResPet ACUERDAN PODER INICIAR UNA DEMANDA EN CONTRA DEL OTRO SOLAMENTE A TÍTULO PERSONAL, NO COMO DEMANDANTE O DEMANDANTE COLECTIVO, EN NINGUNA DEMANDA COLECTIVA O DE REPRESENTACIÓN. Salvo que usted y ResPet lo dispongan, ningún árbitro ni juez puede acumular más de un reclamo presentado por una persona ni presidir sobre ninguna demanda colectiva o de representación.",
+        "SUB_TITLE_3": "ARBITRAJE",
+        "PARAGRAPH_3": "Si reside, vive, tiene oficinas o comercia en una jurisdicción en la que se puede aplicar ésta Sección, se le aplicarán las siguientes cláusulas de arbitraje obligatorio:",
+        "SUB_TITLE_4": "Resolución de disputas y arbitrajes",
+        "PARAGRAPH_4": "Usted y ResPet acuerdan que, ante cualquier disputa, reclamación o controversia que surja entre usted y ResPet en relación con estos Contratos o su relación con ResPet como usuario del Servicio (ya sea en virtud de un contrato, acuerdo extra-contractual, estatuto, fraude, declaración falsa o cualquier otro marco legal, y si las reclamaciones surgieran durante o después de la cancelación de los Contratos) se solucionará mediante un arbitraje vinculante obligatorio. El arbitraje es más informal que una acción legal ante un tribunal. EN UN ARBITRAJE, NO HAY JUEZ NI JURADO, Y EL LAUDO ARBITRAL ESTÁ SUJETO A UNA REVISIÓN LIMITADA POR PARTE DEL TRIBUNAL. Se deben presentar menos pruebas que en un tribunal. El árbitro debe regirse por este Contrato y puede conceder la misma clase y cantidad de indemnización que un tribunal (incluso los honorarios del abogado), salvo que el arbitraje no otorgue medidas cautelares ni declaratorias que beneficien a cualquier persona salvo a las partes vinculadas con el arbitraje. Esta cláusula arbitral seguirá vigente después de rescindir los Contratos.",
+        "SUB_TITLE_5": "Excepciones",
+        "PARAGRAPH_5": "Sin perjuicio de la cláusula anterior, usted y ResPet acuerdan que nada de lo contenido en este documento anulará, excluirá o de otro modo limitará nuestros derechos de (1) presentar un demanda individual ante un tribunal de reclamos menores, (2) realizar acciones de cumplimiento a través de las agencias federales, estatales o locales donde dichas acciones estén disponibles, (3) solicitar medidas cautelares en una corte de justicia o (4) a iniciar acciones legales ante una corte de justicia por el uso indebido de la propiedad intelectual.",
+        "SUB_TITLE_6": "Tiempo de presentación",
+        "PARAGRAPH_6": "Cualquier arbitraje debe iniciarse con la presentación de una demanda para arbitraje en un plazo de UN (1) AÑO después de la fecha en que la parte que afirma su derecho se entera primero o razonablemente conoce el acto, omisión o el incumplimiento que generó la demanda, y no tendrá derecho a ninguna reclamación que no se haya afirmado en ese plazo. Si la ley vigente prohíbe un período de limitación de un año para afirmar sus reclamos, se deberá afirmar el reclamo en el menor tiempo posible permitido por la ley vigente.",
+        "SUB_TITLE_7": "Aviso, proceso",
+        "PARAGRAPH_7": "La parte que desea solicitar el arbitraje deberá primero enviarle a la otra parte un aviso de conflicto (\"Aviso\") por escrito mediante correo (se requiere firma), o en caso de no tener una dirección física registrada para usted, deberá enviarlo por correo electrónico. La dirección de ResPet para el aviso es la siguiente: ResPet, Attn: General Counsel, 45 W. 18th Street, 7th Floor, New York, New York 10011, USA. El Aviso debe (1) describir el carácter y fundamentos del reclamo o disputa y (2) estipular la indemnización específica (\"Demanda\"). Aceptamos hacer lo posible para llegar a un acuerdo directamente, pero si en un plazo de 30 días posteriores a la recepción del aviso, no llegamos a un acuerdo, usted o ResPet pueden comenzar un procedimiento de arbitraje. Durante el arbitraje, no se deberá comunicar al árbitro el monto de cualquier oferta conciliatoria realizada por usted o ResPet hasta que este haya tomado una decisión final y fijado una indemnización, si hubiera. Si nuestra disputa se resuelve finalmente a través de un arbitraje a su favor, ResPet deberá pagarle (1) la cantidad de la indemnización estipulada por el árbitro, si hubiere, (2) el último monto conciliatorio por escrito que ofreció ResPet en la resolución de la disputa antes de la decisión del árbitro o (3) 10,000.00 MXN, el que sea mayor. El destinatario deberá conservar la confidencialidad de toda la documentación e información divulgada durante el arbitraje y no podrá usarla para otros fines que no sean los del arbitraje o el cumplimiento de la decisión e indemnización establecida por el árbitro y no deberá divulgarse a otras personas, salvo en secreto, que necesitan conocerlas para dichos fines o según lo exija la ley vigente. Salvo que se exija para hacer cumplir la decisión e indemnización del árbitro, ni usted ni ResPet deberán realizar anuncios o comentarios públicos ni hablar sobre el arbitraje, que incluye mencionar el hecho de que las partes tienen una disputa, la existencia del arbitraje o cualquier decisión o laudo del árbitro.",
+        "SUB_TITLE_8": "Modificaciones",
+        "PARAGRAPH_8": "Si en el futuro ResPet implementara un cambio en esta cláusula arbitral (que no sea un cambio en la dirección de Aviso de ResPet), usted puede rechazar dicho cambio y enviarnos un aviso por escrito en un plazo de 30 días después del cambio en la dirección de Aviso de ResPet; esto generará la cancelación inmediata de su cuenta ResPet, y esta cláusula arbitral, que entra en vigencia inmediatamente antes de los cambios que usted rechaza, seguirá en vigor.",
+        "SUB_TITLE_9": "Fuerza ejecutoria",
+        "PARAGRAPH_9": " Si se determina que la renuncia a demanda colectiva de la Sección \"RENUNCIA DE DEMANDA COLECTIVA\" carece de fuerza ejecutoria o si se determina que cualquier parte de esta Sección es no válida o carece de fuerza ejecutoria, toda la sección se considerará nula e inválida y, en ese caso, las partes acuerdan que la exclusiva jurisdicción y competencia descritas en la sección \"Ley/jurisdicción vigente\" regirán cualquier acto que surja en relación con estos Contratos."
+      },
+      "CONTACT": {
+        "TITLE": "Contacto",
+        "PARAGRAPH_1": "Si tiene preguntas sobre el servicio ResPet o los Contratos, comuníquese con el servicio de Atención al Cliente de ResPet a través de la sección \"Contacto\" en nuestro sitio web.",
+        "PARAGRAPH_2": "Gracias por leer nuestros Términos. Esperamos que disfrute ResPet.",
+        "PARAGRAPH_3": "Entidad contratante:",
+        "PARAGRAPH_4": "ResPet",
+        "PARAGRAPH_5": "Victoria 343 Norte Cp 34000, Durango, Victoria de Durango México"
+      }
+    },
+    "PRIVACY": {
+      "TITLE_1": "Política de Privacidad",
+      "TITLE_2": "Política de privacidad de ResPet",
+      "VALIDITY_DATE": "En vigencia a partir del 31 de mayo de 2018",
+      "INDEX": {
+        "INTRODUCTION": "Introducción",
+        "ABOUT": "Acerca de esta política",
+        "RIGHTS": "Sus derechos y sus preferencias: le damos opciones y control",
+        "HOW_WE_COLLECT": "¿Cómo recopilamos sus datos personales?",
+        "WHAT_WE_COLLECT": "¿Qué datos personales recopilamos de usted?",
+        "WHY_WE_COLLECT": "¿Para qué usamos sus datos personales?",
+        "SHARE_COLLECT": "Compartir sus datos personales",
+        "RETENTION": "Retención y eliminación de datos",
+        "LINKS": "Enlaces",
+        "CHILDREN": "Niños",
+        "CHANGE": "Cambios a esta Política de privacidad",
+        "CONTACT": "Cómo contactarnos"
+      },
+      "INTRODUCTION": {
+        "TITLE": "Introducción",
+        "SUB_TITLE_1": "¡Gracias por elegir ResPet!",
+        "PARAGRAPH_1": "En ResPet, queremos darle la mejor experiencia posible para garantizar que disfrute de nuestro servicio hoy, mañana y en el futuro. Dicho esto, su privacidad y la seguridad de sus datos personales es, y será siempre, enormemente importante para nosotros. Por lo tanto, queremos explicar de forma transparente cómo y por qué recopilamos, almacenamos, compartimos y utilizamos sus datos personales, así como describir los controles y las opciones que tiene sobre cuándo y cómo elegir compartir sus datos personales.",
+        "PARAGRAPH_2": "Ese es nuestro objetivo, y en esta Política de privacidad (\"Política\") se explicará exactamente y en detalle nuestra intención a continuación."
+      },
+      "ABOUT": {
+        "TITLE": "Acerca de esta Política",
+        "PARAGRAPH_1": "Esta Política establece los detalles esenciales relativos a su relación de datos personales con ResPet. La Política se aplica a todos los servicios de ResPet y a cualquier servicio asociado (denominado \"Servicio de ResPet\"). Los términos que rigen el uso del Servicio de ResPet se definen en nuestros Términos y Condiciones de uso (los \"Términos y Condiciones de Uso\").",
+        "PARAGRAPH_2": "De vez en cuando, podemos desarrollar servicios nuevos u ofrecer servicios adicionales. Si la presentación de estos servicios nuevos o adicionales genera algún cambio en la forma en que recopilamos o procesamos sus datos personales, le proporcionaremos más información y los términos y las políticas adicionales. A menos que se indique lo contrario, cuando presentamos estos servicios nuevos o adicionales, estos quedan sujetos a esta Política.",
+        "SUB_TITLE_1": "El objetivo de esta Política es:",
+        "PARAGRAPH_3": "Asegurarnos de que entiende los datos personales que recopilamos de usted, los motivos de por qué los recopilamos y usamos, y con quién los compartimos.",
+        "PARAGRAPH_4": "Explicar la forma en que utilizamos los datos personales que usted comparte con nosotros para darle una gran experiencia cuando utiliza el Servicio de ResPet.",
+        "PARAGRAPH_5": "Explicar sus derechos y opciones en relación con los datos personales que recopilamos y procesamos sobre usted y cómo protegemos su privacidad.",
+        "PARAGRAPH_6": "Esperamos que esto lo ayude a entender los compromisos de privacidad que mantenemos con usted. Para obtener más información sobre los términos utilizados en esta Política, por favor envié un mensaje de contacto. Para obtener información sobre cómo ponerse en contacto con nosotros cuando tenga alguna pregunta o inquietud, consulte la sección ",
+        "LINK_1": "\"Cómo contactarnos\",",
+        "PARAGRAPH_7": "a continuación. Por el contrario, si no está de acuerdo con el contenido de esta Política, recuerde que usted decide si desea utilizar el Servicio de ResPet."
+      },
+      "RIGHTS": {
+        "TITLE": "Sus derechos y sus preferencias: le damos opciones y control",
+        "PARAGRAPH_1": "Estas políticas de privacidad están basadas en la ley de la Unión Europea, que se denomina Reglamento General de Protección de Datos, o \"GDPR\", ofrece ciertos derechos a las personas sobre sus datos personales. En consecuencia, hemos implementado controles adicionales de transparencia y acceso en nuestro Centro de privacidad y la configuración de privacidad para ayudar a los usuarios a aprovechar estos derechos. Los derechos otorgados a las personas, como estén disponibles y excepto que lo limite la legislación correspondiente, son:",
+        "PARAGRAPH_2": "Derecho de acceso: el derecho de ser informado y solicitar acceso a los datos personales sobre usted que procesamos.",
+        "PARAGRAPH_3": "Derecho de rectificación: el derecho de solicitar que corrijamos o actualicemos sus datos personales, cuando sean inexactos o estén incompletos.",
+        "PARAGRAPH_4": "Derecho a eliminación: el derecho de solicitar que se eliminen sus datos personales.",
+        "PARAGRAPH_5": "Derecho a restringir: el derecho de solicitar que se detenga el procesamiento de forma temporal o permanente de todos o algunos de sus datos personales.",
+        "PARAGRAPH_6": "Derecho a objetar:",
+        "PARAGRAPH_7": "El derecho, en cualquier momento, de objetar el procesamiento de sus datos personales por motivos relacionados con su situación particular.",
+        "PARAGRAPH_8": "El derecho a oponerse a que su datos personales se procesen para fines de marketing directo.",
+        "PARAGRAPH_9": "Derecho a la portabilidad de datos: el derecho de solicitar una copia de sus datos personales en formato electrónico y el derecho de transmitir dichos datos para usarlos en el servicio de un tercero.",
+        "PARAGRAPH_10": "Derecho a no estar sujeto a la toma de decisiones automatizada: el derecho de no estar sujeto a decisiones que se basan únicamente en tomas de decisiones automatizadas, lo que incluye la creación de perfiles, cuando la decisión pueda tener un efecto legal sobre usted o producir un efecto importante similar.",
+        "PARAGRAPH_11": "Para poder ejercitar estos derechos con facilidad y registrar sus preferencias en relación con la forma en que ResPet utiliza sus datos personales, le proporcionamos acceso a la siguiente configuración a través de la página de ajustes de la cuenta:",
+        "PARAGRAPH_12": "Configuración de privacidad: le permite controlar algunas de las categorías de datos personales que procesamos sobre usted, le permite acceder a sus datos personales a través del botón \"Descargar mis datos\" e incluye un enlace al Centro de privacidad en ResPet.com, en el que puede encontrar más información acerca de cómo ResPet usa sus datos personales y cuáles son sus derechos.",
+        "PARAGRAPH_13": "Configuración de notificaciones: le permite elegir las comunicaciones que recibe de ResPet, administrar sus datos personales disponibles públicamente y establecer sus preferencias de uso compartido.",
+        "PARAGRAPH_14": "El Centro de privacidad lo deja en control de cómo ResPet procesa sus datos personales. Le proporciona información acerca de lo que sucede si ajusta la configuración en la página de ajustes de la cuenta y cómo optar por no recibir ciertos mensajes de ResPet. Si le enviamos mensajes de marketing electrónico basados en su consentimiento, o según lo permita la ley correspondiente de otro modo, usted puede, en cualquier momento, retirar tal consentimiento o declarar su objeción (\"anular la recepción\"). Los mensajes de marketing electrónico que recibe de ResPet (p. ej., aquellos enviados por correo electrónico) incluyen también en el mismo mensaje un mecanismo para dejar de recibir comunicaciones (p. ej., un enlace para cancelar la suscripción en los correos electrónicos que le enviamos).",
+        "PARAGRAPH_15": "Puede obtener más información sobre los derechos de GDPR descritos anteriormente y los controles que ofrecemos a todos los usuarios de ResPet, respecto de estos derechos, en la sección \"Sus derechos\" en el Centro de privacidad. Si tiene alguna pregunta acerca de su privacidad, sus derechos, o cómo ejercerlos, póngase en contacto con la persona responsable de la protección de datos mediante el formulario \"Contáctenos\" del Centro de privacidad. Responderemos su solicitud dentro de un período razonable una vez verificada su identidad. Si no está satisfecho con la forma en que usamos sus datos personales, puede comunicarse, y es libre de presentar una queja, con su autoridad de protección de datos local."
+      },
+      "HOW_WE_COLLECT": {
+        "TITLE": "¿Cómo recopilamos sus datos personales?",
+        "PARAGRAPH_1": "Recopilamos sus datos personales de las siguientes maneras:",
+        "PARAGRAPH_2": "Cuando se registra en el Servicio de ResPet: cuando se registra en el Servicio de ResPet, recopilamos ciertos datos personales para que pueda utilizar el Servicio de ResPet, como su dirección de correo electrónico.",
+        "PARAGRAPH_3": "Mediante el uso del Servicio de ResPet: cuando utiliza el Servicio de ResPet, recopilamos datos personales sobre su uso.",
+        "PARAGRAPH_4": "Datos personales recopilados que nos permiten ofrecerle características o funciones adicionales: de vez en cuando, también puede proporcionarnos datos personales adicionales o darnos su permiso para recopilar datos personales adicionales, por ejemplo, para proporcionarle más características o funciones. Como se describe a continuación, la ubicación que usted proporcione, una imagen de perfil, su número de teléfono, su género, todo solo bajo su consentimiento. Siempre tendrá la opción de cambiar de parecer y retirar su consentimiento en cualquier momento.",
+        "PARAGRAPH_5": "Desde terceros: recibiremos datos personales sobre usted y su actividad desde terceros,incluidos anunciantes y socios con quienes trabajamos para ofrecerle el Servicio de ResPet (consulte la Sección",
+        "LINK_1": "\"Compartir sus datos personales\",",
+        "PARAGRAPH_6": "a continuación). Utilizaremos estos datos personales, ya sea que haya proporcionado su consentimiento al tercero o a ResPet para ese intercambio de datos o cuando ResPet tenga un interés legítimo para utilizar los datos personales para proporcionarle el Servicio de ResPet.",
+        "PARAGRAPH_7": "Usamos información anónima y agrupada para propósitos que incluyen pruebas en nuestros sistemas de TI, investigación, análisis de datos, creación de modelos de marketing y promoción, mejora del Servicio de ResPet, y desarrollo de nuevas características y funcionalidades dentro del Servicio de ResPet."
+      },
+      "WHAT_WE_COLLECT": {
+        "TITLE": "¿Qué datos personales recopilamos de usted?",
+        "PARAGRAPH_1": "Hemos establecido en las tablas a continuación las categorías de datos personales que recopilamos y utilizamos sobre usted:",
+        "PARAGRAPH_2": "Datos personales recopilados cuando se registra en el Servicio de ResPet",
+        "PARAGRAPH_3": "Categorías de datos personales",
+        "PARAGRAPH_4": "Descripción de la categoría",
+        "PARAGRAPH_5": "Datos de registro de la cuenta",
+        "PARAGRAPH_6": "Estos son los datos personales que ha proporcionado o que hemos recopilado para que pueda registrarse y utilizar el Servicio de ResPet. Esto incluye su dirección de correo electrónico, fecha de nacimiento, sexo, código postal y país.",
+        "PARAGRAPH_7": "Algunos de los datos personales que le pediremos se necesitan para crear su cuenta. También tiene la opción de proporcionarnos algunos datos personales adicionales para personalizar más su cuenta.",
+        "PARAGRAPH_8": "Los datos personales exactos que recopilaremos dependen del tipo de plan del Servicio de ResPet al que se registra y si utiliza un Servicio de terceros (como se define en los",
+        "PARAGRAPH_9": "Términos y Condiciones de Uso,",
+        "PARAGRAPH_10": "como Facebook) para registrarse y utilizar el Servicio de ResPet. Si utiliza un Servicio de terceros para crear una cuenta, recibiremos datos personales a través de ese Servicio de terceros, pero solo cuando haya accedido a que el Servicio de terceros comparta sus datos personales con nosotros.",
+        "PARAGRAPH_11": "Datos personales recopilados mediante el uso del Servicio de ResPet",
+        "PARAGRAPH_12": "Categorías de datos personales",
+        "PARAGRAPH_13": "Descripción de la categoría",
+        "PARAGRAPH_14": "Datos de uso del Servicio de ResPet",
+        "PARAGRAPH_15": "Estos son los datos personales que se recopilan cuando usa el Servicio de ResPet; esto puede incluir:",
+        "PARAGRAPH_16": "Información acerca del tipo de plan del Servicio de ResPet.",
+        "PARAGRAPH_17": "Información acerca de sus interacciones con el Servicio de ResPet, que incluye la fecha y la hora de cualquier solicitud que haga, el contenido que ha visto y sus interacciones con otros usuarios de ResPet. Esto también puede incluir detalles de uso de Aplicaciones de terceros y publicidad que recibe.",
+        "PARAGRAPH_18": "El contenido de usuario (como se define en los",
+        "PARAGRAPH_19": "Términos y Condiciones de Uso",
+        "PARAGRAPH_20": ") que publica en ResPet, incluidos los mensajes que envía o recibe a través de ResPet y sus interacciones con el equipo de Servicio de atención al cliente de ResPet.",
+        "PARAGRAPH_21": "Datos técnicos que pueden incluir la información de URL, los datos de cookies, su dirección IP, los tipos de dispositivos que utiliza para acceder o conectarse al Servicio de ResPet, los identificadores de dispositivos únicos, los atributos del dispositivo, el tipo de conexión de red (p. ej., WiFi, 3G, LTE, Bluetooth) y el rendimiento del proveedor, la red y el dispositivo, el tipo de navegador, el idioma,la información que permite la administración de derechos digitales, el sistema operativo y la versión de la aplicación ResPet. Puede encontrar más detalles sobre los datos técnicos que procesamos en nuestra Política de Cookies.",
+        "PARAGRAPH_22": "Datos personales recopilados con su permiso que nos permiten proporcionarle características o funcionalidades adicionales",
+        "PARAGRAPH_23": "Categorías de datos personales",
+        "PARAGRAPH_24": "Descripción de la categoría",
+        "PARAGRAPH_25": "Datos móviles voluntarios",
+        "PARAGRAPH_26": "Además de los datos móviles que recopilamos para proporcionarle el Servicio de ResPet (descritos anteriormente), también tiene la opción de darnos su consentimiento para recopilar datos personales adicionales desde su dispositivo móvil, con el fin de ofrecerle funciones y funcionalidades que mejorarán su experiencia con el Servicio de ResPet.",
+        "PARAGRAPH_27": "No accederemos a ninguno de los datos personales que se enumeran a continuación sin obtener su consentimiento:",
+        "PARAGRAPH_28": "Sus fotos: si usted nos da permiso para acceder a sus fotos o su cámara,solo accedemos a las imágenes que elige específicamente compartir con nosotros y los metadatos relacionados con esas imágenes, tales como el tipo de archivo y el tamaño de la imagen. Nunca exploraremos ni importaremos su biblioteca de fotos o el rollo de la cámara.",
+        "PARAGRAPH_29": "La ubicación precisa del dispositivo móvil: si nos da permiso para acceder a su ubicación precisa, esto nos permite acceder a su GPS o Bluetooth para proporcionar funcionalidades de localización en el Servicio de ResPet. Tenga en cuenta que esto no incluye su dirección IP. Utilizamos su dirección IP para determinar la ubicación no precisa, por ejemplo, en qué país se encuentra para cumplir con nuestros acuerdos de licencia.",
+        "PARAGRAPH_30": "Datos de pago",
+        "PARAGRAPH_31": "Podemos recopilar estos datos personales si se registra en cualquiera de nuestras suscripciones pagadas (como se define en los",
+        "PARAGRAPH_32": "Términos y Condiciones de Uso",
+        "PARAGRAPH_33": ") o hace otras compras a través del Servicio de ResPet. Los datos personales exactos que recopilamos variarán según el método de pago (por ejemplo, directamente a través del teléfono móvil o por factura), pero incluirán información como:",
+        "PARAGRAPH_34": "Nombre.",
+        "PARAGRAPH_35": "Fecha de nacimiento.",
+        "PARAGRAPH_36": "Tipo de tarjeta de crédito o débito, fecha de vencimiento y ciertos dígitos de su número de tarjeta.",
+        "PARAGRAPH_37": "Código postal",
+        "PARAGRAPH_38": "Número de teléfono móvil",
+        "PARAGRAPH_39": "Detalles del historial de transacciones",
+        "PARAGRAPH_40": "Si elige pagar con factura, proporcionaremos sus datos personales a nuestros procesadores de pago para poder completar un cheque de crédito y enviarle las facturas",
+        "PARAGRAPH_41": "Datos de concursos, encuestas y sorteos",
+        "PARAGRAPH_42": "Estos datos personales se utilizan para que se registre y participe en estos tipos de promociones. Los datos personales exactos que recopilamos variarán en función de la promoción.",
+        "PARAGRAPH_43": "Datos de marketing",
+        "PARAGRAPH_44": "Estos datos personales se utilizan para permitir que ResPet y nuestros socios o proveedores de servicios le envíen comunicaciones de marketing:",
+        "PARAGRAPH_45": "Por correo electrónico.",
+        "PARAGRAPH_46": "Mientras usa el Servicio de ResPet.",
+        "PARAGRAPH_47": "Directamente desde un tercero."
+      },
+      "WHY_WE_COLLECT": {
+        "TITLE": "¿Para qué usamos sus datos personales?",
+        "PARAGRAPH_1": "Cuando utiliza o interactúa con el Servicio de ResPet, utilizamos una variedad de tecnologías para procesar los datos personales que recopilamos sobre usted por varias razones. En la siguiente tabla establecimos el motivo para procesar sus datos personales, las bases legales relacionadas que nos permiten legalmente procesar sus datos personales y las categorías de datos personales (identificados en la Sección",
+        "PARAGRAPH_2": "\"¿Qué datos personales recopilamos de usted?\"",
+        "PARAGRAPH_3": ") utilizados para estos fines:",
+        "PARAGRAPH_4": "Descripción de por qué ResPet procesa sus datos personales (\"propósito del procesamiento\")",
+        "PARAGRAPH_5": "Base legal para el propósito del procesamiento",
+        "PARAGRAPH_6": "Categorías de datos personales utilizados por ResPet para el propósito del procesamiento",
+        "PARAGRAPH_7": "Para proporcionar, personalizar y mejorar su experiencia con el Servicio de ResPet y otros servicios y productos que proporciona ResPet, por ejemplo, mediante la entrega de contenido personalizado o localizado, recomendaciones, características y publicidad dentro o fuera del Servicio de ResPet (incluidos los productos y servicios de terceros).",
+        "PARAGRAPH_8": "Ejecución de un contrato",
+        "PARAGRAPH_9": "Intereses legítimos",
+        "PARAGRAPH_10": "Datos de registro de la cuenta",
+        "PARAGRAPH_11": "Datos de uso del servicio",
+        "PARAGRAPH_12": "Para comprender cómo acceder y utilizar el Servicio de ResPet para garantizar su funcionalidad técnica, desarrollar nuevos productos y servicios, y analizar el uso del Servicio de ResPet, incluida la interacción con aplicaciones, publicidad, productos y servicios que son puestos a disposición, vinculados u ofrecidos a través del Servicio de ResPet.",
+        "PARAGRAPH_13": "Ejecución de un contrato",
+        "PARAGRAPH_14": "Intereses legítimos",
+        "PARAGRAPH_15": "Datos de registro de la cuenta",
+        "PARAGRAPH_16": "Datos de uso del servicio",
+        "PARAGRAPH_17": "Para comunicarse con los propósitos relacionados con el Servicio de ResPet.",
+        "PARAGRAPH_18": "Ejecución de un contrato",
+        "PARAGRAPH_19": "Intereses legítimos",
+        "PARAGRAPH_20": "Datos de registro de la cuenta",
+        "PARAGRAPH_21": "Datos de uso del servicio",
+        "PARAGRAPH_22": "Para procesar su pago y así prevenir o detectar fraude, incluidos los pagos fraudulentos y el uso fraudulento del Servicio de ResPet.",
+        "PARAGRAPH_23": "Ejecución de un contrato",
+        "PARAGRAPH_24": "Cumplimiento de obligaciones legales",
+        "PARAGRAPH_25": "Intereses legítimos",
+        "PARAGRAPH_26": "Datos de pago",
+        "PARAGRAPH_27": "Datos de uso del servicio",
+        "PARAGRAPH_28": "Para comunicarse con usted, ya sea directamente o a través de uno de nuestros socios, para:",
+        "PARAGRAPH_29": "Marketing",
+        "PARAGRAPH_30": "Investigación",
+        "PARAGRAPH_31": "Participación en concursos, encuestas y sorteos",
+        "PARAGRAPH_32": "Propósitos promocionales",
+        "PARAGRAPH_33": "Por email, notificaciones u otros mensajes, consistentes con los permisos que nos pueda haber comunicado (por ejemplo, a través de la página de ajustes de la cuenta).",
+        "PARAGRAPH_34": "Consentimiento",
+        "PARAGRAPH_35": "Intereses legítimos",
+        "PARAGRAPH_36": "Datos de concursos, encuestas y sorteos",
+        "PARAGRAPH_37": "Datos de marketing",
+        "PARAGRAPH_38": "Para proporcionarle características, información, publicidad u otro contenido que se basa en su ubicación específica.",
+        "PARAGRAPH_39": "Consentimiento",
+        "PARAGRAPH_40": "Datos móviles voluntarios"
+      },
+      "SHARE_COLLECT": {
+        "TITLE": "Compartir sus datos personales",
+        "PARAGRAPH_1": "Hemos establecido las categorías de destinatarios de los datos personales que recopilamos o generamos a través del uso del Servicio de ResPet.",
+        "PARAGRAPH_2": "Información disponible públicamente",
+        "PARAGRAPH_3": "Los siguientes datos personales siempre estarán disponibles en el Servicio de ResPet: su nombre o usuario, la foto de perfil en el Servicio de ResPet.",
+        "PARAGRAPH_4": "Datos personales que puede elegir compartir",
+        "PARAGRAPH_5": "Los siguientes datos personales solo se compartirán con las categorías de destinatarios que se indican en la siguiente tabla si:",
+        "PARAGRAPH_6": "Decide hacer uso de una característica específica del Servicio de ResPet que requiere el uso compartido de datos personales particulares para poder usar correctamente la característica del Servicio de ResPet.",
+        "PARAGRAPH_7": "Nos otorga su permiso para compartir los datos personales, por ejemplo, seleccionando la configuración adecuada en el Servicio de ResPet.",
+        "PARAGRAPH_8": "Categorías de destinatarios",
+        "PARAGRAPH_9": "Razón para compartir",
+        "PARAGRAPH_10": "Aplicaciones de terceros que se conectan a su cuenta de ResPet",
+        "PARAGRAPH_11": "Si conecta su cuenta de ResPet a una aplicación de terceros, por ejemplo, redes sociales, audio, televisión o plataformas automotrices, ResPet puede compartir los datos de uso del servicio para que pueda conectarse a su cuenta de ResPet.",
+        "PARAGRAPH_12": "Aplicación de terceros que utiliza para iniciar sesión en ResPet",
+        "PARAGRAPH_13": "Si inicia sesión en una aplicación de terceros utilizando las credenciales de la cuenta de ResPet, entonces la aplicación de terceros podrá tener acceso a determinados datos de uso del servicio, como sus playlists, el contenido guardado y la actividad.",
+        "PARAGRAPH_14": "Aplicaciones de terceros que se conectan a su cuenta de ResPet",
+        "PARAGRAPH_15": "Si conecta su cuenta de ResPet a una aplicación de terceros, por ejemplo, redes sociales, audio, televisión o plataformas automotrices, ResPet puede compartir los datos de uso del servicio para que pueda conectarse a su cuenta de ResPet.",
+        "PARAGRAPH_16": "Recibirá una notificación antes de conectarse a la aplicación de terceros para hacerle saber qué datos personales se compartirán o estarán accesibles para la aplicación de terceros.",
+        "PARAGRAPH_17": "Comunidad de soporte",
+        "PARAGRAPH_18": "Cuando se registre en una cuenta de soporte de ResPet en la Comunidad de soporte de ResPet, le pediremos que cree un nombre de usuario específico para la Comunidad de soporte de ResPet. Este se mostrará públicamente a cualquier persona que acceda a la Comunidad de soporte de ResPet, junto con cualquier pregunta o comentario que publique.",
+        "PARAGRAPH_19": "Sus contactos de ResPet",
+        "PARAGRAPH_20": "También puede haber ocasiones en que desee compartir determinados datos de uso del servicio, específicamente información sobre el uso de ResPet, con otros usuarios de ResPet conocidos como \"Sus contactos de ResPet\".",
+        "PARAGRAPH_21": "Información que podemos compartir",
+        "PARAGRAPH_22": "Categorías de destinatarios",
+        "PARAGRAPH_23": "Razón para compartir",
+        "PARAGRAPH_24": "Proveedores de servicios y otros",
+        "PARAGRAPH_25": "Utilizamos proveedores de servicios técnicos que pueden operar la infraestructura técnica que necesitamos para proporcionar el Servicio de ResPet, en particular, proveedores que alojan, almacenan, gestionan y mantienen la aplicación ResPet, su contenido y los datos que procesamos.",
+        "PARAGRAPH_26": "Utilizamos proveedores de servicios técnicos para ayudarnos a comunicarnos con usted.",
+        "PARAGRAPH_27": "Utilizamos socios de marketing y publicidad para mostrarle contenido más personalizado o para ayudarnos a entender el uso del Servicio de ResPet, para ofrecerle un mejor servicio. También podemos compartir datos personales con ciertos socios de marketing y publicidad para enviarle las comunicaciones promocionales sobre ResPet.",
+        "PARAGRAPH_28": "Aplicación de terceros que utiliza para iniciar sesión en ResPet",
+        "PARAGRAPH_29": "Si inicia sesión en una aplicación de terceros utilizando las credenciales de la cuenta de ResPet, entonces la aplicación de terceros podrá tener acceso a determinados datos de uso del servicio, como sus playlists, el contenido guardado y la actividad.",
+        "PARAGRAPH_30": "Socios de ResPet",
+        "PARAGRAPH_31": "Si tiene acceso al Servicio de ResPet a través de una oferta que recibió o adquirió de un tercero, como su operador de red móvil, compartimos datos personales con ese tercero acerca del uso del Servicio de ResPet, por ejemplo, si ha usado la oferta, y hasta qué punto, si activó una cuenta de ResPet o utilizó activamente el Servicio de ResPet.",
+        "PARAGRAPH_32": "Dependiendo de cómo se registre en el Servicio de ResPet (por ejemplo, a través de un servicio de terceros o un proveedor móvil), compartimos su nombre de usuario de ResPet u otros datos de registro de la cuenta según sea necesario para habilitarla.",
+        "PARAGRAPH_33": "También compartimos sus datos personales en un formato pseudónimo con socios de marketing que nos ayudan con los esfuerzos de promoción y con los anunciantes.",
+        "PARAGRAPH_34": "Investigadores académicos",
+        "PARAGRAPH_35": "Compartiremos sus datos personales sobre actividades como análisis estadístico y estudio académico, pero solo en un formato seudónimo.",
+        "PARAGRAPH_36": "Otras empresas del Grupo ResPet",
+        "PARAGRAPH_37": "Compartiremos sus datos personales con otras empresas del Grupo ResPet para llevar a cabo nuestras operaciones de negocio diarias y para poder mantener y proporcionarle el Servicio de ResPet.",
+        "PARAGRAPH_38": "Autoridades de seguridad y autoridades de protección de datos",
+        "PARAGRAPH_39": "Compartiremos sus datos personales cuando creamos, de buena fe, que es necesario hacerlo para cumplir con una obligación legal conforme a la ley correspondiente, o responder a un proceso legal válido, como una orden de allanamiento, una orden judicial o una citación.",
+        "PARAGRAPH_40": "También compartiremos sus datos personales cuando creamos, de buena fe, que es necesario para nuestros propios intereses legítimos (o de terceros) que se relacionen con la seguridad nacional, las autoridades de protección, los litigios, las investigaciones criminales, la protección de la seguridad de cualquier persona, o para evitar una muerte o daño personal inminente, siempre y cuando consideremos que tales intereses no se ven anulados por sus intereses o derechos y libertades fundamentales que requieren la protección de sus datos personales.",
+        "PARAGRAPH_41": "Compradores de nuestro negocio",
+        "PARAGRAPH_42": "Compartiremos sus datos personales en aquellos casos en los que vendamos o negociemos para vender nuestro negocio a un comprador o potencial comprador.",
+        "PARAGRAPH_43": "En esta situación, ResPet continuará garantizando la confidencialidad de sus datos personales y le dará un aviso antes de que sus datos personales sean transferidos al comprador o quede sujeto a una Política de privacidad diferente."
+      },
+      "RETENTION": {
+        "TITLE": "Retención y eliminación de datos",
+        "PARAGRAPH_1": "Mantenemos sus datos personales siempre que sea necesario para ofrecerle el Servicio de ResPet y para propósitos comerciales legítimos y esenciales, tales como mantener el rendimiento del Servicio de ResPet, tomar decisiones empresariales basadas en datos acerca de nuevas características y ofertas, cumplir con nuestras obligaciones legales y resolver disputas. Mantenemos algunos de sus datos personales durante el tiempo que sea un usuario del Servicio de ResPet.",
+        "PARAGRAPH_2": "En su solicitud, eliminaremos o dejaremos anónimos sus datos personales para que ya no lo identifiquen, a menos que podamos o tengamos legalmente que mantener ciertos datos personales, incluidos los casos siguientes:",
+        "PARAGRAPH_3": "Si existe un problema no resuelto en relación con su cuenta, como un crédito pendiente en su cuenta o una reclamación o disputa pendiente, retendremos los datos personales necesarios hasta que se resuelva el problema.",
+        "PARAGRAPH_4": "Cuando estemos obligados a retener los datos personales para nuestras obligaciones legales, fiscales, contables y de auditoría, retendremos los datos personales necesarios por el período que requiere la ley correspondiente.",
+        "PARAGRAPH_5": "Cuando sea necesario para nuestros intereses comerciales legítimos, tales como la lucha contra el fraude o para mantener la seguridad de nuestros usuarios."
+      },
+      "LINKS": {
+        "TITLE": "Enlaces",
+        "PARAGRAPH_1": "Podemos mostrar anuncios de terceros y otros contenidos que sirven de enlaces a sitios web de terceros. No podemos controlar ni ser responsables de las prácticas de privacidad de terceros y su contenido. Si hace clic en un anuncio o enlace de terceros, entienda que está dejando el Servicio de ResPet y cualquier dato personal que proporcione no estará cubierto por esta Política. Lea las políticas de privacidad correspondientes para saber cómo los terceros recopilan y procesan sus datos personales.",
+        "SUB_TITLE_1": "Mantener sus datos personales seguros",
+        "PARAGRAPH_2": "Estamos comprometidos a proteger los datos personales de nuestros usuarios. Implementamos medidas técnicas y organizacionales apropiadas para ayudar a proteger la seguridad de sus datos personales; sin embargo, tenga en cuenta que ningún sistema es completamente seguro. Hemos implementado varias políticas, incluida la política de seudonimización, cifrado, acceso y retención, para evitar el acceso no autorizado y la retención innecesaria de datos personales en nuestros sistemas.",
+        "PARAGRAPH_3": "Su contraseña protege su cuenta de usuario, por lo que le recomendamos que utilice una contraseña única y fuerte, limite el acceso a su computadora y el navegador, y cierre sesión después de haber usado el Servicio de ResPet."
+      },
+      "CHILDREN": {
+        "TITLE": "Niños",
+        "PARAGRAPH_1": "El Servicio de ResPet está dirigido en gran medida a menores de edad. Consulte nuestros",
+        "PARAGRAPH_2": "Términos y Condiciones de Uso",
+        "PARAGRAPH_3": "para conocer más detalles.",
+        "PARAGRAPH_4": "No recopilamos a sabiendas datos personales de menores de 11 años o bajo el límite de edad correspondiente (el \"Límite de edad\"). Si está por debajo del Límite de edad, no utilice el Servicio de ResPet ni nos proporcione ningún dato personal.",
+        "PARAGRAPH_5": "Si es padre de un niño debajo del Límite de edad y es consciente de que su hijo(a) ha proporcionado datos personales a ResPet, póngase en contacto con nosotros mediante el formulario \"Contáctenos\" y puede solicitar el ejercicio de sus derechos correspondientes detallados en la Sección",
+        "PARAGRAPH_6": "\"Sus derechos y sus preferencias: le damos opciones y control\"",
+        "PARAGRAPH_7": "de esta Política.",
+        "PARAGRAPH_8": "Si nos enteramos de que recopilamos los datos personales de un niño menor de 11 años, tomaremos las medidas razonables para eliminar dichos datos. Esto puede requerir eliminar la cuenta de ResPet de ese niño."
+      },
+      "CHANGE": {
+        "TITLE": "Cambios a esta Política de privacidad",
+        "PARAGRAPH_1": "Ocasionalmente podemos hacer cambios a esta Política.",
+        "PARAGRAPH_2": "Cuando hagamos cambios importantes a esta Política, le proporcionaremos un aviso notorio de forma adecuada sobre las circunstancias, por ejemplo, mostrando un aviso notorio dentro del Servicio de ResPet o mediante un email. Podemos notificarle con anticipación.",
+        "PARAGRAPH_3": "Por lo tanto, asegúrese de leer cualquier aviso cuidadosamente."
+      }
+    }
+  },
+  "T_AND_C": {
+    "DEFAULT": "No hay nada que mostrar",
+    "PAYS": {
+      "TITLE_1": "Medios de pago",
+      "CONTACT": "contacto",
+      "PARAGRAPH_1": "ResPet pone a disposición del Usuario los siguientes medios de pago: tarjetas de crédito y/o débito VISA, MASTERCARD y AMERICAN EXPRESS.",
+      "PARAGRAPH_2": "Para realizar los pagos de los productos y/o servicios adquiridos a través de EL PORTAL y/o LA APLICACIÓN, ResPet Autiliza los servicios ofrecidos por OPENPAY.MX cuya dirección electrónica es ",
+      "PARAGRAPH_3": "OPENPAY.MX es un procesador de pago electrónico para el procesamiento de pago realizado a través de Internet.",
+      "PARAGRAPH_4": "Para que el Usuario pueda obtener sus facturas electrónicas por los productos y/o servicios adquiridos a través de EL PORTAL y/o LA APLICACIÓN, por favor pongase en ",
+      "PARAGRAPH_5": "ResPet le informa al Usuario que el tiempo para la emisión de las mencionadas facturas electrónicas es de 7-siete días naturales a partir de la compra de los productos y/o servicios.",
+      "TITLE_2": "Políticas de cambios de los productos y/o servicios y reembolso de los pagos realizados",
+      "PARAGRAPH_6": "En aquellos casos en los que el Usuario se haya equivocado al ingresar su información, o que por motivos personales, laborales o escolares no pueda comenzar a disfrutar del producto o servicio ofrecido por ResPet, podra solicitar un cambio, o cancelación.",
+      "PARAGRAPH_7": "El Usuario deberá enviar un mensaje el areá de",
+      "PARAGRAPH_8": "En dicho correo electrónico el Usuario deberá indicar el motivo por el cual se está solicitando el cambio o cancelación.",
+      "PARAGRAPH_9": "ResPet realizará la confirmación de la cancelación y la devolución.",
+      "PARAGRAPH_10": "El Usuario recibirá un correo electrónico con la confirmación de la cancelación y el comprobante de la devolución total de su producto o servicio cancelado.",
+      "PARAGRAPH_11": "ResPet le informa al Usuario que realiza y tramita el reembolso de su pago inmediatamente aunque el Usuario visualizará dicha devolución en un plazo de 2-dos a 30-treinta días hábiles en su cuenta bancaria y/o estado de cuenta de su tarjeta de crédito y/o débito debido a que este proceso y plazos de devolución son ajenos a ResPet y dependen de cada institución bancaria; en consecuencia, con algunas instituciones bancarias los plazos mencionados pueden ser diferentes, siendo absoluta responsabilidad de la institución bancaria acreditar el reembolso en las cuentas bancarias y/o estados de cuenta de los Usuarios.",
+      "TITLE_3": "Políticas de devoluciones y cancelaciones de los productos y/o servicios y reembolso de los pagos realizados",
+      "PARAGRAPH_12": "El Usuario podrá cancelar los productos y/o servicios adquiridos a través de EL PORTAL y/o LA APLICACIÓN hasta 2-dos días antes de que se empiece a utilizar el producto o servicio",
+      "PARAGRAPH_13": "y un máximo de 7-dias después de realizado el cargo.",
+      "PARAGRAPH_14": "Deberá enviar un mensaje a través del área de",
+      "PARAGRAPH_15": "En dicho mensaje el Usuario deberá indicar el importe de compra, el Banco que le provee la tarjeta de crédito y/o débito con el que se realizó el pago de los productos y/o servicios adquiridos, los últimos cuatro dígitos de la tarjeta de crédito y/o débito con el que realizó su compra, y el motivo de la cancelación.",
+      "PARAGRAPH_16": "ResPet realizará la confirmación de la cancelación y la devolución.",
+      "PARAGRAPH_17": "El Usuario recibirá un correo electrónico con la confirmación de la cancelación y el comprobante de la devolución total de su producto o servicio cancelado.",
+      "PARAGRAPH_18": "ResPet le informa al Usuario que realiza y tramita el reembolso de su pago inmediatamente aunque el Usuario visualizará dicha devolución en un plazo de 2-dos a 30-treinta días hábiles en su cuenta bancaria y/o estado de cuenta de su tarjeta de crédito y/o débito debido a que este proceso y plazos de devolución son ajenos a ResPet y dependen de cada institución bancaria; en consecuencia, con algunas instituciones bancarias los plazos mencionados pueden ser diferentes, siendo absoluta responsabilidad de la institución bancaria acreditar el reembolso en las cuentas bancarias y/o estados de cuenta de los Usuarios.",
+      "TITLE_4": "Políticas de reembolso de los pagos realizados por causas no imputables al Usuario",
+      "PARAGRAPH_19": "En aquellos casos en los que no sea posible proveer al cliente el producto o servicio adquirido por el Usuario por causas imputables a ResPet a través de EL PORTAL y/o LA APLICACIÓN, ResPet procederá a realizar la cancelación de las compras realizadas y el reembolso de los pagos realizados al Usuario. En estos casos, el Usuario deberá proceder conforme se describe en las Políticas de devoluciones y cancelaciones de los presentes términos y condiciones. Para estos casos no se aplicará ninguna limitación de tiempo  antes del vencimiento de la compra de dicho producto o servicio.",
+      "PARAGRAPH_20": "En aquellos casos en los que los productos o servicio adquiridos por el Usuario no se puedan aprovechar por causas imputables a  terceros que brindan sus servicios a través de EL PORTAL y/o LA APLICACIÓN de ResPet, dichos reembolsos serán resueltos en cada caso concreto por ResPet."
+    }
+  }
+}

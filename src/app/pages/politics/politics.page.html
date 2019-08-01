@@ -1,0 +1,1311 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment color="green" [(ngModel)]="segment">
+    <ion-segment-button  value="end_user_agreement">
+      {{ "POLITICS.END_USER_AGREEMENT.TITLE_1" | translate }}
+    </ion-segment-button>
+    <ion-segment-button value="privacy">
+      {{ "POLITICS.PRIVACY.TITLE_1" | translate }}
+    </ion-segment-button>
+  </ion-segment>
+  <ion-row>
+    <ion-col size-xs="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2"
+    *ngIf="segment == 'end_user_agreement'">
+      <h1>{{ "POLITICS.END_USER_AGREEMENT.TITLE_2" | translate }}</h1>
+      <h2>{{ "POLITICS.END_USER_AGREEMENT.VALIDITY_DATE" | translate }}</h2>
+      <ul>
+        <li><a (click)="scrollTo('end_user_agreement_introduction')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.INTRODUCTION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_changes')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.CHANGE" | translate }}
+          </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_enjoy')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.ENJOY" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_rights')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.RIGHTS" | translate }}
+          </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_third_party')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.THIRD_PARTIES" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_user_content')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.CONTENT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_company_rights')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.OUR_RIGHTS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_guidelines')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.GUIDELINES" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_content_violation')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.VIOLATION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_content_limitations')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.LIMITATIONS_AND_MODIFICATION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_support')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.ASSISTANCE" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_payments')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.PAYMENTS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_validity')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.VALIDITY" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_warranty')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.WARRANTY" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_limitations')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.LIMITATIONS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_third_party_rights')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.THIRD_PARTY_RIGHTS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_full_contract')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.CONTRACT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_divisibility')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.DIVISIBILITY" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_assignment')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.SESSION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_compensation')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.COMPENSATION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_laws')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.LAW" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('end_user_agreement_contact')">
+          {{ "POLITICS.END_USER_AGREEMENT.INDEX.CONTACT" | translate }}
+        </a></li>
+      </ul>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PRESENTATION" | translate }}
+      </p>
+      <h3 id="end_user_agreement_introduction">
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_5" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.INTRODUCTION.PARAGRAPH_6" | translate }}
+      </p>
+      <h3 id="end_user_agreement_changes">
+        {{ "POLITICS.END_USER_AGREEMENT.CHANGE.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CHANGE.PARAGRAPH_1" | translate }}
+      </p>
+      <h3 id="end_user_agreement_enjoy">
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.PARAGRAPH_1" | translate }}
+      </p>
+      <h4>{{ "POLITICS.END_USER_AGREEMENT.ENJOY.SUB_TITLE_1" | translate }}</h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.PARAGRAPH_2" | translate }}
+      </p>
+      <h4>{{ "POLITICS.END_USER_AGREEMENT.ENJOY.SUB_TITLE_2" | translate }}</h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.PARAGRAPH_3" | translate }}
+      </p>
+      <h4>{{ "POLITICS.END_USER_AGREEMENT.ENJOY.SUB_TITLE_3" | translate }}</h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ENJOY.PARAGRAPH_5" | translate }}
+      </p>
+      <h3 id="end_user_agreement_rights">
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.RIGHTS.PARAGRAPH_5" | translate }}
+      </p>
+      <h3 id="end_user_agreement_third_party">
+        {{ "POLITICS.END_USER_AGREEMENT.THIRD_PARTIES.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.THIRD_PARTIES.PARAGRAPH_1" | translate }}
+      </p>
+      <h3 id="end_user_agreement_user_content">
+        {{ "POLITICS.END_USER_AGREEMENT.CONTENT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTENT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTENT.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTENT.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTENT.PARAGRAPH_4" | translate }}
+      </p>
+      <h3 id="end_user_agreement_company_rights">
+        {{ "POLITICS.END_USER_AGREEMENT.OUR_RIGHTS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.OUR_RIGHTS.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.OUR_RIGHTS.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.OUR_RIGHTS.PARAGRAPH_3" | translate }}
+      </p>
+      <h3 id="end_user_agreement_guidelines">
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.TITLE" | translate }}</h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_2" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_3" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_4" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_5" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_6" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_7" | translate }}
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_8" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_9" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_10" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_11" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_12" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_13" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_14" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_15" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_16" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_17" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_18" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_19" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_20" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_21" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_22" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_23" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_24" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_25" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_26" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_27" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_28" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_29" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.GUIDELINES.PARAGRAPH_30" | translate }}
+      </p>
+      <h3 id="end_user_agreement_content_violation">
+        {{ "POLITICS.END_USER_AGREEMENT.VIOLATION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.VIOLATION.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.VIOLATION.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_content_limitations">
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS_AND_MODIFICATION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS_AND_MODIFICATION.PARAGRAPH_1" | translate }}
+      </p>
+
+      <h3 id="end_user_agreement_support">
+        {{ "POLITICS.END_USER_AGREEMENT.ASSISTANCE.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.ASSISTANCE.PARAGRAPH_1" | translate }}
+      </p>
+      <h3 id="end_user_agreement_payments">
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_5" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.PAYMENTS.PARAGRAPH_6" | translate }}
+      </p>
+
+      <h3 id="end_user_agreement_validity">
+        {{ "POLITICS.END_USER_AGREEMENT.VALIDITY.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.VALIDITY.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.VALIDITY.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_warranty">
+        {{ "POLITICS.END_USER_AGREEMENT.WARRANTY.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.WARRANTY.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.WARRANTY.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_limitations">
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LIMITATIONS.PARAGRAPH_3" | translate }}
+      </p>
+
+      <h3 id="end_user_agreement_third_party_rights">
+        {{ "POLITICS.END_USER_AGREEMENT.THIRD_PARTY_RIGHTS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.THIRD_PARTY_RIGHTS.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.THIRD_PARTY_RIGHTS.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_full_contract">
+        {{ "POLITICS.END_USER_AGREEMENT.CONTRACT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTRACT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTRACT.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_divisibility">
+        {{ "POLITICS.END_USER_AGREEMENT.DIVISIBILITY.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.DIVISIBILITY.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.DIVISIBILITY.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="end_user_agreement_assignment">
+        {{ "POLITICS.END_USER_AGREEMENT.SESSION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.SESSION.PARAGRAPH_1" | translate }}
+      </p>
+
+      <h3 id="end_user_agreement_compensation">
+        {{ "POLITICS.END_USER_AGREEMENT.COMPENSATION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.COMPENSATION.PARAGRAPH_1" | translate }}
+      </p>
+      <h3 id="end_user_agreement_laws">
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.TITLE" | translate }}</h3>
+      <h4>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_1" | translate }}
+      </h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_1" | translate }}
+      </p>
+      <h4>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_2" | translate }}
+      </h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_2" | translate }}
+      </p>
+      <h4>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_3" | translate }}
+      </h4>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_3" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_4" | translate }}
+      </h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_4" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_5" | translate }}
+      </h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_5" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_6" | translate }}
+      </h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_6" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_7" | translate }}
+      </h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_7" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_8" | translate }}
+      </h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_8" | translate }}
+      </p>
+      <h5>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.SUB_TITLE_9" | translate }}</h5>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.LAW.PARAGRAPH_9" | translate }}
+      </p>
+      <h3 id="end_user_agreement_contact">
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.END_USER_AGREEMENT.CONTACT.PARAGRAPH_5" | translate }}
+      </p>
+    </ion-col>
+    <ion-col size-xs="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2"
+    *ngIf="segment == 'privacy'">
+      <h1>{{ "POLITICS.PRIVACY.TITLE_2" | translate }}</h1>
+      <h2>{{ "POLITICS.PRIVACY.VALIDITY_DATE" | translate }}</h2>
+      <ul>
+        <li><a (click)="scrollTo('privacy_introduction')">
+          {{ "POLITICS.PRIVACY.INDEX.INTRODUCTION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_about')">
+          {{ "POLITICS.PRIVACY.INDEX.ABOUT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_rights')">
+          {{ "POLITICS.PRIVACY.INDEX.RIGHTS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_compilation')">
+          {{ "POLITICS.PRIVACY.INDEX.HOW_WE_COLLECT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_personal')">
+          {{ "POLITICS.PRIVACY.INDEX.WHAT_WE_COLLECT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_for_what')">
+          {{ "POLITICS.PRIVACY.INDEX.WHY_WE_COLLECT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_share')">
+          {{ "POLITICS.PRIVACY.INDEX.SHARE_COLLECT" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_retention')">
+          {{ "POLITICS.PRIVACY.INDEX.RETENTION" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_links')">
+          {{ "POLITICS.PRIVACY.INDEX.LINKS" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_children')">
+          {{ "POLITICS.PRIVACY.INDEX.CHILDREN" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_changes')">
+          {{ "POLITICS.PRIVACY.INDEX.CHANGE" | translate }}
+        </a></li>
+        <li><a (click)="scrollTo('privacy_contact')">
+          {{ "POLITICS.PRIVACY.INDEX.CONTACT" | translate }}
+        </a></li>
+      </ul>
+      <h3 id="privacy_introduction">
+        {{ "POLITICS.PRIVACY.INTRODUCTION.TITLE" | translate }}
+      </h3>
+      <h4>{{ "POLITICS.PRIVACY.INTRODUCTION.SUB_TITLE_1" | translate }}</h4>
+      <p>
+        {{ "POLITICS.PRIVACY.INTRODUCTION.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.INTRODUCTION.PARAGRAPH_2" | translate }}
+      </p>
+      <h3 id="privacy_about">
+        {{ "POLITICS.PRIVACY.ABOUT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_2" | translate }}
+      </p>
+      <h4>{{ "POLITICS.PRIVACY.ABOUT.SUB_TITLE_1" | translate }}</h4>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_3" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_4" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_5" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_6" | translate }}
+        <a (click)="scrollTo('privacy_contact')">
+          {{ "POLITICS.PRIVACY.ABOUT.LINK_1" | translate }}
+        </a>
+        {{ "POLITICS.PRIVACY.ABOUT.PARAGRAPH_7" | translate }}
+      </p>
+      <h3 id="privacy_rights">
+        {{ "POLITICS.PRIVACY.RIGHTS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_1" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_2" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_3" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_4" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_5" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_6" | translate }}
+          <ul>
+            <li>
+              {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_7" | translate }}
+            </li>
+            <li>
+              {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_8" | translate }}
+            </li>
+          </ul>
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_9" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_10" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_11" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_12" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_13" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_14" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.RIGHTS.PARAGRAPH_15" | translate }}
+      </p>
+      <h3 id="privacy_compilation">
+        {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_1" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_2" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_3" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_4" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_5" | translate }}
+          <a (click)="scrollTo('privacy_share')">
+            {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.LINK_1" | translate }}
+          </a>
+          {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_6" | translate }}
+        </li>
+      </ul>
+      <p>
+        {{ "POLITICS.PRIVACY.HOW_WE_COLLECT.PARAGRAPH_7" | translate }}
+      </p>
+      <h3 id="privacy_personal">
+        {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_2" | translate }}
+        </strong>
+      </p>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_3" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_4" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_5" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_6" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_7" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_8" | translate }}
+                  <a (click)="changeTo('end_user_agreement')">
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_9" | translate }}
+                  </a>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_10" | translate }}
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_11" | translate }}
+        </strong>
+      </p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_12" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_13" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_14" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_15" | translate }}
+                </p>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_16" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_17" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_18" | translate }}
+                    <a (click)="changeTo('end_user_agreement')">
+                      {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_19" | translate }}
+                    </a>
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_20" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_21" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_22" | translate }}
+        </strong>
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_23" | translate }}
+            </th>
+            <th>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_24" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_25" | translate }}
+            </td>
+            <td>
+              <p>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_26" | translate }}
+              </p>
+              <p>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_27" | translate }}
+              </p>
+              <ul>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_28" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_29" | translate }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_30" | translate }}
+            </td>
+            <td>
+              <p>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_31" | translate }}
+                <a (click)="changeTo('end_user_agreement')">
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_32" | translate }}
+                </a>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_33" | translate }}
+              </p>
+              <ul>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_34" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_35" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_36" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_37" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_38" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_39" | translate }}
+                </li>
+              </ul>
+              <p>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_40" | translate }}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_41" | translate }}
+            </td>
+            <td>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_42" | translate }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_43" | translate }}
+            </td>
+            <td>
+              <p>
+                {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_44" | translate }}
+              </p>
+              <ul>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_45" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_46" | translate }}
+                </li>
+                <li>
+                  {{ "POLITICS.PRIVACY.WHAT_WE_COLLECT.PARAGRAPH_47" | translate }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3 id="privacy_for_what">
+        {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_1" | translate }}
+        <a (click)="scrollTo('privacy_personal')">
+          {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_2" | translate }}
+        </a>
+        {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_3" | translate }}
+      </p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_4" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_5" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_6" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_7" | translate }}
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_8" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_9" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_10" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_11" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_12" | translate }}
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_13" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_14" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_15" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_16" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_17" | translate }}
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_18" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_19" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_20" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_21" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_22" | translate }}
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_23" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_24" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_25" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_26" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_27" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_28" | translate }}
+                </p>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_29" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_30" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_31" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_32" | translate }}
+                  </li>
+                </ul>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_33" | translate }}
+                </p>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_34" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_35" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_36" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_37" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_38" | translate }}
+                </p>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_39" | translate }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.WHY_WE_COLLECT.PARAGRAPH_40" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="privacy_share">
+        {{ "POLITICS.PRIVACY.SHARE_COLLECT.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_2" | translate }}
+        </strong>
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_4" | translate }}
+        </strong>
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_5" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_6" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_7" | translate }}
+        </li>
+      </ul>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_8" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_9" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_10" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_11" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_12" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_13" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_14" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_15" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_16" | translate }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_17" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_18" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_19" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_20" | translate }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>
+          {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_21" | translate }}
+        </strong>
+      </p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_22" | translate }}
+              </th>
+              <th>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_23" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_24" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_25" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_26" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_27" | translate }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_28" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_29" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_30" | translate }}
+              </td>
+              <td>
+                <ul>
+                  <li>
+                    {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_31" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_32" | translate }}
+                  </li>
+                  <li>
+                    {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_33" | translate }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_34" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_35" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_36" | translate }}
+              </td>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_37" | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_38" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_39" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_40" | translate }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_41" | translate }}
+              </td>
+              <td>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_42" | translate }}
+                </p>
+                <p>
+                  {{ "POLITICS.PRIVACY.SHARE_COLLECT.PARAGRAPH_43" | translate }}
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="privacy_retention">
+        {{ "POLITICS.PRIVACY.RETENTION.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.RETENTION.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.RETENTION.PARAGRAPH_2" | translate }}
+      </p>
+      <ul>
+        <li>
+          {{ "POLITICS.PRIVACY.RETENTION.PARAGRAPH_3" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RETENTION.PARAGRAPH_4" | translate }}
+        </li>
+        <li>
+          {{ "POLITICS.PRIVACY.RETENTION.PARAGRAPH_5" | translate }}
+        </li>
+      </ul>
+      <h3 id="privacy_links">
+        {{ "POLITICS.PRIVACY.LINKS.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.LINKS.PARAGRAPH_1" | translate }}
+      </p>
+      <h4>{{ "POLITICS.PRIVACY.LINKS.SUB_TITLE_1" | translate }}</h4>
+      <p>
+        {{ "POLITICS.PRIVACY.LINKS.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.LINKS.PARAGRAPH_3" | translate }}
+      </p>
+      <h3 id="privacy_children">
+        {{ "POLITICS.PRIVACY.CHILDREN.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_1" | translate }}
+        <a (click)="changeTo('end_user_agreement')">
+            {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_2" | translate }}
+        </a>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_3" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_4" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_5" | translate }}
+        <a (click)="scrollTo('privacy_rights')">
+          {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_6" | translate }}
+        </a>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_7" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.CHILDREN.PARAGRAPH_8" | translate }}
+      </p>
+      <h3 id="privacy_changes">
+        {{ "POLITICS.PRIVACY.CHANGE.TITLE" | translate }}
+      </h3>
+      <p>
+        {{ "POLITICS.PRIVACY.CHANGE.PARAGRAPH_1" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.CHANGE.PARAGRAPH_2" | translate }}
+      </p>
+      <p>
+        {{ "POLITICS.PRIVACY.CHANGE.PARAGRAPH_3" | translate }}
+      </p>
+    </ion-col>
+  </ion-row>
+  <app-footer id="privacy_contact"></app-footer>
+</ion-content>

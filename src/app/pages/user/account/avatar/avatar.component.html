@@ -1,0 +1,11 @@
+<div class="opacity-blur" (drop)="onDrop($event)" (dragenter)="onDragEnter($event)"
+(dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+[ngClass]="dragClasses" class="zoom">
+  <label *ngIf="isBrowser">
+    <img [src]="file.url" [alt]="file.alt" onerror="this.src='./assets/imgs/avatar.png'"
+    *ngIf="isBrowser">
+    <input type="file" style="display: none;" (change)="uploadNewAvatarImg($event)">
+  </label>
+  <img [src]="file.url" [alt]="file.alt" onerror="this.src='./assets/imgs/avatar.png'"
+  *ngIf="!isBrowser" (click)="uploadNewAvatarImg()">
+</div>

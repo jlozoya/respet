@@ -1,0 +1,54 @@
+<span *ngIf="imgs">
+  <ion-row [ngSwitch]="imgs.length">
+    <ion-col *ngSwitchCase="1" size-xs="12" text-center class="land-container">
+      <img [src]="imgs[0].url" [alt]="imgs[0].alt" class="responsive crop-img opacity-blur" (click)="openImgModal(imgs[0])">
+    </ion-col>
+
+    <ng-container *ngSwitchCase="2">
+      <ion-col size-xs="6" *ngFor="let img of imgs" text-center class="land-container">
+        <img [src]="img.url" [alt]="img.alt" class="responsive crop-img opacity-blur" (click)="openImgModal(img)">
+      </ion-col>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="3">
+      <ion-col size-xs="12" class="land-container">
+        <img [src]="imgs[0].url" [alt]="imgs[0].alt" class="responsive crop-img opacity-blur" (click)="openImgModal(imgs[0])">
+      </ion-col>
+      <ng-template ngFor let-img [ngForOf]="imgs" let-i="index">
+        <ion-col *ngIf="i > 0" size-xs="6" text-center class="container">
+          <img [src]="img.url" [alt]="img.alt" class="responsive crop-img opacity-blur" (click)="openImgModal(img)">
+        </ion-col>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="4">
+      <ion-col *ngFor="let img of imgs" size-xs="6" text-center class="container">
+        <img [src]="img.url" [alt]="img.alt" class="responsive crop-img opacity-blur" (click)="openImgModal(img)">
+      </ion-col>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="5">
+      <ion-col size-xs="12" class="land-container">
+        <img [src]="imgs[0].url" [alt]="imgs[0].alt" class="responsive crop-img opacity-blur" (click)="openImgModal(imgs[0])">
+      </ion-col>
+      <ng-template ngFor let-img [ngForOf]="imgs" let-i="index">
+        <ion-col *ngIf="i > 0" size-xs="3" text-center class="thumbnails">
+          <img [src]="img.url" [alt]="img.alt" class="responsive crop-img opacity-blur" (click)="openImgModal(img)">
+        </ion-col>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="imgs.length > 5">
+      <ion-col size-xs="12" class="land-container">
+        <img [src]="imgs[0].url" [alt]="imgs[0].alt" class="responsive crop-img opacity-blur" (click)="openImgModal(imgs[0])">
+      </ion-col>
+      <ng-template ngFor let-img [ngForOf]="imgs" let-i="index">
+        <ion-col *ngIf="i > 0 && i < 5" size-xs="3" text-center class="thumbnails">
+          <img [src]="img.url" [alt]="img.alt" class="responsive crop-img opacity-blur" (click)="openImgModal(img)">
+          <h1 *ngIf="i == 4 && offset != 0" class="offset" (click)="openImgModal(img)">+{{ offset }}</h1>
+        </ion-col>
+      </ng-template>
+    </ng-container>
+
+  </ion-row>
+</span>

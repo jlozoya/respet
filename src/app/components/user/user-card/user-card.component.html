@@ -1,0 +1,19 @@
+<ion-card text-wrap *ngIf="user" class="change-text-color card" color="light" (click)="goToUserDetail(user)">
+  <img class="opacity-blur" [src]="user.media?.url" [alt]="user.media?.alt" onerror="this.src='./assets/imgs/avatar.png';">
+  <ion-card-content>
+    <h2>{{ user.name }}</h2>
+    <p>{{ "FIRST_NAME" | translate }}: {{ user.first_name }}</p>
+    <p>{{ "LAST_NAME" | translate }}: {{ user.last_name }}</p>
+    <p>{{ "ROLE" | translate }}: {{ user.role | uppercase | translate }}</p>
+    <ion-item (click)="$event.stopPropagation();">
+      <ion-label>{{ "ROLE" | translate }}</ion-label>
+      <ion-select [(ngModel)]="user.role" name="role" cancelText="{{ 'CANCEL' | translate }}"
+      okText="{{ 'ACCEPT' | translate }}" (ionChange)="changeRole(user)">
+
+        <ion-select-option value="visitor">{{ "VISITOR" | translate }}</ion-select-option>
+        <ion-select-option value="user">{{ "USER" | translate }}</ion-select-option>
+        <ion-select-option value="admin">{{ "ADMIN" | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

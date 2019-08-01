@@ -1,0 +1,132 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-row>
+    <ion-col size-xs="12" size-md="6" text-center>
+      <canvas #doughnutUsersChart></canvas>
+      <div *ngIf="analytics">
+        <ion-row>
+
+          <ion-col>
+            <ion-list>
+              <ion-list-header>
+                <ion-text>
+                  {{ "GENDER" | translate }}
+                </ion-text>
+              </ion-list-header>
+              <ion-item class="border-dark-green">
+                <p>{{ "MALES" | translate }}</p><p slot="end">{{ analytics.gender.male_number }}</p>
+              </ion-item>
+              <ion-item class="border-green">
+                <p>{{ "FEMALES" | translate }}</p><p slot="end">{{ analytics.gender.female_number }}</p>
+              </ion-item>
+              <ion-item class="border-light-green">
+                <p>{{ "UNKNOWNS" | translate }}</p><p slot="end">
+                  {{ analytics.users_number - (analytics.gender.female_number + analytics.gender.male_number) }}
+                </p>
+              </ion-item>
+            </ion-list>
+
+            <ion-list>
+              <ion-list-header>
+                <ion-text>
+                  {{ "SOURCE" | translate }}
+                </ion-text>
+              </ion-list-header>
+              <ion-item class="border-app">
+                <p>Password</p><p slot="end">
+                  {{ analytics.grant_types.password }}
+                </p>
+              </ion-item>
+              <ion-item class="border-facebook">
+                <p>Facebook</p><p slot="end">
+                  {{ analytics.grant_types.facebook }}
+                </p>
+              </ion-item>
+              <ion-item class="border-google">
+                <p>Google</p><p slot="end">
+                  {{ analytics.grant_types.google }}
+                </p>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+
+          <ion-col>
+            <ion-list>
+              <ion-list-header>
+                <ion-text>
+                  {{ "AGE" | translate }}
+                </ion-text>
+              </ion-list-header>
+              <ion-item class="border-orange">
+                <p class="text-color-light">{{ "CHILDREN" | translate }}</p><p slot="end">{{ analytics.ages.children }}</p>
+              </ion-item>
+              <ion-item class="border-salmon">
+                <p class="text-color-light">{{ "TEENS" | translate }}</p><p slot="end">{{ analytics.ages.teens }}</p>
+              </ion-item>
+              <ion-item class="border-light-yellow">
+                <p class="text-color-light">{{ "YOUNG_ADULTS" | translate }}</p><p slot="end">{{ analytics.ages.young_adults }}</p>
+              </ion-item>
+              <ion-item class="border-dark-yellow">
+                <p class="text-color-light">{{ "ADULTS" | translate }}</p><p slot="end">
+                  {{ analytics.users_number - (analytics.ages.children + analytics.ages.teens + analytics.ages.young_adults + analytics.ages.unknown) }}
+                </p>
+              </ion-item>
+              <ion-item class="border-skin">
+                <p class="text-color-light">{{ "UNKNOWNS" | translate }}</p><p slot="end">
+                  {{ analytics.ages.unknown }}
+                </p>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row>
+    <ion-col size-xs="12" text-center>
+
+      <ion-radio-group [(ngModel)]="interval" (ionChange)="getLineData()">
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>{{ "LAST_WEEK" | translate }}</ion-label>
+              <ion-radio value="lastWeek"></ion-radio>
+            </ion-item>
+          </ion-col>
+
+          <ion-col>
+            <ion-item>
+              <ion-label>{{ "LAST_MONTH" | translate }}</ion-label>
+              <ion-radio value="lastMonth"></ion-radio>
+            </ion-item>
+          </ion-col>
+
+          <ion-col>
+            <ion-item>
+              <ion-label>{{ "LAST_YEAR" | translate }}</ion-label>
+              <ion-radio value="lastYear"></ion-radio>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-radio-group>
+
+      <canvas #lineUsersChart></canvas>
+    </ion-col>
+  </ion-row>
+</ion-content>

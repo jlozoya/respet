@@ -1,0 +1,46 @@
+:host {
+  h1, h2, h3, h4 {
+    font-family: 'Eczar';
+  }
+  a {
+    text-decoration: none;
+  }
+  table {
+    background-color: var(--ion-color-light, rgba(63,81,181,0.2));
+    min-width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    th {
+      border-bottom: 1px solid rgb(230,230,230);
+      color: rgb(130,130,130);
+      text-align: left;
+      padding: 16px 5px 16px 5px;
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+    td {
+      padding: 16px 16px 16px 5px;
+    }
+  }
+  table:hover {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  }
+  table tbody tr:hover, table tbody tr:focus {
+    cursor: pointer;
+    background-color: var(--ion-color-light, rgba(63,81,181,0.2));
+  }
+  ion-scroll[scrollX] {
+    white-space: nowrap;
+    height: 100%;
+    overflow: hidden;
+    .scroll-item {
+      display: inline-block;
+    }
+  }
+  .bold {
+    font-weight: 700;
+  }
+}

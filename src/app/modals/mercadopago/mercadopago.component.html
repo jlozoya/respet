@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start" class="menu-toggle-change-color">
+      <ion-button color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form id="pay" name="pay" (ngSubmit)="doPay($event)">
+
+    <input type="hidden" id="amount" name="amount" value="1">
+
+    <div class="group">
+      <ion-label class="control-label " for="email">{{ "MERCADOPAGO.EMAIL" | translate }}</ion-label>
+      <input ion-item class="border-bottom" id="email" type="email"
+        placeholder="{{ 'MERCADOPAGO.EG_EMAIL' | translate }}">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label for="cardNumber">{{ "MERCADOPAGO.CREDIT_CARD_NUMBER" | translate }}*</ion-label>
+      <input ion-item class="border-bottom" type="number" id="cardNumber" data-checkout="cardNumber"
+      onselectstart="return false" onpaste="return false" onCopy="return false"
+      onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off
+      placeholder="{{ 'MERCADOPAGO.EG_CREDIT_CARD_NUMBER' | translate }}"
+      (keyup)="guessingPaymentMethod($event)" (keyup)="clearOptions()"
+      (change)="guessingPaymentMethod($event)">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label for="securityCode">{{ "MERCADOPAGO.SECURITY_CODE" | translate }}*</ion-label>
+      <input ion-item class="border-bottom" type="number" id="securityCode"
+      data-checkout="securityCode" placeholder="123" onselectstart="return false"
+      onpaste="return false" onCopy="return false" onCut="return false"
+      onDrag="return false" onDrop="return false" autocomplete=off [hidden]="!showSecurityCode">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label for="cardExpirationMonth">
+        {{ "MERCADOPAGO.EXPIRATION_MONTH" | translate }}*
+      </ion-label>
+      <input ion-item class="border-bottom" type="number" id="cardExpirationMonth"
+      data-checkout="cardExpirationMonth" placeholder="12" onselectstart="return false"
+      onpaste="return false" onCopy="return false" onCut="return false"
+      onDrag="return false" onDrop="return false" autocomplete=off>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label for="cardExpirationYear">
+        {{ "MERCADOPAGO.EXPIRATION_YEAR" | translate }}*
+      </ion-label>
+      <input ion-item class="border-bottom" type="number" id="cardExpirationYear"
+      data-checkout="cardExpirationYear" placeholder="2015" onselectstart="return false"
+      onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false"
+      onDrop="return false" autocomplete=off>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label for="cardholderName">{{ "MERCADOPAGO.CARD_HOLDER_NAME" | translate }}*</ion-label>
+      <input ion-item class="border-bottom" type="text" id="cardholderName"
+      data-checkout="cardholderName" placeholder="APRO">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <input type="hidden" id="paymentMethodId" name="paymentMethodId">
+
+    <div class="group">
+      <ion-label for="issuer" [hidden]="!showIssuer">
+        {{ "MERCADOPAGO.ISSUER" | translate }}*
+      </ion-label>
+      <select class="border-bottom" id="issuer" name="issuer" [hidden]="!showIssuer"></select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+    <div class="group">
+      <ion-label for="installments">
+        {{ "MERCADOPAGO.INSTALLMENTS" | translate }}*
+      </ion-label>
+      <select class="border-bottom" id="installments" name="installments"
+      [hidden]="!showInstallments">
+      </select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <ion-item>
+      <ion-label stacked>{{ "MERCADOPAGO.HAS_A_EU_IDENTIFICATION" | translate }}*</ion-label>
+      <ion-checkbox [(ngModel)]="hasEuId" checked="false" name="hasEuId"></ion-checkbox>
+    </ion-item>
+
+    <div class="group">
+      <select ion-item class="border-bottom" id="docType" data-checkout="docType"
+      [hidden]="!hasEuId"></select>
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <div class="group">
+      <ion-label [hidden]="!hasEuId">{{ "MERCADOPAGO.DOCUMENT_NUMBER" | translate }}*</ion-label>
+      <input ion-item class="border-bottom" type="text" id="docNumber"
+      data-checkout="docNumber" placeholder="12345678"
+      value="12345678" [hidden]="!hasEuId">
+      <span class="highlight"></span>
+      <span class="bar"></span>
+    </div>
+
+    <ion-button type="submit" expand="block" fill="outline" color="green">
+      {{ "MERCADOPAGO.PAY" | translate }}
+    </ion-button>
+    <a>{{ "TERMS_AND_CONDITIONS" | translate }}</a>
+  </form>
+</ion-content>

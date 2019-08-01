@@ -1,0 +1,19 @@
+:host {
+  .responsive {
+    position: relative;
+    height: 500px;
+    width: 100%;
+    img {
+      position: absolute;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 500px;
+      left: 50%;
+      top: 50%;
+      -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
+          transform: translate(-50%,-50%);
+    }
+  }
+}

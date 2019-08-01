@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title color="light">{{ "NAV.ACCOUNT" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-row>
+    <ion-col size-xs="12" offset-xs="0" size-md="8" offset-md="2">
+      <ion-row padding>
+
+        <ion-col size-xs="12" size-sm="6">
+          <app-avatar [user]="user" [isSelf]="isSelf" [file]="file"></app-avatar>
+        </ion-col>
+
+        <ion-col size-xs="12" size-sm="6">
+          <app-options [user]="user" [isSelf]="isSelf" [hasLinked]="hasLinked"></app-options>
+        </ion-col>
+
+      </ion-row>
+
+      <app-user-form [user]="user" [isSelf]="isSelf"></app-user-form>
+
+      <ion-button expand="block" fill="outline" type="button" (click)="downloadUserInfo()">
+        {{ "DOWNLOAD_MY_INFO" | translate }}
+      </ion-button>
+      <ion-button expand="block" fill="outline" type="button" color="danger"
+      (click)="deleteUserAccount()">
+        {{ "DELETE_MY_ACCOUNT" | translate }}
+      </ion-button>
+
+    </ion-col>
+  </ion-row>
+</ion-content>

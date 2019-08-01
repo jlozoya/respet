@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title color="light">{{ "NAV.ERROR" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content text-center>
+  <ion-row style="height: 100%;">
+    <ion-col size="12" align-self-center>
+      <ion-text color="light">
+        <h1>{{ error.title | translate }} {{ error.code }}</h1>
+        <p>{{ error.message | translate }}</p>
+      </ion-text>
+    </ion-col>
+    <ion-col size="12">
+      <ion-button size="large" fill="clear" color="light" (click)="goToMain()">
+        {{ 'NAV_TO_MAIN_PAGE' | translate }}
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="12" align-self-end>
+      <div class="container">
+        <div class="red flame"></div>
+        <div class="orange flame"></div>
+        <div class="yellow flame"></div>
+        <div class="white flame"></div>
+        <div class="blue circle"></div>
+        <div class="black circle"></div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -1,0 +1,63 @@
+<ion-header no-shadow>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="end">
+      <ion-button (click)="startApp()" color="primary">{{ 'TUTORIAL.SKIP_BUTTON' | translate}}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-slides pager="true" class="slide-height">
+    <ion-slide class="slider-slide">
+      <div>
+        <img src="./assets/imgs/ica-slidebox-img-1.png" class="slide-image" />
+        <h4 class="slide-title">{{ 'TUTORIAL.SLIDE_1.TITLE' | translate }}</h4>
+        <p>{{ 'TUTORIAL.SLIDE_1.DESCRIPTION' | translate }}</p>
+        <ion-item color="light">
+          <ion-label>{{ "LANG_SELECTOR" | translate }}</ion-label>
+          <ion-select [(ngModel)]="lang" name="lang" (ionChange)="setLang($event)"
+            color="light" cancelText="{{ 'CANCEL' | translate}}" okText="{{ 'ACCEPT' | translate}}">
+            <ion-select-option value="es">{{ 'SPANISH' | translate }}</ion-select-option>
+            <ion-select-option value="en">{{ 'ENGLISH' | translate }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div>
+        <img src="./assets/imgs/ica-slidebox-img-2.png" class="slide-image" />
+        <h4 class="slide-title">{{ 'TUTORIAL.SLIDE_2.TITLE' | translate }}</h4>
+        <p>{{ 'TUTORIAL.SLIDE_2.DESCRIPTION' | translate }}</p>
+        <ion-button size="large" fill="clear" (click)="startLogin()">
+          {{ 'TUTORIAL.LOGIN_BUTTON' | translate }}
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div>
+        <img src="./assets/imgs/ica-slidebox-img-3.png" class="slide-image" />
+        <h4 class="slide-title">{{ 'TUTORIAL.SLIDE_3.TITLE' | translate }}</h4>
+        <p>{{ 'TUTORIAL.SLIDE_3.DESCRIPTION' | translate }}</p>
+        <ion-button size="large" fill="clear" (click)="startSignUp()">
+          {{ 'TUTORIAL.SIGN_UP_BUTTON' | translate }}
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div>
+        <img src="./assets/imgs/ica-slidebox-img-4.png" class="slide-image" /><br>
+        <h4 class="slide-title">{{ 'TUTORIAL.SLIDE_4.TITLE' | translate }}</h4>
+        <ion-button size="large" fill="clear" (click)="startApp()">
+          {{ 'TUTORIAL.CONTINUE_BUTTON' | translate }}
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-slide>
+
+  </ion-slides>
+</ion-content>

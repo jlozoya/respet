@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-row>
+    <ion-col size-xs="12" size-md="8" offset-md="2" size-lg="6" offset-lg="3">
+
+      <app-post-form (appPostSend)="addPost($event)"></app-post-form>
+
+      <ion-card *ngIf="userContact">
+        <ion-card-header>
+          <ion-card-title>
+            {{ "CONTACT_INFORMATION" | translate }}
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content *ngIf="userContact && userContact.contact">
+          <ion-chip *ngIf="userContact.contact.email" color="dark" (click)="mailTo(userContact.contact.email)">
+            <ion-icon name="mail"></ion-icon>
+            <ion-label>{{ userContact.contact.email }}</ion-label>
+          </ion-chip>
+          <ion-chip *ngFor="let email of userContact.contact.emails" color="dark" (click)="mailTo(email)">
+            <ion-icon name="mail"></ion-icon>
+            <ion-label>{{ email }}</ion-label>
+          </ion-chip>
+          <ion-chip *ngIf="userContact.contact.phone" color="dark" (click)="callTo(userContact.contact.phone)">
+            <ion-icon name="call"></ion-icon>
+            <ion-label>{{ userContact.contact.phone }}</ion-label>
+          </ion-chip>
+          <ion-chip *ngFor="let phone of userContact.contact.phones" color="dark" (click)="callTo(phone)">
+            <ion-icon name="call"></ion-icon>
+            <ion-label>{{ phone }}</ion-label>
+          </ion-chip>
+        </ion-card-content>
+        <div [hidden]="!map" #mapCanvas id="map_canvas"></div>
+      </ion-card>
+
+      <app-post-card *ngFor="let post of posts" [post]="post" (appPostDeleted)="delete($event)"></app-post-card>
+
+    </ion-col>
+  </ion-row>
+
+  <ion-infinite-scroll (ionInfinite)="doScrollDown($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar color="dark-accent" class="menu-toggle-change-color">
+    <ion-buttons slot="start">
+      <ion-menu-toggle>
+        <ion-button color="light">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title color="light">{{ "NAV.LOGIN" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-progress-bar [type]="progress.type" [value]="progress.value"></ion-progress-bar>
+
+<ion-content>
+
+	<div class="logo">
+		<img src="./assets/imgs/landing.png" alt="landing.png">
+  </div>
+
+  <ion-row>
+    <ion-col size-xs="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">{{ "EMAIL" | translate }}</ion-label>
+            <ion-input formControlName="email" name="email" type="email"
+            (keyup.enter)="login()"></ion-input>
+          </ion-item>
+          <control-messages [control]="loginForm.controls.email"></control-messages>
+
+          <ion-item>
+            <ion-label position="stacked">{{ "PASSWORD" | translate }}</ion-label>
+            <ion-input formControlName="password" name="password" type="password" #password
+            (keyup.enter)="login()"></ion-input>
+            <ion-icon name="eye" slot="end" [color]="isPrimary ? 'primary' : 'dark'"
+            style="z-index: 2" (click)="showPassword(password)"></ion-icon>
+          </ion-item>
+          <control-messages [control]="loginForm.controls.password"></control-messages>
+        </ion-list>
+
+        <ion-row responsive-sm>
+
+          <ion-col>
+            <ion-button type="submit" expand="block" color="primary" [disabled]="!isReadyToLogin">
+              {{ "LOGIN" | translate }}
+            </ion-button>
+          </ion-col>
+
+          <ion-col>
+            <ion-button expand="block" fill="outline" type="button" color="green" (click)="goToSignup();">
+              {{ "SIGNUP" | translate }}
+            </ion-button>
+          </ion-col>
+
+        </ion-row>
+
+      </form>
+      <ion-row responsive-sm>
+
+        <ion-col size-xs="12">
+          <ion-button expand="block" fill="outline" color="green" (click)="recoverPassword();">
+            {{ "FORGOT_PASSWORD" | translate }}
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+
+        <ion-col size-xs="6">
+          <ion-button expand="block" fill="outline" color="google" (click)="googleLogin()">
+            <ion-icon name="logo-googleplus"></ion-icon>
+            <span style="margin-left: 4px;">Google</span>
+          </ion-button>
+        </ion-col>
+
+        <ion-col size-xs="6">
+          <ion-button expand="block" fill="outline" color="facebook" (click)="facebookLogin()">
+            <ion-icon name="logo-facebook"></ion-icon>
+            <span style="margin-left: 4px;">Facebook</span>
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+
+      <p>{{ "BY_CLICKING_TO_SOCIAL" | translate }} <a (click)="goToPolitics('end_user_agreement')">
+        {{ "TERMS_AND_CONDITIONS" | translate }}</a> {{ "OF_BT" | translate }}.</p>
+      <p>{{ "READ_THE_PRIVACY_POLICY" | translate }}<a (click)="goToPolitics('privacy')">
+        {{ "PRIVACY_POLICY" | translate }}</a>.</p>
+    </ion-col>
+  </ion-row>
+</ion-content>

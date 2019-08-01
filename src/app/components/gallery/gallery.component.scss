@@ -1,0 +1,77 @@
+:host {
+  .container {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+  .land-container {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+  .thumbnails {
+    position: relative;
+    overflow: hidden;
+    height: 100px;
+    padding: 0;
+    margin: 0;
+  }
+  @media screen and (max-width: 600px) {
+    .container {
+      width: 200px;
+      height: 200px;
+    }
+    .land-container {
+      width: 200px;
+      height: 200px;
+    }
+  }
+  @media screen and (min-width: 601px) {
+    .container {
+      width: 300px;
+      height: 300px;
+    }
+    .land-container {
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+  .crop-img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    -webkit-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+  }
+  .responsive {
+    width: 100%;
+    height: auto;
+  }
+  .offset {
+    color: #f4f4f4;
+    position: absolute;
+    position: relative;
+    float: left;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -35%);
+  }
+  .opacity-blur {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+    -webkit-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+  }
+  .opacity-blur:hover {
+    -webkit-filter: blur(1px);
+	  filter: blur(1px);
+    opacity: 0.9;
+  }
+}
