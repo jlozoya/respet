@@ -13,9 +13,6 @@ import { MercadopagoComponent } from './mercadopago.component';
     FormsModule,
     TranslateModule
   ],
-  entryComponents: [
-    MercadopagoComponent
-  ],
   exports: [
     MercadopagoComponent
   ]

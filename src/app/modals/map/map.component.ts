@@ -3,6 +3,7 @@ import { ApiService, GoogleMapsApiService, Post } from '../../providers/provider
 import { ModalController, NavParams, ToastController } from '@ionic/angular';
 
 @Component({
+  standalone: false,
   selector: 'app-map',
   templateUrl: 'map.component.html',
   styleUrls: ['map.component.scss']

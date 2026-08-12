@@ -46,11 +46,6 @@ import { UserCardComponent } from './user/user-card/user-card.component';
     FooterComponent,
     BulletinComponent,
     GalleryComponent
-  ],
-  entryComponents: [
-    ImgModalComponent,
-    PostCardPopComponent,
-    PostUpdateComponenet
   ]
 })
 export class ComponentsModule {}

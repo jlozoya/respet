@@ -11,6 +11,7 @@ import { ModalController, NavParams } from '@ionic/angular';
  * @returns string
  */
 @Component({
+  standalone: false,
   selector: 'app-crop-img',
   templateUrl: 'crop-img.component.html',
   styleUrls: ['crop-img.component.scss']
@@ -39,8 +40,8 @@ export class CropImgComponent implements OnInit {
    * Regresa la imagen recortada.
    * @param {string} image
    */
-  imageCropped(image: string) {
-    this.croppedImage = image;
+  imageCropped(image: any) {
+    this.croppedImage = image.base64 || image.objectUrl || image;
   }
   /**
    * Cierra la vista.

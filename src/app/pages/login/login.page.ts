@@ -11,6 +11,7 @@ import { StorageService, ApiService, User, SocialLoginService, Sesion } from '..
  * @author Juan Lozoya <jlozoya1995@gmail.com>
  */
 @Component({
+  standalone: false,
   selector: 'app-login',
   templateUrl: 'login.page.html',
   styleUrls: ['login.page.scss']

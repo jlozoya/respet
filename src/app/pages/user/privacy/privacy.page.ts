@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { OverlayEventDetail } from '@ionic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-privacy',
   templateUrl: './privacy.page.html',
   styleUrls: ['./privacy.page.scss'],

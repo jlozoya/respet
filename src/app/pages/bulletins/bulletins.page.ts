@@ -7,6 +7,7 @@ import { ApiService, Pagination, Bulletin, StorageService } from '../../provider
 import { ModalBulletinPage } from './modal-bulletin/modal-bulletin.page';
 
 @Component({
+  standalone: false,
   selector: 'app-bulletins',
   templateUrl: './bulletins.page.html',
   styleUrls: ['./bulletins.page.scss']

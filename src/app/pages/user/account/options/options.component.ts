@@ -1,9 +1,11 @@
 import { TranslateService } from '@ngx-translate/core';
-import { ToastController, LoadingController, Events, AlertController } from '@ionic/angular';
+import { ToastController, LoadingController, AlertController } from '@ionic/angular';
+import { Events } from '../../../../providers/events.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { User, SocialLoginService, ApiService, StorageService } from './../../../../providers/providers';
 
 @Component({
+  standalone: false,
   selector: 'app-options',
   templateUrl: './options.component.html',
   styleUrls: ['./options.component.scss']

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Events } from '@ionic/angular';
+import { Events } from '../events.service';
 import { Storage } from '@ionic/storage';
 import { User, UserRegistrationId, Address, Sesion } from '../models/models';
 

@@ -3,6 +3,7 @@ import { Component  } from '@angular/core';
 import { ApiService, User, Pagination } from '../../../providers/providers';
 
 @Component({
+  standalone: false,
   selector: 'app-users',
   templateUrl: 'users.page.html',
   styleUrls: ['users.page.scss']

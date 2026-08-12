@@ -8,6 +8,7 @@ import { User, LatLng, StorageService, GoogleMapsApiService, ApiService, Post,
 import { Router, NavigationEnd, RouteConfigLoadEnd } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-post-form',
   templateUrl: './post-form.component.html',
   styleUrls: ['./post-form.component.scss']
@@ -365,7 +366,7 @@ export class PostFormComponent implements OnInit {
    * Selecciona archivos con un boton.
    * @param event
    */
-  selectFiles(event) {
+  selectFiles(event?: any) {
     if (event) {
       this.transferImgFile.getMultipleBase64Imgs(event.srcElement.files).subscribe((file) => {
         this.files.push(file);

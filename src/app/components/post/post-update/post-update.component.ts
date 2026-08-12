@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ModalController, NavParams, ToastController } from '@ionic/angular';
 
 @Component({
+  standalone: false,
   selector: 'app-post-update',
   templateUrl: 'post-update.component.html',
   styleUrls: ['post-update.component.scss']

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 
 @Component({
+  standalone: false,
   selector: 'app-terms-and-conditions',
   templateUrl: 'terms-and-conditions.page.html',
   styleUrls: ['terms-and-conditions.page.scss']

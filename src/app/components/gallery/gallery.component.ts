@@ -5,6 +5,7 @@ import { ImgModalComponent } from './img-modal/img-modal.component';
 import { OverlayEventDetail } from '@ionic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss']

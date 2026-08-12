@@ -12,79 +12,79 @@ const routes: Routes = [
   },
   {
     path: 'main',
-    loadChildren: './pages/main/main.module#MainPageModule',
+    loadChildren: () => import('./pages/main/main.module').then(m => m.MainPageModule),
   },
   {
     path: 'account',
     canActivate: [SesionGuard],
-    loadChildren: './pages/user/account/account.module#AccountPageModule',
+    loadChildren: () => import('./pages/user/account/account.module').then(m => m.AccountPageModule),
   },
   {
     path: 'account/:user_id',
     canActivate: [SesionGuard, AdminGuard],
-    loadChildren: './pages/user/account/account.module#AccountPageModule',
+    loadChildren: () => import('./pages/user/account/account.module').then(m => m.AccountPageModule),
   },
   {
     path: 'about',
-    loadChildren: './pages/about/about.module#AboutPageModule',
+    loadChildren: () => import('./pages/about/about.module').then(m => m.AboutPageModule),
   },
   {
     path: 'login',
-    loadChildren: './pages/login/login.module#LoginPageModule',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
   },
   {
     path: 'login/:token',
-    loadChildren: './pages/login/login.module#LoginPageModule',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
   },
   {
     path: 'signup',
-    loadChildren: './pages/signup/signup.module#SignupPageModule',
+    loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupPageModule),
   },
   {
     path: 'signup/:token',
-    loadChildren: './pages/signup/signup.module#SignupPageModule',
+    loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupPageModule),
   },
   {
     path: 'analytics',
     canActivate: [SesionGuard, AdminGuard],
-    loadChildren: './pages/admin/analytics/analytics.module#AnalyticsPageModule',
+    loadChildren: () => import('./pages/admin/analytics/analytics.module').then(m => m.AnalyticsPageModule),
   },
   {
     path: 'users',
     canActivate: [SesionGuard, AdminGuard],
-    loadChildren: './pages/admin/users/users.module#UsersPageModule',
+    loadChildren: () => import('./pages/admin/users/users.module').then(m => m.UsersPageModule),
   },
   {
     path: 'tutorial',
-    loadChildren: './pages/tutorial/tutorial.module#TutorialPageModule',
+    loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialPageModule),
   },
   {
     path: 'politics/:segment',
-    loadChildren: './pages/politics/politics.module#PoliticsPageModule',
+    loadChildren: () => import('./pages/politics/politics.module').then(m => m.PoliticsPageModule),
   },
   {
     path: 'terms-and-conditions/:segment',
-    loadChildren: './pages/terms-and-conditions/terms-and-conditions.module#TermsAndConditionsPageModule',
+    loadChildren: () => import('./pages/terms-and-conditions/terms-and-conditions.module').then(m => m.TermsAndConditionsPageModule),
   },
   {
     path: 'bulletins',
-    loadChildren: './pages/bulletins/bulletins.module#BulletinsPageModule'
+    loadChildren: () => import('./pages/bulletins/bulletins.module').then(m => m.BulletinsPageModule)
   },
   {
     path: 'wall',
-    loadChildren: './pages/wall/wall.module#WallPageModule'
+    loadChildren: () => import('./pages/wall/wall.module').then(m => m.WallPageModule)
   },
   {
     path: 'wall/:user_id',
-    loadChildren: './pages/wall/wall.module#WallPageModule'
+    loadChildren: () => import('./pages/wall/wall.module').then(m => m.WallPageModule)
   },
   {
     path: 'privacy',
-    loadChildren: './pages/user/privacy/privacy.module#PrivacyPageModule'
+    loadChildren: () => import('./pages/user/privacy/privacy.module').then(m => m.PrivacyPageModule)
   },
   {
     path: 'error',
-    loadChildren: './pages/error/error.module#ErrorPageModule'
+    loadChildren: () => import('./pages/error/error.module').then(m => m.ErrorPageModule)
   },
   {
     path: '**',

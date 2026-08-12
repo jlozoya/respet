@@ -3,9 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService, User, StorageService } from './../../../providers/providers';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController, Events } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { Events } from '../../../providers/events.service';
 
 @Component({
+  standalone: false,
   selector: 'app-user-card',
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],

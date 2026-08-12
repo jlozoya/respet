@@ -30,17 +30,17 @@
             <ion-icon name="mail"></ion-icon>
             <ion-label>{{ userContact.contact.email }}</ion-label>
           </ion-chip>
-          <ion-chip *ngFor="let email of userContact.contact.emails" color="dark" (click)="mailTo(email)">
+          <ion-chip *ngFor="let email of userContact.contact.emails" color="dark" (click)="mailTo(email.email)">
             <ion-icon name="mail"></ion-icon>
-            <ion-label>{{ email }}</ion-label>
+            <ion-label>{{ email.email }}</ion-label>
           </ion-chip>
           <ion-chip *ngIf="userContact.contact.phone" color="dark" (click)="callTo(userContact.contact.phone)">
             <ion-icon name="call"></ion-icon>
             <ion-label>{{ userContact.contact.phone }}</ion-label>
           </ion-chip>
-          <ion-chip *ngFor="let phone of userContact.contact.phones" color="dark" (click)="callTo(phone)">
+          <ion-chip *ngFor="let phone of userContact.contact.phones" color="dark" (click)="callTo(phone.phone)">
             <ion-icon name="call"></ion-icon>
-            <ion-label>{{ phone }}</ion-label>
+            <ion-label>{{ phone.phone }}</ion-label>
           </ion-chip>
         </ion-card-content>
         <div [hidden]="!map" #mapCanvas id="map_canvas"></div>

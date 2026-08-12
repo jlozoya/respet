@@ -4,6 +4,7 @@ import { ModalController, NavParams, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+  standalone: false,
   selector: 'app-add-emails-phones',
   templateUrl: 'add-emails-phones.component.html',
   styleUrls: ['add-emails-phones.component.scss']
@@ -59,10 +60,10 @@ export class AddEmailsPhonesComponent implements OnInit {
    * Navega al lugar correspondiente.
    * @param {string} value
    */
-  openLink(value: string) {
-    if (this.type === 'email') {
+  openLink(value: string, type = this.type) {
+    if (type === 'email') {
       window.location.href = `mailto:${value}`;
-    } else if (this.type === 'tel') {
+    } else if (type === 'tel' || type === 'phone') {
       window.location.href = `tel:+${value}`;
     }
   }

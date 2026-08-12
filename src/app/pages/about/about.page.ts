@@ -3,6 +3,7 @@ import { Ubication, MapStyle } from '../../providers/providers';
 declare var google: any;
 
 @Component({
+  standalone: false,
   selector: 'app-about',
   templateUrl: 'about.page.html',
   styleUrls: ['about.page.scss']

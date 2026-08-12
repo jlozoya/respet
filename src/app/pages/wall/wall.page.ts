@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Post, ApiService, Pagination, UserContact, GoogleMapsApiService } from './../../providers/providers';
 
 @Component({
+  standalone: false,
   selector: 'app-wall',
   templateUrl: './wall.page.html',
   styleUrls: ['./wall.page.scss'],

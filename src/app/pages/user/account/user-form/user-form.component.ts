@@ -1,11 +1,13 @@
 import { Component, ElementRef, ViewChild, Input, OnChanges, OnInit } from '@angular/core';
-import { ToastController, Platform, Events } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular';
+import { Events } from '../../../../providers/events.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ApiService, StorageService, User, Address,
   GoogleMapsApiService, LatLng } from './../../../../providers/providers';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+  standalone: false,
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']

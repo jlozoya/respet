@@ -94,7 +94,7 @@
         <div class="img-thumb" *ngFor="let file of files">
           <img [src]="file.url" [alt]="file.alt">
           <ion-icon name="close-circle-outline" class="close-icon" color="danger"
-          (click)="removeFile(file); $event.stopPropagation;"></ion-icon>
+          (click)="removeFile(file); $event.stopPropagation();"></ion-icon>
         </div>
       </div>
     </div>

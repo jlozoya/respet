@@ -4,6 +4,7 @@ import { ValidationService } from '../directives/validation.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+  standalone: false,
   selector: 'control-messages',
   template: `<div *ngIf="errorMessage !== null">
     <ion-label color="danger">{{errorMessage}}</ion-label>

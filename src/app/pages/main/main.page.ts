@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-main',
   templateUrl: 'main.page.html',
   styleUrls: ['main.page.scss']

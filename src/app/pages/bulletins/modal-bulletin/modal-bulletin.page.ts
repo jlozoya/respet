@@ -5,6 +5,7 @@ import { ModalController, NavParams, Platform, LoadingController, ToastControlle
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+  standalone: false,
   selector: 'app-modal-bulletin',
   templateUrl: './modal-bulletin.page.html',
   styleUrls: ['./modal-bulletin.page.scss'],
@@ -71,7 +72,7 @@ export class ModalBulletinPage implements OnInit {
    * Maneja la captura de imágenes desde móviles o páginas web.
    * @param {string} img
    */
-  getBulletinImg(img?: string): void {
+  getBulletinImg(img?: any): void {
     this.transferImgFile.getImg(img).then(async (imgUrl) => {
       if (imgUrl !== './assets/imgs/bulletin/newspaper.png') {
         this.img = imgUrl;
