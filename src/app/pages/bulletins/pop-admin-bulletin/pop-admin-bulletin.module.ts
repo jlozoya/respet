@@ -12,9 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
     IonicModule,
     TranslateModule.forChild()
   ],
-  entryComponents: [
-    PopAdminBulletin
-  ],
   exports: [
     PopAdminBulletin
   ]

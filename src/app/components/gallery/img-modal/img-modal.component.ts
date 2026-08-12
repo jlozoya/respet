@@ -1,19 +1,19 @@
-import { NavParams, ModalController, IonSlides } from '@ionic/angular';
+import { NavParams, ModalController } from '@ionic/angular';
 import { Media } from './../../../providers/models/models';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-img-modal',
   templateUrl: './img-modal.component.html',
   styleUrls: ['./img-modal.component.scss']
 })
-export class ImgModalComponent implements OnInit, AfterViewInit {
+export class ImgModalComponent implements OnInit {
 
   imgs: Media[] = [];
   position: number;
   source: string;
   source_id: number;
-  @ViewChild('mySlider', {static: false}) slider: IonSlides;
 
   constructor(
     private modalCtrl: ModalController,
@@ -25,10 +25,6 @@ export class ImgModalComponent implements OnInit, AfterViewInit {
     this.position = this.navParams.get('position') || 0;
     this.source = this.navParams.get('source') || '';
     this.source_id = this.navParams.get('source_id') || 1;
-  }
-
-  ngAfterViewInit(): void {
-    this.slider.slideTo(this.position, 500);
   }
 
   /**

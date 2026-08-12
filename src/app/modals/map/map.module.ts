@@ -18,9 +18,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ImageCropperModule,
     TranslateModule
   ],
-  entryComponents: [
-    MapComponent
-  ],
   exports: [
     MapComponent
   ]

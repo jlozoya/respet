@@ -1,7 +1,7 @@
 import { environment } from './../../../environments/environment';
 import { Router } from '@angular/router';
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { MenuController, IonSlides } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 import { StorageService } from '../../providers/providers';
 
 export interface Slide {
@@ -11,15 +11,14 @@ export interface Slide {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-tutorial',
   templateUrl: 'tutorial.page.html',
   styleUrls: ['tutorial.page.scss']
 })
-export class TutorialPage implements AfterViewInit {
+export class TutorialPage implements OnInit {
 
   lang = 'es';
-  @ViewChild(IonSlides, {static: false}) slides: IonSlides;
-
   constructor(
     private router: Router,
     private menu: MenuController,
@@ -27,9 +26,8 @@ export class TutorialPage implements AfterViewInit {
   ) {
   }
 
-  async ngAfterViewInit() {
+  async ngOnInit() {
     this.lang = await this.storage.getLang() || 'es';
-    this.slides.startAutoplay();
   }
   /**
    * Navega hacia tabs main.

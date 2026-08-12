@@ -9,7 +9,7 @@ import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Router } from '@angular/router';
-import { FacebookService, InitParams, LoginResponse } from 'ngx-facebook';
+import { FacebookService, InitParams, LoginResponse } from '../facebook-browser.service';
 
 @Injectable()
 export class SocialLoginService {

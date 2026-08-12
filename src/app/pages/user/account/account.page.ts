@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
  * @author <a href="mailto:jlozoya1995@gmail.com">Juan Lozoya</a>
  */
 @Component({
+  standalone: false,
   selector: 'app-account',
   templateUrl: 'account.page.html',
   styleUrls: ['account.page.scss']
@@ -55,7 +56,7 @@ export class AccountPage implements OnInit {
    * Establece los datos del usuario.
    */
   setUser() {
-    return new Promise((result) => {
+    return new Promise<void>((result) => {
       this.storage.getUser().then((user: User) => {
         this.route.params.subscribe(async (params) => {
           if (user && params.user_id && !isNaN(params.user_id) && params.user_id !== user.id) {
@@ -108,8 +109,9 @@ export class AccountPage implements OnInit {
     const type = 'text/plain;charset=utf-8';
     const data = JSON.stringify(user, null, '\t');
     const a = document.createElement('a'), file = new Blob([data], {type: type});
-    if (window.navigator.msSaveOrOpenBlob) { // IE10+
-      window.navigator.msSaveOrOpenBlob(file, filename);
+    const legacyNavigator = window.navigator as Navigator & { msSaveOrOpenBlob?: (blob: Blob, name: string) => void };
+    if (legacyNavigator.msSaveOrOpenBlob) { // IE10+
+      legacyNavigator.msSaveOrOpenBlob(file, filename);
     } else { // Otros
       const url = URL.createObjectURL(file);
       a.href = url;

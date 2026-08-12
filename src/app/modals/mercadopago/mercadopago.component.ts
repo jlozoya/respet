@@ -11,6 +11,7 @@ declare var Mercadopago: any;
  * @see https://www.mercadopago.com.mx/developers/es/tools/sdk/client/javascript/
  */
 @Component({
+  standalone: false,
   selector: 'app-mercadopago',
   templateUrl: 'mercadopago.component.html',
   styleUrls: ['mercadopago.component.scss']

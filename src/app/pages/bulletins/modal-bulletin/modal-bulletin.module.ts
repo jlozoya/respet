@@ -20,9 +20,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     TranslateModule
   ],
-  entryComponents: [
-    ModalBulletinPage
-  ],
   exports: [
     ModalBulletinPage
   ]

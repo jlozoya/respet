@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, ViewChild, OnInit } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-politics',
   templateUrl: 'politics.page.html',
   styleUrls: ['politics.page.scss']

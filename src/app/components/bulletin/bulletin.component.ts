@@ -3,6 +3,7 @@ import { ApiService, Pagination, Bulletin } from './../../providers/providers';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-bulletin',
   templateUrl: './bulletin.component.html',
   styleUrls: ['./bulletin.component.scss']
@@ -25,7 +26,7 @@ export class BulletinComponent implements OnInit {
    * Obtiene las ultimas noticias publicadas.
    */
   getBulletins() {
-    return new Promise(async (finish) => {
+    return new Promise<void>(async (finish) => {
       const pages: Pagination = await this.api.get('/bulletins').catch((error) => {
         console.log('[bulletin-30]', error);
       });

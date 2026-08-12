@@ -5,6 +5,7 @@ import { ApiService, Analytics, AnalyticsUsersRegistration } from '../../../prov
 import { Chart } from 'chart.js';
 
 @Component({
+  standalone: false,
   selector: 'app-analytics',
   templateUrl: 'analytics.page.html',
   styleUrls: ['analytics.page.scss']

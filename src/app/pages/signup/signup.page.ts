@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
  * @author <a href="mailto:jlozoya1995@gmail.com">Juan Lozoya</a>
  */
 @Component({
+  standalone: false,
   selector: 'app-signup',
   templateUrl: 'signup.page.html',
   styleUrls: ['signup.page.scss']

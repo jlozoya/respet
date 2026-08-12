@@ -1,12 +1,14 @@
 import { Media } from './../../../../providers/models/models';
 import { CropImgComponent } from './../../../../modals/crop-img/crop-img.component';
 import { TransferImgFileService, StorageService, User } from './../../../../providers/providers';
-import { Platform, ToastController, ModalController, LoadingController, Events } from '@ionic/angular';
+import { Platform, ToastController, ModalController, LoadingController } from '@ionic/angular';
+import { Events } from '../../../../providers/events.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { OverlayEventDetail } from '@ionic/core';
 
 @Component({
+  standalone: false,
   selector: 'app-avatar',
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss']
@@ -45,7 +47,7 @@ export class AvatarComponent implements OnInit {
    * Maneja la captura de imágenes desde móviles o páginas web.
    * @param {string} img
    */
-  uploadNewAvatarImg(img?: string): void {
+  uploadNewAvatarImg(img?: any): void {
     this.transferImgFile.getImg(img).then((imgUrl) => {
       if (imgUrl !== './assets/imgs/avatar.png') {
         this.cropImg(imgUrl, {targetWidth: 300}).then((newImg) => {

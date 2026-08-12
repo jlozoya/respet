@@ -17,9 +17,6 @@ import { CropImgComponent } from './crop-img.component';
     ImageCropperModule,
     TranslateModule
   ],
-  entryComponents: [
-    CropImgComponent
-  ],
   exports: [
     CropImgComponent
   ]

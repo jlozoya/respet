@@ -2,7 +2,8 @@ import { environment } from './../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, AfterViewInit } from '@angular/core';
 
-import { Platform, Config, Events } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { Events } from './providers/events.service';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -10,6 +11,7 @@ import { User, PageInterface, StorageService, ApiService /*, PushNotifications *
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss']
@@ -61,7 +63,6 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private translate: TranslateService,
     private storage: StorageService,
-    private config: Config,
     private platform: Platform,
     private events: Events,
     private splashScreen: SplashScreen,
@@ -111,9 +112,6 @@ export class AppComponent implements AfterViewInit {
           return item.lang === (lang || 'es');
         }).selected = true;
       }
-      this.translate.get(['BACK_BUTTON_TEXT']).subscribe(values => {
-        this.config.set('backButtonText', values.BACK_BUTTON_TEXT);
-      });
     });
   }
   /**

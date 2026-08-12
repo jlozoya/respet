@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
  * @author Juan Lozoya <jlozoya1995@gmail.com>
  */
 @Component({
+  standalone: false,
   selector: './pop-admin-bulletin',
   templateUrl: './pop-admin-bulletin.html',
   styleUrls: ['./pop-admin-bulletin.scss']

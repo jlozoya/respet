@@ -13,9 +13,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { IonicStorageModule } from '@ionic/storage';
-
-import { FacebookModule } from 'ngx-facebook';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
@@ -32,22 +30,20 @@ import { ValidationService } from './shared/directives/validation.service';
 
 // El cargador de traducción necesita saber dónde cargar los archivos i18n
 // en Ionic static asset pipeline.
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+export function createTranslateLoader() {
+  return new TranslateHttpLoader();
 }
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
   imports: [
     BrowserModule,
     HttpClientModule,
-    FacebookModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: (createTranslateLoader),
-        deps: [HttpClient]
+        deps: []
       }
     }),
     IonicModule.forRoot(),

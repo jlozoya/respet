@@ -9,11 +9,11 @@
 </ion-header>
 
 <ion-content text-center>
-  <ion-slides pager="true" #mySlider>
-    <ion-slide *ngFor="let img of imgs">
+  <div class="image-gallery">
+    <section *ngFor="let img of imgs">
       <div class="responsive">
         <img [src]="img.url" [alt]="img.alt">
       </div>
-    </ion-slide>
-  </ion-slides>
+    </section>
+  </div>
 </ion-content>

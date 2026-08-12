@@ -1,4 +1,4 @@
-import { FacebookService, InitParams } from 'ngx-facebook';
+import { FacebookService, InitParams } from '../../../providers/facebook-browser.service';
 import { Platform, ToastController, ActionSheetController, ModalController, NavParams,
   PopoverController, AlertController } from '@ionic/angular';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
@@ -12,6 +12,7 @@ import { PostUpdateComponenet } from './../post-update/post-update.component';
 import { environment } from './../../../../environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'app-post-card',
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.scss']
@@ -312,6 +313,7 @@ export class PostCardComponent implements OnInit {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-post-card-pop',
   template: `<ion-list *ngIf="isSelf">
     <ion-item (click)="dissmis('update')">{{ "UPDATE" | translate }}</ion-item>
