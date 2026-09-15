@@ -1,0 +1,44 @@
+<app-page-header title="NAV.USERS">
+  <ion-searchbar
+    [debounce]="300"
+    [placeholder]="'SEARCH' | translate"
+    (ionInput)="onSearch($event.detail.value ?? '')"
+  />
+  <ion-select
+    class="role-filter"
+    [value]="role()"
+    (ionChange)="changeRole($event.detail.value)"
+    [label]="'ROLE' | translate"
+    labelPlacement="start"
+    [cancelText]="'CANCEL' | translate"
+    [okText]="'ACCEPT' | translate"
+  >
+    @for (option of roles; track option.label) {
+      <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+    }
+  </ion-select>
+</app-page-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <ion-row>
+    @for (user of items(); track user.id) {
+      <ion-col size="12" size-md="6" size-lg="4">
+        <app-user-card [user]="user" (roleChanged)="onRoleChanged($event)" />
+      </ion-col>
+    } @empty {
+      @if (!loading()) {
+        <ion-col size="12">
+          <ion-label class="empty">{{ 'NO_RESULTS' | translate }}</ion-label>
+        </ion-col>
+      }
+    }
+  </ion-row>
+
+  <ion-infinite-scroll [disabled]="!hasMore()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content />
+  </ion-infinite-scroll>
+</ion-content>

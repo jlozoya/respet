@@ -1,0 +1,124 @@
+@if (asModal()) {
+  <ion-header>
+    <ion-toolbar color="dark-accent">
+      <ion-buttons slot="start">
+        <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+          <ion-icon slot="icon-only" name="arrow-back" />
+        </ion-button>
+      </ion-buttons>
+      <ion-title color="medium">
+        {{ (isEdit() ? 'PRODUCT.EDIT_TITLE' : 'PRODUCT.NEW_TITLE') | translate }}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+}
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <ion-item>
+      <ion-input
+        formControlName="name"
+        [label]="'NAME' | translate"
+        labelPlacement="stacked"
+        type="text"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.name" />
+
+    <ion-item>
+      <ion-textarea
+        formControlName="description"
+        [label]="'DESCRIPTION' | translate"
+        labelPlacement="stacked"
+        [autoGrow]="true"
+        [rows]="3"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.description" />
+
+    <ion-item>
+      <ion-input
+        formControlName="stock"
+        type="number"
+        inputmode="numeric"
+        [min]="0"
+        [label]="'AVAILABLE_AMOUNT' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.stock" />
+
+    <ion-item>
+      <ion-input
+        formControlName="price"
+        type="number"
+        inputmode="decimal"
+        [min]="0"
+        step="0.01"
+        [label]="'PRODUCT.PRICE' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.price" />
+
+    <ion-item>
+      <ion-select
+        formControlName="warehouseId"
+        [label]="'WAREHOUSE.LABEL' | translate"
+        labelPlacement="stacked"
+        [cancelText]="'CANCEL' | translate"
+        [okText]="'ACCEPT' | translate"
+      >
+        <ion-select-option [value]="null">{{ 'NONE' | translate }}</ion-select-option>
+        @for (warehouse of availableWarehouses(); track warehouse.id) {
+          <ion-select-option [value]="warehouse.id">{{ warehouse.name }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>{{ 'IMAGES' | translate }} ({{ imageCount() }}/8)</ion-label>
+      <ion-button slot="end" fill="outline" [disabled]="!canAddImages()" (click)="addImage()">
+        <ion-icon name="images" slot="start" />
+        {{ 'ADD' | translate }}
+      </ion-button>
+    </ion-item>
+
+    @if (imageCount() > 0) {
+      <div class="thumbs">
+        @for (media of existing(); track media.id) {
+          <figure class="thumb">
+            <img [src]="media.url" [alt]="media.alt" />
+            <ion-button
+              fill="clear"
+              color="danger"
+              size="small"
+              (click)="removeExisting(media)"
+              [attr.aria-label]="'DELETE' | translate"
+            >
+              <ion-icon name="trash" slot="icon-only" />
+            </ion-button>
+          </figure>
+        }
+        @for (image of pending(); track image.previewUrl) {
+          <figure class="thumb thumb--pending">
+            <img [src]="image.previewUrl" [alt]="'IMAGES' | translate" />
+            <ion-button
+              fill="clear"
+              color="danger"
+              size="small"
+              (click)="removePending(image)"
+              [attr.aria-label]="'DELETE' | translate"
+            >
+              <ion-icon name="close-circle-outline" slot="icon-only" />
+            </ion-button>
+          </figure>
+        }
+      </div>
+    }
+
+    <ion-button expand="block" type="submit" [disabled]="saving()">
+      {{ 'SAVE' | translate }}
+    </ion-button>
+  </form>
+</ion-content>

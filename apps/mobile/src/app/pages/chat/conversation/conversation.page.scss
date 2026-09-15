@@ -1,0 +1,128 @@
+:host {
+  .peer {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+  }
+
+  .peer ion-avatar {
+    height: 36px;
+    width: 36px;
+  }
+
+  .presence {
+    background: var(--ion-color-success);
+    border: 2px solid var(--ion-toolbar-background);
+    border-radius: 50%;
+    bottom: 0;
+    height: 11px;
+    position: absolute;
+    right: 0;
+    width: 11px;
+  }
+
+  .peer-text h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .status {
+    color: var(--ion-color-medium);
+    font-size: 0.75rem;
+    margin: 0;
+  }
+
+  .status--typing {
+    color: var(--ion-color-primary);
+  }
+
+  .chat-content {
+    --padding-bottom: 12px;
+    --padding-top: 12px;
+  }
+
+  /* --- Indicador de escritura -------------------------------------------- */
+
+  .typing-row {
+    padding: 4px 12px 4px 48px;
+  }
+
+  .typing {
+    background: var(--respet-bubble-peer);
+    border-radius: var(--respet-radius-bubble);
+    display: inline-flex;
+    gap: 4px;
+    padding: 10px 14px;
+  }
+
+  .typing span {
+    animation: typing-bounce 1.2s infinite ease-in-out;
+    background: var(--ion-color-medium);
+    border-radius: 50%;
+    height: 7px;
+    width: 7px;
+  }
+
+  /* El desfase entre puntos es lo que produce la onda. */
+  .typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  /* --- Redactor ------------------------------------------------------------ */
+
+  .composer ion-toolbar {
+    --padding-bottom: 4px;
+    --padding-top: 4px;
+  }
+
+  .input {
+    --background: var(--ion-color-step-100);
+    --padding-start: 14px;
+    --padding-end: 14px;
+
+    border-radius: var(--respet-radius-lg);
+    max-height: 120px;
+  }
+
+  /* --- Esqueletos ---------------------------------------------------------- */
+
+  .skeletons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .skeleton-bubble {
+    border-radius: var(--respet-radius-bubble);
+    height: 38px;
+    width: 55%;
+  }
+
+  .skeleton-bubble--own {
+    align-self: flex-end;
+    width: 40%;
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}

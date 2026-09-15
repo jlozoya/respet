@@ -1,0 +1,65 @@
+import { Global, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+
+import * as chat from './schemas/chat.schema.js';
+import * as content from './schemas/content.schema.js';
+import * as store from './schemas/store.schema.js';
+import * as user from './schemas/user.schema.js';
+
+/**
+ * Conexión a MongoDB y registro de todos los modelos.
+ *
+ * Sustituye a `PrismaModule`. Los modelos se registran en un módulo global —y
+ * no en el de cada dominio— porque los servicios se cruzan constantemente: el
+ * muro necesita usuarios y archivos, el chat necesita usuarios, y la tienda
+ * necesita ubicaciones. Repartirlos obligaría a reexportarlos en cadena.
+ */
+const modelos = [
+  { name: user.User.name, schema: user.UserSchema },
+  { name: user.UserPermissions.name, schema: user.UserPermissionsSchema },
+  { name: user.UserEmail.name, schema: user.UserEmailSchema },
+  { name: user.UserPhone.name, schema: user.UserPhoneSchema },
+  { name: user.SocialLink.name, schema: user.SocialLinkSchema },
+  { name: user.RefreshToken.name, schema: user.RefreshTokenSchema },
+  { name: user.PasswordReset.name, schema: user.PasswordResetSchema },
+  { name: user.EmailVerification.name, schema: user.EmailVerificationSchema },
+
+  { name: content.Location.name, schema: content.LocationSchema },
+  { name: content.Media.name, schema: content.MediaSchema },
+  { name: content.Post.name, schema: content.PostSchema },
+  { name: content.PostVote.name, schema: content.PostVoteSchema },
+  { name: content.Comment.name, schema: content.CommentSchema },
+  { name: content.Follow.name, schema: content.FollowSchema },
+  { name: content.PostReport.name, schema: content.PostReportSchema },
+  { name: content.Bulletin.name, schema: content.BulletinSchema },
+  { name: content.SupportTicket.name, schema: content.SupportTicketSchema },
+
+  { name: store.Warehouse.name, schema: store.WarehouseSchema },
+  { name: store.Product.name, schema: store.ProductSchema },
+  { name: store.Order.name, schema: store.OrderSchema },
+  { name: store.OrderItem.name, schema: store.OrderItemSchema },
+  { name: store.Payment.name, schema: store.PaymentSchema },
+
+  { name: chat.Conversation.name, schema: chat.ConversationSchema },
+  { name: chat.ConversationMember.name, schema: chat.ConversationMemberSchema },
+  { name: chat.Message.name, schema: chat.MessageSchema },
+];
+
+@Global()
+@Module({
+  imports: [
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.getOrThrow<string>('database.url'),
+        // La base va en «replica set» de un solo nodo porque Mongo sólo ofrece
+        // transacciones así, y el inventario y los pedidos las necesitan.
+        retryWrites: true,
+      }),
+    }),
+    MongooseModule.forFeature(modelos),
+  ],
+  exports: [MongooseModule],
+})
+export class DatabaseModule {}

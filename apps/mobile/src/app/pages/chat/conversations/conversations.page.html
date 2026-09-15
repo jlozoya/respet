@@ -1,0 +1,99 @@
+<app-page-header title="NAV.CHAT" />
+
+<ion-content>
+  <!--
+    Bandeja y conversación en la misma pantalla, como en Instagram: la lista a
+    la izquierda y el hilo al lado. En una pantalla estrecha no caben las dos,
+    así que sólo se ve la lista y elegir lleva al hilo a pantalla completa.
+  -->
+  <div class="bandeja">
+    <aside class="columna">
+      <ion-searchbar
+        [debounce]="200"
+        [placeholder]="'SEARCH' | translate"
+        (ionInput)="search.set($event.detail.value ?? '')"
+      />
+
+      <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+        <ion-refresher-content />
+      </ion-refresher>
+
+      @if (loading() && items().length === 0) {
+        <!-- Esqueletos con la forma de las filas que van a aparecer. -->
+        <ion-list lines="none">
+          @for (row of [1, 2, 3, 4, 5]; track row) {
+            <ion-item>
+              <div slot="start" class="respet-skeleton skeleton-avatar"></div>
+              <ion-label>
+                <div class="respet-skeleton skeleton-line skeleton-line--name"></div>
+                <div class="respet-skeleton skeleton-line"></div>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      } @else {
+        <ion-list lines="none">
+          @for (conversation of items(); track conversation.id) {
+            <ion-item
+              button
+              detail="false"
+              [class.fila--activa]="conversation.id === selected()"
+              (click)="open(conversation)"
+            >
+              <div slot="start" class="avatar-wrapper">
+                <ion-avatar>
+                  <img
+                    [src]="avatarOf(conversation)"
+                    [alt]="conversation.peer.name"
+                    (error)="onImageError($event)"
+                  />
+                </ion-avatar>
+                @if (isOnline(conversation)) {
+                  <!-- El punto verde de siempre: quien está conectado ahora mismo. -->
+                  <span class="presence" [attr.aria-label]="'CHAT.ONLINE' | translate"></span>
+                }
+              </div>
+
+              <ion-label>
+                <h2 [class.unread]="conversation.unreadCount > 0">{{ conversation.peer.name }}</h2>
+                <p [class.unread]="conversation.unreadCount > 0">
+                  {{ conversation.lastPreview || ('CHAT.NO_MESSAGES' | translate) }}
+                </p>
+              </ion-label>
+
+              <div slot="end" class="meta">
+                @if (conversation.lastMessageAt) {
+                  <ion-note>{{ conversation.lastMessageAt | relativeTime }}</ion-note>
+                }
+                @if (conversation.unreadCount > 0) {
+                  <ion-badge color="primary">{{ conversation.unreadCount }}</ion-badge>
+                }
+                @if (conversation.muted) {
+                  <ion-icon name="notifications-off-outline" color="medium" />
+                }
+              </div>
+            </ion-item>
+          } @empty {
+            <div class="respet-empty">
+              <ion-icon name="chatbubbles-outline" />
+              <p>{{ 'CHAT.EMPTY' | translate }}</p>
+            </div>
+          }
+        </ion-list>
+      }
+    </aside>
+
+    <!-- El hilo elegido, o la invitación a elegir uno. -->
+    <section class="panel">
+      @if (selected(); as id) {
+        <app-chat-window [conversationId]="id" [embedded]="true" />
+      } @else {
+        <div class="sin-hilo">
+          <ion-icon name="chatbubbles-outline" aria-hidden="true" />
+          <h2>{{ 'CHAT.YOUR_MESSAGES' | translate }}</h2>
+          <p>{{ 'CHAT.YOUR_MESSAGES_HINT' | translate }}</p>
+        </div>
+      }
+    </section>
+  </div>
+</ion-content>

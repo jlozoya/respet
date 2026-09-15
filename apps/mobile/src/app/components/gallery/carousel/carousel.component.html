@@ -1,0 +1,54 @@
+<div #track class="track" tabindex="0" (scroll)="onScroll()" (keydown)="onKeydown($event)">
+  @for (image of images(); track image.id) {
+    <figure class="slide">
+      <img [src]="image.url" [alt]="image.alt" />
+    </figure>
+  }
+</div>
+
+<!--
+  Con el dedo basta deslizar; con ratón o teclado no hay por dónde, porque la
+  barra de desplazamiento va oculta y la rueda no mueve en horizontal. Estas
+  flechas y los puntos de abajo son, en ese caso, la única forma de pasar de
+  foto.
+-->
+@if (images().length > 1) {
+  <ion-button
+    class="nav nav--prev"
+    fill="clear"
+    color="light"
+    shape="round"
+    [disabled]="currentIndex() === 0"
+    [attr.aria-label]="'GALLERY.PREVIOUS' | translate"
+    (click)="goTo(currentIndex() - 1)"
+  >
+    <ion-icon slot="icon-only" name="chevron-back" />
+  </ion-button>
+
+  <ion-button
+    class="nav nav--next"
+    fill="clear"
+    color="light"
+    shape="round"
+    [disabled]="currentIndex() === images().length - 1"
+    [attr.aria-label]="'GALLERY.NEXT' | translate"
+    (click)="goTo(currentIndex() + 1)"
+  >
+    <ion-icon slot="icon-only" name="chevron-forward" />
+  </ion-button>
+
+  <div class="pager">
+    @for (image of images(); track image.id; let i = $index) {
+      <button
+        type="button"
+        class="dot"
+        [class.dot--active]="i === currentIndex()"
+        [attr.aria-label]="('GALLERY.GO_TO' | translate) + ' ' + (i + 1)"
+        [attr.aria-current]="i === currentIndex()"
+        (click)="goTo(i)"
+      >
+        <span></span>
+      </button>
+    }
+  </div>
+}

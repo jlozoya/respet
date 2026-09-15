@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+        <ion-icon slot="icon-only" name="arrow-back" />
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="medium">{{ title() | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" [disabled]="saving()" (click)="save()">
+        <ion-icon name="checkmark" slot="start" />
+        {{ 'SAVE' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input
+      [type]="inputType()"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (ionBlur)="parseDraft()"
+      (keydown.enter)="parseDraft()"
+      [label]="'ADD_EMAIL_PHONES.INPUT' | translate"
+      labelPlacement="stacked"
+      [helperText]="'ADD_EMAIL_PHONES.HELP' | translate"
+    />
+  </ion-item>
+
+  @if (pending().length > 0) {
+    <div class="chips">
+      @for (value of pending(); track value) {
+        <ion-chip color="primary" (click)="removePending(value)">
+          <ion-label>{{ value }}</ion-label>
+          <ion-icon name="close-circle-outline" />
+        </ion-chip>
+      }
+    </div>
+  }
+
+  @if (existing().length > 0) {
+    <ion-list lines="full">
+      @for (item of existing(); track item.id) {
+        <ion-item [href]="hrefOf(item)">
+          <ion-label>{{ labelOf(item) }}</ion-label>
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="danger"
+            (click)="$event.stopPropagation(); $event.preventDefault(); removeExisting(item.id)"
+            [attr.aria-label]="'DELETE' | translate"
+          >
+            <ion-icon name="trash" slot="icon-only" />
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>

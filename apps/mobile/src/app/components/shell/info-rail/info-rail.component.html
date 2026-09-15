@@ -1,0 +1,18 @@
+@if (items().length > 0) {
+  <section class="bloque">
+    <h2 class="titulo">{{ 'NAV.BULLETINS' | translate }}</h2>
+
+    @for (bulletin of items(); track bulletin.id) {
+      <a class="aviso" routerLink="/bulletins">
+        @if (bulletin.media; as media) {
+          <img class="miniatura" [src]="media.url" [alt]="media.alt" />
+        }
+
+        <span class="texto">
+          <span class="nombre">{{ bulletin.title }}</span>
+          <small>{{ bulletin.date | date: 'longDate' }}</small>
+        </span>
+      </a>
+    }
+  </section>
+}

@@ -1,0 +1,55 @@
+@if (profile(); as persona) {
+  <header class="ficha">
+    <!-- Sin foto de portada, una franja: lo que sostiene el avatar. -->
+    <div class="portada"></div>
+
+    <div class="identidad">
+      <img
+        class="avatar"
+        [src]="avatarUrl()"
+        [alt]="persona.name"
+        (error)="onAvatarError($event)"
+      />
+
+      <div class="datos">
+        <h1>{{ persona.name }}</h1>
+
+        <p class="cifras">
+          <span>{{ persona.postCount }} {{ 'WALL.POSTS' | translate }}</span>
+          <span>{{ persona.followerCount }} {{ 'WALL.FOLLOWERS' | translate }}</span>
+          <span>{{ persona.followingCount }} {{ 'WALL.FOLLOWING_COUNT' | translate }}</span>
+        </p>
+      </div>
+
+      <div class="acciones">
+        @if (isOwn()) {
+          <ion-button size="small" fill="outline" routerLink="/account">
+            <ion-icon slot="start" name="create" />
+            {{ 'EDIT' | translate }}
+          </ion-button>
+        }
+
+        @if (canFollow()) {
+          <ion-button
+            size="small"
+            [fill]="persona.followedByMe ? 'outline' : 'solid'"
+            (click)="followToggled.emit()"
+          >
+            <ion-icon
+              slot="start"
+              [name]="persona.followedByMe ? 'checkmark-circle-outline' : 'person-add-outline'"
+            />
+            {{ (persona.followedByMe ? 'WALL.UNFOLLOW' : 'WALL.FOLLOW') | translate }}
+          </ion-button>
+        }
+
+        @if (canMessage()) {
+          <ion-button size="small" fill="solid" color="primary" (click)="messageRequested.emit()">
+            <ion-icon slot="start" name="chatbubbles-outline" />
+            {{ 'CHAT.MESSAGE' | translate }}
+          </ion-button>
+        }
+      </div>
+    </div>
+  </header>
+}

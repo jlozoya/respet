@@ -1,0 +1,126 @@
+:host {
+  .slide-height {
+    height: 100%;
+  }
+  .slide-image {
+    width: 100%;
+    max-width: 230px;
+    height: auto;
+  }
+  .slide-title {
+    margin-top: 50px;
+  }
+  b {
+    font-weight: 500;
+  }
+  p, h1 {
+    padding: 0 40px;
+  }
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ion-color-dark);
+    b {
+      color: var(--ion-color-dark);
+    }
+  }
+  @media (max-width: 600px) {
+    .slide-image {
+      width: 50%;
+    }
+    .slide-title {
+      margin-top: 5px;
+    }
+    p {
+      line-height: 1;
+    }
+  }
+}
+
+:host {
+  .track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  // El carrusel recibe el foco para poder recorrerlo con las flechas del
+  // teclado; el contorno se dibuja por dentro para que no lo recorte el
+  // desbordamiento.
+  .track:focus-visible {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: -2px;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    align-items: center;
+    display: flex;
+    flex: 0 0 100%;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px;
+    scroll-snap-align: center;
+    text-align: center;
+  }
+
+  .slide img {
+    max-height: 40vh;
+    max-width: 80%;
+  }
+
+  .nav {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  .nav--prev {
+    left: 4px;
+  }
+
+  .nav--next {
+    right: 4px;
+  }
+
+  .pager {
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+
+  // El punto que se ve mide 8 px, pero el botón que lo envuelve es mucho mayor:
+  // así se puede apuntar sin precisión de cirujano, en el móvil sobre todo.
+  .dot {
+    appearance: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    line-height: 0;
+    padding: 6px;
+  }
+
+  .dot span {
+    background: var(--ion-color-medium);
+    border-radius: 50%;
+    display: block;
+    height: 8px;
+    opacity: 0.4;
+    transition: opacity 0.2s ease-in-out;
+    width: 8px;
+  }
+
+  .dot--active span {
+    opacity: 1;
+  }
+}

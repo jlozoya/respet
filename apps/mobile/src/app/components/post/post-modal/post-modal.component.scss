@@ -1,0 +1,106 @@
+:host {
+  /* Ancho de la columna de la conversación cuando cabe al lado de la foto. */
+  --ancho-hilo: clamp(340px, 30%, 440px);
+
+  .reparto {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  /*
+    En vertical la foto no puede comerse la pantalla entera: si lo hiciera,
+    habría que desplazarse a ciegas para descubrir que debajo hay comentarios.
+  */
+  .panel-fotos {
+    background: #000;
+    flex: 0 0 auto;
+    height: 45vh;
+    position: relative;
+  }
+
+  .carrusel {
+    height: 100%;
+  }
+
+  /*
+    Los mandos flotan sobre la foto, sin barra que le robe alto. El fondo
+    translúcido es lo que los mantiene visibles lo mismo sobre un cielo claro
+    que sobre una sombra.
+  */
+  .cerrar {
+    --background: rgb(0 0 0 / 55%);
+    --background-hover: rgb(0 0 0 / 75%);
+    --color: #fff;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    height: 40px;
+    left: 12px;
+    margin: 0;
+    position: absolute;
+    top: 12px;
+    width: 40px;
+    z-index: 2;
+  }
+
+  .contador {
+    color: #fff;
+    font-size: 0.875rem;
+    left: 64px;
+    position: absolute;
+    text-shadow: 0 1px 3px rgb(0 0 0 / 70%);
+    top: 22px;
+    z-index: 2;
+  }
+
+  .panel-hilo {
+    background: var(--ion-background-color, #fff);
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-bottom: 16px;
+  }
+
+  /*
+    Sin fotos la ventana es sólo la conversación, y a lo ancho de un monitor
+    salen líneas que no hay quien siga: se le pone el mismo freno que al muro.
+  */
+  .reparto:not(.reparto--con-fotos) .panel-hilo {
+    margin: 0 auto;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .titulo-hilo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 16px;
+  }
+
+  /*
+    A partir de tableta caben las dos cosas a la vez, que es de lo que se trata:
+    mirar la foto y leer lo que dicen de ella sin perder ninguna de las dos. La
+    foto se queda con todo el espacio sobrante y sólo baja la columna de al
+    lado.
+  */
+  @media (min-width: 820px) {
+    .reparto--con-fotos {
+      flex-direction: row;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .reparto--con-fotos .panel-fotos {
+      flex: 1 1 auto;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .reparto--con-fotos .panel-hilo {
+      border-left: 1px solid var(--ion-color-step-150, #e0e0e0);
+      flex: 0 0 var(--ancho-hilo);
+      overflow-y: auto;
+    }
+  }
+}

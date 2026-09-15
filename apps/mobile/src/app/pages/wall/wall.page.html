@@ -1,0 +1,89 @@
+<app-page-header title="NAV.WALL">
+  <ion-searchbar
+    [debounce]="300"
+    [placeholder]="'SEARCH' | translate"
+    (ionInput)="onSearch($event.detail.value ?? '')"
+  />
+</app-page-header>
+
+@if (loading()) {
+  <ion-progress-bar type="indeterminate" />
+}
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <div class="tablero">
+    <!--
+      La columna de la derecha sólo aparece si hay sitio. La navegación no está
+      aquí: es el propio menú de la aplicación, que en una pantalla ancha se
+      queda fijo a la izquierda de todas las pantallas, no sólo de ésta.
+    -->
+    <div class="centro">
+      <!--
+        En la portada, el formulario encabeza la columna: publicar es la acción
+        principal del muro y esconderla tras un botón la haría menos evidente.
+        En una ficha baja a la columna de las publicaciones, que es donde se
+        escribe; y en la de otra persona no aparece: allí se lee.
+      -->
+      @if (isMainWall()) {
+        <ng-container [ngTemplateOutlet]="compositor" />
+      }
+
+      <!--
+        El muro de una persona se lee como su ficha: la portada arriba y, si
+        hay sitio, sus datos y sus fotos a un lado de lo que ha publicado.
+      -->
+      @if (profile(); as person) {
+        <app-profile-header
+          [profile]="person"
+          [isOwn]="isOwnWall()"
+          [canMessage]="canMessage()"
+          (followToggled)="toggleFollow()"
+          (messageRequested)="messageTo(person)"
+        />
+
+        <div class="ficha">
+          <aside class="ficha__datos">
+            <app-profile-about [profile]="person" [contact]="contact()" [photos]="photos()" />
+          </aside>
+
+          <div class="ficha__muro">
+            <ng-container [ngTemplateOutlet]="compositor" />
+            <ng-container [ngTemplateOutlet]="publicaciones" />
+          </div>
+        </div>
+      } @else {
+        <ng-container [ngTemplateOutlet]="publicaciones" />
+      }
+    </div>
+
+    <aside class="lateral lateral--informacion">
+      <app-info-rail />
+    </aside>
+  </div>
+
+  <ion-infinite-scroll [disabled]="!hasMore()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content />
+  </ion-infinite-scroll>
+</ion-content>
+
+<!-- La lista de publicaciones, que es la misma en la portada y en una ficha. -->
+<ng-template #publicaciones>
+  @for (post of items(); track post.id) {
+    <app-post-card [post]="post" (deleted)="onDeleted($event)" (updated)="onUpdated($event)" />
+  } @empty {
+    @if (!loading()) {
+      <p class="empty">{{ 'WALL.EMPTY' | translate }}</p>
+    }
+  }
+</ng-template>
+
+<!-- El formulario de publicar, que cambia de sitio pero no de forma. -->
+<ng-template #compositor>
+  @if (isAuthenticated() && (isMainWall() || isOwnWall())) {
+    <app-post-form [asModal]="false" (saved)="onCreated($event)" />
+  }
+</ng-template>

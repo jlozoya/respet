@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+        <ion-icon slot="icon-only" name="arrow-back" />
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="medium">{{ 'ORDER.ASSIGN_ROUNDSMAN' | translate }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [debounce]="300"
+      [placeholder]="'SEARCH' | translate"
+      (ionInput)="onSearch($event.detail.value ?? '')"
+    />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full">
+    @for (user of items(); track user.id) {
+      <ion-item button detail="false" (click)="select(user)">
+        <ion-avatar slot="start">
+          <img [src]="avatarOf(user)" [alt]="user.name" (error)="onImageError($event)" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ user.name }}</h2>
+          <p>{{ user.email }}</p>
+        </ion-label>
+      </ion-item>
+    } @empty {
+      @if (!loading()) {
+        <ion-item lines="none">
+          <ion-label class="ion-text-center">{{ 'NO_RESULTS' | translate }}</ion-label>
+        </ion-item>
+      }
+    }
+  </ion-list>
+
+  <ion-infinite-scroll [disabled]="!hasMore()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content />
+  </ion-infinite-scroll>
+</ion-content>

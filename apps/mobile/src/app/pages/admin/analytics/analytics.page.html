@@ -1,0 +1,81 @@
+<app-page-header title="NAV.ANALYTICS" />
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <ion-row>
+    @for (total of totals(); track total.label) {
+      <ion-col size="6" size-md="3">
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <h2>{{ total.value }}</h2>
+            <p>{{ total.label | translate }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    }
+  </ion-row>
+
+  <ion-row>
+    <ion-col size="12">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'ANALYTICS.REGISTRATIONS' | translate }}</ion-card-title>
+          <ion-segment [value]="interval()" (ionChange)="changeInterval($any($event.detail.value))">
+            @for (option of intervals; track option) {
+              <ion-segment-button [value]="option">
+                <ion-label>{{ 'ANALYTICS.INTERVAL.' + option.toUpperCase() | translate }}</ion-label>
+              </ion-segment-button>
+            }
+          </ion-segment>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart">
+            <canvas baseChart type="line" [data]="registrationChart()" [options]="chartOptions"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+    <ion-col size="12" size-md="6">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'GENDER' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart">
+            <canvas baseChart type="doughnut" [data]="genderChart()" [options]="doughnutOptions"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+    <ion-col size="12" size-md="6">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'ANALYTICS.PROVIDERS' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart">
+            <canvas baseChart type="doughnut" [data]="providerChart()" [options]="doughnutOptions"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+    <ion-col size="12">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'ANALYTICS.AGES' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart">
+            <canvas baseChart type="bar" [data]="ageChart()" [options]="chartOptions"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>

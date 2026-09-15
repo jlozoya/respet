@@ -1,0 +1,1005 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AddEmailsInput {
+  emails: [String!]!
+}
+
+input AddOrderItemInput {
+  productId: ID!
+  quantity: Int!
+}
+
+input AddPhonesInput {
+  phones: [String!]!
+}
+
+"""Cuentas por tramo de edad."""
+type AgeBreakdown {
+  adults: Int!
+  children: Int!
+  teens: Int!
+  unknown: Int!
+  youngAdults: Int!
+}
+
+"""Cifras generales de la plataforma."""
+type Analytics {
+  ages: AgeBreakdown!
+  gender: GenderBreakdown!
+  ordersTotal: Int!
+  postsTotal: Int!
+  providers: ProviderBreakdown!
+  supportTotal: Int!
+  usersTotal: Int!
+}
+
+input AnalyticsQueryInput {
+  """Desde, en formato ISO-8601."""
+  from: String
+  interval: RegistrationInterval
+
+  """Hasta, en formato ISO-8601."""
+  to: String
+}
+
+"""Con qué se autentica la cuenta."""
+enum AuthProvider {
+  apple
+  facebook
+  google
+  password
+}
+
+"""Los tokens y la persona a la que pertenecen."""
+type AuthSession {
+  accessToken: String!
+
+  """Vida del `accessToken`, en segundos."""
+  expiresIn: Int!
+  refreshToken: String!
+  tokenType: String!
+  user: User!
+}
+
+"""Par de tokens emitido al autenticarse."""
+type AuthTokens {
+  accessToken: String!
+
+  """Vida del `accessToken`, en segundos."""
+  expiresIn: Int!
+  refreshToken: String!
+  tokenType: String!
+}
+
+"""Aviso publicado por la administración."""
+type Bulletin {
+  createdAt: String!
+  date: String!
+  description: String!
+  id: ID!
+  media: Media
+  title: String!
+  updatedAt: String!
+}
+
+input BulletinListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+
+  """Texto libre a buscar."""
+  search: String
+}
+
+"""Página de Bulletin."""
+type BulletinPage {
+  data: [Bulletin!]!
+  meta: PaginationMeta!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+}
+
+"""Cobro recién abierto: la app lleva a `approvalUrl`."""
+type CheckoutSession {
+  approvalUrl: String!
+  externalId: String!
+  paymentId: ID!
+  provider: String!
+}
+
+type Comment {
+  author: UserSummary!
+  body: String!
+  createdAt: String!
+
+  """Los retirados no se borran: dejarían huecos en el hilo."""
+  deleted: Boolean!
+  id: ID!
+  postId: ID!
+  updatedAt: String!
+}
+
+input CommentListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+}
+
+"""Página de Comment."""
+type CommentPage {
+  data: [Comment!]!
+  meta: PaginationMeta!
+}
+
+type Conversation {
+  id: ID!
+  lastMessageAt: String
+
+  """Resumen del último mensaje, para la lista."""
+  lastPreview: String
+  muted: Boolean!
+
+  """La otra persona."""
+  peer: UserSummary!
+  unreadCount: Int!
+}
+
+input CreateBulletinInput {
+  """Fecha del aviso, en formato ISO-8601 (2026-09-10)."""
+  date: String!
+  description: String!
+  title: String!
+}
+
+input CreateCommentInput {
+  body: String!
+}
+
+input CreateOrderInput {
+  destination: LocationInput
+}
+
+input CreatePostInput {
+  description: String!
+  kind: PostKind!
+  location: LocationInput
+
+  """
+  Radio de difuminado en kilómetros. 0 publica la ubicación exacta; útil para no revelar un domicilio.
+  """
+  locationAccuracy: Int
+}
+
+input CreateProductInput {
+  description: String!
+  name: String!
+
+  """Precio unitario, con dos decimales."""
+  price: Float!
+
+  """Existencias disponibles."""
+  stock: Int!
+  warehouseId: ID
+}
+
+input CreateSupportInput {
+  email: String!
+  lang: String
+  message: String!
+  name: String!
+  phone: String
+}
+
+input CreateWarehouseInput {
+  description: String
+  location: LocationInput
+  name: String!
+}
+
+"""Cómo queda el seguimiento tras cambiarlo."""
+type FollowResult {
+  followedByMe: Boolean!
+  followerCount: Int!
+}
+
+input ForgotPasswordInput {
+  email: String!
+  lang: String
+}
+
+enum Gender {
+  female
+  male
+  unspecified
+}
+
+"""Cuentas por género."""
+type GenderBreakdown {
+  female: Int!
+  male: Int!
+
+  """Quienes no han contestado."""
+  unknown: Int!
+
+  """Quienes prefieren no decirlo."""
+  unspecified: Int!
+}
+
+"""Un sitio, con o sin coordenadas."""
+type Location {
+  """Ciudad o municipio."""
+  city: String
+  country: String
+  id: ID!
+  lat: Float
+  lng: Float
+  postalCode: String
+
+  """Calle."""
+  route: String
+
+  """Estado o provincia."""
+  state: String
+  streetNumber: String
+}
+
+input LocationInput {
+  """Ciudad o municipio."""
+  city: String
+  country: String
+  lat: Float
+  lng: Float
+  postalCode: String
+
+  """Calle."""
+  route: String
+
+  """Estado o provincia."""
+  state: String
+  streetNumber: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+"""Un archivo subido, normalmente una imagen."""
+type Media {
+  alt: String!
+  height: Int
+  id: ID!
+  type: MediaType!
+  url: String!
+  width: Int
+}
+
+enum MediaType {
+  image
+  link
+  other
+  video
+}
+
+type Message {
+  """Nulo en imágenes y en los retirados."""
+  body: String
+  conversationId: ID!
+  createdAt: String!
+
+  """Cierto si su autor lo retiró; el hilo lo enseña como eliminado."""
+  deleted: Boolean!
+  id: ID!
+  kind: MessageKind!
+  media: Media
+  sender: UserSummary!
+}
+
+enum MessageKind {
+  image
+  text
+}
+
+input MessageListQueryInput {
+  """Devuelve los mensajes anteriores a este id, para seguir hacia atrás."""
+  before: ID
+  limit: Int = 30
+}
+
+type MessagePage {
+  data: [Message!]!
+
+  """Id desde el que pedir el siguiente tramo."""
+  nextCursor: ID
+}
+
+type Mutation {
+  addEmails(input: AddEmailsInput!): [UserEmail!]!
+  addOrderItem(id: ID!, input: AddOrderItemInput!): Order!
+  addPhones(input: AddPhonesInput!): [UserPhone!]!
+
+  """Cobra un pago ya aprobado, cuando PayPal devuelve al comprador."""
+  capturePayment(id: ID!): Payment!
+  changePassword(input: ChangePasswordInput!): Boolean!
+
+  """Inicia el cobro y devuelve el enlace de PayPal al que ir."""
+  checkout(orderId: ID!): CheckoutSession!
+  createBulletin(input: CreateBulletinInput!): Bulletin!
+  createComment(input: CreateCommentInput!, postId: ID!): Comment!
+  createOrder(input: CreateOrderInput): Order!
+  createPost(input: CreatePostInput!): Post!
+  createProduct(input: CreateProductInput!): Product!
+
+  """Envía un mensaje desde el formulario de contacto."""
+  createSupportTicket(input: CreateSupportInput!): SupportTicket!
+  createWarehouse(input: CreateWarehouseInput!): Warehouse!
+  deleteBulletin(id: ID!): Boolean!
+
+  """Retira un comentario propio."""
+  deleteComment(id: ID!): Boolean!
+
+  """Retira un mensaje propio."""
+  deleteMessage(id: ID!): Message!
+
+  """Borra la cuenta propia y todo su contenido."""
+  deleteMyAccount: Boolean!
+
+  """Borra un pedido que aún no se ha confirmado."""
+  deleteOrder(id: ID!): Boolean!
+  deletePost(id: ID!): Boolean!
+
+  """Borra un producto que no aparezca en ningún pedido."""
+  deleteProduct(id: ID!): Boolean!
+  deleteUser(id: ID!): Boolean!
+
+  """Borra una bodega vacía."""
+  deleteWarehouse(id: ID!): Boolean!
+  followUser(id: ID!): FollowResult!
+  forgotPassword(input: ForgotPasswordInput!): Boolean!
+  login(input: LoginInput!): AuthSession!
+
+  """Cierra la sesión. Sin `refreshToken`, cierra todas las abiertas."""
+  logout(everywhere: Boolean = false, refreshToken: String): Boolean!
+
+  """Marca la conversación como leída y devuelve el momento en que se hizo."""
+  markConversationRead(id: ID!): String!
+
+  """Silencia o reactiva los avisos de una conversación."""
+  muteConversation(id: ID!, muted: Boolean!): Boolean!
+
+  """Canjea un refresh token por un par nuevo."""
+  refreshTokens(refreshToken: String!): AuthTokens!
+
+  """Da de alta una cuenta y abre sesión."""
+  register(input: RegisterInput!): AuthSession!
+  removeEmail(id: ID!): Boolean!
+  removeOrderItem(id: ID!, itemId: ID!): Order!
+  removePhone(id: ID!): Boolean!
+  removePostMedia(id: ID!, mediaId: ID!): Boolean!
+  removeProductMedia(id: ID!, mediaId: ID!): Boolean!
+
+  """Desvincula una cuenta externa."""
+  removeSocialLink(id: ID!): Boolean!
+
+  """Denuncia una publicación para que la revisen."""
+  reportPost(id: ID!, input: ReportPostInput!): Boolean!
+
+  """
+  Pide un cambio de correo; se aplica al abrir el enlace enviado al nuevo.
+  """
+  requestEmailChange(input: UpdateEmailInput!): Boolean!
+
+  """Reenvía el correo de confirmación."""
+  resendVerification: Boolean!
+
+  """Fija una contraseña nueva con el token del correo."""
+  resetPassword(input: ResetPasswordInput!): Boolean!
+  sendMessage(conversationId: ID!, input: SendMessageInput!): Message!
+  setUserRole(id: ID!, role: UserRole!): User!
+  socialLogin(input: SocialLoginInput!): AuthSession!
+
+  """Abre una conversación con alguien; si ya existía, devuelve la misma."""
+  startConversation(userId: ID!): Conversation!
+  unfollowUser(id: ID!): FollowResult!
+
+  """Retira el voto propio, sea cual sea."""
+  unvotePost(id: ID!): PostVoteResult!
+  updateBulletin(id: ID!, input: UpdateBulletinInput!): Bulletin!
+  updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  updateLanguage(input: UpdateLanguageInput!): User!
+  updateLocation(input: UpdateLocationInput!): User!
+
+  """Edita el destino o las fechas de un pedido."""
+  updateOrder(id: ID!, input: UpdateOrderInput!): Order!
+  updateOrderItem(id: ID!, input: UpdateOrderItemInput!, itemId: ID!): Order!
+
+  """
+  Avanza el estado. Confirmarlo descuenta inventario; cancelarlo lo devuelve.
+  """
+  updateOrderState(id: ID!, input: UpdateOrderStateInput!): Order!
+  updatePermissions(input: UpdatePermissionsInput!): UserPermissions!
+  updatePost(id: ID!, input: UpdatePostInput!): Post!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
+  updateProfile(input: UpdateProfileInput!): User!
+  updateUserLocation(id: ID!, input: UpdateLocationInput!): User!
+  updateUserProfile(id: ID!, input: UpdateProfileInput!): User!
+  updateWarehouse(id: ID!, input: UpdateWarehouseInput!): Warehouse!
+  votePost(id: ID!, value: VoteValue!): PostVoteResult!
+}
+
+type Order {
+  createdAt: String!
+  customer: UserSummary!
+  deliveryDate: String
+  destination: Location
+  id: ID!
+  items: [OrderItem!]!
+  origin: Location
+  roundsman: UserSummary
+  state: OrderState!
+  takeOutDate: String
+  total: Float!
+  updatedAt: String!
+}
+
+"""Una línea del pedido."""
+type OrderItem {
+  id: ID!
+  product: Product
+  productId: ID!
+  quantity: Int!
+  subtotal: Float!
+
+  """Precio unitario congelado al añadirlo."""
+  unitPrice: Float!
+}
+
+input OrderListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+  roundsmanId: ID
+
+  """Texto libre a buscar."""
+  search: String
+  state: OrderState
+}
+
+"""Página de Order."""
+type OrderPage {
+  data: [Order!]!
+  meta: PaginationMeta!
+}
+
+enum OrderState {
+  cancelled
+  delivered
+  on_create
+  on_transit
+  stored
+}
+
+"""Cómo se reparte un listado en páginas."""
+type PaginationMeta {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  lastPage: Int!
+  page: Int!
+  perPage: Int!
+  total: Int!
+}
+
+type Payment {
+  amount: Float!
+  createdAt: String!
+  currency: String!
+
+  """Id de la transacción en el proveedor."""
+  externalId: String
+  id: ID!
+  orderId: ID!
+  provider: PaymentProvider!
+  status: PaymentStatus!
+}
+
+enum PaymentProvider {
+  cash
+  paypal
+  stripe
+}
+
+enum PaymentStatus {
+  completed
+  failed
+  pending
+  refunded
+}
+
+"""Una publicación del muro."""
+type Post {
+  author: UserSummary!
+  commentCount: Int!
+  createdAt: String!
+  description: String!
+  dislikeCount: Int!
+  id: ID!
+  kind: PostKind!
+  likeCount: Int!
+  location: Location
+
+  """0 publica la ubicación exacta; más difumina el punto en el mapa."""
+  locationAccuracy: Int!
+  media: [Media!]!
+
+  """Voto de quien mira. Nulo si no ha votado, que no es votar en contra."""
+  myVote: VoteValue
+  updatedAt: String!
+}
+
+"""`following` limita el muro a quienes sigue quien consulta."""
+enum PostFeed {
+  discover
+  following
+}
+
+"""Intención de una publicación: se cuenta algo, se ofrece o se pide."""
+enum PostKind {
+  event
+  general
+  offer
+  question
+  request
+}
+
+input PostListQueryInput {
+  """
+  `following` limita el muro a las publicaciones de quienes sigue el usuario —y a las suyas—. Sin sesión se ignora.
+  """
+  feed: PostFeed
+  kind: PostKind
+  lat: Float
+  lng: Float
+  page: Int = 1
+  perPage: Int = 20
+
+  """Radio de búsqueda en kilómetros."""
+  radiusKm: Float
+
+  """Texto libre a buscar."""
+  search: String
+
+  """Filtra por autor."""
+  userId: ID
+}
+
+"""Página de Post."""
+type PostPage {
+  data: [Post!]!
+  meta: PaginationMeta!
+}
+
+"""Recuento de votos después de cambiar el propio."""
+type PostVoteResult {
+  dislikeCount: Int!
+  likeCount: Int!
+  myVote: VoteValue
+}
+
+type Product {
+  createdAt: String!
+  description: String!
+  id: ID!
+  media: [Media!]!
+  name: String!
+
+  """Precio unitario, en la divisa del servidor."""
+  price: Float!
+
+  """Existencias disponibles."""
+  stock: Int!
+  updatedAt: String!
+  warehouse: Warehouse
+}
+
+input ProductListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+
+  """Texto libre a buscar."""
+  search: String
+  warehouseId: ID
+}
+
+"""Página de Product."""
+type ProductPage {
+  data: [Product!]!
+  meta: PaginationMeta!
+}
+
+"""Cuentas por forma de autenticarse."""
+type ProviderBreakdown {
+  apple: Int!
+  facebook: Int!
+  google: Int!
+  password: Int!
+}
+
+"""Lo que puede ver cualquiera, con o sin cuenta."""
+type PublicProfile {
+  avatar: Media
+  createdAt: String!
+  firstName: String!
+  followedByMe: Boolean
+  followerCount: Int!
+  followingCount: Int!
+  id: ID!
+  lastName: String!
+  name: String!
+  postCount: Int!
+}
+
+type Query {
+  """Cifras generales."""
+  analytics: Analytics!
+  bulletin(id: ID!): Bulletin!
+
+  """Avisos publicados, del más reciente al más antiguo."""
+  bulletins(query: BulletinListQueryInput): BulletinPage!
+
+  """Hilo de una publicación."""
+  comments(postId: ID!, query: CommentListQueryInput): CommentPage!
+  conversation(id: ID!): Conversation!
+
+  """Conversaciones del usuario, de la más reciente a la más antigua."""
+  conversations: [Conversation!]!
+
+  """Carrito abierto. Si no había ninguno sin confirmar, se crea uno vacío."""
+  currentOrder: Order!
+  followers(id: ID!, query: UserListQueryInput): UserSummaryPage!
+  following(id: ID!, query: UserListQueryInput): UserSummaryPage!
+
+  """Perfil de quien consulta."""
+  me: User!
+  messages(conversationId: ID!, query: MessageListQueryInput): MessagePage!
+  myEmails: [UserEmail!]!
+  myOrders(query: OrderListQueryInput): OrderPage!
+
+  """Preferencias de privacidad."""
+  myPermissions: UserPermissions!
+  myPhones: [UserPhone!]!
+  order(id: ID!): Order!
+  orderPayments(orderId: ID!): [Payment!]!
+
+  """Todos los pedidos, para el personal."""
+  orders(query: OrderListQueryInput): OrderPage!
+  post(id: ID!): Post!
+  posts(query: PostListQueryInput): PostPage!
+  product(id: ID!): Product!
+
+  """Catálogo."""
+  products(query: ProductListQueryInput): ProductPage!
+
+  """Ficha pública. Con sesión indica además si ya la sigues."""
+  publicProfile(id: ID!): PublicProfile!
+  supportTickets(query: SupportListQueryInput): SupportTicketPage!
+
+  """Total de mensajes sin leer, para el distintivo del menú."""
+  unreadMessageCount: Int!
+
+  """Ficha completa de un usuario."""
+  user(id: ID!): User!
+
+  """Sólo devuelve los campos que su dueño ha decidido mostrar."""
+  userContact(id: ID!): UserContact!
+  users(query: UserListQueryInput): UserPage!
+
+  """Altas de usuarios agrupadas por intervalo."""
+  usersRegistration(query: AnalyticsQueryInput): [UsersRegistrationPoint!]!
+  warehouse(id: ID!): Warehouse!
+  warehouses(query: WarehouseListQueryInput): WarehousePage!
+}
+
+input RegisterInput {
+  """Fecha de nacimiento, en ISO-8601."""
+  birthday: String
+  email: String!
+  firstName: String!
+  gender: Gender
+  lang: String
+  lastName: String!
+
+  """Nombre visible dentro de la aplicación."""
+  name: String!
+  password: String!
+}
+
+enum RegistrationInterval {
+  day
+  month
+  week
+  year
+}
+
+input ReportPostInput {
+  """Motivo de la denuncia, tal y como lo escribe quien la envía."""
+  reason: String!
+}
+
+input ResetPasswordInput {
+  password: String!
+  token: String!
+}
+
+input SendMessageInput {
+  body: String!
+}
+
+"""Cuenta externa enlazada a la del usuario."""
+type SocialLink {
+  externalId: String!
+  id: ID!
+  provider: AuthProvider!
+}
+
+input SocialLoginInput {
+  lang: String
+  provider: AuthProvider!
+
+  """idToken en Google y Apple; accessToken en Facebook."""
+  token: String!
+}
+
+input SupportListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+
+  """Texto libre a buscar."""
+  search: String
+}
+
+"""Mensaje del formulario de contacto."""
+type SupportTicket {
+  createdAt: String!
+  email: String!
+  id: ID!
+  lang: String!
+  message: String!
+  name: String!
+  phone: String
+}
+
+"""Página de SupportTicket."""
+type SupportTicketPage {
+  data: [SupportTicket!]!
+  meta: PaginationMeta!
+}
+
+input UpdateBulletinInput {
+  """Fecha del aviso, en formato ISO-8601 (2026-09-10)."""
+  date: String
+  description: String
+  title: String
+}
+
+input UpdateCommentInput {
+  body: String!
+}
+
+input UpdateEmailInput {
+  email: String!
+
+  """Contraseña actual. Obligatoria en cuentas con contraseña."""
+  password: String
+}
+
+input UpdateLanguageInput {
+  lang: String!
+}
+
+input UpdateLocationInput {
+  location: LocationInput
+}
+
+input UpdateOrderInput {
+  """Fecha de entrega, en ISO-8601."""
+  deliveryDate: String
+  destination: LocationInput
+
+  """Fecha de recogida, en ISO-8601."""
+  takeOutDate: String
+}
+
+input UpdateOrderItemInput {
+  """Con 0 se elimina la línea del pedido."""
+  quantity: Int!
+}
+
+input UpdateOrderStateInput {
+  """Repartidor asignado."""
+  roundsmanId: ID
+  state: OrderState!
+}
+
+input UpdatePermissionsInput {
+  receiveMailAds: Boolean
+  showAlternativeEmails: Boolean
+  showAlternativePhones: Boolean
+  showLocation: Boolean
+  showMainEmail: Boolean
+  showMainPhone: Boolean
+}
+
+input UpdatePostInput {
+  description: String
+  kind: PostKind
+  location: LocationInput
+
+  """
+  Radio de difuminado en kilómetros. 0 publica la ubicación exacta; útil para no revelar un domicilio.
+  """
+  locationAccuracy: Int
+}
+
+input UpdateProductInput {
+  description: String
+  name: String
+
+  """Precio unitario, con dos decimales."""
+  price: Float
+
+  """Existencias disponibles."""
+  stock: Int
+  warehouseId: ID
+}
+
+input UpdateProfileInput {
+  """Fecha de nacimiento, en ISO-8601."""
+  birthday: String
+  firstName: String
+  gender: Gender
+  lastName: String
+  name: String
+  phone: String
+}
+
+input UpdateWarehouseInput {
+  description: String
+  location: LocationInput
+  name: String
+}
+
+"""Ficha completa. Nunca incluye credenciales."""
+type User {
+  avatar: Media
+  birthday: String
+  createdAt: String!
+  email: String!
+  emailVerified: Boolean!
+  firstName: String!
+
+  """Nulo para quien no ha iniciado sesión, y también en la propia ficha."""
+  followedByMe: Boolean
+  followerCount: Int!
+  followingCount: Int!
+  gender: Gender
+  id: ID!
+  lang: String!
+  lastName: String!
+  location: Location
+  name: String!
+  permissions: UserPermissions
+  phone: String
+  provider: AuthProvider!
+  role: UserRole!
+  socialLinks: [SocialLink!]!
+  updatedAt: String!
+}
+
+"""Datos de contacto ya filtrados según lo que su dueño enseña."""
+type UserContact {
+  email: String
+  emails: [UserEmail!]!
+  id: ID!
+  location: Location
+  name: String!
+  phone: String
+  phones: [UserPhone!]!
+}
+
+type UserEmail {
+  email: String!
+  id: ID!
+}
+
+input UserListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+  role: UserRole
+
+  """Texto libre a buscar."""
+  search: String
+}
+
+"""Página de User."""
+type UserPage {
+  data: [User!]!
+  meta: PaginationMeta!
+}
+
+"""Qué acepta enseñar cada persona de su ficha."""
+type UserPermissions {
+  receiveMailAds: Boolean!
+  showAlternativeEmails: Boolean!
+  showAlternativePhones: Boolean!
+  showLocation: Boolean!
+  showMainEmail: Boolean!
+  showMainPhone: Boolean!
+}
+
+type UserPhone {
+  id: ID!
+  phone: String!
+}
+
+"""Rol de una cuenta. Son jerárquicos: `admin` cubre a los demás."""
+enum UserRole {
+  admin
+  roundsman
+  supervisor
+  user
+  visitor
+}
+
+"""El autor de algo: lo justo para pintar una firma."""
+type UserSummary {
+  avatar: Media
+  firstName: String!
+  id: ID!
+  lastName: String!
+  name: String!
+}
+
+"""Página de UserSummary."""
+type UserSummaryPage {
+  data: [UserSummary!]!
+  meta: PaginationMeta!
+}
+
+"""Altas dentro de un intervalo."""
+type UsersRegistrationPoint {
+  """Inicio del intervalo, en formato ISO-8601."""
+  date: String!
+  users: Int!
+}
+
+enum VoteValue {
+  down
+  up
+}
+
+"""Bodega desde la que salen los pedidos."""
+type Warehouse {
+  createdAt: String!
+  description: String
+  id: ID!
+  location: Location
+  media: Media
+  name: String!
+  updatedAt: String!
+}
+
+input WarehouseListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+
+  """Texto libre a buscar."""
+  search: String
+}
+
+"""Página de Warehouse."""
+type WarehousePage {
+  data: [Warehouse!]!
+  meta: PaginationMeta!
+}

@@ -1,0 +1,59 @@
+<div class="muelle">
+  <!-- Las conversaciones abiertas, de más antigua a más reciente. -->
+  @for (id of open(); track id) {
+    <app-chat-window [conversationId]="id" (closed)="closeConversation($event)" />
+  }
+
+  <div class="lanzador">
+    @if (listVisible()) {
+      <section class="lista">
+        <header>
+          <span>{{ 'CHAT.DOCK_TITLE' | translate }}</span>
+        </header>
+
+        @for (conversation of conversations(); track conversation.id) {
+          <button type="button" class="fila" (click)="openConversation(conversation)">
+            <img
+              class="avatar"
+              [src]="conversation.peer.avatar?.url ?? './assets/imgs/avatar.png'"
+              [alt]="conversation.peer.name"
+            />
+
+            <span class="texto">
+              <span class="nombre">{{ conversation.peer.name }}</span>
+              <small>{{ conversation.lastPreview }}</small>
+            </span>
+
+            @if (unreadOf(conversation); as pendientes) {
+              <ion-badge color="primary">{{ pendientes }}</ion-badge>
+            } @else {
+              <small class="cuando">{{ conversation.lastMessageAt | relativeTime }}</small>
+            }
+          </button>
+        } @empty {
+          <p class="vacio">{{ 'CHAT.EMPTY' | translate }}</p>
+        }
+      </section>
+    }
+
+    <!--
+      Un botón flotante, redondo y en la esquina: ocupa lo justo y no compite
+      con el contenido, que era lo que hacía la barra con su rótulo.
+    -->
+    <button
+      type="button"
+      class="flotante"
+      [class.flotante--abierto]="listVisible()"
+      [title]="'CHAT.DOCK_TITLE' | translate"
+      [attr.aria-label]="'CHAT.DOCK_TITLE' | translate"
+      [attr.aria-expanded]="listVisible()"
+      (click)="toggleList()"
+    >
+      <ion-icon [name]="listVisible() ? 'close' : 'chatbubbles-outline'" aria-hidden="true" />
+
+      @if (unreadCount(); as pendientes) {
+        <ion-badge color="danger">{{ pendientes }}</ion-badge>
+      }
+    </button>
+  </div>
+</div>

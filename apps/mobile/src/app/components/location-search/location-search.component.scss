@@ -1,0 +1,78 @@
+:host {
+  .titulo {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 16px 16px 8px;
+  }
+
+  /*
+    Cada sitio es un botón a lo ancho: se pulsa en cualquier parte de la fila,
+    que es lo que uno intenta en una lista así.
+  */
+  .sitio {
+    align-items: center;
+    background: none;
+    border: 0;
+    color: var(--ion-text-color);
+    cursor: pointer;
+    display: flex;
+    font: inherit;
+    gap: 12px;
+    padding: 10px 16px;
+    text-align: start;
+    width: 100%;
+  }
+
+  .sitio:hover {
+    background: var(--ion-color-step-100, rgb(128 128 128 / 12%));
+  }
+
+  /* El icono va en su círculo, como en cualquier lista de lugares. */
+  .sitio ion-icon {
+    background: var(--ion-color-step-150, rgb(128 128 128 / 18%));
+    border-radius: 50%;
+    flex: 0 0 auto;
+    font-size: 20px;
+    padding: 8px;
+  }
+
+  .sitio .texto {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .sitio .nombre {
+    font-weight: 600;
+  }
+
+  /* La dirección larga no parte la fila: se corta con puntos suspensivos. */
+  .sitio small {
+    color: var(--ion-color-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* La que ya está puesta no se vuelve a elegir: no reacciona al ratón. */
+  .sitio--puesto {
+    cursor: default;
+  }
+
+  .sitio--puesto:hover {
+    background: none;
+  }
+
+  .esperando {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .vacio {
+    color: var(--ion-color-medium);
+    padding: 24px 16px;
+    text-align: center;
+  }
+}

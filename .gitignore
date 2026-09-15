@@ -1,38 +1,61 @@
-# Specifies intentionally untracked files to ignore when using Git
-# http://git-scm.com/docs/gitignore
-
-*~
-*.sw[mnpcod]
-*.log
-*.tmp
-*.tmp.*
-log.txt
-*.sublime-project
-*.sublime-workspace
-.vscode/
-npm-debug.log*
-
-.idea/
-.ionic/
-.angular/
-.sourcemaps/
-.sass-cache/
-.tmp/
-.versions/
-coverage/
-www/
+# Dependencias
 node_modules/
-tmp/
-temp/
-platforms/
-plugins/
-plugins/android.json
-plugins/ios.json
-$RECYCLE.BIN/
+.pnp/
+.pnp.js
 
+# Salidas de compilación
+dist/
+www/
+out-tsc/
+build/
+.angular/
+*.tsbuildinfo
+
+# Archivos subidos en desarrollo
+apps/api/storage/
+
+# Entorno: se versiona sólo el ejemplo
+.env
+.env.*
+!.env.example
+
+# Plataformas nativas (se regeneran con `npx cap add`)
+/android
+/ios
+/platforms
+/plugins
+apps/mobile/android/
+apps/mobile/ios/
+
+# Registros y cachés
+*.log
+npm-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Editores y sistema operativo
+.idea/
+.vscode/*
+!.vscode/extensions.json
 .DS_Store
 Thumbs.db
+*.swp
+*~
+$RECYCLE.BIN/
 UserInterfaceState.xcuserstate
-/respet.keystore
 
-CREDENTIALS.md
+# Ionic
+.ionic/
+.sourcemaps/
+.sass-cache/
+
+# Configuración de servicios de Google: lleva claves del proyecto y no la usa
+# nada de la compilación actual, así que se queda en cada máquina.
+apps/mobile/credentials.json
+apps/mobile/google-services.json
+apps/mobile/GoogleService-Info.plist

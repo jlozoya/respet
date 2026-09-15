@@ -1,0 +1,106 @@
+:host {
+  background: #000;
+  display: block;
+  position: relative;
+
+  /*
+    Carrusel con desplazamiento nativo: cada diapositiva ocupa el ancho del
+    contenedor y `scroll-snap` la deja centrada al soltar el dedo.
+  */
+  .track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    align-items: center;
+    display: flex;
+    flex: 0 0 100%;
+    justify-content: center;
+    margin: 0;
+    scroll-snap-align: center;
+  }
+
+  .slide img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  // Redondos y con fondo translúcido, para que se distingan lo mismo sobre un
+  // cielo claro que sobre una sombra.
+  .nav {
+    --background: rgb(0 0 0 / 45%);
+    --background-hover: rgb(0 0 0 / 70%);
+    --color: #fff;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    height: 40px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    z-index: 1;
+  }
+
+  .nav[disabled] {
+    opacity: 0.35;
+  }
+
+  .nav--prev {
+    left: 12px;
+  }
+
+  .nav--next {
+    right: 12px;
+  }
+
+  .pager {
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+
+  // El punto que se ve mide 8 px, pero el botón que lo envuelve es mucho mayor,
+  // para no tener que apuntar con precisión de cirujano.
+  .dot {
+    appearance: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    line-height: 0;
+    padding: 6px;
+  }
+
+  .dot span {
+    background: rgb(255 255 255 / 40%);
+    border-radius: 50%;
+    display: block;
+    height: 8px;
+    transition: background 0.2s ease-in-out;
+    width: 8px;
+  }
+
+  .dot--active span {
+    background: #fff;
+  }
+
+  // El carrusel recibe el foco para recorrerlo con las flechas del teclado.
+  .track:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+  }
+}

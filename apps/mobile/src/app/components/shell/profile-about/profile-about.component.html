@@ -1,0 +1,53 @@
+<!-- Datos personales: sólo lo que esta persona ha querido compartir. -->
+@if (hasDetails() || profile()) {
+  <section class="tarjeta">
+    <h2>{{ 'PROFILE.DETAILS' | translate }}</h2>
+
+    @if (place(); as sitio) {
+      <p class="dato">
+        <ion-icon name="location-outline" aria-hidden="true" />
+        <span>{{ 'PROFILE.LIVES_IN' | translate: { place: sitio } }}</span>
+      </p>
+    }
+
+    <p class="dato">
+      <ion-icon name="person-outline" aria-hidden="true" />
+      <span>
+        {{ 'PROFILE.MEMBER_SINCE' | translate: { date: (profile().createdAt | date: 'longDate') } }}
+      </span>
+    </p>
+
+    @for (email of emails(); track email) {
+      <button type="button" class="dato dato--pulsable" (click)="mailTo(email)">
+        <ion-icon name="mail" aria-hidden="true" />
+        <span>{{ email }}</span>
+      </button>
+    }
+
+    @for (phone of phones(); track phone) {
+      <button type="button" class="dato dato--pulsable" (click)="callTo(phone)">
+        <ion-icon name="call" aria-hidden="true" />
+        <span>{{ phone }}</span>
+      </button>
+    }
+
+    @if (!hasDetails()) {
+      <p class="nada">{{ 'NO_CONTACT_SHARED' | translate }}</p>
+    }
+  </section>
+}
+
+<!-- Las fotos que ha publicado, que es lo que de verdad cuenta quién es. -->
+@if (photos().length > 0) {
+  <section class="tarjeta">
+    <h2>{{ 'IMAGES' | translate }}</h2>
+
+    <div class="mosaico">
+      @for (photo of photos(); track photo.id) {
+        <button type="button" class="pieza" (click)="openPhoto(photo)">
+          <img [src]="photo.url" [alt]="photo.alt" loading="lazy" />
+        </button>
+      }
+    </div>
+  </section>
+}

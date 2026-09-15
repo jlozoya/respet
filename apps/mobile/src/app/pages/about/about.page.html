@@ -1,0 +1,19 @@
+<app-page-header title="NAV.ABOUT_US" />
+
+<ion-content>
+  <div class="intro">
+    <h1>{{ 'ABOUT.TITLE' | translate }}</h1>
+    <p>{{ 'ABOUT.DESCRIPTION' | translate }}</p>
+  </div>
+
+  <div class="address">
+    <h2>{{ office.name }}</h2>
+    @for (line of office.address; track line) {
+      <p>{{ line }}</p>
+    }
+  </div>
+
+  <div #mapCanvas class="map-canvas"></div>
+
+  <app-footer />
+</ion-content>

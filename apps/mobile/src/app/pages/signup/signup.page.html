@@ -1,0 +1,211 @@
+<app-page-header title="NAV.SIGNUP" />
+
+<ion-content>
+  <!--
+    Un formulario de alta como el de cualquier red social: una tarjeta
+    centrada, los campos con su rótulo encima y los que van juntos —nombre y
+    apellido, día, mes y año— en la misma línea. Antes era una lista de Ionic
+    con un campo por fila, que en una pantalla ancha se leía como un listado de
+    ajustes y no como el paso de entrada que es.
+  -->
+  <div class="tarjeta">
+    <h1>{{ 'SIGNUP_PAGE.TITLE' | translate }}</h1>
+    <p class="subtitulo">{{ 'SIGNUP_PAGE.SUBTITLE' | translate }}</p>
+
+    <form [formGroup]="form" (ngSubmit)="signup()">
+      <div class="grupo">
+        <span class="rotulo">{{ 'SIGNUP_PAGE.FULL_NAME' | translate }}</span>
+
+        <div class="fila" style="--columnas: 2">
+          <ion-input
+            fill="outline"
+            formControlName="firstName"
+            type="text"
+            autocomplete="given-name"
+            [placeholder]="'FIRST_NAME' | translate"
+            [attr.aria-label]="'FIRST_NAME' | translate"
+          />
+          <ion-input
+            fill="outline"
+            formControlName="lastName"
+            type="text"
+            autocomplete="family-name"
+            [placeholder]="'LAST_NAME' | translate"
+            [attr.aria-label]="'LAST_NAME' | translate"
+          />
+        </div>
+
+        <app-control-messages [control]="form.controls.firstName" />
+        <app-control-messages [control]="form.controls.lastName" />
+      </div>
+
+      <div class="grupo">
+        <span class="rotulo">{{ 'BIRTHDAY' | translate }}</span>
+
+        <div class="fila" style="--columnas: 3">
+          <ion-select
+            fill="outline"
+            formControlName="birthDay"
+            [placeholder]="'SIGNUP_PAGE.DAY' | translate"
+            [attr.aria-label]="'SIGNUP_PAGE.DAY' | translate"
+            [cancelText]="'CANCEL' | translate"
+            [okText]="'ACCEPT' | translate"
+          >
+            @for (day of days(); track day) {
+              <ion-select-option [value]="day">{{ day }}</ion-select-option>
+            }
+          </ion-select>
+
+          <ion-select
+            fill="outline"
+            formControlName="birthMonth"
+            [placeholder]="'SIGNUP_PAGE.MONTH' | translate"
+            [attr.aria-label]="'SIGNUP_PAGE.MONTH' | translate"
+            [cancelText]="'CANCEL' | translate"
+            [okText]="'ACCEPT' | translate"
+          >
+            @for (month of months(); track month.value) {
+              <ion-select-option [value]="month.value">{{ month.label }}</ion-select-option>
+            }
+          </ion-select>
+
+          <ion-select
+            fill="outline"
+            formControlName="birthYear"
+            [placeholder]="'SIGNUP_PAGE.YEAR' | translate"
+            [attr.aria-label]="'SIGNUP_PAGE.YEAR' | translate"
+            [cancelText]="'CANCEL' | translate"
+            [okText]="'ACCEPT' | translate"
+          >
+            @for (year of years; track year) {
+              <ion-select-option [value]="year">{{ year }}</ion-select-option>
+            }
+          </ion-select>
+        </div>
+      </div>
+
+      <div class="grupo">
+        <span class="rotulo">{{ 'GENDER' | translate }}</span>
+
+        <ion-select
+          fill="outline"
+          formControlName="gender"
+          [placeholder]="'SIGNUP_PAGE.SELECT_GENDER' | translate"
+          [attr.aria-label]="'GENDER' | translate"
+          [cancelText]="'CANCEL' | translate"
+          [okText]="'ACCEPT' | translate"
+        >
+          @for (option of genders; track option.value) {
+            <ion-select-option [value]="option.value">
+              {{ option.label | translate }}
+            </ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="grupo">
+        <span class="rotulo">{{ 'EMAIL' | translate }}</span>
+
+        <ion-input
+          fill="outline"
+          formControlName="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          [placeholder]="'EMAIL' | translate"
+          [attr.aria-label]="'EMAIL' | translate"
+        />
+
+        <app-control-messages [control]="form.controls.email" />
+      </div>
+
+      <div class="grupo">
+        <span class="rotulo">{{ 'PASSWORD' | translate }}</span>
+
+        <!--
+          Sin campo de confirmación: se puede ver lo que se escribe con el ojo
+          de al lado, que resuelve lo mismo sin pedir la contraseña dos veces.
+        -->
+        <ion-input
+          fill="outline"
+          formControlName="password"
+          type="password"
+          autocomplete="new-password"
+          [placeholder]="'PASSWORD' | translate"
+          [attr.aria-label]="'PASSWORD' | translate"
+        >
+          <ion-input-password-toggle slot="end" />
+        </ion-input>
+
+        <app-control-messages [control]="form.controls.password" />
+      </div>
+
+      <p class="legal">
+        {{ 'BY_CLICKING_TO_SOCIAL' | translate }}
+        <button type="button" class="anchor-button" (click)="goToPolitics('end_user_agreement')">
+          {{ 'TERMS_AND_CONDITIONS' | translate }}
+        </button>
+        {{ 'OF_BT' | translate }}.
+      </p>
+
+      <ion-button
+        class="enviar"
+        type="submit"
+        expand="block"
+        shape="round"
+        [disabled]="submitting()"
+      >
+        {{ 'SIGNUP' | translate }}
+      </ion-button>
+
+      <ion-button expand="block" shape="round" fill="outline" routerLink="/login">
+        {{ 'SIGNUP_PAGE.ALREADY_HAVE_ACCOUNT' | translate }}
+      </ion-button>
+    </form>
+
+    <div class="separador">
+      <span class="linea"></span>
+      <span>{{ 'SIGNUP_PAGE.OR' | translate }}</span>
+      <span class="linea"></span>
+    </div>
+
+    <div class="fila" style="--columnas: 2">
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="google"
+        [disabled]="submitting()"
+        (click)="signupWith('google')"
+      >
+        <ion-icon name="logo-google" slot="start" />
+        Google
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="facebook"
+        [disabled]="submitting()"
+        (click)="signupWith('facebook')"
+      >
+        <ion-icon name="logo-facebook" slot="start" />
+        Facebook
+      </ion-button>
+    </div>
+  </div>
+
+  <!--
+    Mientras se entra, un velo por encima.
+
+    Entre que el servidor contesta y la pantalla siguiente termina de cargarse
+    pasa un momento en el que este formulario seguía a la vista, con el menú y
+    lo de alrededor apareciendo por detrás: parecía que no había pasado nada.
+    `submitting` no se apaga hasta que la navegación acaba, así que tapa justo
+    ese hueco.
+  -->
+  @if (submitting()) {
+    <div class="entrando" role="status" aria-live="polite">
+      <ion-spinner name="crescent" />
+    </div>
+  }
+</ion-content>

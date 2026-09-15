@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+        <ion-icon slot="icon-only" name="arrow-back" />
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title color="medium">{{ 'LOCATION.SEARCH_TITLE' | translate }}</ion-title>
+  </ion-toolbar>
+
+  <ion-searchbar
+    [debounce]="350"
+    [placeholder]="'LOCATION.WHERE' | translate"
+    (ionInput)="search($event.detail.value ?? '')"
+  />
+</ion-header>
+
+<ion-content>
+  <!-- La que ya está puesta, con su aspa para quitarla sin buscar nada. -->
+  @if (current(); as puesta) {
+    <h2 class="titulo">{{ 'LOCATION.TAGGED' | translate }}</h2>
+
+    <div class="sitio sitio--puesto">
+      <ion-icon name="location-outline" aria-hidden="true" />
+      <span class="texto">{{ currentLabel(puesta) }}</span>
+      <ion-button
+        fill="clear"
+        color="medium"
+        (click)="remove()"
+        [attr.aria-label]="'LOCATION.CLEAR' | translate"
+      >
+        <ion-icon slot="icon-only" name="close-circle-outline" />
+      </ion-button>
+    </div>
+  }
+
+  @if (searching()) {
+    <div class="esperando">
+      <ion-spinner name="crescent" />
+    </div>
+  }
+
+  @if (suggestions().length > 0) {
+    <h2 class="titulo">{{ 'LOCATION.SUGGESTIONS' | translate }}</h2>
+
+    @for (suggestion of suggestions(); track suggestion.id) {
+      <button type="button" class="sitio" (click)="choose(suggestion)">
+        <ion-icon name="location-outline" aria-hidden="true" />
+        <span class="texto">
+          <span class="nombre">{{ suggestion.name }}</span>
+          @if (suggestion.address; as direccion) {
+            <small>{{ direccion }}</small>
+          }
+        </span>
+      </button>
+    }
+  } @else if (empty() && !searching()) {
+    <p class="vacio">{{ 'LOCATION.NOT_FOUND' | translate }}</p>
+  }
+</ion-content>

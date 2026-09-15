@@ -1,0 +1,131 @@
+<!--
+  La portada de quien todavía no ha entrado.
+
+  No lleva cabecera ni menú a propósito: sin cuenta no hay a dónde ir, así que
+  la pantalla sólo tiene que contar qué es esto y ofrecer las dos puertas,
+  entrar o darse de alta. A la izquierda el reclamo, a la derecha el acceso; en
+  un móvil, uno debajo del otro.
+-->
+<ion-content class="portada">
+  <div class="reparto">
+    <section class="presentacion">
+      <img class="marca" src="./assets/imgs/landing.png" alt="Respet" />
+      <h1>{{ 'LANDING.TAGLINE' | translate }}</h1>
+      <p class="lema">{{ 'LANDING.SUBTITLE' | translate }}</p>
+    </section>
+
+    <section class="acceso">
+      <div class="tarjeta">
+        <form [formGroup]="form" (ngSubmit)="login()">
+          <ion-input
+            fill="outline"
+            formControlName="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            [placeholder]="'EMAIL' | translate"
+            [attr.aria-label]="'EMAIL' | translate"
+          />
+          <app-control-messages [control]="form.controls.email" />
+
+          <!--
+            `ion-input-password-toggle` sustituye al icono del ojo que antes
+            había que cablear a mano cambiando el `type` del campo.
+          -->
+          <ion-input
+            fill="outline"
+            formControlName="password"
+            type="password"
+            autocomplete="current-password"
+            [placeholder]="'PASSWORD' | translate"
+            [attr.aria-label]="'PASSWORD' | translate"
+          >
+            <ion-input-password-toggle slot="end" />
+          </ion-input>
+          <app-control-messages [control]="form.controls.password" />
+
+          <ion-button
+            class="entrar"
+            type="submit"
+            expand="block"
+            shape="round"
+            [disabled]="submitting()"
+          >
+            {{ 'LOGIN' | translate }}
+          </ion-button>
+        </form>
+
+        <button type="button" class="anchor-button olvido" (click)="recoverPassword()">
+          {{ 'LANDING.FORGOT' | translate }}
+        </button>
+
+        <span class="raya"></span>
+
+        <ion-button expand="block" shape="round" color="green" routerLink="/signup">
+          {{ 'LANDING.CREATE_ACCOUNT' | translate }}
+        </ion-button>
+
+        <div class="separador">
+          <span class="linea"></span>
+          <span>{{ 'SIGNUP_PAGE.OR' | translate }}</span>
+          <span class="linea"></span>
+        </div>
+
+        <div class="sociales">
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="google"
+            [disabled]="submitting()"
+            (click)="loginWith('google')"
+          >
+            <ion-icon name="logo-google" slot="start" />
+            Google
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="facebook"
+            [disabled]="submitting()"
+            (click)="loginWith('facebook')"
+          >
+            <ion-icon name="logo-facebook" slot="start" />
+            Facebook
+          </ion-button>
+        </div>
+      </div>
+
+      <p class="legal">
+        {{ 'BY_CLICKING_TO_SOCIAL' | translate }}
+        <button type="button" class="anchor-button" (click)="goToPolitics('end_user_agreement')">
+          {{ 'TERMS_AND_CONDITIONS' | translate }}
+        </button>
+        {{ 'OF_BT' | translate }}.
+      </p>
+    </section>
+  </div>
+
+  <!-- Lo único que se puede visitar sin cuenta, donde se busca en cualquier sitio. -->
+  <footer class="pie">
+    <a routerLink="/tutorial">{{ 'NAV.PRESENTATION' | translate }}</a>
+    <a routerLink="/about">{{ 'NAV.ABOUT_US' | translate }}</a>
+    <a routerLink="/politics/privacy">{{ 'PRIVACY_POLICY' | translate }}</a>
+    <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a>
+  </footer>
+
+  <!--
+    Mientras se entra, un velo por encima.
+
+    Entre que el servidor contesta y la pantalla siguiente termina de cargarse
+    pasa un momento en el que este formulario seguía a la vista, con el menú y
+    lo de alrededor apareciendo por detrás: parecía que no había pasado nada.
+    `submitting` no se apaga hasta que la navegación acaba, así que tapa justo
+    ese hueco.
+  -->
+  @if (submitting()) {
+    <div class="entrando" role="status" aria-live="polite">
+      <ion-spinner name="crescent" />
+    </div>
+  }
+</ion-content>

@@ -1,215 +1,200 @@
-# Lozoya
+# Respet
 
-Esta es una aplicación para dedicada al comercio electrónico basado en la web y el uso de mobles.
+Red social para compartir lo que pasa cerca: publicaciones con imágenes y
+ubicación, comentarios, «me gusta», seguimiento entre personas y mensajería
+directa.
 
-Puedes encontrar la documentación de este api [aquí](https://lozoya.biz/respet-api-docs/), y un ejemplo de la interfaz relacionada [aquí](https://lozoya.biz/respet).
+El proyecto es ahora un **monorepo** con la aplicación y su API en el mismo
+repositorio. La API en Lumen (PHP), que antes vivía aparte en `respetv2_back`,
+se ha reescrito en TypeScript con NestJS.
 
-## Tabla de contenido
+```
+respet/
+├── apps/
+│   ├── api/          API GraphQL — NestJS 12 + Mongoose 9 + MongoDB
+│   └── mobile/       Aplicación — Ionic 9 + Angular 22 + Capacitor 8
+└── packages/
+    └── shared/       Contratos de dominio compartidos por ambos
+```
 
-1. [Empezando](#getting-started)
-2. [Páginas](#pages)
-3. [Librerias, proveedores y dependencias](#libraries_suppliers_dependencies)
-4. [i18n](#i18n)
-  * [Agregando idiomas](#adding_languages)
-  * [Cambiando idiomas](#changing_the_language)
-5. [Credenciales](#credentials)
-6. [Lanzamiento](#lanzamiento)
-  * [Android](#android)
-  * [Navegador](#browser)
-7. [Google services](#google_services)
-  * [Google login](#google_login)
-8. [Facebook services](#facebook_services)
-9. [Typedoc](#typedoc)
+`packages/shared` es la pieza que sostiene el conjunto: define los modelos y
+los cuerpos de petición y respuesta una sola vez, de modo que si el servidor
+cambia la forma de un `Post`, la aplicación deja de compilar en lugar de fallar
+en tiempo de ejecución.
 
-## <a name="getting-started"></a>Empezando
+## Puesta en marcha
 
-Para probas esta aplicación es necesario instalar sus dependencias y ejecutarla:
+Requisitos: **Node.js 22.12 o superior** y **npm 10.9 o superior**.
 
 ```bash
 npm install
-ionic serve
 ```
 
-## <a name="pages"></a>Páginas
-
-La aplicación viene con una variedad de páginas listas para usar. Estas páginas ayudan
-usted a ensamblar bloques de construcción comunes para su aplicación para que pueda enfocarse en su
-características únicas y marca.
-
-La aplicación abre primero en la pagina `TutorialPage`. Si el usuario ya ha pasado por esta página una vez,
-se saltará la siguiente vez que cargan la aplicación.
-
-Una vez que el usuario es autenticado, la aplicación cargará con el `MainPage` que es
-configurado para ser el `TabsPage` como el predeterminado.
-
-## <a name="libraries_suppliers_dependencies"></a>Librerias, proveedores y dependencias
-
-La aplicación tiene instalado diversas dependencias e implementa algunos proveedores.
+Levanta la base de datos. Con Docker no hace falta instalar nada más, y las
+credenciales ya coinciden con las del archivo de ejemplo:
 
 ```bash
-ionic cordova plugin add cordova-plugin-camera --save
-
-ionic cordova plugin add cordova-plugin-file-transfer --save
-ionic cordova plugin add cordova-plugin-file --save
-
-ionic cordova plugin add cordova-plugin-filepath --save
-
-npm install --save @ionic-native/camera @ionic-native/file @ionic-native/file-path @ionic-native/transfer
-
-npm install --save @ionic-native/file-transfer
-
-npm install --save @ionic-native/facebook
-
-cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="xxxxxxxxxxx" --variable APP_NAME="Lozoya" --variable FACEBOOK_ANDROID_SDK_VERSION="4.36.1"
-
-npm install --save @ionic-native/google-plus
-
-ionic cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID="com.googleusercontent.apps.xxxxx" --variable WEB_APPLICATION_CLIENT_ID="xxxxxx.apps.googleusercontent.com"
-
-ionic cordova plugin remove ionic-plugin-deeplinks --variable URL_SCHEME=Lozoya --variable DEEPLINK_SCHEME=https --variable DEEPLINK_HOST=lozoya.com --variable ANDROID_PATH_PREFIX=/
-
-npm install --save @ionic-native/deeplinks
-
-npm install chart.js --save
-
-ionic cordova plugin add cordova-plugin-crop
-npm install --save @ionic-native/crop
-npm install ngx-image-cropper --save
-
-ionic cordova plugin add cordova-plugin-bluetooth-serial2
-npm install --save @ionic-native/bluetooth-serial
-
-npm install --save rxjs-compat
-
-ionic cordova plugin add cordova-sqlite-storage
-npm install --save @ionic-native/sqlite
-
-ionic cordova plugin add phonegap-plugin-push --variable SENDER_ID=xxxxx --variable FCM_VERSION=11.8.0
-
-npm install --save @ionic-native/push
-
-ionic cordova plugin add ionic-plugin-deeplinks --variable URL_SCHEME=Lozoya --variable DEEPLINK_SCHEME=https --variable DEEPLINK_HOST=lozoya.com --variable ANDROID_PATH_PREFIX=//
+docker compose up -d
 ```
 
-## <a name="i18n"></a>i18n
-
-La aplicación viene con internacionalización (i18n) fuera de la caja con
-[ngx-translate](https://github.com/ngx-translate/core). Esto hace que sea fácil
-cambie el texto utilizado en la aplicación modificando solo un archivo.
-
-### <a name="adding_languages"></a>Agregando idiomas
-
-Para agregar nuevos idiomas, agregue nuevos archivos al directorio `src/assets/i18n`,
-siguiendo el patrón de LANGCODE.json donde LANGCODE es el idioma/locale
-código (ej .: en/gb/de/es/etc.).
-
-### <a name="changing_the_language"></a>Cambiando idiomas
-
-Para cambiar el idioma de la aplicación, edite `src/app/app.component.ts` y modifique
-`translate.use('es')` para usar LANGCODE desde `src/assets/i18n/`
-
-## <a name="lanzamiento"></a>Lanzamiento
-
-### <a name="android"></a>Android
+La primera vez hay que iniciar el conjunto de réplica, una sola vez —Mongo
+sólo ofrece transacciones así, y el inventario las necesita—:
 
 ```bash
-ionic cordova build android --release
-## Solo una vez
-keytool -genkey -v -keystore respet.keystore -alias respet -keyalg RSA -keysize 2048 -validity 10000
-## cd /platforms/android/app/build/outputs/apk/release
-## tiene la misma contraseña de la cuenta de google
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../../../../../respet.keystore app-release-unsigned.apk respet
-
-zipalign -v 4 app-release-unsigned.apk respet.apk
+docker compose exec mongo mongosh --quiet --eval "rs.initiate()"
 ```
 
-Generar SH1
+Si prefieres tu propio **MongoDB 8**, ajusta `DATABASE_URL` en el paso
+siguiente; tendrá que estar en «replica set» por lo mismo.
+
+Configura la API a partir del ejemplo:
 
 ```bash
-keytool -J-Duser.language=en -exportcert -alias respet -keystore ../../../../../../respet.keystore -list -v -storepass qwertyui
+cp apps/api/.env.example apps/api/.env
 ```
 
-Para hacer debug
+Como mínimo hay que rellenar `DATABASE_URL` y los dos secretos de JWT, que
+deben tener 32 caracteres o más:
 
 ```bash
-adb logcat chromium:D GooglePlugin:V *:S
+node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 ```
 
-### <a name="browser"></a>Navegador
-
-Es importante reemplazar esto:
-
-```xml
-<preference name="SplashScreen" value="screen" />
-```
-
-En el archivo config.xml
-
-```xml
-<preference name="SplashScreen" value="assets/imgs/appicon.png" />
-```
-
-Ejecutar: 
+Carga unos datos de ejemplo:
 
 ```bash
-ionic cordova build browser --prod
-# or
-npm run build --prod -- --base-href "./"
+npm run db:seed
 ```
 
-Asegurarse que la variable `gcm_sender_id` sea igual a "103953800507"
-
-## <a name="google_services"></a>Google services
-
-En el archivo `platforms/android/project.properties` asegúrate de que las siguientes dependencias estén así:
-
-```java
-cordova.system.library.4=com.google.android.gms:play-services-auth:11.8.0
-cordova.system.library.5=com.google.android.gms:play-services-identity:11.8.0
-```
-
-En caso de marque un error por un signo "+"
-
-Se pide el archivo google-services.json, arrástralo de la raíz a `platforms/android`
-
-Para obtener la clave SHA1
+Y arranca las dos partes a la vez:
 
 ```bash
-keytool -J-Duser.language=en -exportcert -alias respet -keystore respet.keystore -list -v -storepass fs227sca2
-keytool -J-Duser.language=en -exportcert -keystore debug.keystore -list -v -alias androiddebugkey -storepass android -keypass android
+npm run dev
 ```
 
-### <a name="google_login"></a>[Google login](https://www.joshmorony.com/implementing-google-plus-sign-in-with-oauth-2-0-in-ionic-2/)
+- API: <http://localhost:3000/graphql> — en desarrollo, esa misma dirección
+  abre GraphiQL con el esquema y un editor de consultas
+- Aplicación: <http://localhost:8100>
 
-Agregar api para login con ios:
+El seed deja una cuenta por rol (`admin@respet.test`, `supervisor@respet.test`,
+`repartidor@respet.test`, `usuario@respet.test`), todas con la contraseña
+`respet1234`.
 
-https://developers.google.com/mobile/add?platform=ios&cntapi=signin
+## Órdenes disponibles
 
-Agregar api para login con android:
+| Orden | Qué hace |
+| --- | --- |
+| `npm run dev` | Levanta API y aplicación en paralelo |
+| `npm run build` | Compila los tres paquetes en orden |
+| `npm run lint` | ESLint en todo el monorepo |
+| `npm test` | Pruebas unitarias |
+| `npm run db:seed` | Carga datos de ejemplo |
+| `npm run migrate:mongo` | Vuelca en Mongo la base MySQL anterior |
+| `docker compose up -d` | Levanta MongoDB para desarrollo |
+| `docker compose down -v` | Lo para y borra sus datos |
 
-- Obtener la clabe SHA1
-keytool -exportcert -list -v -alias respet -keystore respet.keystore
+## Migrar los datos de la versión anterior
 
-https://developers.google.com/mobile/add?platform=android&cntapi=signin
-
-## <a name="facebook_services"></a>[Facebook services](https://developers.facebook.com/)
-
-Clave api de facebook:
-
-keytool -exportcert -alias respet -keystore respet.keystore | openssl sha1 -binary | openssl base64
-
-APP_ID
-* xxxxxxxxxxx
-
-APP_NAME
-* Lozoya
-
-## <a name="typedoc"></a>[Typedoc](https://typedoc.org/)
-
-Para generar los archivos de documentación:
+El script lee la base MySQL sin modificarla y la vuelca en Mongo: los
+identificadores enteros pasan a `ObjectId`, los importes a céntimos y las
+columnas a `camelCase`. Apunta `MYSQL_URL` a la base antigua en `apps/api/.env`
+y prueba primero en seco:
 
 ```bash
-npm install --global typedoc
-
-typedoc --options typedoc.json
+npm run migrate:mongo -w @respet/api -- --dry
+npm run migrate:mongo
 ```
+
+Las contraseñas se conservan como los hashes bcrypt que generaba Laravel: el
+servidor sabe verificarlas y las reescribe como Argon2id la primera vez que
+cada persona inicia sesión, así que nadie tiene que restablecer nada.
+
+## Qué ha cambiado respecto a la versión anterior
+
+### Backend: de Lumen a NestJS
+
+| Antes | Ahora | Motivo |
+| --- | --- | --- |
+| Lumen 8 (PHP) | NestJS 12 | Mismo lenguaje que la aplicación y contratos compartidos |
+| Eloquent | Mongoose 9 sobre MongoDB | Documentos con la forma que ya tenían las respuestas |
+| Rutas REST | Un esquema de GraphQL | La app pide lo que pinta, y en una sola ida y vuelta |
+| OAuth2 de Passport | JWT con refresh rotativo | El `client_secret` viajaba dentro del binario de la app |
+| bcrypt | Argon2id | Recomendación actual de OWASP frente a ataques con GPU |
+| Intervention Image | sharp | Más rápido y descarta los EXIF, incluida la posición GPS |
+| srmklive/paypal | Cliente REST propio | Sólo hacían falta tres operaciones |
+| `addresses` + `directions` | `locations` | Eran dos tablas idénticas |
+| `post_media`, `product_media` | Clave foránea en `media` | Las tablas puente no aportaban nada |
+| `invoices`, `items`, `ipn_status` | `payments` | Un solo sitio donde mirar un cobro |
+
+Además, el servidor ya no se fía del perfil que le manda el cliente al entrar
+con Google o Facebook: verifica el token contra el proveedor y decide él de
+quién es la cuenta. Antes bastaba con conocer el correo de alguien para
+suplantarlo.
+
+### Aplicación: de Angular 10 a Angular 22
+
+| Antes | Ahora |
+| --- | --- |
+| Angular 10, Ionic 5, Capacitor 2 | Angular 22, Ionic 9, Capacitor 8 |
+| NgModules por pantalla | Componentes standalone y `loadComponent` |
+| `*ngIf` / `*ngFor` | `@if` / `@for` |
+| TSLint | ESLint |
+| Karma y Jasmine | Vitest |
+| Protractor | Playwright |
+| `@ionic-native/*` | Plugins de Capacitor |
+| `@ionic/storage` | `@capacitor/preferences` |
+| Bus de eventos propio | Señales de Angular |
+| `@codetrix-studio/capacitor-google-auth` y `@capacitor-community/facebook-login` | `@capgo/capacitor-social-login` |
+
+## Chat
+
+La aplicación incluye mensajería directa entre usuarios, con entrega en tiempo
+real por WebSocket:
+
+- Conversaciones de dos, que se abren desde el botón «Enviar mensaje» de
+  cualquier publicación.
+- Texto e imágenes, con burbujas agrupadas por autor al estilo de Messenger.
+- Indicador de «escribiendo…», presencia en línea, confirmación de lectura y
+  contador de mensajes sin leer en el menú.
+- Los mensajes se guardan con una mutación y el socket sólo transporta los
+  avisos, de modo que nada se pierde si la conexión en tiempo real se cae.
+
+El canal vive en el espacio de nombres `/chat` y se autentica con el mismo
+access token que el resto de la API.
+
+## Temas
+
+El tema oscuro es el de partida; el claro y la opción «seguir al sistema» se
+eligen desde el menú lateral y quedan guardados en el dispositivo. La paleta
+está en `apps/mobile/src/theme/variables.scss` y la gestiona `ThemeService`.
+
+## Estado
+
+Las tres partes compilan y la API arranca con un esquema de 31 consultas y 61
+mutaciones, más el canal de chat y las cuatro rutas HTTP que no caben en él:
+las subidas de archivos, el aviso de PayPal, el enlace de confirmación del
+correo y `/health`.
+
+Verificado contra una base de datos real: seed, muro y detalle de una
+publicación, alta, voto, comentarios, carrito, catálogo, chat e inicio de
+sesión, además del control de acceso —403 a quien no tiene el rol, 401 sin
+sesión— y del límite de peticiones, que sigue contando aunque ahora todas las
+operaciones compartan dirección.
+
+Lo que sigue sin comprobarse:
+
+- El volcado de la base anterior (`migrate:mongo`) está escrito y pasa el
+  comprobador de tipos, pero **no se ha ejecutado contra una base real**.
+  Pruébalo con `--dry` sobre una copia antes de tocar producción.
+- El acceso con Google y Facebook necesita las credenciales en `apps/api/.env`
+  y en `src/environments/`; sin ellas, el servidor responde 501 y la app enseña
+  el error correspondiente.
+- Los pagos con PayPal quedan desactivados mientras `PAYPAL_ENABLED` sea
+  `false`.
+
+Las pruebas unitarias de Angular 10 se eliminaron —sólo comprobaban que el
+componente se instanciaba y ninguna compilaba ya con el código nuevo—, así que
+la cobertura está por rehacer. De momento `npm test` cubre en el servidor las
+dos piezas que la migración dejó con lógica propia: la vuelta que se les da a
+los enumerados para que viajen con los valores del dominio, y la traducción de
+cualquier excepción a la clave que la aplicación enseña.

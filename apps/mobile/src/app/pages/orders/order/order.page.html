@@ -1,0 +1,54 @@
+<app-page-header title="NAV.ORDER" backTo="/orders" />
+
+<ion-content>
+  @if (order(); as current) {
+    <ion-row>
+      <ion-col size="12" size-md="8" offset-md="2">
+        <ion-item lines="none">
+          <ion-label>
+            <h1>{{ 'ORDER.NUMBER' | translate }} {{ current.id }}</h1>
+            <p>{{ current.createdAt | date: 'medium' }}</p>
+          </ion-label>
+          <ion-badge slot="end">{{ stateLabel() | translate }}</ion-badge>
+        </ion-item>
+
+        <ion-list lines="full">
+          @for (item of items(); track item.id) {
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <img [src]="imageOf(item)" [alt]="item.product?.name ?? ''" />
+              </ion-thumbnail>
+              <ion-label>
+                <h2>{{ item.product?.name }}</h2>
+                <p>{{ item.unitPrice | currency: 'MXN' }} × {{ item.quantity }}</p>
+              </ion-label>
+              <ion-note slot="end">{{ item.subtotal | currency: 'MXN' }}</ion-note>
+            </ion-item>
+          }
+
+          <ion-item class="total">
+            <ion-label><strong>{{ 'ORDER.TOTAL' | translate }}</strong></ion-label>
+            <ion-note slot="end" color="dark">
+              <strong>{{ current.total | currency: 'MXN' }}</strong>
+            </ion-note>
+          </ion-item>
+        </ion-list>
+
+        @if (current.roundsman; as roundsman) {
+          <ion-item lines="none">
+            <ion-label>
+              <h3>{{ roundsman.name }}</h3>
+              <p>{{ 'ORDER.ROUNDSMAN' | translate }}</p>
+            </ion-label>
+          </ion-item>
+        }
+
+        @if (canEdit()) {
+          <app-order-form [order]="current" (saved)="onUpdated($event)" />
+        }
+      </ion-col>
+    </ion-row>
+  } @else if (!loading()) {
+    <p class="empty">{{ 'SERVER.NOT_FOUND' | translate }}</p>
+  }
+</ion-content>

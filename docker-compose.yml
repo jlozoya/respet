@@ -1,0 +1,48 @@
+# Base de datos para desarrollo.
+#
+#   docker compose up -d      levanta Mongo
+#   docker compose down       lo para
+#   docker compose down -v    lo para y borra los datos
+#
+# Las credenciales coinciden con las de `apps/api/.env.example`, así que copiar
+# ese archivo a `.env` basta para que la API conecte sin tocar nada más.
+#
+# Ya no hay servicio de MySQL: era la base de la API cuando usaba Prisma. Para
+# volcar una base antigua se levanta aparte y se apunta `MYSQL_URL` a ella;
+# `npm run migrate:mongo` la lee sin modificarla.
+
+services:
+  # Base de datos de la aplicación.
+  #
+  # Va en «replica set» de un solo nodo porque Mongo sólo ofrece transacciones
+  # así, y aquí hacen falta: el inventario y los pedidos no pueden quedarse a
+  # medias. El puerto 27019 es para no chocar con otros Mongo de la máquina.
+  #
+  # La primera vez hay que iniciar el conjunto, una sola vez:
+  #   docker compose exec mongo mongosh --quiet --eval "rs.initiate()"
+  mongo:
+    image: mongo:8
+    container_name: respet-mongo
+    restart: unless-stopped
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - '27019:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      # Pasa sólo cuando el nodo ya es primario y admite escrituras.
+      test:
+        [
+          'CMD',
+          'mongosh',
+          '--quiet',
+          "--eval",
+          "db.hello().isWritablePrimary || quit(1)",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  mongo-data:

@@ -1,0 +1,10 @@
+:host {
+  .viewer {
+    --background: #000;
+  }
+
+  // El carrusel ocupa todo el alto disponible: aquí no hay nada más que ver.
+  .carrusel {
+    height: 100%;
+  }
+}

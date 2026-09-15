@@ -1,0 +1,100 @@
+:host {
+  /*
+    El muro en medio y lo que pasa alrededor a la derecha; la navegación es el
+    menú de la aplicación, que ya ocupa la izquierda cuando hay sitio. La
+    columna de la derecha se descuelga en cuanto falta espacio, y el muro nunca
+    se estrecha por debajo de lo que se lee cómodo.
+  */
+  .tablero {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0 auto;
+    max-width: 1600px;
+    padding: 0 8px;
+  }
+
+  .lateral {
+    display: none;
+  }
+
+  .centro {
+    min-width: 0;
+  }
+
+  /*
+    La ficha de una persona: sus datos a un lado y lo que ha publicado al otro.
+    Por debajo de una tableta se apilan, con los datos primero, que es lo que
+    se ha venido a ver.
+  */
+  .ficha {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 900px) {
+    .ficha {
+      align-items: start;
+      grid-template-columns: 320px minmax(0, 1fr);
+    }
+
+    /* Los datos se quedan quietos mientras se baja por las publicaciones. */
+    .ficha__datos {
+      position: sticky;
+      top: 8px;
+    }
+  }
+
+  .empty {
+    color: var(--ion-color-medium);
+    padding: 32px 16px;
+    text-align: center;
+  }
+
+  // Sin las columnas, el muro a lo ancho de una pantalla grande deja líneas
+  // imposibles de seguir: se le pone freno.
+  @media (min-width: 768px) {
+    .centro {
+      margin: 0 auto;
+      max-width: 680px;
+      width: 100%;
+    }
+
+    /* Con ficha hay dos columnas que acomodar: el centro se ensancha. */
+    .centro:has(.ficha) {
+      max-width: 1040px;
+    }
+  }
+
+  /*
+    El menú fijo ya se lleva unos 270px a esa altura, así que la columna de la
+    derecha espera a que sobren de verdad.
+  */
+  @media (min-width: 1400px) {
+    .tablero {
+      grid-template-columns: minmax(0, 1fr) 300px;
+    }
+
+    .centro {
+      margin: 0;
+      justify-self: center;
+    }
+
+    .lateral--informacion {
+      display: block;
+    }
+
+    /*
+      Se queda quieta mientras el muro baja: es referencia, no lectura, y
+      perseguirla con el scroll no tendría sentido.
+    */
+    .lateral {
+      align-self: start;
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      position: sticky;
+      top: 8px;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+:host {
+  /*
+    Ancho del panel fijo.
+
+    Ionic lo reparte por porcentaje —un 28% del ancho—, que en un monitor
+    grande son más de cuatrocientos píxeles de menú para unas entradas de una
+    línea. Se le da una medida fija, que es lo que hacen las aplicaciones con
+    una navegación así: lo que sobra es para el contenido.
+  */
+  ion-split-pane {
+    --side-min-width: 240px;
+    --side-max-width: 280px;
+    --side-width: 270px;
+  }
+}

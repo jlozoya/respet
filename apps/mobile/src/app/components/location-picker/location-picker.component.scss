@@ -1,0 +1,37 @@
+:host {
+  display: block;
+
+  .actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 16px;
+  }
+
+  .map-wrapper {
+    position: relative;
+  }
+
+  /*
+    El lienzo se revela sólo cuando Google Maps avisa de que ya ha pintado;
+    hasta entonces se vería un rectángulo gris a medio cargar.
+  */
+  .map-canvas {
+    border-radius: 8px;
+    height: 260px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    width: 100%;
+  }
+
+  .map-canvas.show-map {
+    opacity: 1;
+  }
+
+  .hint {
+    color: var(--ion-color-medium);
+    font-size: 0.8rem;
+    padding: 4px 16px;
+  }
+}

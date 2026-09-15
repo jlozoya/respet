@@ -1,0 +1,58 @@
+@if (current(); as product) {
+  <ion-card>
+    <ion-card-header>
+      <ion-item lines="none">
+        <ion-label>
+          <ion-text>
+            <ion-card-title>{{ product.name }}</ion-card-title>
+            <small>{{ product.updatedAt | date: 'mediumDate' }}</small>
+          </ion-text>
+        </ion-label>
+
+        @if (canManage()) {
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="medium"
+            (click)="$event.stopPropagation(); openMenu($event)"
+            [attr.aria-label]="'OPTIONS' | translate"
+          >
+            <ion-icon slot="icon-only" name="menu-outline" />
+          </ion-button>
+        }
+      </ion-item>
+    </ion-card-header>
+
+    <app-gallery [images]="product.media" />
+
+    <ion-card-content>
+      @if (orderedQuantity(); as ordered) {
+        <h2>{{ 'ORDER_AMOUNT' | translate }}: {{ ordered }}</h2>
+      }
+
+      <p>{{ product.description }}</p>
+      <p>{{ 'AVAILABLE_AMOUNT' | translate }}: {{ product.stock }}</p>
+      <p>{{ 'PRODUCT.PRICE' | translate }}: {{ product.price | currency: 'MXN' }}</p>
+
+      @if (inStock()) {
+        <ion-item lines="none">
+          <ion-input
+            type="number"
+            inputmode="numeric"
+            [min]="1"
+            [max]="product.stock"
+            [ngModel]="quantity()"
+            (ngModelChange)="quantity.set($event)"
+            [label]="'PRODUCT.AMOUNT' | translate"
+            labelPlacement="stacked"
+          />
+          <ion-button slot="end" [disabled]="adding()" (click)="addToCart()">
+            {{ 'ADD_TO_ORDER' | translate }}
+          </ion-button>
+        </ion-item>
+      } @else {
+        <ion-text color="danger">{{ 'PRODUCT.OUT_OF_STOCK' | translate }}</ion-text>
+      }
+    </ion-card-content>
+  </ion-card>
+}

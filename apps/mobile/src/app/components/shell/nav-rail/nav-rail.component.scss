@@ -1,0 +1,69 @@
+:host {
+  display: block;
+
+  .rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+  }
+
+  .entrada {
+    align-items: center;
+    // El de salir es un botón: se le quita el aspecto de botón para que pase
+    // por una entrada más de la lista.
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    color: var(--ion-text-color);
+    cursor: pointer;
+    display: flex;
+    font: inherit;
+    gap: 12px;
+    padding: 10px 12px;
+    text-align: start;
+    text-decoration: none;
+    width: 100%;
+  }
+
+  .entrada:hover {
+    background: var(--ion-color-step-100, rgb(128 128 128 / 12%));
+  }
+
+  // La página en la que se está se marca, para no tener que adivinarlo por el
+  // contenido de la pantalla.
+  .entrada--activa {
+    background: var(--ion-color-step-150, rgb(128 128 128 / 18%));
+    font-weight: 600;
+  }
+
+  .entrada ion-icon {
+    font-size: 22px;
+    min-width: 22px;
+  }
+
+  .rotulo {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .avatar {
+    border-radius: 50%;
+    height: 28px;
+    object-fit: cover;
+    width: 28px;
+  }
+
+  .entrada--perfil {
+    font-weight: 600;
+  }
+
+  hr {
+    background: var(--ion-color-step-150, rgb(128 128 128 / 25%));
+    border: 0;
+    height: 1px;
+    margin: 8px 12px;
+  }
+}

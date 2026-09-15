@@ -1,0 +1,189 @@
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IonButton } from '@ionic/angular/ion-button';
+import { IonDatetime } from '@ionic/angular/ion-datetime';
+import { IonInput } from '@ionic/angular/ion-input';
+import { IonItem } from '@ionic/angular/ion-item';
+import { IonLabel } from '@ionic/angular/ion-label';
+import { IonList } from '@ionic/angular/ion-list';
+import { IonSelect } from '@ionic/angular/ion-select';
+import { IonSelectOption } from '@ionic/angular/ion-select-option';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Gender, type LocationInput, type User } from '@respet/shared';
+
+import { UsersService } from '../../../../core/api/users.service';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { LanguageService } from '../../../../core/i18n/language.service';
+import { FeedbackService } from '../../../../core/ui/feedback.service';
+import { LocationPickerComponent } from '../../../../components/location-picker/location-picker.component';
+import { ControlMessagesComponent } from '../../../../shared/components/control-messages.component';
+import { phoneValidator } from '../../../../shared/validators/form-validators';
+
+/**
+ * Datos del perfil.
+ *
+ * El correo va aparte: cambiarlo exige la contraseña y no surte efecto hasta
+ * que se abre el enlace enviado a la dirección nueva, así que mezclarlo con el
+ * resto del formulario daría a entender que se guarda igual que los demás
+ * campos.
+ */
+@Component({
+  selector: 'app-user-form',
+  templateUrl: './user-form.component.html',
+  styleUrls: ['./user-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ControlMessagesComponent,
+    LocationPickerComponent,
+    IonList,
+    IonItem,
+    IonInput,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonDatetime,
+    IonButton,
+  ],
+})
+export class UserFormComponent {
+  private readonly users = inject(UsersService);
+  private readonly auth = inject(AuthService);
+  private readonly language = inject(LanguageService);
+  private readonly feedback = inject(FeedbackService);
+
+  readonly user = input.required<User>();
+  /** Falso cuando un administrador edita la ficha de otra persona. */
+  readonly isSelf = input(true);
+
+  readonly saved = output<User>();
+
+  readonly saving = signal(false);
+  readonly changingEmail = signal(false);
+  readonly location = signal<LocationInput | null>(null);
+
+  readonly genders = [
+    { value: Gender.Female, label: 'FEMALE' },
+    { value: Gender.Male, label: 'MALE' },
+    // El tercer valor del enumerado sigue siendo `other`; lo que cambia es
+    // cómo se ofrece: quien no se reconoce en los dos primeros no tiene por
+    // qué declararse «otro».
+    { value: Gender.Unspecified, label: 'PREFER_NOT_TO_SAY' },
+  ];
+
+  readonly languages = this.language.available;
+
+  private readonly builder = inject(FormBuilder);
+
+  readonly form = this.builder.nonNullable.group({
+    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
+    firstName: ['', [Validators.required, Validators.maxLength(60)]],
+    lastName: ['', [Validators.required, Validators.maxLength(60)]],
+    gender: [null as Gender | null],
+    phone: ['', [phoneValidator()]],
+    birthday: [null as string | null],
+    lang: ['es'],
+  });
+
+  readonly emailForm = this.builder.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: [''],
+  });
+
+  constructor() {
+    // Los `input.required` no tienen valor al construir el componente; el
+    // efecto además vuelve a rellenar el formulario si cambia el usuario.
+    effect(() => {
+      const current = this.user();
+
+      this.form.patchValue({
+        name: current.name,
+        firstName: current.firstName,
+        lastName: current.lastName,
+        gender: current.gender,
+        phone: current.phone ?? '',
+        birthday: current.birthday,
+        lang: current.lang,
+      });
+
+      this.emailForm.patchValue({ email: current.email });
+
+      if (current.location) {
+        const { id: _id, ...rest } = current.location;
+        this.location.set(rest);
+      } else {
+        this.location.set(null);
+      }
+    });
+  }
+
+  async submit(): Promise<void> {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+
+      return;
+    }
+
+    this.saving.set(true);
+
+    try {
+      const values = this.form.getRawValue();
+      const current = this.user();
+      const profile = {
+        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        gender: values.gender,
+        phone: values.phone || null,
+        birthday: values.birthday ? values.birthday.slice(0, 10) : null,
+      };
+
+      let updated = this.isSelf()
+        ? await this.users.updateProfile(profile)
+        : await this.users.updateProfileById(current.id, profile);
+
+      updated = this.isSelf()
+        ? await this.users.updateLocation({ location: this.location() })
+        : await this.users.updateLocationById(current.id, { location: this.location() });
+
+      if (this.isSelf() && values.lang !== current.lang) {
+        updated = await this.users.updateLanguage(values.lang);
+        await this.language.use(values.lang);
+      }
+
+      if (this.isSelf()) {
+        await this.auth.setUser(updated);
+      }
+
+      this.saved.emit(updated);
+      await this.feedback.success();
+    } catch (error) {
+      await this.feedback.error(error);
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  async changeEmail(): Promise<void> {
+    if (this.emailForm.invalid) {
+      this.emailForm.markAllAsTouched();
+
+      return;
+    }
+
+    this.changingEmail.set(true);
+
+    try {
+      const { email, password } = this.emailForm.getRawValue();
+
+      await this.users.requestEmailChange({ email, ...(password ? { password } : {}) });
+      await this.feedback.toast('EMAIL_CHANGE_REQUESTED', { color: 'success' });
+      this.emailForm.patchValue({ password: '' });
+    } catch (error) {
+      await this.feedback.error(error);
+    } finally {
+      this.changingEmail.set(false);
+    }
+  }
+}

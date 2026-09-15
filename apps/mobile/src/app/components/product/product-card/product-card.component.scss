@@ -1,0 +1,13 @@
+/*
+  La tarjeta de producto heredaba por copia la paleta de estados de las
+  publicaciones, que aquí no significaba nada: un producto no tiene estado.
+*/
+:host {
+  ion-card {
+    height: 100%;
+  }
+
+  ion-card-title {
+    font-size: 1.1rem;
+  }
+}

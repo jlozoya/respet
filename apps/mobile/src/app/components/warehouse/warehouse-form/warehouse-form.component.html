@@ -1,0 +1,57 @@
+@if (asModal()) {
+  <ion-header>
+    <ion-toolbar color="dark-accent">
+      <ion-buttons slot="start">
+        <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+          <ion-icon slot="icon-only" name="arrow-back" />
+        </ion-button>
+      </ion-buttons>
+      <ion-title color="medium">
+        {{ (isEdit() ? 'WAREHOUSE.EDIT_TITLE' : 'WAREHOUSE.NEW_TITLE') | translate }}
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+}
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <ion-item>
+      <ion-input
+        formControlName="name"
+        [label]="'NAME' | translate"
+        labelPlacement="stacked"
+        type="text"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.name" />
+
+    <ion-item>
+      <ion-textarea
+        formControlName="description"
+        [label]="'DESCRIPTION' | translate"
+        labelPlacement="stacked"
+        [autoGrow]="true"
+        [rows]="3"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.description" />
+
+    <ion-item lines="none">
+      <ion-label>{{ 'IMAGE' | translate }}</ion-label>
+      <ion-button slot="end" fill="outline" (click)="pickImage()">
+        <ion-icon name="images" slot="start" />
+        {{ 'CHANGE' | translate }}
+      </ion-button>
+    </ion-item>
+
+    @if (imagePreview(); as preview) {
+      <img class="preview" [src]="preview" [alt]="form.controls.name.value" />
+    }
+
+    <app-location-picker [(location)]="location" />
+
+    <ion-button expand="block" type="submit" [disabled]="saving()">
+      {{ 'SAVE' | translate }}
+    </ion-button>
+  </form>
+</ion-content>

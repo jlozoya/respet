@@ -1,0 +1,69 @@
+<nav class="rail">
+  @if (user(); as currentUser) {
+    <a class="entrada entrada--perfil" [routerLink]="['/profile', currentUser.id]">
+      <img
+        class="avatar"
+        [src]="avatarUrl()"
+        [alt]="currentUser.name"
+        (error)="onAvatarError($event)"
+      />
+      <span class="rotulo">{{ currentUser.name }}</span>
+    </a>
+  }
+
+  @for (page of browsePages; track page.link) {
+    <a
+      class="entrada"
+      [routerLink]="page.link"
+      routerLinkActive="entrada--activa"
+      [routerLinkActiveOptions]="{ exact: page.link === '/' }"
+    >
+      <ion-icon [name]="page.icon" />
+      <span class="rotulo">{{ page.title | translate }}</span>
+      @if (badgeOf(page.link); as pendientes) {
+        <ion-badge color="primary">{{ pendientes }}</ion-badge>
+      }
+    </a>
+  }
+
+  <hr />
+
+  @for (page of storePages; track page.link) {
+    <a class="entrada" [routerLink]="page.link" routerLinkActive="entrada--activa">
+      <ion-icon [name]="page.icon" />
+      <span class="rotulo">{{ page.title | translate }}</span>
+      @if (badgeOf(page.link); as pendientes) {
+        <ion-badge color="primary">{{ pendientes }}</ion-badge>
+      }
+    </a>
+  }
+
+  @if (managementPages().length > 0) {
+    <hr />
+
+    @for (page of managementPages(); track page.link) {
+      <a class="entrada" [routerLink]="page.link" routerLinkActive="entrada--activa">
+        <ion-icon [name]="page.icon" />
+        <span class="rotulo">{{ page.title | translate }}</span>
+      </a>
+    }
+  }
+
+  <hr />
+
+  @for (page of accountPages; track page.link) {
+    <a class="entrada" [routerLink]="page.link" routerLinkActive="entrada--activa">
+      <ion-icon [name]="page.icon" />
+      <span class="rotulo">{{ page.title | translate }}</span>
+    </a>
+  }
+
+  <!--
+    Salir es lo único de la columna que no lleva a ninguna parte, así que es un
+    botón y no un enlace; por fuera se ve igual que sus vecinos.
+  -->
+  <button type="button" class="entrada" (click)="logout()">
+    <ion-icon name="log-out-outline" />
+    <span class="rotulo">{{ 'NAV.LOGOUT' | translate }}</span>
+  </button>
+</nav>

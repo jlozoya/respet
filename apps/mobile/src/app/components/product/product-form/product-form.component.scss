@@ -1,0 +1,47 @@
+:host {
+  .thumbs {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    padding: 8px 16px;
+  }
+
+  .thumb {
+    margin: 0;
+    position: relative;
+  }
+
+  .thumb img {
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  /* Las que aún no se han subido se distinguen con un borde punteado. */
+  .thumb--pending img {
+    outline: 2px dashed var(--ion-color-medium);
+    outline-offset: -2px;
+  }
+
+  .thumb ion-button {
+    --padding-start: 4px;
+    --padding-end: 4px;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .file-input {
+    display: block;
+    padding: 8px 16px;
+    width: 100%;
+  }
+
+  .hint {
+    color: var(--ion-color-medium);
+    font-size: 0.8rem;
+    padding: 0 16px 8px;
+  }
+}

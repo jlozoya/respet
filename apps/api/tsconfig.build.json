@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Fija la raíz en `src` para que la salida sea `dist/main.js` y no
+    // `dist/src/main.js`; el seed y el volcado de la base antigua se ejecutan
+    // con tsx y no hace falta compilarlos.
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "scripts", "**/*spec.ts"]
+}

@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+        <ion-icon slot="icon-only" name="arrow-back" />
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="primary" [disabled]="!ready()" (click)="accept()">
+        <ion-icon name="checkmark" slot="start" />
+        {{ 'ACCEPT' | translate }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <image-cropper
+    [imageFile]="imageFile()"
+    [imageBase64]="imageBase64()"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="aspectRatio()"
+    [resizeToWidth]="targetWidth()"
+    output="blob"
+    format="webp"
+    [imageAltText]="'CROP_IMAGE' | translate"
+    (imageCropped)="onCropped($event)"
+    (loadImageFailed)="onFailed()"
+  />
+</ion-content>

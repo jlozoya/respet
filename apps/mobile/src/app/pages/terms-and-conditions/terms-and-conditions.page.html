@@ -1,0 +1,20 @@
+<app-page-header title="NAV.TERMS_AND_CONDITIONS">
+  <ion-segment
+    [value]="current()"
+    (ionChange)="changeTo($any($event.detail.value))"
+    scrollable="true"
+  >
+    @for (section of sections; track section) {
+      <ion-segment-button [value]="section">
+        <ion-label>{{ 'TERMS.' + section.toUpperCase() + '.TITLE' | translate }}</ion-label>
+      </ion-segment-button>
+    }
+  </ion-segment>
+</app-page-header>
+
+<ion-content class="ion-padding">
+  <article>
+    <h1>{{ 'TERMS.' + current().toUpperCase() + '.TITLE' | translate }}</h1>
+    <p class="body">{{ 'TERMS.' + current().toUpperCase() + '.BODY' | translate }}</p>
+  </article>
+</ion-content>

@@ -1,0 +1,149 @@
+<ion-toolbar class="footer-style">
+  <ion-row>
+    <ion-col size="12" size-sm="6">
+      <div class="logo">
+        <img src="./assets/imgs/icon.png" alt="Respet" />
+      </div>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" fill="outline" color="cyan" (click)="goToAbout()">
+            <ion-icon name="compass-outline" slot="icon-only" />
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <!--
+            Enlaces externos como <a>, no window.open(): así el navegador puede
+            abrirlos en una pestaña nueva y el usuario puede copiar la
+            dirección o abrirla donde prefiera.
+          -->
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="facebook"
+            [href]="links.facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+          >
+            <ion-icon name="logo-facebook" slot="icon-only" />
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="instagram"
+            [href]="links.instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <ion-icon name="logo-instagram" slot="icon-only" />
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="google"
+            [href]="links.mail"
+            [attr.aria-label]="'EMAIL' | translate"
+          >
+            <ion-icon name="mail" slot="icon-only" />
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" fill="outline" (click)="goToPolitics('end_user_agreement')">
+            {{ 'LEGAL' | translate }}
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" fill="outline" (click)="goToPolitics('privacy')">
+            {{ 'PRIVACY._' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <p>
+            {{ 'FOOTER.PHONE' | translate }}
+            <a href="tel:+526188134955">+52 618 813 4955</a>
+          </p>
+          <p>{{ 'FOOTER.DIRECTION' | translate }}</p>
+          <p>
+            {{ 'FOOTER.DEVELOPED' | translate }}
+            <a href="https://github.com/jlozoya" target="_blank" rel="noopener noreferrer">
+              {{ 'FOOTER.DEVELOPED_BY' | translate }}
+            </a>
+            {{ 'FOOTER.BASED_ON' | translate }}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+
+    <ion-col size="12" size-sm="6">
+      <ion-item lines="none">{{ 'CONTACT_US' | translate }}</ion-item>
+
+      <ion-list>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <ion-item>
+            <ion-input
+              formControlName="name"
+              type="text"
+              [label]="('NAME' | translate) + ' *'"
+              labelPlacement="stacked"
+              autocomplete="name"
+            />
+          </ion-item>
+          <app-control-messages [control]="form.controls.name" />
+
+          <ion-item>
+            <ion-input
+              formControlName="phone"
+              type="tel"
+              [label]="'PHONE' | translate"
+              labelPlacement="stacked"
+              autocomplete="tel"
+            />
+          </ion-item>
+          <app-control-messages [control]="form.controls.phone" />
+
+          <ion-item>
+            <ion-input
+              formControlName="email"
+              type="email"
+              [label]="('EMAIL' | translate) + ' *'"
+              labelPlacement="stacked"
+              autocomplete="email"
+            />
+          </ion-item>
+          <app-control-messages [control]="form.controls.email" />
+
+          <ion-item>
+            <ion-textarea
+              formControlName="message"
+              [label]="('MESSAGE' | translate) + ' *'"
+              labelPlacement="stacked"
+              [autoGrow]="true"
+              [rows]="4"
+            />
+          </ion-item>
+          <!--
+            El mensaje de error apuntaba al control del correo también aquí:
+            los campos de mensaje nunca llegaban a enseñar el suyo.
+          -->
+          <app-control-messages [control]="form.controls.message" />
+
+          <ion-button expand="block" type="submit" color="primary" [disabled]="submitting()">
+            {{ 'SEND' | translate }}
+          </ion-button>
+        </form>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-toolbar>

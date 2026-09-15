@@ -1,0 +1,127 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <ion-list>
+    <ion-item>
+      <ion-input
+        formControlName="name"
+        type="text"
+        [label]="'NAME' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.name" />
+
+    <ion-item>
+      <ion-input
+        formControlName="firstName"
+        type="text"
+        autocomplete="given-name"
+        [label]="'FIRST_NAME' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.firstName" />
+
+    <ion-item>
+      <ion-input
+        formControlName="lastName"
+        type="text"
+        autocomplete="family-name"
+        [label]="'LAST_NAME' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.lastName" />
+
+    <ion-item>
+      <ion-select
+        formControlName="gender"
+        [label]="'GENDER' | translate"
+        labelPlacement="stacked"
+        [cancelText]="'CANCEL' | translate"
+        [okText]="'ACCEPT' | translate"
+      >
+        @for (option of genders; track option.value) {
+          <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        formControlName="phone"
+        type="tel"
+        autocomplete="tel"
+        [label]="'PHONE' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.phone" />
+
+    <ion-item lines="none">
+      <ion-label position="stacked">{{ 'BIRTHDAY' | translate }}</ion-label>
+      <ion-datetime formControlName="birthday" presentation="date" [showDefaultButtons]="true" />
+    </ion-item>
+
+    @if (isSelf()) {
+      <ion-item>
+        <ion-select
+          formControlName="lang"
+          [label]="'LANG_SELECTOR' | translate"
+          labelPlacement="stacked"
+          [cancelText]="'CANCEL' | translate"
+          [okText]="'ACCEPT' | translate"
+        >
+          @for (option of languages(); track option.code) {
+            <ion-select-option [value]="option.code">{{ option.label }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    }
+  </ion-list>
+
+  <h3 class="section">{{ 'ADDRESS' | translate }}</h3>
+  <app-location-picker [(location)]="location" />
+
+  <ion-button expand="block" type="submit" [disabled]="saving()">
+    {{ 'SAVE' | translate }}
+  </ion-button>
+</form>
+
+@if (isSelf()) {
+  <form [formGroup]="emailForm" (ngSubmit)="changeEmail()">
+    <h3 class="section">{{ 'EMAIL' | translate }}</h3>
+    <!--
+      El cambio de correo va en su propio formulario porque no se aplica al
+      guardar: hay que confirmarlo desde el enlace que llega a la dirección
+      nueva.
+    -->
+    <p class="hint">{{ 'EMAIL_CHANGE_HINT' | translate }}</p>
+
+    <ion-list>
+      <ion-item>
+        <ion-input
+          formControlName="email"
+          type="email"
+          inputmode="email"
+          [label]="'NEW_EMAIL' | translate"
+          labelPlacement="stacked"
+        />
+      </ion-item>
+      <app-control-messages [control]="emailForm.controls.email" />
+
+      <ion-item>
+        <ion-input
+          formControlName="password"
+          type="password"
+          autocomplete="current-password"
+          [label]="'CURRENT_PASSWORD' | translate"
+          labelPlacement="stacked"
+        />
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" fill="outline" type="submit" [disabled]="changingEmail()">
+      {{ 'CHANGE_EMAIL' | translate }}
+    </ion-button>
+  </form>
+}

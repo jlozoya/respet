@@ -1,0 +1,36 @@
+<ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+  <ion-refresher-content />
+</ion-refresher>
+
+<ion-row>
+  @for (bulletin of items(); track bulletin.id) {
+    <ion-col size="12" size-md="6">
+      <ion-card color="light" class="border">
+        <img
+          [src]="bulletin.media?.url ?? fallbackImage"
+          [alt]="bulletin.media?.alt ?? bulletin.title"
+          (error)="onImageError($event)"
+        />
+        <ion-card-content>
+          <p class="date"><small>{{ bulletin.date | date: 'mediumDate' }}</small></p>
+          <h2>{{ bulletin.title }}</h2>
+          <p>{{ bulletin.description }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  } @empty {
+    @if (!loading()) {
+      <ion-col size="12">
+        <p class="empty">{{ 'BULLETIN.EMPTY' | translate }}</p>
+      </ion-col>
+    }
+  }
+</ion-row>
+
+<ion-row>
+  <ion-col>
+    <ion-button expand="block" fill="outline" color="green" (click)="seeMore()">
+      {{ 'BULLETIN.SEE_MORE' | translate }}
+    </ion-button>
+  </ion-col>
+</ion-row>

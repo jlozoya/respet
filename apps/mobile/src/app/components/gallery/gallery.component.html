@@ -1,0 +1,26 @@
+@if (layout(); as grid) {
+  <!--
+    Una rejilla de verdad, con tantas columnas como pida la composición. Antes
+    eran filas y columnas de Ionic con alturas fijas de 200 y 300 píxeles y las
+    fotos colocadas por encima en posición absoluta: cuando una no daba esa
+    altura, lo que sobraba quedaba como una franja vacía entre dos imágenes.
+  -->
+  <div class="cuadricula" [style.--columnas]="12 / grid.tileSize">
+    @if (grid.hero; as hero) {
+      <button type="button" class="pieza pieza--destacada" (click)="openViewer(hero)">
+        <img [src]="hero.url" [alt]="hero.alt" />
+      </button>
+    }
+
+    @for (image of grid.tiles; track image.id; let last = $last) {
+      <button type="button" class="pieza" (click)="openViewer(image)">
+        <img [src]="image.url" [alt]="image.alt" loading="lazy" />
+
+        <!-- Las que no caben se anuncian sobre la última que sí cabe. -->
+        @if (last && grid.extra > 0) {
+          <span class="resto" aria-hidden="true">+{{ grid.extra }}</span>
+        }
+      </button>
+    }
+  </div>
+}

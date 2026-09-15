@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="dark-accent">
+    <ion-buttons slot="start">
+      <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
+        <ion-icon slot="icon-only" name="arrow-back" />
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="medium">
+      {{ (isEdit() ? 'BULLETIN.EDIT_TITLE' : 'BULLETIN.NEW_TITLE') | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <ion-item>
+      <ion-input
+        formControlName="title"
+        type="text"
+        [label]="'TITLE' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.title" />
+
+    <ion-item>
+      <ion-textarea
+        formControlName="description"
+        [label]="'DESCRIPTION' | translate"
+        labelPlacement="stacked"
+        [autoGrow]="true"
+        [rows]="4"
+      />
+    </ion-item>
+    <app-control-messages [control]="form.controls.description" />
+
+    <ion-item lines="none">
+      <ion-label position="stacked">{{ 'DATE' | translate }}</ion-label>
+      <ion-datetime formControlName="date" presentation="date" [showDefaultButtons]="true" />
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>{{ 'IMAGE' | translate }}</ion-label>
+      <ion-button slot="end" fill="outline" (click)="pickImage()">
+        <ion-icon name="images" slot="start" />
+        {{ 'CHANGE' | translate }}
+      </ion-button>
+    </ion-item>
+
+    @if (imagePreview(); as preview) {
+      <img class="preview" [src]="preview" [alt]="form.controls.title.value" />
+    }
+
+    <ion-button expand="block" type="submit" [disabled]="saving()">
+      {{ 'SAVE' | translate }}
+    </ion-button>
+  </form>
+</ion-content>

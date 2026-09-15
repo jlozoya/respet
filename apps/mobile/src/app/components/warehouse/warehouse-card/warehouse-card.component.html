@@ -1,0 +1,39 @@
+@if (current(); as warehouse) {
+  <ion-card>
+    <ion-card-header>
+      <ion-item lines="none">
+        <ion-label>
+          <ion-card-title>{{ warehouse.name }}</ion-card-title>
+          @if (address(); as line) {
+            <p>{{ line }}</p>
+          }
+        </ion-label>
+
+        @if (canManage()) {
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="medium"
+            (click)="$event.stopPropagation(); openMenu($event)"
+            [attr.aria-label]="'OPTIONS' | translate"
+          >
+            <ion-icon slot="icon-only" name="menu-outline" />
+          </ion-button>
+        }
+      </ion-item>
+    </ion-card-header>
+
+    <img [src]="imageUrl()" [alt]="warehouse.name" (error)="onImageError($event)" />
+
+    <ion-card-content>
+      @if (warehouse.description) {
+        <p>{{ warehouse.description }}</p>
+      }
+
+      <ion-button fill="outline" expand="block" (click)="seeProducts()">
+        <ion-icon name="clipboard-outline" slot="start" />
+        {{ 'WAREHOUSE.SEE_PRODUCTS' | translate }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+}

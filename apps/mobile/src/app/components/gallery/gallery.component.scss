@@ -1,0 +1,58 @@
+:host {
+  display: block;
+
+  .cuadricula {
+    display: grid;
+    // Un hilo de separación, como en cualquier álbum: suficiente para saber
+    // dónde acaba una foto y empieza la siguiente sin abrir un hueco.
+    gap: 2px;
+    grid-template-columns: repeat(var(--columnas, 1), minmax(0, 1fr));
+  }
+
+  /*
+    Cada foto es un botón: abre el visor, y siéndolo se llega a ella con el
+    tabulador y se activa con Intro sin tener que fingirlo con atributos.
+  */
+  .pieza {
+    background: var(--ion-color-step-100, rgb(128 128 128 / 12%));
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    // Cuadradas, que es lo que deja las filas parejas sin importar cómo venga
+    // cada foto; la proporción real se ve al abrirlas.
+    aspect-ratio: 1;
+  }
+
+  // La destacada cruza la rejilla entera y va apaisada: es la que se mira.
+  .pieza--destacada {
+    aspect-ratio: 16 / 9;
+    grid-column: 1 / -1;
+  }
+
+  .pieza img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease-in-out;
+    width: 100%;
+  }
+
+  .pieza:hover img {
+    opacity: 0.85;
+  }
+
+  .resto {
+    align-items: center;
+    background: rgb(0 0 0 / 45%);
+    color: #fff;
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 600;
+    inset: 0;
+    justify-content: center;
+    position: absolute;
+  }
+}

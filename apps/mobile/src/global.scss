@@ -1,0 +1,269 @@
+/*
+ * Estilos globales de Respet.
+ *
+ * Aquí van sólo tres cosas: los estilos base de Ionic, las tipografías y un
+ * puñado de utilidades que se repetían en casi todas las pantallas —estados
+ * vacíos, esqueletos de carga y el ajuste de tarjetas—. Todo lo demás vive en
+ * el componente que lo usa.
+ */
+
+/* Ionic: lo imprescindible para que sus componentes funcionen. */
+@import '@ionic/angular/css/core.css';
+
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+/*
+ * Tipografías.
+ *
+ * `font-display: swap` deja que el texto se lea con la tipografía del sistema
+ * mientras se descarga la propia, en lugar de dejar huecos en blanco.
+ */
+@font-face {
+  font-family: 'Eczar';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/eczar/Eczar-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Eczar';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/eczar/Eczar-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Eczar';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('./assets/fonts/eczar/Eczar-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-BoldItalic.ttf') format('truetype');
+}
+
+/* --- Base ----------------------------------------------------------------- */
+
+h1,
+h2,
+h3 {
+  font-family: var(--respet-font-display);
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Ionic pinta un borde de foco sólo al navegar con teclado. Se refuerza para
+ * que se vea también sobre las superficies oscuras.
+ */
+:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Tarjetas ------------------------------------------------------------- */
+
+ion-card {
+  border-radius: var(--respet-radius-md);
+  box-shadow: var(--respet-shadow);
+  margin-inline: var(--respet-space-sm);
+}
+
+ion-card img {
+  display: block;
+  width: 100%;
+}
+
+/* --- Utilidades ----------------------------------------------------------- */
+
+/*
+ * Estado vacío. Lo usan el muro, los avisos, el catálogo y los pedidos, que
+ * repetían el mismo párrafo centrado en gris.
+ */
+.respet-empty {
+  align-items: center;
+  color: var(--ion-color-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--respet-space-sm);
+  padding: var(--respet-space-lg) var(--respet-space-md);
+  text-align: center;
+}
+
+.respet-empty ion-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+/*
+ * Esqueleto de carga: un bloque que late mientras llegan los datos. Se prefiere
+ * a un indicador giratorio porque anticipa la forma de lo que va a aparecer, y
+ * la pantalla no da un salto al rellenarse.
+ */
+.respet-skeleton {
+  animation: respet-pulse 1.4s ease-in-out infinite;
+  background: var(--respet-skeleton);
+  border-radius: var(--respet-radius-sm);
+}
+
+@keyframes respet-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Quien prefiere menos animación no debería ver nada latir. */
+@media (prefers-reduced-motion: reduce) {
+  .respet-skeleton {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+  La ventana de una publicación ocupa la pantalla entera.
+
+  Ionic centra los modales a 600 px en escritorio, y ahí dentro la foto y la
+  conversación no caben una al lado de la otra sin estrangularse las dos. Estas
+  medidas van aquí y no en el componente porque las declara el propio
+  `ion-modal`, que vive fuera de él.
+*/
+.modal-publicacion {
+  --border-radius: 0;
+  --height: 100%;
+  --max-height: 100%;
+  --max-width: 100%;
+  --width: 100%;
+}
+
+/* Botón que parece un enlace, para el texto legal de los formularios. */
+.anchor-button {
+  background: none;
+  border: 0;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/*
+  Un solo menú a la vez.
+
+  Con el panel lateral fijo —lo que Ionic marca con `split-pane-visible`— el
+  botón de la cabecera abriría un cajón con las mismas entradas que ya están a
+  la vista. Se va con el panel y vuelve con él, sin repetir en cada pantalla la
+  medida a la que eso ocurre.
+*/
+ion-split-pane.split-pane-visible ion-menu-button {
+  display: none;
+}
+
+/*
+  Lo que rellena el navegador por su cuenta.
+
+  Chrome pinta los campos autocompletados con un azul propio que no atiende a
+  `background-color`: la única forma de taparlo es una sombra interior que
+  cubra todo el campo. Sin esto, el correo y la contraseña de la pantalla de
+  acceso aparecían sobre un bloque azul con el texto en negro, ilegible encima
+  del tema oscuro. `ion-input` no usa «shadow DOM», así que su campo nativo se
+  alcanza desde aquí.
+*/
+input.native-input:-webkit-autofill,
+input.native-input:-webkit-autofill:hover,
+input.native-input:-webkit-autofill:focus,
+input.native-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 100vh var(--ion-item-background, var(--ion-background-color, #121212))
+    inset;
+  -webkit-text-fill-color: var(--ion-text-color, #fff);
+
+  caret-color: var(--ion-text-color, #fff);
+  /* La transición imposible evita el parpadeo azul del primer instante. */
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/*
+  Un campo relleno no es un logro.
+
+  Ionic le pone el borde verde de «válido» en cuanto tiene algo dentro, y en un
+  formulario de acceso eso se lee como que ha pasado algo. El campo vuelve a su
+  borde de siempre; el color sigue avisando de lo que importa, que es cuando
+  algo está mal.
+*/
+ion-input.ion-valid,
+ion-select.ion-valid,
+ion-textarea.ion-valid {
+  /*
+    Ionic declara el color en el propio elemento, así que hace falta ir por la
+    clase del estado para pisarlo: con el selector a secas gana el suyo.
+  */
+  --highlight-color-valid: var(--ion-color-step-300, #b3b3b3);
+}

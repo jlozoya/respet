@@ -1,0 +1,42 @@
+<app-page-header title="NAV.ORDERS">
+  @if (isStaff()) {
+    <ion-segment [value]="scope()" (ionChange)="changeScope($any($event.detail.value))">
+      <ion-segment-button value="mine">
+        <ion-label>{{ 'ORDER.MINE' | translate }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>{{ 'ORDER.ALL' | translate }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  }
+
+  <ion-searchbar
+    [debounce]="300"
+    [placeholder]="'SEARCH' | translate"
+    (ionInput)="onSearch($event.detail.value ?? '')"
+  />
+</app-page-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <ion-row>
+    @for (order of items(); track order.id) {
+      <ion-col size="12" size-md="6" size-lg="4">
+        <app-order-card [order]="order" (changed)="onChanged($event)" />
+      </ion-col>
+    } @empty {
+      @if (!loading()) {
+        <ion-col size="12">
+          <p class="empty">{{ 'ORDER.EMPTY' | translate }}</p>
+        </ion-col>
+      }
+    }
+  </ion-row>
+
+  <ion-infinite-scroll [disabled]="!hasMore()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content />
+  </ion-infinite-scroll>
+</ion-content>

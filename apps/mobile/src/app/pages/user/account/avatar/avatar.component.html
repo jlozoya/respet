@@ -1,0 +1,13 @@
+<div class="avatar">
+  <img [src]="imageUrl()" [alt]="user().name" (error)="onImageError($event)" />
+
+  @if (editable()) {
+    <ion-button fill="clear" [disabled]="uploading()" (click)="change()">
+      <ion-icon name="images" slot="start" />
+      {{ 'CHANGE_AVATAR' | translate }}
+    </ion-button>
+  }
+</div>
+
+<h2>{{ user().name }}</h2>
+<p>{{ user().email }}</p>

@@ -1,0 +1,53 @@
+<div class="row" [class.row--own]="bubble().own">
+  <!--
+    Hueco del avatar reservado siempre: sin él, las burbujas del bloque
+    bailarían horizontalmente al aparecer la imagen sólo en la última.
+  -->
+  @if (!bubble().own) {
+    <div class="avatar-slot">
+      @if (bubble().showAvatar) {
+        <ion-avatar>
+          <img
+            [src]="avatarUrl()"
+            [alt]="message().sender.name"
+            (error)="onImageError($event)"
+          />
+        </ion-avatar>
+      }
+    </div>
+  }
+
+  <div class="stack" [class.stack--own]="bubble().own">
+    <div
+      class="bubble"
+      [ngClass]="shapeClasses()"
+      [class.bubble--deleted]="message().deleted"
+      [class.bubble--image]="isImage()"
+      (contextmenu)="onContextMenu($event)"
+    >
+      @if (message().deleted) {
+        <span class="deleted">
+          <ion-icon name="close-circle-outline" />
+          {{ 'CHAT.DELETED' | translate }}
+        </span>
+      } @else if (isImage()) {
+        <img
+          class="attachment"
+          [src]="message().media!.url"
+          [alt]="message().media!.alt"
+          (click)="imageOpened.emit(message())"
+          (keydown.enter)="imageOpened.emit(message())"
+          tabindex="0"
+        />
+      } @else {
+        <p class="text">{{ message().body }}</p>
+      }
+    </div>
+
+    @if (bubble().showTime) {
+      <time class="time" [attr.datetime]="message().createdAt">
+        {{ message().createdAt | date: 'shortTime' }}
+      </time>
+    }
+  </div>
+</div>

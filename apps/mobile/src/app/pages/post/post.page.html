@@ -1,0 +1,35 @@
+<app-page-header title="POST.DETAIL_TITLE" backTo="/" />
+
+@if (loading()) {
+  <ion-progress-bar type="indeterminate" />
+}
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <ion-row>
+    <ion-col size="12" size-md="8" offset-md="2" size-lg="6" offset-lg="3">
+      @if (post(); as current) {
+        <app-post-card
+          [post]="current"
+          [detailed]="true"
+          (deleted)="onDeleted()"
+          (updated)="onUpdated($event)"
+        />
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ 'COMMENTS.TITLE' | translate }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <app-post-comments [postId]="current.id" (counted)="onCounted($event)" />
+          </ion-card-content>
+        </ion-card>
+      } @else if (!loading()) {
+        <p class="empty">{{ 'POST.NOT_FOUND' | translate }}</p>
+      }
+    </ion-col>
+  </ion-row>
+</ion-content>

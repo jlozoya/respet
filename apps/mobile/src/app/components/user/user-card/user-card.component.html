@@ -1,0 +1,32 @@
+<ion-card class="change-text-color card" color="light">
+  <div class="text-center" (click)="goToDetail()" (keydown.enter)="goToDetail()" tabindex="0">
+    <img
+      class="opacity-blur"
+      [src]="avatarUrl()"
+      [alt]="user().name"
+      (error)="onImageError($event)"
+    />
+  </div>
+
+  <ion-card-content>
+    <h2>{{ user().name }}</h2>
+    <p>{{ 'FIRST_NAME' | translate }}: {{ user().firstName }}</p>
+    <p>{{ 'LAST_NAME' | translate }}: {{ user().lastName }}</p>
+    <p>{{ 'EMAIL' | translate }}: {{ user().email }}</p>
+
+    <ion-item lines="none">
+      <ion-select
+        [label]="'ROLE' | translate"
+        [value]="user().role"
+        [disabled]="isSelf()"
+        [cancelText]="'CANCEL' | translate"
+        [okText]="'ACCEPT' | translate"
+        (ionChange)="changeRole($event.detail.value)"
+      >
+        @for (role of roles; track role.value) {
+          <ion-select-option [value]="role.value">{{ role.label | translate }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

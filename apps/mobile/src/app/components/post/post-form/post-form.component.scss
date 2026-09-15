@@ -1,0 +1,157 @@
+:host {
+  .compositor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  /* Quién publica y con qué intención, como la cabecera de la tarjeta luego. */
+  .autor {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+  }
+
+  .avatar {
+    border-radius: 50%;
+    height: 40px;
+    object-fit: cover;
+    width: 40px;
+  }
+
+  .quien {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .nombre {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  /*
+    La pastilla del tipo: pequeña, con su fondo, y sin ocupar todo el ancho
+    como haría un `ion-select` suelto.
+  */
+  .tipo {
+    --background: var(--ion-color-step-150, rgb(128 128 128 / 18%));
+    --border-radius: 999px;
+    --padding-start: 10px;
+    --padding-end: 8px;
+    --padding-top: 2px;
+    --padding-bottom: 2px;
+
+    font-size: 0.8rem;
+    min-height: 26px;
+    width: fit-content;
+  }
+
+  /* El cuadro de texto es el formulario: sin marco, grande y sin rótulo. */
+  .texto {
+    --background: transparent;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    font-size: 1.15rem;
+  }
+
+  .thumbs {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  }
+
+  .thumb {
+    margin: 0;
+    position: relative;
+  }
+
+  .thumb img {
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  /* Las que aún no se han subido se distinguen con un borde punteado. */
+  .thumb--pending img {
+    outline: 2px dashed var(--ion-color-medium);
+    outline-offset: -2px;
+  }
+
+  .thumb ion-button {
+    --padding-start: 4px;
+    --padding-end: 4px;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  /* La ubicación se añade y se quita: mientras está, va en su propio recuadro. */
+  .ubicacion {
+    border: 1px solid var(--ion-color-step-200, rgb(128 128 128 / 30%));
+    border-radius: 10px;
+    padding: 8px 12px 12px;
+  }
+
+  .ubicacion header {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+
+  .ubicacion header .sitio {
+    flex: 1 1 auto;
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hint {
+    color: var(--ion-color-medium);
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  /* La barra de «agregar», que es de donde sale todo lo demás. */
+  .anadir {
+    align-items: center;
+    border: 1px solid var(--ion-color-step-200, rgb(128 128 128 / 30%));
+    border-radius: 10px;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    padding: 4px 8px 4px 14px;
+  }
+
+  .anadir .rotulo {
+    font-weight: 600;
+  }
+
+  .acciones {
+    display: flex;
+  }
+
+  .acciones ion-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+
+    font-size: 1.35rem;
+  }
+
+  /* Cuántas fotos llevas, pegado al icono que las añade. */
+  .cuenta {
+    font-size: 0.7rem;
+    padding-inline-start: 4px;
+  }
+
+  .oculto {
+    display: none;
+  }
+}

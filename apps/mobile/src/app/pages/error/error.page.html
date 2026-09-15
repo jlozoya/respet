@@ -1,0 +1,31 @@
+<app-page-header title="NAV.ERROR" />
+
+<ion-content class="ion-text-center">
+  <ion-row class="full-height">
+    <ion-col size="12" class="ion-align-self-center">
+      <ion-text color="light">
+        <h1>{{ error().title | translate }} {{ error().code }}</h1>
+        <p>{{ error().message | translate }}</p>
+      </ion-text>
+    </ion-col>
+
+    <ion-col size="12">
+      <ion-button size="large" fill="clear" color="light" (click)="goToMain()">
+        {{ 'NAV_TO_MAIN_PAGE' | translate }}
+        <ion-icon slot="end" name="arrow-forward" />
+      </ion-button>
+    </ion-col>
+
+    <ion-col size="12" class="ion-align-self-end">
+      <!-- Ilustración decorativa: el cohete que se estrella. -->
+      <div class="container" aria-hidden="true">
+        <div class="red flame"></div>
+        <div class="orange flame"></div>
+        <div class="yellow flame"></div>
+        <div class="white flame"></div>
+        <div class="blue circle"></div>
+        <div class="black circle"></div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

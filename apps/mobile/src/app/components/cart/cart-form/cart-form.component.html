@@ -1,0 +1,62 @@
+@if (isEmpty() && !loading()) {
+  <p class="empty">{{ 'CART.EMPTY' | translate }}</p>
+} @else {
+  <ion-list lines="full">
+    @for (item of items(); track item.id) {
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <img [src]="imageOf(item)" [alt]="item.product?.name ?? ''" />
+        </ion-thumbnail>
+
+        <ion-label>
+          <h2>{{ item.product?.name }}</h2>
+          <p>{{ item.unitPrice | currency: 'MXN' }} × {{ item.quantity }}</p>
+        </ion-label>
+
+        <ion-input
+          slot="end"
+          class="quantity"
+          type="number"
+          inputmode="numeric"
+          [min]="0"
+          [value]="item.quantity"
+          [disabled]="working()"
+          (ionBlur)="changeQuantity(item, $any($event.target).value)"
+          [attr.aria-label]="'PRODUCT.AMOUNT' | translate"
+        />
+
+        <ion-note slot="end">{{ item.subtotal | currency: 'MXN' }}</ion-note>
+
+        <ion-button
+          slot="end"
+          fill="clear"
+          color="danger"
+          [disabled]="working()"
+          (click)="remove(item)"
+          [attr.aria-label]="'DELETE' | translate"
+        >
+          <ion-icon name="trash" slot="icon-only" />
+        </ion-button>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-item lines="none" class="total">
+    <ion-label><strong>{{ 'ORDER.TOTAL' | translate }}</strong></ion-label>
+    <ion-note slot="end" color="dark">
+      <strong>{{ total() | currency: 'MXN' }}</strong>
+    </ion-note>
+  </ion-item>
+
+  <h3 class="section">{{ 'ORDER.DESTINATION' | translate }}</h3>
+  <app-location-picker [(location)]="destination" />
+
+  <ion-button expand="block" fill="outline" (click)="saveDestination()">
+    {{ 'SAVE' | translate }}
+  </ion-button>
+
+  <ion-button expand="block" color="primary" [disabled]="working()" (click)="checkout()">
+    <ion-icon name="cart-outline" slot="start" />
+    {{ 'CART.CHECKOUT' | translate }}
+  </ion-button>
+}

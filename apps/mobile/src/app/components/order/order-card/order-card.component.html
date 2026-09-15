@@ -1,0 +1,73 @@
+@if (current(); as order) {
+  <ion-card [attr.data-state]="order.state">
+    <ion-card-header>
+      <ion-item button detail="false" (click)="openDetail()">
+        <ion-avatar slot="start">
+          <img
+            [src]="avatarOf(order.customer)"
+            [alt]="order.customer.name"
+            (error)="onImageError($event)"
+          />
+        </ion-avatar>
+        <ion-label>
+          <ion-text>
+            <h2>{{ order.customer.name }}</h2>
+            <small>{{ order.updatedAt | date: 'medium' }}</small>
+          </ion-text>
+        </ion-label>
+        <ion-badge slot="end" [color]="stateColor()">{{ stateLabel() | translate }}</ion-badge>
+      </ion-item>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>{{ 'ORDER.ITEMS' | translate }}: {{ itemCount() }}</p>
+      <p>{{ 'ORDER.TOTAL' | translate }}: {{ order.total | currency: 'MXN' }}</p>
+
+      @if (order.deliveryDate) {
+        <p>{{ 'ORDER.DELIVERY_DATE' | translate }}: {{ order.deliveryDate | date: 'medium' }}</p>
+      }
+
+      @if (order.roundsman; as roundsman) {
+        <ion-item lines="none">
+          <ion-avatar slot="start">
+            <img
+              [src]="avatarOf(roundsman)"
+              [alt]="roundsman.name"
+              (error)="onImageError($event)"
+            />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{ roundsman.name }}</h3>
+            <p>{{ 'ORDER.ROUNDSMAN' | translate }}</p>
+          </ion-label>
+        </ion-item>
+      }
+
+      @if (isStaff()) {
+        <ion-button fill="outline" size="small" (click)="assignRoundsman()">
+          <ion-icon name="person-outline" slot="start" />
+          {{ (order.roundsman ? 'ORDER.CHANGE_ROUNDSMAN' : 'ORDER.ASSIGN_ROUNDSMAN') | translate }}
+        </ion-button>
+
+        @if (nextStates().length > 0) {
+          <ion-item lines="none">
+            <ion-select
+              [label]="'ORDER.ADVANCE_STATE' | translate"
+              labelPlacement="stacked"
+              [placeholder]="'SELECT' | translate"
+              [cancelText]="'CANCEL' | translate"
+              [okText]="'ACCEPT' | translate"
+              (ionChange)="changeState($event.detail.value)"
+            >
+              @for (option of nextStates(); track option.value) {
+                <ion-select-option [value]="option.value">
+                  {{ option.label | translate }}
+                </ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+        }
+      }
+    </ion-card-content>
+  </ion-card>
+}

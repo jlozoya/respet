@@ -1,0 +1,130 @@
+@if (current(); as post) {
+  <!--
+    Toda la tarjeta lleva al detalle: en el muro es lo que uno espera al pulsar
+    en cualquier parte de una publicación, y antes sólo respondía el texto.
+  -->
+  <ion-card [attr.data-kind]="post.kind" (click)="onCardClick($event)">
+    <ion-card-header>
+      <ion-item button detail="false" (click)="goToAuthor()">
+        <ion-avatar slot="start">
+          <img [src]="authorAvatar()" [alt]="post.author.name" (error)="onAvatarError($event)" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ post.author.name }}</h2>
+          <small>{{ post.updatedAt | date: 'medium' }}</small>
+        </ion-label>
+
+        @if (isAuthenticated()) {
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="medium"
+            (click)="$event.stopPropagation(); openMenu($event)"
+            [attr.aria-label]="'OPTIONS' | translate"
+          >
+            <ion-icon slot="icon-only" name="menu-outline" />
+          </ion-button>
+        }
+      </ion-item>
+    </ion-card-header>
+
+    @if (!embedded()) {
+      <app-gallery [images]="post.media" [post]="post" (postUpdated)="apply($event)" />
+    }
+
+    <ion-card-content>
+      @if (detailed()) {
+        <p>{{ post.description }}</p>
+      } @else {
+        <!--
+          El texto sigue siendo el punto de entrada con el teclado: la tarjeta
+          entera responde al ratón, pero no se puede tabular hasta ella.
+        -->
+        <p class="descripcion" role="link" tabindex="0" (keydown.enter)="openDetail()">
+          {{ post.description }}
+        </p>
+      }
+
+      <!--
+        Dónde pasa lo que se cuenta. Sustituye al botón que abría un mapa a
+        pantalla completa: la dirección se lee de un vistazo y el enlace lleva
+        al mapa de quien mira, que es el que tiene instalado.
+      -->
+      @if (address(); as direccion) {
+        <a
+          class="ubicacion"
+          [href]="mapsUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.title]="'POST.OPEN_IN_MAPS' | translate"
+        >
+          <ion-icon name="location-outline" aria-hidden="true" />
+          <span>{{ direccion }}</span>
+          @if (approximate()) {
+            <small>{{ 'POST.APPROXIMATE_LOCATION' | translate }}</small>
+          }
+        </a>
+      }
+
+      <div class="actions">
+        <!--
+          Los votos se pueden pulsar sin cuenta: en lugar de esconder los
+          botones, que dejaría las cifras sin explicación, llevan a iniciar
+          sesión.
+        -->
+        <ion-button
+          fill="clear"
+          [color]="post.myVote === 'up' ? 'primary' : 'medium'"
+          [attr.aria-pressed]="post.myVote === 'up'"
+          [attr.aria-label]="'POST.LIKE' | translate"
+          (click)="vote('up')"
+        >
+          <ion-icon [name]="post.myVote === 'up' ? 'thumbs-up' : 'thumbs-up-outline'" slot="start" />
+          <ion-text>{{ post.likeCount }}</ion-text>
+        </ion-button>
+
+        <ion-button
+          fill="clear"
+          [color]="post.myVote === 'down' ? 'danger' : 'medium'"
+          [attr.aria-pressed]="post.myVote === 'down'"
+          [attr.aria-label]="'POST.DISLIKE' | translate"
+          (click)="vote('down')"
+        >
+          <ion-icon
+            [name]="post.myVote === 'down' ? 'thumbs-down' : 'thumbs-down-outline'"
+            slot="start"
+          />
+          <ion-text>{{ post.dislikeCount }}</ion-text>
+        </ion-button>
+
+        <ion-button
+          fill="clear"
+          color="medium"
+          [disabled]="detailed()"
+          [attr.aria-label]="'COMMENTS.TITLE' | translate"
+          (click)="openDetail()"
+        >
+          <ion-icon name="chatbubble-outline" slot="start" />
+          <ion-text>{{ post.commentCount }}</ion-text>
+        </ion-button>
+
+        <!-- Sólo el icono: el de compartir se reconoce sin que nadie lo rotule. -->
+        <ion-button
+          fill="clear"
+          color="medium"
+          [attr.aria-label]="'SHARE._' | translate"
+          (click)="share()"
+        >
+          <ion-icon name="share-social-outline" slot="icon-only" />
+        </ion-button>
+
+        @if (canMessageAuthor()) {
+          <ion-button fill="clear" color="primary" (click)="messageAuthor()">
+            <ion-icon name="chatbubbles-outline" slot="start" />
+            <ion-text>{{ 'CHAT.MESSAGE' | translate }}</ion-text>
+          </ion-button>
+        }
+      </div>
+    </ion-card-content>
+  </ion-card>
+}

@@ -1,0 +1,43 @@
+<app-page-header title="NAV.PRODUCTS">
+  <ion-searchbar
+    [debounce]="300"
+    [placeholder]="'SEARCH' | translate"
+    (ionInput)="onSearch($event.detail.value ?? '')"
+  />
+</app-page-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <ion-row>
+    @for (product of items(); track product.id) {
+      <ion-col size="12" size-md="6" size-lg="4">
+        <app-product-card
+          [product]="product"
+          (updated)="onUpdated($event)"
+          (deleted)="onDeleted($event)"
+        />
+      </ion-col>
+    } @empty {
+      @if (!loading()) {
+        <ion-col size="12">
+          <p class="empty">{{ 'PRODUCT.EMPTY' | translate }}</p>
+        </ion-col>
+      }
+    }
+  </ion-row>
+
+  <ion-infinite-scroll [disabled]="!hasMore()" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content />
+  </ion-infinite-scroll>
+
+  @if (canCreate()) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button (click)="create()" [attr.aria-label]="'PRODUCT.NEW_TITLE' | translate">
+        <ion-icon name="add-circle-outline" />
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

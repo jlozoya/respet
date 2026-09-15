@@ -1,0 +1,299 @@
+/**
+ * Tema de Respet.
+ *
+ * El modo oscuro es el de partida y el claro se activa añadiendo la clase
+ * `ion-palette-light` al `<html>`; lo gestiona `ThemeService`. Ionic recomienda
+ * lo contrario —claro por defecto y clase para oscuro—, pero aquí el oscuro es
+ * la elección de diseño, y hacerlo así evita que la aplicación aparezca en
+ * blanco durante el instante que tarda en aplicarse la clase.
+ *
+ * Los colores de marca se declaran una sola vez en `:root` porque funcionan
+ * sobre ambos fondos; lo que cambia entre temas son las superficies y el texto.
+ */
+
+:root {
+  // --- Marca ---------------------------------------------------------------
+
+  /** primary — el naranja cálido de Respet */
+  --ion-color-primary: #ff6b35;
+  --ion-color-primary-rgb: 255, 107, 53;
+  --ion-color-primary-contrast: #1a1a1f;
+  --ion-color-primary-contrast-rgb: 26, 26, 31;
+  --ion-color-primary-shade: #e05e2f;
+  --ion-color-primary-tint: #ff7a49;
+
+  /** secondary — verde azulado, para lo secundario y los acentos */
+  --ion-color-secondary: #2ec4b6;
+  --ion-color-secondary-rgb: 46, 196, 182;
+  --ion-color-secondary-contrast: #04201d;
+  --ion-color-secondary-contrast-rgb: 4, 32, 29;
+  --ion-color-secondary-shade: #28aca0;
+  --ion-color-secondary-tint: #43cabe;
+
+  /** tertiary */
+  --ion-color-tertiary: #8367c7;
+  --ion-color-tertiary-rgb: 131, 103, 199;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #735baf;
+  --ion-color-tertiary-tint: #8f76cd;
+
+  // --- Estados -------------------------------------------------------------
+
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #06210f;
+  --ion-color-success-contrast-rgb: 6, 33, 15;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #241c00;
+  --ion-color-warning-contrast-rgb: 36, 28, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  --ion-color-danger: #ff4d5e;
+  --ion-color-danger-rgb: 255, 77, 94;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #e04453;
+  --ion-color-danger-tint: #ff5f6e;
+
+  // --- Redes sociales ------------------------------------------------------
+  // Son los colores oficiales de cada marca; no cambian con el tema.
+
+  --ion-color-facebook: #1877f2;
+  --ion-color-facebook-rgb: 24, 119, 242;
+  --ion-color-facebook-contrast: #ffffff;
+  --ion-color-facebook-contrast-rgb: 255, 255, 255;
+  --ion-color-facebook-shade: #1569d5;
+  --ion-color-facebook-tint: #2f85f3;
+
+  --ion-color-google: #ea4335;
+  --ion-color-google-rgb: 234, 67, 53;
+  --ion-color-google-contrast: #ffffff;
+  --ion-color-google-contrast-rgb: 255, 255, 255;
+  --ion-color-google-shade: #ce3b2f;
+  --ion-color-google-tint: #ec5649;
+
+  --ion-color-instagram: #e1306c;
+  --ion-color-instagram-rgb: 225, 48, 108;
+  --ion-color-instagram-contrast: #ffffff;
+  --ion-color-instagram-contrast-rgb: 255, 255, 255;
+  --ion-color-instagram-shade: #c62a5f;
+  --ion-color-instagram-tint: #e4457b;
+
+  // Se conservan los nombres antiguos porque las plantillas los usan.
+  --ion-color-cyan: #2ec4b6;
+  --ion-color-cyan-rgb: 46, 196, 182;
+  --ion-color-cyan-contrast: #04201d;
+  --ion-color-cyan-contrast-rgb: 4, 32, 29;
+  --ion-color-cyan-shade: #28aca0;
+  --ion-color-cyan-tint: #43cabe;
+
+  --ion-color-green: #2dd36f;
+  --ion-color-green-rgb: 45, 211, 111;
+  --ion-color-green-contrast: #06210f;
+  --ion-color-green-contrast-rgb: 6, 33, 15;
+  --ion-color-green-shade: #28ba62;
+  --ion-color-green-tint: #42d77d;
+
+  // --- Diseño --------------------------------------------------------------
+
+  /** Radio de las esquinas, unificado en toda la aplicación. */
+  --respet-radius-sm: 8px;
+  --respet-radius-md: 12px;
+  --respet-radius-lg: 20px;
+  /** Radio de las burbujas del chat. */
+  --respet-radius-bubble: 18px;
+
+  --respet-space-xs: 4px;
+  --respet-space-sm: 8px;
+  --respet-space-md: 16px;
+  --respet-space-lg: 24px;
+
+  --ion-font-family: 'Roboto Condensed', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --respet-font-display: 'Eczar', Georgia, serif;
+}
+
+/**
+ * Tema oscuro: el de partida.
+ *
+ * Los grises no son neutros puros sino ligeramente azulados, que es lo que
+ * evita que una pantalla oscura se vea sucia o parda.
+ */
+:root {
+  --ion-background-color: #15161a;
+  --ion-background-color-rgb: 21, 22, 26;
+
+  --ion-text-color: #f2f3f5;
+  --ion-text-color-rgb: 242, 243, 245;
+
+  --ion-border-color: #2a2c33;
+
+  /** Superficie de tarjetas, listas y modales: un punto por encima del fondo. */
+  --ion-item-background: #1d1f24;
+  --ion-card-background: #1d1f24;
+  --ion-toolbar-background: #1a1c21;
+  --ion-tab-bar-background: #1a1c21;
+  --ion-overlay-background-color: #1d1f24;
+
+  --ion-color-step-50: #1b1d22;
+  --ion-color-step-100: #212329;
+  --ion-color-step-150: #272930;
+  --ion-color-step-200: #2d3037;
+  --ion-color-step-250: #33363e;
+  --ion-color-step-300: #393c45;
+  --ion-color-step-350: #40434c;
+  --ion-color-step-400: #464953;
+  --ion-color-step-450: #4c505a;
+  --ion-color-step-500: #525661;
+  --ion-color-step-550: #5f636e;
+  --ion-color-step-600: #6c707b;
+  --ion-color-step-650: #797d88;
+  --ion-color-step-700: #868a95;
+  --ion-color-step-750: #9397a2;
+  --ion-color-step-800: #a0a4af;
+  --ion-color-step-850: #adb1bc;
+  --ion-color-step-900: #babec9;
+  --ion-color-step-950: #c7cbd6;
+
+  --ion-color-dark: #f2f3f5;
+  --ion-color-dark-rgb: 242, 243, 245;
+  --ion-color-dark-contrast: #15161a;
+  --ion-color-dark-contrast-rgb: 21, 22, 26;
+  --ion-color-dark-shade: #d5d6d8;
+  --ion-color-dark-tint: #f3f4f6;
+
+  --ion-color-medium: #8b8f9a;
+  --ion-color-medium-rgb: 139, 143, 154;
+  --ion-color-medium-contrast: #15161a;
+  --ion-color-medium-contrast-rgb: 21, 22, 26;
+  --ion-color-medium-shade: #7a7e87;
+  --ion-color-medium-tint: #979aa4;
+
+  --ion-color-light: #1d1f24;
+  --ion-color-light-rgb: 29, 31, 36;
+  --ion-color-light-contrast: #f2f3f5;
+  --ion-color-light-contrast-rgb: 242, 243, 245;
+  --ion-color-light-shade: #1a1c20;
+  --ion-color-light-tint: #34363a;
+
+  /** Color de las barras superiores. */
+  --ion-color-dark-accent: #1a1c21;
+  --ion-color-dark-accent-rgb: 26, 28, 33;
+  --ion-color-dark-accent-contrast: #f2f3f5;
+  --ion-color-dark-accent-contrast-rgb: 242, 243, 245;
+  --ion-color-dark-accent-shade: #17191d;
+  --ion-color-dark-accent-tint: #313337;
+
+  /** Burbujas del chat. */
+  --respet-bubble-own: var(--ion-color-primary);
+  --respet-bubble-own-text: var(--ion-color-primary-contrast);
+  --respet-bubble-peer: #2a2d34;
+  --respet-bubble-peer-text: #f2f3f5;
+
+  --respet-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 24%);
+  --respet-skeleton: #262930;
+}
+
+/**
+ * Tema claro.
+ *
+ * Se aplica con la clase `ion-palette-light` en el `<html>`, no con
+ * `prefers-color-scheme`: el usuario puede elegir un tema distinto al del
+ * sistema, y `ThemeService` resuelve la opción «seguir al sistema» poniendo o
+ * quitando esta clase.
+ */
+.ion-palette-light {
+  --ion-background-color: #f7f7f9;
+  --ion-background-color-rgb: 247, 247, 249;
+
+  --ion-text-color: #1a1b20;
+  --ion-text-color-rgb: 26, 27, 32;
+
+  --ion-border-color: #e2e3e8;
+
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+  --ion-toolbar-background: #ffffff;
+  --ion-tab-bar-background: #ffffff;
+  --ion-overlay-background-color: #ffffff;
+
+  --ion-color-step-50: #f2f2f5;
+  --ion-color-step-100: #e9e9ee;
+  --ion-color-step-150: #e0e0e6;
+  --ion-color-step-200: #d7d7df;
+  --ion-color-step-250: #cecfd7;
+  --ion-color-step-300: #c5c6cf;
+  --ion-color-step-350: #bcbdc8;
+  --ion-color-step-400: #b3b4c0;
+  --ion-color-step-450: #aaabb8;
+  --ion-color-step-500: #a1a2b1;
+  --ion-color-step-550: #90919f;
+  --ion-color-step-600: #7f808d;
+  --ion-color-step-650: #6e6f7b;
+  --ion-color-step-700: #5d5e69;
+  --ion-color-step-750: #4c4d57;
+  --ion-color-step-800: #3b3c45;
+  --ion-color-step-850: #2a2b33;
+  --ion-color-step-900: #232429;
+  --ion-color-step-950: #1a1b20;
+
+  --ion-color-dark: #1a1b20;
+  --ion-color-dark-rgb: 26, 27, 32;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #17181c;
+  --ion-color-dark-tint: #313236;
+
+  --ion-color-medium: #6e7180;
+  --ion-color-medium-rgb: 110, 113, 128;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #616371;
+  --ion-color-medium-tint: #7d808d;
+
+  --ion-color-light: #f2f2f5;
+  --ion-color-light-rgb: 242, 242, 245;
+  --ion-color-light-contrast: #1a1b20;
+  --ion-color-light-contrast-rgb: 26, 27, 32;
+  --ion-color-light-shade: #d5d5d8;
+  --ion-color-light-tint: #f3f3f6;
+
+  --ion-color-dark-accent: #ffffff;
+  --ion-color-dark-accent-rgb: 255, 255, 255;
+  --ion-color-dark-accent-contrast: #1a1b20;
+  --ion-color-dark-accent-contrast-rgb: 26, 27, 32;
+  --ion-color-dark-accent-shade: #e0e0e0;
+  --ion-color-dark-accent-tint: #ffffff;
+
+  --respet-bubble-own: var(--ion-color-primary);
+  --respet-bubble-own-text: #ffffff;
+  --respet-bubble-peer: #e9eaef;
+  --respet-bubble-peer-text: #1a1b20;
+
+  --respet-shadow: 0 1px 2px rgb(16 18 24 / 8%), 0 2px 8px rgb(16 18 24 / 6%);
+  --respet-skeleton: #e4e5ea;
+}
+
+/**
+ * Registro de los colores propios.
+ *
+ * Ionic sólo genera las clases `.ion-color-*` de su paleta de fábrica; las que
+ * se añaden hay que declararlas para poder usarlas con `color="…"`.
+ */
+// Los nombres van entrecomillados porque `cyan` y `green` son colores de CSS:
+// sin comillas, Sass los interpola como color y genera un selector inválido.
+@each $name in ('dark-accent', 'facebook', 'google', 'instagram', 'cyan', 'green') {
+  .ion-color-#{$name} {
+    --ion-color-base: var(--ion-color-#{$name}) !important;
+    --ion-color-base-rgb: var(--ion-color-#{$name}-rgb) !important;
+    --ion-color-contrast: var(--ion-color-#{$name}-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-#{$name}-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-#{$name}-shade) !important;
+    --ion-color-tint: var(--ion-color-#{$name}-tint) !important;
+  }
+}
