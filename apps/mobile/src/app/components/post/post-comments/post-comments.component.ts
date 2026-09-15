@@ -78,10 +78,17 @@ export class PostCommentsComponent {
   readonly hasMore = signal(false);
   readonly total = signal(0);
 
-  draft = '';
+  /**
+   * Lo que se está escribiendo, como señal.
+   *
+   * Siendo un campo suelto, `canSend` no tenía de qué depender: se calculaba
+   * una vez con el cuadro vacío y se quedaba en «no» para siempre, así que el
+   * botón de enviar nacía apagado y ya no se encendía al teclear.
+   */
+  readonly draft = signal('');
 
   readonly isAuthenticated = this.auth.isAuthenticated;
-  readonly canSend = computed(() => this.draft.trim().length > 0);
+  readonly canSend = computed(() => this.draft().trim().length > 0);
 
   private page = 1;
 
@@ -142,7 +149,7 @@ export class PostCommentsComponent {
   }
 
   async send(): Promise<void> {
-    const body = this.draft.trim();
+    const body = this.draft().trim();
 
     if (!body) {
       return;
@@ -154,7 +161,7 @@ export class PostCommentsComponent {
       this.items.update((current) => [...current, created]);
       this.total.update((count) => count + 1);
       this.counted.emit(this.total());
-      this.draft = '';
+      this.draft.set('');
     } catch (error) {
       await this.feedback.error(error);
     }

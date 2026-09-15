@@ -56,7 +56,8 @@
       [autoGrow]="true"
       rows="1"
       maxlength="2000"
-      [(ngModel)]="draft"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
       (keydown.enter)="onEnter($event)"
     />
     <ion-button
