@@ -1,6 +1,27 @@
 :host {
   display: block;
 
+  /*
+    Dos campos por fila: la dirección se lee de un vistazo en lugar de en una
+    columna de seis filas. La calle ocupa las dos, que es la que lleva texto
+    largo, y en pantalla estrecha todo vuelve a una sola columna.
+  */
+  .campos {
+    display: grid;
+    gap: 0 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .campos .ancho {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 480px) {
+    .campos {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   .actions {
     align-items: center;
     display: flex;

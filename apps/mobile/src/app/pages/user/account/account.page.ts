@@ -10,6 +10,7 @@ import { UsersService } from '../../../core/api/users.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
+import { AccessComponent } from './access/access.component';
 import { AvatarComponent } from './avatar/avatar.component';
 import { OptionsComponent } from './options/options.component';
 import { UserFormComponent } from './user-form/user-form.component';
@@ -28,6 +29,7 @@ import { UserFormComponent } from './user-form/user-form.component';
   imports: [
     PageHeaderComponent,
     AvatarComponent,
+    AccessComponent,
     OptionsComponent,
     UserFormComponent,
     IonContent,

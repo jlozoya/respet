@@ -1,0 +1,70 @@
+<!--
+  Con qué se entra a la cuenta, todo en un sitio: el correo, la contraseña y
+  las cuentas externas enlazadas. Antes el correo estaba al final de la página
+  y los vínculos al principio, separados por el formulario del perfil entero,
+  aunque las tres cosas respondan a la misma pregunta.
+-->
+<h3 class="section">{{ 'ACCOUNT.ACCESS' | translate }}</h3>
+
+<form [formGroup]="emailForm" (ngSubmit)="changeEmail()">
+  <!--
+    El correo no se guarda con el resto: hay que confirmarlo desde el enlace
+    que llega a la dirección nueva, así que lleva su propio formulario y su
+    propio botón.
+  -->
+  <p class="hint">{{ 'EMAIL_CHANGE_HINT' | translate }}</p>
+
+  <ion-list lines="full">
+    <ion-item>
+      <ion-input
+        formControlName="email"
+        type="email"
+        inputmode="email"
+        [label]="'NEW_EMAIL' | translate"
+        labelPlacement="stacked"
+      />
+    </ion-item>
+    <app-control-messages [control]="emailForm.controls.email" />
+
+    @if (hasPassword()) {
+      <ion-item>
+        <ion-input
+          formControlName="password"
+          type="password"
+          autocomplete="current-password"
+          [label]="'CURRENT_PASSWORD' | translate"
+          labelPlacement="stacked"
+        />
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-button expand="block" fill="outline" type="submit" [disabled]="changingEmail()">
+    {{ 'CHANGE_EMAIL' | translate }}
+  </ion-button>
+</form>
+
+<ion-list lines="full">
+  @if (hasPassword()) {
+    <ion-item button detail="false" (click)="changePassword()">
+      <ion-icon name="shield-checkmark-outline" slot="start" />
+      <ion-label>{{ 'CHANGE_PASSWORD' | translate }}</ion-label>
+    </ion-item>
+  }
+
+  @for (provider of providers; track provider.value) {
+    <ion-item>
+      <ion-icon [name]="provider.icon" slot="start" />
+      <ion-label>{{ provider.label }}</ion-label>
+      <ion-button
+        slot="end"
+        fill="outline"
+        [color]="linkFor()(provider.value) ? 'danger' : 'primary'"
+        [disabled]="working()"
+        (click)="toggleLink($any(provider.value))"
+      >
+        {{ (linkFor()(provider.value) ? 'UNLINK' : 'LINK') | translate }}
+      </ion-button>
+    </ion-item>
+  }
+</ion-list>

@@ -61,22 +61,6 @@
       <ion-label position="stacked">{{ 'BIRTHDAY' | translate }}</ion-label>
       <ion-datetime formControlName="birthday" presentation="date" [showDefaultButtons]="true" />
     </ion-item>
-
-    @if (isSelf()) {
-      <ion-item>
-        <ion-select
-          formControlName="lang"
-          [label]="'LANG_SELECTOR' | translate"
-          labelPlacement="stacked"
-          [cancelText]="'CANCEL' | translate"
-          [okText]="'ACCEPT' | translate"
-        >
-          @for (option of languages(); track option.code) {
-            <ion-select-option [value]="option.code">{{ option.label }}</ion-select-option>
-          }
-        </ion-select>
-      </ion-item>
-    }
   </ion-list>
 
   <h3 class="section">{{ 'ADDRESS' | translate }}</h3>
@@ -86,42 +70,3 @@
     {{ 'SAVE' | translate }}
   </ion-button>
 </form>
-
-@if (isSelf()) {
-  <form [formGroup]="emailForm" (ngSubmit)="changeEmail()">
-    <h3 class="section">{{ 'EMAIL' | translate }}</h3>
-    <!--
-      El cambio de correo va en su propio formulario porque no se aplica al
-      guardar: hay que confirmarlo desde el enlace que llega a la dirección
-      nueva.
-    -->
-    <p class="hint">{{ 'EMAIL_CHANGE_HINT' | translate }}</p>
-
-    <ion-list>
-      <ion-item>
-        <ion-input
-          formControlName="email"
-          type="email"
-          inputmode="email"
-          [label]="'NEW_EMAIL' | translate"
-          labelPlacement="stacked"
-        />
-      </ion-item>
-      <app-control-messages [control]="emailForm.controls.email" />
-
-      <ion-item>
-        <ion-input
-          formControlName="password"
-          type="password"
-          autocomplete="current-password"
-          [label]="'CURRENT_PASSWORD' | translate"
-          labelPlacement="stacked"
-        />
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" fill="outline" type="submit" [disabled]="changingEmail()">
-      {{ 'CHANGE_EMAIL' | translate }}
-    </ion-button>
-  </form>
-}

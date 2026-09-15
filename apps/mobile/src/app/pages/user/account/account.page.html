@@ -8,17 +8,26 @@
   @if (user(); as current) {
     <ion-row>
       <ion-col size="12" size-md="8" offset-md="2">
-        <ion-row class="ion-padding">
-          <ion-col size="12" size-sm="6">
-            <app-avatar [user]="current" [editable]="isSelf()" (changed)="reload()" />
-          </ion-col>
+        <!--
+          De arriba abajo, por lo que se viene a hacer: la foto, con qué se
+          entra a la cuenta, los datos del perfil, y al final lo que se hace
+          una vez o ninguna —descargar los datos, salir, darse de baja—.
 
-          <ion-col size="12" size-sm="6">
-            <app-options [user]="current" [isSelf]="isSelf()" (changed)="reload()" />
-          </ion-col>
-        </ion-row>
+          Antes el avatar y ese último grupo compartían la primera fila, así
+          que «eliminar la cuenta» quedaba junto a la foto y el correo caía al
+          fondo, detrás del formulario entero.
+        -->
+        <div class="ion-padding">
+          <app-avatar [user]="current" [editable]="isSelf()" (changed)="reload()" />
+        </div>
+
+        @if (isSelf()) {
+          <app-access [user]="current" (changed)="reload()" />
+        }
 
         <app-user-form [user]="current" [isSelf]="isSelf()" (saved)="onUpdated($event)" />
+
+        <app-options [user]="current" [isSelf]="isSelf()" />
       </ion-col>
     </ion-row>
   }

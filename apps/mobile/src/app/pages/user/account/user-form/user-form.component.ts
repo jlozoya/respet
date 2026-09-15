@@ -13,19 +13,22 @@ import { Gender, type LocationInput, type User } from '@respet/shared';
 
 import { UsersService } from '../../../../core/api/users.service';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { LanguageService } from '../../../../core/i18n/language.service';
 import { FeedbackService } from '../../../../core/ui/feedback.service';
 import { LocationPickerComponent } from '../../../../components/location-picker/location-picker.component';
 import { ControlMessagesComponent } from '../../../../shared/components/control-messages.component';
 import { phoneValidator } from '../../../../shared/validators/form-validators';
 
 /**
- * Datos del perfil.
+ * Datos del perfil y dirección.
  *
- * El correo va aparte: cambiarlo exige la contraseña y no surte efecto hasta
- * que se abre el enlace enviado a la dirección nueva, así que mezclarlo con el
- * resto del formulario daría a entender que se guarda igual que los demás
- * campos.
+ * El correo y la contraseña viven en `app-access`, por encima de esto:
+ * cambiarlos no se guarda con este botón —el correo hay que confirmarlo desde
+ * un enlace— y es lo que más se viene a tocar, mientras que el nombre y la
+ * fecha de nacimiento se rellenan una vez.
+ *
+ * El idioma se fue a la pantalla de configuración, que es donde está también
+ * el tema: aquí era un segundo mando para lo mismo, y sólo uno de los dos
+ * llegaba al servidor.
  */
 @Component({
   selector: 'app-user-form',
@@ -50,7 +53,6 @@ import { phoneValidator } from '../../../../shared/validators/form-validators';
 export class UserFormComponent {
   private readonly users = inject(UsersService);
   private readonly auth = inject(AuthService);
-  private readonly language = inject(LanguageService);
   private readonly feedback = inject(FeedbackService);
 
   readonly user = input.required<User>();
@@ -60,7 +62,6 @@ export class UserFormComponent {
   readonly saved = output<User>();
 
   readonly saving = signal(false);
-  readonly changingEmail = signal(false);
   readonly location = signal<LocationInput | null>(null);
 
   readonly genders = [
@@ -72,8 +73,6 @@ export class UserFormComponent {
     { value: Gender.Unspecified, label: 'PREFER_NOT_TO_SAY' },
   ];
 
-  readonly languages = this.language.available;
-
   private readonly builder = inject(FormBuilder);
 
   readonly form = this.builder.nonNullable.group({
@@ -83,12 +82,6 @@ export class UserFormComponent {
     gender: [null as Gender | null],
     phone: ['', [phoneValidator()]],
     birthday: [null as string | null],
-    lang: ['es'],
-  });
-
-  readonly emailForm = this.builder.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: [''],
   });
 
   constructor() {
@@ -104,10 +97,7 @@ export class UserFormComponent {
         gender: current.gender,
         phone: current.phone ?? '',
         birthday: current.birthday,
-        lang: current.lang,
       });
-
-      this.emailForm.patchValue({ email: current.email });
 
       if (current.location) {
         const { id: _id, ...rest } = current.location;
@@ -147,11 +137,6 @@ export class UserFormComponent {
         ? await this.users.updateLocation({ location: this.location() })
         : await this.users.updateLocationById(current.id, { location: this.location() });
 
-      if (this.isSelf() && values.lang !== current.lang) {
-        updated = await this.users.updateLanguage(values.lang);
-        await this.language.use(values.lang);
-      }
-
       if (this.isSelf()) {
         await this.auth.setUser(updated);
       }
@@ -165,25 +150,4 @@ export class UserFormComponent {
     }
   }
 
-  async changeEmail(): Promise<void> {
-    if (this.emailForm.invalid) {
-      this.emailForm.markAllAsTouched();
-
-      return;
-    }
-
-    this.changingEmail.set(true);
-
-    try {
-      const { email, password } = this.emailForm.getRawValue();
-
-      await this.users.requestEmailChange({ email, ...(password ? { password } : {}) });
-      await this.feedback.toast('EMAIL_CHANGE_REQUESTED', { color: 'success' });
-      this.emailForm.patchValue({ password: '' });
-    } catch (error) {
-      await this.feedback.error(error);
-    } finally {
-      this.changingEmail.set(false);
-    }
-  }
 }

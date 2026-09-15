@@ -6,6 +6,7 @@
   },
   "ACCEPT": "Accept",
   "ACCOUNT": {
+    "ACCESS": "Account access",
     "CONTACT_INFORMATION": "Contact information",
     "DIRECTION": "Address",
     "GENERAL_INFORMATION": "General information",

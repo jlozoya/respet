@@ -1,68 +1,76 @@
-<ion-item>
-  <ion-input
-    [label]="'COUNTRY' | translate"
-    labelPlacement="stacked"
-    [ngModel]="location()?.country"
-    (ngModelChange)="patch('country', $event)"
-    name="country"
-    autocomplete="country-name"
-  />
-</ion-item>
+<!--
+  Los campos van en el orden en que se escribe una dirección —calle y número,
+  código postal, población, estado, país— y emparejados de dos en dos: eran
+  seis filas a todo lo ancho, empezando por el país, que es el dato que menos
+  se piensa y el que menos cambia.
+-->
+<div class="campos">
+  <ion-item class="ancho">
+    <ion-input
+      [label]="'ROUTE' | translate"
+      labelPlacement="stacked"
+      [ngModel]="location()?.route"
+      (ngModelChange)="patch('route', $event)"
+      name="route"
+      autocomplete="address-line1"
+    />
+  </ion-item>
 
-<ion-item>
-  <ion-input
-    [label]="'STATE' | translate"
-    labelPlacement="stacked"
-    [ngModel]="location()?.state"
-    (ngModelChange)="patch('state', $event)"
-    name="state"
-    autocomplete="address-level1"
-  />
-</ion-item>
+  <ion-item>
+    <ion-input
+      [label]="'STREET_NUMBER' | translate"
+      labelPlacement="stacked"
+      [ngModel]="location()?.streetNumber"
+      (ngModelChange)="patch('streetNumber', $event)"
+      name="streetNumber"
+    />
+  </ion-item>
 
-<ion-item>
-  <ion-input
-    [label]="'CITY' | translate"
-    labelPlacement="stacked"
-    [ngModel]="location()?.city"
-    (ngModelChange)="patch('city', $event)"
-    name="city"
-    autocomplete="address-level2"
-  />
-</ion-item>
+  <ion-item>
+    <ion-input
+      [label]="'POSTAL_CODE' | translate"
+      labelPlacement="stacked"
+      inputmode="numeric"
+      [ngModel]="location()?.postalCode"
+      (ngModelChange)="patch('postalCode', $event)"
+      name="postalCode"
+      autocomplete="postal-code"
+    />
+  </ion-item>
 
-<ion-item>
-  <ion-input
-    [label]="'ROUTE' | translate"
-    labelPlacement="stacked"
-    [ngModel]="location()?.route"
-    (ngModelChange)="patch('route', $event)"
-    name="route"
-    autocomplete="address-line1"
-  />
-</ion-item>
+  <ion-item>
+    <ion-input
+      [label]="'CITY' | translate"
+      labelPlacement="stacked"
+      [ngModel]="location()?.city"
+      (ngModelChange)="patch('city', $event)"
+      name="city"
+      autocomplete="address-level2"
+    />
+  </ion-item>
 
-<ion-item>
-  <ion-input
-    [label]="'STREET_NUMBER' | translate"
-    labelPlacement="stacked"
-    [ngModel]="location()?.streetNumber"
-    (ngModelChange)="patch('streetNumber', $event)"
-    name="streetNumber"
-  />
-</ion-item>
+  <ion-item>
+    <ion-input
+      [label]="'STATE' | translate"
+      labelPlacement="stacked"
+      [ngModel]="location()?.state"
+      (ngModelChange)="patch('state', $event)"
+      name="state"
+      autocomplete="address-level1"
+    />
+  </ion-item>
 
-<ion-item>
-  <ion-input
-    [label]="'POSTAL_CODE' | translate"
-    labelPlacement="stacked"
-    inputmode="numeric"
-    [ngModel]="location()?.postalCode"
-    (ngModelChange)="patch('postalCode', $event)"
-    name="postalCode"
-    autocomplete="postal-code"
-  />
-</ion-item>
+  <ion-item>
+    <ion-input
+      [label]="'COUNTRY' | translate"
+      labelPlacement="stacked"
+      [ngModel]="location()?.country"
+      (ngModelChange)="patch('country', $event)"
+      name="country"
+      autocomplete="country-name"
+    />
+  </ion-item>
+</div>
 
 <div class="actions">
   <ion-button fill="outline" size="small" [disabled]="loading()" (click)="locateFromFields()">
