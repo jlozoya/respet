@@ -129,7 +129,7 @@ export class ChatService {
 
     return {
       id: String(creada._id),
-      peer: toUserSummary(peer as never),
+      peer: toUserSummary(peer),
       lastMessageAt: null,
       lastPreview: null,
       unreadCount: 0,
@@ -308,7 +308,7 @@ export class ChatService {
       throw AppException.notFound('Conversation');
     }
 
-    const otros = await this.peersOf([conversacion._id as Types.ObjectId], userId);
+    const otros = await this.peersOf([conversacion._id], userId);
     const peer = otros.get(String(conversacion._id));
 
     if (!peer) {

@@ -4,9 +4,7 @@ import { Transform } from 'class-transformer';
 import { IsInt, IsMongoId, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 import { SearchQueryDto } from '../../../common/dto/pagination.dto.js';
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
+import { trim } from '../../../common/dto/transforms.js';
 
 @InputType('CreateProductInput')
 export class CreateProductDto implements CreateProductRequest {

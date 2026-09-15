@@ -29,12 +29,7 @@ import {
 import { LocationDto } from '../../common/dto/location.dto.js';
 import { SearchQueryDto } from '../../common/dto/pagination.dto.js';
 import { Gender, UserRole } from '../../graphql/enums.js';
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
-
-const normalizeEmail = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim().toLowerCase() : value;
+import { normalizeEmail, normalizeEmailEach, trim, trimEach } from '../../common/dto/transforms.js';
 
 /** Formato laxo a propósito: los teléfonos internacionales varían mucho. */
 const PHONE_PATTERN = /^\+?[\d\s().-]{6,20}$/;
@@ -153,11 +148,7 @@ export class AddEmailsDto implements AddEmailsRequest {
   @IsArray()
   @ArrayNotEmpty()
   @ArrayMaxSize(10)
-  @Transform(({ value }) =>
-    Array.isArray(value)
-      ? value.map((item) => (typeof item === 'string' ? item.trim().toLowerCase() : item))
-      : value,
-  )
+  @Transform(normalizeEmailEach)
   @IsEmail({}, { each: true, message: 'emails must contain valid addresses' })
   emails!: string[];
 }
@@ -168,9 +159,7 @@ export class AddPhonesDto implements AddPhonesRequest {
   @IsArray()
   @ArrayNotEmpty()
   @ArrayMaxSize(10)
-  @Transform(({ value }) =>
-    Array.isArray(value) ? value.map((item) => (typeof item === 'string' ? item.trim() : item)) : value,
-  )
+  @Transform(trimEach)
   @IsNotEmpty({ each: true })
   @Matches(PHONE_PATTERN, { each: true, message: 'phones must contain valid phone numbers' })
   phones!: string[];

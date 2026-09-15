@@ -467,7 +467,7 @@ export class OrdersService {
       throw AppException.notFound('Order');
     }
 
-    return doc as Order & { _id: unknown };
+    return doc;
   }
 
   private async assertExists(id: string): Promise<void> {

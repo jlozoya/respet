@@ -4,9 +4,7 @@ import { Transform } from 'class-transformer';
 import { IsEmail, IsOptional, IsString, Length, Matches, MaxLength } from 'class-validator';
 
 import { SearchQueryDto } from '../../common/dto/pagination.dto.js';
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
+import { normalizeEmail, trim } from '../../common/dto/transforms.js';
 
 @InputType('CreateSupportInput')
 export class CreateSupportDto implements CreateSupportRequest {
@@ -17,7 +15,7 @@ export class CreateSupportDto implements CreateSupportRequest {
   name!: string;
 
   @Field()
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+  @Transform(normalizeEmail)
   @IsEmail({}, { message: 'email must be a valid address' })
   @MaxLength(190)
   email!: string;

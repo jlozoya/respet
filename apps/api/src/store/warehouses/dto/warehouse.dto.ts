@@ -5,9 +5,7 @@ import { IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 
 import { LocationDto } from '../../../common/dto/location.dto.js';
 import { SearchQueryDto } from '../../../common/dto/pagination.dto.js';
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
+import { trim } from '../../../common/dto/transforms.js';
 
 @InputType('CreateWarehouseInput')
 export class CreateWarehouseDto implements CreateWarehouseRequest {

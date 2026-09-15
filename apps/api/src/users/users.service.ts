@@ -377,7 +377,7 @@ export class UsersService {
       throw AppException.notFound('Media');
     }
 
-    return toMedia(doc as never);
+    return toMedia(doc);
   }
 
   async getPermissions(id: string): Promise<UserPermissionsDto> {

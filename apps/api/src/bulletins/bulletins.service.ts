@@ -116,7 +116,7 @@ export class BulletinsService {
       throw AppException.notFound('Bulletin');
     }
 
-    return doc as Bulletin & { _id: unknown };
+    return doc;
   }
 
   private async assertExists(id: string): Promise<void> {

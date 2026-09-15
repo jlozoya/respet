@@ -29,6 +29,6 @@ export class ConfiguredIoAdapter extends IoAdapter {
       cors: { origin: this.origins, credentials: false },
     } as ServerOptions;
 
-    return super.createIOServer(port, merged) as Server;
+    return super.createIOServer(port, merged);
   }
 }

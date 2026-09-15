@@ -21,16 +21,11 @@ import {
 } from 'class-validator';
 
 import { AuthProvider, Gender } from '../../graphql/enums.js';
+import { normalizeEmail, trim } from '../../common/dto/transforms.js';
 
 /** Longitud mínima recomendada por NIST SP 800-63B. */
 const PASSWORD_MIN = 8;
 const PASSWORD_MAX = 128;
-
-const normalizeEmail = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim().toLowerCase() : value;
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
 
 @InputType('LoginInput')
 export class LoginDto implements LoginRequest {

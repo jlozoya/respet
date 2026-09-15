@@ -141,6 +141,6 @@ export class WarehousesService {
       throw AppException.notFound('Warehouse');
     }
 
-    return doc as Warehouse & { _id: unknown };
+    return doc;
   }
 }

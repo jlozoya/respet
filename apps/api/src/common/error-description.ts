@@ -60,7 +60,7 @@ function describeHttpException(exception: HttpException): ErrorDescription {
   // `ValidationPipe` responde con `{ message: string[] }`; lo agrupamos por
   // campo para que el formulario pueda señalar el control equivocado.
   if (typeof payload === 'object' && payload !== null && 'message' in payload) {
-    const raw = (payload as { message: unknown }).message;
+    const raw = (payload).message;
 
     if (Array.isArray(raw)) {
       return {

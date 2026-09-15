@@ -136,7 +136,7 @@ export class ProductsService {
       throw AppException.notFound('Media');
     }
 
-    return toMedia(doc as never);
+    return toMedia(doc);
   }
 
   async removeMedia(id: string, mediaId: string): Promise<void> {

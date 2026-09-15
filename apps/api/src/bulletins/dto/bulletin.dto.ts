@@ -4,9 +4,7 @@ import { Transform } from 'class-transformer';
 import { IsDateString, IsString, Length } from 'class-validator';
 
 import { SearchQueryDto } from '../../common/dto/pagination.dto.js';
-
-const trim = ({ value }: { value: unknown }): unknown =>
-  typeof value === 'string' ? value.trim() : value;
+import { trim } from '../../common/dto/transforms.js';
 
 @InputType('CreateBulletinInput')
 export class CreateBulletinDto implements CreateBulletinRequest {

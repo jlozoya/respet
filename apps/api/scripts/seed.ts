@@ -125,7 +125,7 @@ async function guardarFoto(
 
     return _id;
   } catch (error: unknown) {
-    console.warn(`  no se pudo preparar ${url}: ${error instanceof Error ? error.message : error}`);
+    console.warn(`  no se pudo preparar ${url}: ${error instanceof Error ? error.message : String(error)}`);
     return null;
   }
 }
@@ -169,7 +169,7 @@ async function main(): Promise<void> {
       const existente = await db.collection('users').findOne({ email: persona.email });
 
       if (existente) {
-        ids.set(persona.email, existente._id as Id);
+        ids.set(persona.email, existente._id);
         continue;
       }
 
@@ -394,10 +394,10 @@ async function main(): Promise<void> {
       ];
 
       for (const comentario of comentarios) {
-        const fecha = haceHoras(publicaciones[comentario.post]!.horas - 1);
+        const fecha = haceHoras(publicaciones[comentario.post].horas - 1);
 
         await db.collection('comments').insertOne({
-          postId: creadas[comentario.post]!,
+          postId: creadas[comentario.post],
           userId: comentario.autor,
           body: comentario.body,
           deletedAt: null,
@@ -426,7 +426,7 @@ async function main(): Promise<void> {
 
       for (const voto of votos) {
         await db.collection('post_votes').insertOne({
-          postId: creadas[voto.post]!,
+          postId: creadas[voto.post],
           userId: voto.quien,
           value: voto.value,
           createdAt: ahora,
@@ -462,7 +462,7 @@ async function main(): Promise<void> {
 
       for (const [position, semilla] of galeria.fotos.entries()) {
         const media = await guardarFoto(db, FOTO(semilla), 'post', String(post.description), {
-          postId: post._id as Id,
+          postId: post._id,
           position,
         });
 

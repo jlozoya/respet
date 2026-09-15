@@ -2,11 +2,12 @@ import { Field, ID, InputType, Int } from '@nestjs/graphql';
 import type { MessageListQuery, SendMessageRequest } from '@respet/shared';
 import { Transform } from 'class-transformer';
 import { IsInt, IsMongoId, IsOptional, IsString, Length, Max, Min } from 'class-validator';
+import { trim } from '../../common/dto/transforms.js';
 
 @InputType('SendMessageInput')
 export class SendMessageDto implements SendMessageRequest {
   @Field()
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(trim)
   @IsString()
   @Length(1, 4000)
   body!: string;
