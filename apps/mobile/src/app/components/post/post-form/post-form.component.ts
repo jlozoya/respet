@@ -237,6 +237,28 @@ export class PostFormComponent {
     input.value = '';
   }
 
+  /**
+   * Vuelve a recortar una foto que todavía no ha subido.
+   *
+   * Sustituye la pendiente por la nueva en su sitio, para que no se cuele al
+   * final de la fila cuando hay varias. Si se sale del recortador sin
+   * confirmar, se queda la de antes.
+   */
+  async editPending(image: PendingImage): Promise<void> {
+    const blob = await this.picker.crop(image.blob, { aspectRatio: 4 / 3, targetWidth: 1600 });
+
+    if (!blob) {
+      return;
+    }
+
+    URL.revokeObjectURL(image.previewUrl);
+    this.pending.update((current) =>
+      current.map((item) =>
+        item === image ? { blob, previewUrl: URL.createObjectURL(blob) } : item,
+      ),
+    );
+  }
+
   removePending(image: PendingImage): void {
     // Liberar la URL evita que el navegador retenga el Blob en memoria.
     URL.revokeObjectURL(image.previewUrl);

@@ -5,16 +5,20 @@
   que uno viene a leer.
 -->
 @if (asModal()) {
+  <!--
+    Título al centro y aspa a la derecha: es una ventana que se cierra, no una
+    pantalla de la que se vuelve, y la flecha atrás prometía lo segundo.
+  -->
   <ion-header>
     <ion-toolbar color="dark-accent">
-      <ion-buttons slot="start">
-        <ion-button color="primary" (click)="dismiss()" [attr.aria-label]="'CANCEL' | translate">
-          <ion-icon slot="icon-only" name="arrow-back" />
-        </ion-button>
-      </ion-buttons>
       <ion-title color="medium">
         {{ (isEdit() ? 'POST.EDIT_TITLE' : 'POST.NEW_TITLE') | translate }}
       </ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="medium" (click)="dismiss()" [attr.aria-label]="'CLOSE' | translate">
+          <ion-icon slot="icon-only" name="close" />
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
@@ -79,33 +83,44 @@
 
   @if (imageCount() > 0) {
     <div class="thumbs">
+      <!--
+        El aspa va en la esquina de la foto, sobre ella: quitar una imagen se
+        pide donde está, no en un botón de papelera que había que reconocer.
+      -->
       @for (media of existing(); track media.id) {
         <figure class="thumb">
           <img [src]="media.url" [alt]="media.alt" />
-          <ion-button
-            fill="clear"
-            color="danger"
-            size="small"
+          <button
+            type="button"
+            class="quitar"
             (click)="removeExisting(media)"
             [attr.aria-label]="'DELETE' | translate"
           >
-            <ion-icon name="trash" slot="icon-only" />
-          </ion-button>
+            <ion-icon name="close" aria-hidden="true" />
+          </button>
         </figure>
       }
 
+      <!--
+        Las que aún no han subido llevan además «Editar», que vuelve a abrir el
+        recortador con esa misma foto: el encuadre es lo que uno quiere
+        rehacer al verla ya puesta, y mientras es local no cuesta nada.
+      -->
       @for (image of pending(); track image.previewUrl) {
         <figure class="thumb thumb--pending">
           <img [src]="image.previewUrl" [alt]="'IMAGES' | translate" />
-          <ion-button
-            fill="clear"
-            color="danger"
-            size="small"
+          <button type="button" class="editar" (click)="editPending(image)">
+            <ion-icon name="create-outline" aria-hidden="true" />
+            <span>{{ 'EDIT' | translate }}</span>
+          </button>
+          <button
+            type="button"
+            class="quitar"
             (click)="removePending(image)"
             [attr.aria-label]="'DELETE' | translate"
           >
-            <ion-icon name="close-circle-outline" slot="icon-only" />
-          </ion-button>
+            <ion-icon name="close" aria-hidden="true" />
+          </button>
         </figure>
       }
     </div>

@@ -1,4 +1,13 @@
 :host {
+  /*
+    El hueco del aspa se reserva a los dos lados: centrando sólo en lo que
+    sobra, el título quedaba descuadrado hacia la izquierda.
+  */
+  ion-title {
+    padding-inline: 48px;
+    text-align: center;
+  }
+
   .compositor {
     display: flex;
     flex-direction: column;
@@ -82,13 +91,43 @@
     outline-offset: -2px;
   }
 
-  .thumb ion-button {
-    --padding-start: 4px;
-    --padding-end: 4px;
-
+  /*
+    Los controles van sobre la foto, en pastillas oscuras: encima de una imagen
+    cualquiera —clara, oscura o con mucho detalle— un icono suelto se pierde, y
+    el fondo propio es lo que lo mantiene legible siempre.
+  */
+  .thumb .quitar,
+  .thumb .editar {
+    align-items: center;
+    background: rgb(0 0 0 / 60%);
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    gap: 4px;
     position: absolute;
-    right: 0;
-    top: 0;
+  }
+
+  .thumb .quitar {
+    border-radius: 50%;
+    font-size: 1rem;
+    padding: 5px;
+    right: 4px;
+    top: 4px;
+  }
+
+  .thumb .editar {
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    left: 4px;
+    padding: 4px 9px 4px 7px;
+    top: 4px;
+  }
+
+  .thumb .quitar:hover,
+  .thumb .editar:hover {
+    background: rgb(0 0 0 / 78%);
   }
 
   /* La ubicación se añade y se quita: mientras está, va en su propio recuadro. */
