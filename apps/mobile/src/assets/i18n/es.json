@@ -10,6 +10,11 @@
     "CONTACT_INFORMATION": "Información de contacto",
     "DIRECTION": "Dirección",
     "GENERAL_INFORMATION": "Información general",
+    "TABS": {
+      "ACCESS": "Acceso y privacidad",
+      "ACCOUNT": "Cuenta",
+      "PROFILE": "Perfil"
+    },
     "TITLE": "Cuenta"
   },
   "ADD": "Agregar",
@@ -402,7 +407,6 @@
     "POLITICS": "Políticas",
     "PRESENTATION": "Presentación",
     "PRODUCTS": "Productos",
-    "SETTINGS": "Configuración",
     "SIGNUP": "Registrarme",
     "STORE": "Tienda",
     "SURF": "Navegar",

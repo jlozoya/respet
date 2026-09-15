@@ -1,0 +1,163 @@
+@if (permissions(); as config) {
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>{{ 'SETTINGS.ACCESS' | translate }}</ion-label>
+    </ion-list-header>
+
+    <!--
+      El perfil privado cambia lo que significa el botón de seguir en todas las
+      pantallas, así que se explica debajo en lugar de dejarlo a que se
+      descubra.
+    -->
+    <ion-item>
+      <ion-toggle
+        [checked]="config.privateProfile"
+        (ionChange)="toggle('privateProfile', $event.detail.checked)"
+      >
+        <ion-label>
+          {{ 'SETTINGS.PRIVATE_PROFILE' | translate }}
+          <p class="pista">{{ 'SETTINGS.PRIVATE_PROFILE_HINT' | translate }}</p>
+        </ion-label>
+      </ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-select
+        [ngModel]="config.messagePolicy"
+        (ngModelChange)="changeMessagePolicy($event)"
+        name="messagePolicy"
+        [label]="'SETTINGS.MESSAGE_POLICY' | translate"
+        [cancelText]="'CANCEL' | translate"
+        [okText]="'ACCEPT' | translate"
+      >
+        @for (option of messagePolicies; track option.value) {
+          <ion-select-option [value]="option.value">
+            {{ option.label | translate }}
+          </ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <!--
+    Las solicitudes sólo existen con el perfil privado: la lista aparece con el
+    ajuste encendido y se lleva su propio recuento en el rótulo.
+  -->
+  @if (config.privateProfile) {
+    <ion-list lines="full">
+      <ion-list-header>
+        <ion-label>
+          {{ 'SETTINGS.REQUESTS' | translate }}
+          @if (requests().length > 0) {
+            <ion-badge color="primary">{{ requests().length }}</ion-badge>
+          }
+        </ion-label>
+      </ion-list-header>
+
+      @for (request of requests(); track request.id) {
+        <ion-item>
+          <ion-avatar slot="start">
+            <img
+              [src]="avatarOf(request)"
+              [alt]="request.requester.name"
+              (error)="onAvatarError($event)"
+            />
+          </ion-avatar>
+
+          <ion-label>
+            {{ request.requester.name }}
+            <p>{{ request.createdAt | date: 'short' }}</p>
+          </ion-label>
+
+          <ion-button
+            slot="end"
+            size="small"
+            fill="solid"
+            [disabled]="answering().includes(request.id)"
+            (click)="accept(request)"
+          >
+            {{ 'ACCEPT' | translate }}
+          </ion-button>
+
+          <ion-button
+            slot="end"
+            size="small"
+            fill="clear"
+            color="medium"
+            [disabled]="answering().includes(request.id)"
+            (click)="reject(request)"
+          >
+            {{ 'SETTINGS.REJECT' | translate }}
+          </ion-button>
+        </ion-item>
+      } @empty {
+        <ion-item lines="none">
+          <ion-label color="medium">{{ 'SETTINGS.NO_REQUESTS' | translate }}</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>{{ 'PRIVACY.VISIBILITY' | translate }}</ion-label>
+    </ion-list-header>
+
+    @for (item of switches; track item.key) {
+      <ion-item>
+        <ion-toggle
+          [checked]="config[item.key]"
+          (ionChange)="toggle(item.key, $event.detail.checked)"
+        >
+          {{ item.label | translate }}
+        </ion-toggle>
+      </ion-item>
+    }
+  </ion-list>
+}
+
+<!--
+  Los correos y teléfonos alternativos van aquí, junto a los interruptores que
+  deciden quién los ve: es la misma pregunta desde los dos lados.
+-->
+<ion-list lines="full">
+  <ion-list-header>
+    <ion-label>{{ 'EMAILS' | translate }}</ion-label>
+    <ion-button fill="clear" (click)="manage('email')">
+      <ion-icon name="add-circle-outline" slot="start" />
+      {{ 'MANAGE' | translate }}
+    </ion-button>
+  </ion-list-header>
+
+  @for (email of emails(); track email.id) {
+    <ion-item [href]="'mailto:' + email.email">
+      <ion-icon name="mail" slot="start" />
+      <ion-label>{{ email.email }}</ion-label>
+    </ion-item>
+  } @empty {
+    <ion-item lines="none">
+      <ion-label color="medium">{{ 'PRIVACY.NO_EMAILS' | translate }}</ion-label>
+    </ion-item>
+  }
+</ion-list>
+
+<ion-list lines="full">
+  <ion-list-header>
+    <ion-label>{{ 'PHONES' | translate }}</ion-label>
+    <ion-button fill="clear" (click)="manage('phone')">
+      <ion-icon name="add-circle-outline" slot="start" />
+      {{ 'MANAGE' | translate }}
+    </ion-button>
+  </ion-list-header>
+
+  @for (phone of phones(); track phone.id) {
+    <ion-item [href]="'tel:' + phone.phone">
+      <ion-icon name="call" slot="start" />
+      <ion-label>{{ phone.phone }}</ion-label>
+    </ion-item>
+  } @empty {
+    <ion-item lines="none">
+      <ion-label color="medium">{{ 'PRIVACY.NO_PHONES' | translate }}</ion-label>
+    </ion-item>
+  }
+</ion-list>

@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import type { Bulletin } from '@respet/shared';
 
 import { BulletinsService } from '../../../core/api/content.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 /** Cuántos avisos caben en la columna sin convertirla en otra lista larga. */
 const CUANTOS = 4;
@@ -12,9 +13,11 @@ const CUANTOS = 4;
 /**
  * Columna de la derecha del muro: lo que pasa alrededor.
  *
- * Enseña los últimos avisos, que hasta ahora había que ir a buscar a su propia
- * pantalla. Si no hay ninguno, o si la petición falla, no pinta nada: una
- * columna vacía con un título es peor que ninguna columna.
+ * Enseña los últimos avisos con su texto: es donde se leen. Su pantalla es el
+ * panel desde el que se escriben, y allí sólo entran los administradores.
+ *
+ * Si no hay ninguno, o si la petición falla, no pinta nada: una columna vacía
+ * con un título es peor que ninguna columna.
  */
 @Component({
   selector: 'app-info-rail',
@@ -25,6 +28,9 @@ const CUANTOS = 4;
 })
 export class InfoRailComponent {
   private readonly bulletins = inject(BulletinsService);
+  private readonly auth = inject(AuthService);
+
+  readonly isAdmin = this.auth.isAdmin;
 
   readonly items = signal<readonly Bulletin[]>([]);
 

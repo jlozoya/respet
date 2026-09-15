@@ -5,7 +5,6 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChatService } from '../../../core/api/chat.service';
-import { OrdersService } from '../../../core/api/store.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { NavigationService } from '../../../core/ui/navigation.service';
 
@@ -31,14 +30,11 @@ export class NavRailComponent {
   private readonly auth = inject(AuthService);
   private readonly navigation = inject(NavigationService);
   private readonly chat = inject(ChatService);
-  private readonly orders = inject(OrdersService);
 
   readonly user = this.auth.user;
   readonly unreadMessages = this.chat.unreadCount;
-  readonly cartCount = this.orders.itemCount;
 
   readonly browsePages = this.navigation.browsePages;
-  readonly storePages = this.navigation.storePages;
   readonly managementPages = this.navigation.managementPages;
   readonly accountPages = this.navigation.accountPages;
 
@@ -54,11 +50,8 @@ export class NavRailComponent {
   }
 
   /** Cuántos avisos lleva una entrada, si lleva alguno. */
+  /** La única cifra que se enseña en la columna es la de mensajes sin leer. */
   badgeOf(link: string): number {
-    if (link === '/chat') {
-      return this.unreadMessages();
-    }
-
-    return link === '/cart' ? this.cartCount() : 0;
+    return link === '/chat' ? this.unreadMessages() : 0;
   }
 }

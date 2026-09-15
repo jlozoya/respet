@@ -9,25 +9,54 @@
     <ion-row>
       <ion-col size="12" size-md="8" offset-md="2">
         <!--
-          De arriba abajo, por lo que se viene a hacer: la foto, con qué se
-          entra a la cuenta, los datos del perfil, y al final lo que se hace
-          una vez o ninguna —descargar los datos, salir, darse de baja—.
+          Tres pestañas en lugar de una pantalla larga y otra aparte: quien
+          viene a cambiar la contraseña no tiene que pasar por su fecha de
+          nacimiento, y lo que se ajusta de la cuenta ya no vive en dos sitios.
 
-          Antes el avatar y ese último grupo compartían la primera fila, así
-          que «eliminar la cuenta» quedaba junto a la foto y el correo caía al
-          fondo, detrás del formulario entero.
+          Editando la ficha de otra persona no hay pestañas que valgan: un
+          administrador sólo puede tocar sus datos, no su privacidad ni su tema.
         -->
-        <div class="ion-padding">
-          <app-avatar [user]="current" [editable]="isSelf()" (changed)="reload()" />
-        </div>
-
         @if (isSelf()) {
-          <app-access [user]="current" (changed)="reload()" />
+          <ion-segment
+            [value]="tab()"
+            (ionChange)="changeTab($event)"
+            [scrollable]="true"
+          >
+            @for (option of tabs; track option.value) {
+              <ion-segment-button [value]="option.value">
+                <ion-label>{{ option.label | translate }}</ion-label>
+              </ion-segment-button>
+            }
+          </ion-segment>
         }
 
-        <app-user-form [user]="current" [isSelf]="isSelf()" (saved)="onUpdated($event)" />
+        @switch (isSelf() ? tab() : 'profile') {
+          @case ('profile') {
+            <div class="ion-padding">
+              <app-avatar [user]="current" [editable]="isSelf()" (changed)="reload()" />
+            </div>
 
-        <app-options [user]="current" [isSelf]="isSelf()" />
+            <app-user-form [user]="current" [isSelf]="isSelf()" (saved)="onUpdated($event)" />
+          }
+
+          @case ('access') {
+            <app-access [user]="current" (changed)="reload()" />
+            <app-privacy />
+          }
+
+          @case ('account') {
+            <app-preferences />
+            <app-options [user]="current" [isSelf]="isSelf()" />
+          }
+        }
+
+        <!--
+          Con la ficha de otra persona sólo queda la baja, que es lo único que
+          un administrador puede hacer además de editarla.
+        -->
+        @if (!isSelf()) {
+          <app-options [user]="current" [isSelf]="false" />
+        }
       </ion-col>
     </ion-row>
   }

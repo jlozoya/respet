@@ -26,17 +26,6 @@
     </a>
   }
 
-  <hr />
-
-  @for (page of storePages; track page.link) {
-    <a class="entrada" [routerLink]="page.link" routerLinkActive="entrada--activa">
-      <ion-icon [name]="page.icon" />
-      <span class="rotulo">{{ page.title | translate }}</span>
-      @if (badgeOf(page.link); as pendientes) {
-        <ion-badge color="primary">{{ pendientes }}</ion-badge>
-      }
-    </a>
-  }
 
   @if (managementPages().length > 0) {
     <hr />

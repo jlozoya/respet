@@ -10,6 +10,11 @@
     "CONTACT_INFORMATION": "Contact information",
     "DIRECTION": "Address",
     "GENERAL_INFORMATION": "General information",
+    "TABS": {
+      "ACCESS": "Access and privacy",
+      "ACCOUNT": "Account",
+      "PROFILE": "Profile"
+    },
     "TITLE": "Account"
   },
   "ADD": "Add",
@@ -402,7 +407,6 @@
     "POLITICS": "Policies",
     "PRESENTATION": "Presentation",
     "PRODUCTS": "Products",
-    "SETTINGS": "Settings",
     "SIGNUP": "Signup",
     "STORE": "Store",
     "SURF": "Browse",

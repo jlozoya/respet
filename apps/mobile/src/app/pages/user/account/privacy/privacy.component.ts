@@ -4,14 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { IonAvatar } from '@ionic/angular/ion-avatar';
 import { IonBadge } from '@ionic/angular/ion-badge';
 import { IonButton } from '@ionic/angular/ion-button';
-import { IonCol } from '@ionic/angular/ion-col';
-import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonItem } from '@ionic/angular/ion-item';
 import { IonLabel } from '@ionic/angular/ion-label';
 import { IonList } from '@ionic/angular/ion-list';
 import { IonListHeader } from '@ionic/angular/ion-list-header';
-import { IonRow } from '@ionic/angular/ion-row';
 import { IonSelect } from '@ionic/angular/ion-select';
 import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonToggle } from '@ionic/angular/ion-toggle';
@@ -25,13 +22,9 @@ import {
   type UserPhone,
 } from '@respet/shared';
 
-import { UsersService } from '../../../core/api/users.service';
-import { AuthService } from '../../../core/auth/auth.service';
-import { FeedbackService } from '../../../core/ui/feedback.service';
-import { LanguageService } from '../../../core/i18n/language.service';
-import { ThemeService, type ThemePreference } from '../../../core/ui/theme.service';
-import { AddEmailsPhonesComponent } from '../../../modals/add-emails-phones/add-emails-phones.component';
-import { PageHeaderComponent } from '../../../shared/components/page-header.component';
+import { UsersService } from '../../../../core/api/users.service';
+import { FeedbackService } from '../../../../core/ui/feedback.service';
+import { AddEmailsPhonesComponent } from '../../../../modals/add-emails-phones/add-emails-phones.component';
 
 const FALLBACK_AVATAR = './assets/imgs/avatar.png';
 
@@ -58,26 +51,21 @@ const MESSAGE_POLICIES = [
 ] as const;
 
 /**
- * Configuración de la cuenta.
+ * Quién puede acercarse y qué ve de uno.
  *
- * Era «configuración de privacidad» y sólo decidía qué datos de contacto veían
- * los demás. Ahora reúne todo lo que se ajusta de la cuenta: el aspecto de la
- * aplicación —que vivía en el menú lateral, donde no lo encontraba nadie que
- * no lo estuviera buscando—, quién puede acercarse, y los datos de contacto.
+ * Todo lo que decide el trato con los demás: si el perfil pide solicitud para
+ * ser seguido, quién puede escribir, qué datos de contacto se enseñan y cuáles
+ * son esos datos.
  */
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.scss'],
+  selector: 'app-privacy',
+  templateUrl: './privacy.component.html',
+  styleUrls: ['./privacy.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
     FormsModule,
     TranslatePipe,
-    PageHeaderComponent,
-    IonContent,
-    IonRow,
-    IonCol,
     IonList,
     IonListHeader,
     IonItem,
@@ -91,21 +79,13 @@ const MESSAGE_POLICIES = [
     IonBadge,
   ],
 })
-export class SettingsPage {
+export class PrivacyComponent {
   private readonly users = inject(UsersService);
   private readonly feedback = inject(FeedbackService);
   private readonly modalCtrl = inject(ModalController);
-  private readonly theme = inject(ThemeService);
-  private readonly language = inject(LanguageService);
-  private readonly auth = inject(AuthService);
 
   readonly switches = SWITCHES;
   readonly messagePolicies = MESSAGE_POLICIES;
-
-  readonly themePreference = this.theme.preference;
-  readonly themeOptions = this.theme.options;
-  readonly currentLanguage = signal(this.language.current());
-  readonly languages = this.language.available;
 
   readonly permissions = signal<UserPermissions | null>(null);
   readonly emails = signal<readonly UserEmail[]>([]);
@@ -124,34 +104,6 @@ export class SettingsPage {
 
   constructor() {
     void this.load();
-  }
-
-  async changeTheme(preference: string): Promise<void> {
-    await this.theme.use(preference as ThemePreference);
-  }
-
-  /**
-   * Cambia el idioma de la interfaz y lo guarda en la cuenta.
-   *
-   * `LanguageService` sólo lo recuerda en el dispositivo; lo que hace que los
-   * correos que manda el servidor lleguen en el mismo idioma es guardarlo
-   * también en el perfil. Antes eso lo hacía un segundo selector en el
-   * formulario de la cuenta, así que había dos mandos para lo mismo y sólo uno
-   * llegaba al servidor.
-   */
-  async changeLanguage(lang: string): Promise<void> {
-    const normalizado = this.language.normalize(lang);
-
-    this.currentLanguage.set(normalizado);
-    await this.language.use(normalizado);
-
-    try {
-      await this.auth.setUser(await this.users.updateLanguage(normalizado));
-    } catch (error) {
-      // El idioma ya se aplicó y se recordó aquí; que el servidor no se haya
-      // enterado no es motivo para deshacerlo delante de quien lo eligió.
-      await this.feedback.error(error);
-    }
   }
 
   avatarOf(request: FollowRequest): string {

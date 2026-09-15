@@ -49,3 +49,23 @@
     color: var(--ion-color-medium);
   }
 }
+
+/* El texto del aviso: se lee en la columna, así que no se recorta a una línea. */
+:host .aviso {
+  align-items: flex-start;
+}
+
+:host .cuerpo {
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+  margin: 4px 0 0;
+}
+
+:host .titulo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:host .titulo a:hover {
+  text-decoration: underline;
+}

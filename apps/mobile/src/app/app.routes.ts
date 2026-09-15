@@ -67,8 +67,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/tutorial/tutorial.page').then((m) => m.TutorialPage),
   },
   {
+    // El panel desde el que se escriben los avisos del muro. Los avisos se
+    // leen en el muro, así que aquí sólo entra quien puede publicarlos.
     path: 'bulletins',
-    canActivate: [authGuard],
+    canActivate: [roleGuard('admin')],
     loadComponent: () => import('./pages/bulletins/bulletins.page').then((m) => m.BulletinsPage),
   },
   {
@@ -121,9 +123,17 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
   },
   {
-    path: 'settings',
+    // La sección elige la pestaña, para poder enlazar a una en concreto.
+    path: 'account/:section',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/user/settings/settings.page').then((m) => m.SettingsPage),
+    loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
+  },
+  {
+    // La configuración dejó de ser una pantalla aparte: son pestañas de la
+    // cuenta. La dirección vieja sigue llevando a donde ahora vive.
+    path: 'settings',
+    redirectTo: 'account/access',
+    pathMatch: 'full',
   },
 
   // --- Tienda ---------------------------------------------------------------

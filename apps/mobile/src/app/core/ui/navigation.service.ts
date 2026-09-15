@@ -35,19 +35,15 @@ export class NavigationService {
   readonly browsePages: readonly NavEntry[] = [
     { title: 'NAV.WALL', link: '/', icon: 'newspaper-outline' },
     { title: 'NAV.CHAT', link: '/chat', icon: 'chatbubbles-outline' },
-    { title: 'NAV.BULLETINS', link: '/bulletins', icon: 'notifications-outline' },
-    { title: 'NAV.ABOUT_US', link: '/about', icon: 'information-circle-outline' },
   ];
 
-  /** La tienda va aparte: es otra cosa, y mezclada alargaba la lista de arriba. */
-  readonly storePages: readonly NavEntry[] = [
-    { title: 'NAV.PRODUCTS', link: '/products', icon: 'pricetags-outline' },
-    { title: 'NAV.CART', link: '/cart', icon: 'cart-outline' },
-  ];
-
+  /*
+    Una sola entrada: la configuración son pestañas de la cuenta, no otra
+    pantalla, y dos enlaces al mismo sitio obligaban a adivinar cuál llevaba a
+    qué.
+  */
   readonly accountPages: readonly NavEntry[] = [
     { title: 'NAV.ACCOUNT', link: '/account', icon: 'person-outline' },
-    { title: 'NAV.SETTINGS', link: '/settings', icon: 'settings-outline' },
   ];
 
   private readonly staffPages: readonly NavEntry[] = [
@@ -57,6 +53,9 @@ export class NavigationService {
   private readonly adminPages: readonly NavEntry[] = [
     { title: 'NAV.ANALYTICS', link: '/analytics', icon: 'analytics-outline' },
     { title: 'NAV.USERS', link: '/users', icon: 'people-circle-outline' },
+    // Los avisos se leen en el muro; esto es el panel desde el que se
+    // escriben, así que va con el resto de la administración.
+    { title: 'NAV.BULLETINS', link: '/bulletins', icon: 'notifications-outline' },
   ];
 
   /** Páginas de gestión que corresponden al rol actual. */
