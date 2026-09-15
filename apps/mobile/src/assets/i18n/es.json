@@ -208,8 +208,8 @@
   "DESCRIPTION": "Descripción",
   "DIRECTION_ACCURACY": "Precisión de la ubicación en metros",
   "DISCONNECT": "Desconectar",
-  "DISPLAY_NAME": "Nombre visible",
-  "DISPLAY_NAME_HINT": "Es con el que te ven los demás en el muro y en los mensajes.",
+  "DISPLAY_NAME": "Nombre de usuario",
+  "DISPLAY_NAME_HINT": "Va en la dirección de tu perfil: minúsculas, números, guion o guion bajo.",
   "DOWNLOAD_MY_INFO": "Descargar mi información",
   "EDIT": "Editar",
   "EMAIL": "Correo",
@@ -285,7 +285,8 @@
     "PHONE": "Número de teléfono invalido",
     "REQUIRED": "Este campo es requerido",
     "SELECT_CATEGORY": "Selecciona una categoría",
-    "SUCCESS": "Acción realizada con éxito"
+    "SUCCESS": "Acción realizada con éxito",
+    "USERNAME": "Sólo minúsculas, números, guion y guion bajo; entre 3 y 30 caracteres."
   },
   "GALLERY": {
     "GO_TO": "Ir a la imagen",

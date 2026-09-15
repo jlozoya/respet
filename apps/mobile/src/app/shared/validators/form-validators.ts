@@ -29,6 +29,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   max: 'FORM.MAX',
   weakPassword: 'FORM.PASSWORD',
   invalidPhone: 'FORM.PHONE',
+  invalidUsername: 'FORM.USERNAME',
   passwordMismatch: 'FORM.PASSWORD_MISMATCH',
 };
 
@@ -51,6 +52,32 @@ export function passwordValidator(): ValidatorFn {
     return strong ? null : { weakPassword: true };
   };
 }
+
+/**
+ * Nombre de usuario apto para una dirección web.
+ *
+ * Minúsculas, dígitos, guion y guion bajo; empieza y acaba en letra o número,
+ * entre 3 y 30 caracteres. Sin espacios ni acentos, porque el nombre viaja en
+ * la dirección del perfil y ahí un espacio se convierte en `%20` y una tilde
+ * en tres caracteres ilegibles.
+ *
+ * Coincide con lo que valida el servidor en `UpdateProfileDto` y `RegisterDto`:
+ * si aquí se aceptara algo más laxo, el formulario dejaría enviar datos que la
+ * API va a rechazar.
+ */
+export function usernameValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = String(control.value ?? '').trim();
+
+    if (!value) {
+      return null;
+    }
+
+    return USERNAME.test(value) ? null : { invalidUsername: true };
+  };
+}
+
+const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
 
 /** Teléfono internacional, con un formato deliberadamente permisivo. */
 export function phoneValidator(): ValidatorFn {

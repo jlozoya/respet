@@ -208,8 +208,8 @@
   "DESCRIPTION": "Description",
   "DIRECTION_ACCURACY": "Accuracy of the location in meters",
   "DISCONNECT": "Disconnect",
-  "DISPLAY_NAME": "Display name",
-  "DISPLAY_NAME_HINT": "This is how others see you on the wall and in messages.",
+  "DISPLAY_NAME": "Username",
+  "DISPLAY_NAME_HINT": "It goes in your profile address: lowercase letters, numbers, hyphen or underscore.",
   "DOWNLOAD_MY_INFO": "Download my information",
   "EDIT": "Edit",
   "EMAIL": "Email",
@@ -285,7 +285,8 @@
     "PHONE": "Invalid phone number",
     "REQUIRED": "This field is required",
     "SELECT_CATEGORY": "Select a category",
-    "SUCCESS": "Successful action"
+    "SUCCESS": "Successful action",
+    "USERNAME": "Lowercase letters, numbers, hyphen and underscore only; 3 to 30 characters."
   },
   "GALLERY": {
     "GO_TO": "Go to image",

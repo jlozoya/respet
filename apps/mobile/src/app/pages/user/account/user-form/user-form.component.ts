@@ -18,7 +18,7 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { FeedbackService } from '../../../../core/ui/feedback.service';
 import { LocationPickerComponent } from '../../../../components/location-picker/location-picker.component';
 import { ControlMessagesComponent } from '../../../../shared/components/control-messages.component';
-import { phoneValidator } from '../../../../shared/validators/form-validators';
+import { phoneValidator, usernameValidator } from '../../../../shared/validators/form-validators';
 
 /**
  * Datos del perfil y dirección.
@@ -83,7 +83,7 @@ export class UserFormComponent {
   private readonly builder = inject(FormBuilder);
 
   readonly form = this.builder.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
+    name: ['', [Validators.required, usernameValidator()]],
     firstName: ['', [Validators.required, Validators.maxLength(60)]],
     lastName: ['', [Validators.required, Validators.maxLength(60)]],
     gender: [null as Gender | null],

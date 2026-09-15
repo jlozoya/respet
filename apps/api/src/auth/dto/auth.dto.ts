@@ -23,6 +23,13 @@ import {
 import { AuthProvider, Gender } from '../../graphql/enums.js';
 import { normalizeEmail, trim } from '../../common/dto/transforms.js';
 
+/*
+  Nombre de usuario apto para una dirección web: minúsculas, dígitos, guion y
+  guion bajo, empezando y acabando en letra o número. El mismo patrón que
+  `UpdateProfileDto` y que valida la aplicación antes de enviar.
+*/
+const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
+
 /** Longitud mínima recomendada por NIST SP 800-63B. */
 const PASSWORD_MIN = 8;
 const PASSWORD_MAX = 128;
@@ -67,10 +74,11 @@ export class SocialLoginDto implements SocialLoginRequest {
 
 @InputType('RegisterInput')
 export class RegisterDto implements RegisterRequest {
-  @Field({ description: 'Nombre visible dentro de la aplicación.' })
+  @Field({ description: 'Nombre de usuario; viaja en la dirección del perfil.' })
   @Transform(trim)
   @IsString()
-  @Length(2, 60)
+  @Length(3, 30)
+  @Matches(USERNAME, { message: 'name must be url friendly' })
   name!: string;
 
   @Field()

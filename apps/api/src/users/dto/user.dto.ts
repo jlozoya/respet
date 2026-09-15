@@ -34,13 +34,22 @@ import { normalizeEmail, normalizeEmailEach, trim, trimEach } from '../../common
 /** Formato laxo a propósito: los teléfonos internacionales varían mucho. */
 const PHONE_PATTERN = /^\+?[\d\s().-]{6,20}$/;
 
+/** Nombre de usuario apto para una dirección web. */
+const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
+
 @InputType('UpdateProfileInput')
 export class UpdateProfileDto implements UpdateProfileRequest {
+  /*
+    El nombre viaja en la dirección del perfil, así que se exige apto para una
+    web: minúsculas, dígitos, guion y guion bajo, empezando y acabando en
+    letra o número. El mismo patrón que valida la aplicación antes de enviar.
+  */
   @Field(() => String, { nullable: true })
   @IsOptional()
   @Transform(trim)
   @IsString()
-  @Length(2, 60)
+  @Length(3, 30)
+  @Matches(USERNAME, { message: 'name must be url friendly' })
   name?: string;
 
   @Field(() => String, { nullable: true })
