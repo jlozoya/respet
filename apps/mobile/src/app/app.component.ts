@@ -7,7 +7,6 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { IonApp } from '@ionic/angular/ion-app';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonHeader } from '@ionic/angular/ion-header';
-import { IonItem } from '@ionic/angular/ion-item';
 import { IonMenu } from '@ionic/angular/ion-menu';
 import { IonMenuToggle } from '@ionic/angular/ion-menu-toggle';
 import { IonRouterOutlet } from '@ionic/angular/ion-router-outlet';
@@ -44,7 +43,6 @@ import { registerAppIcons } from './core/ui/icons';
     IonApp,
     IonContent,
     IonHeader,
-    IonItem,
     IonMenu,
     IonMenuToggle,
     IonRouterOutlet,
