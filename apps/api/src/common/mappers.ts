@@ -298,12 +298,14 @@ const SIN_VOTOS: PostVotes = { likeCount: 0, dislikeCount: 0, myVote: null };
  *
  * `myVote` necesita saber quién mira. Para quien no ha iniciado sesión es
  * `null`, igual que para quien no ha votado: en ninguno de los dos casos hay un
- * voto que marcar.
+ * voto que marcar. Lo mismo vale para `authorFollowedByMe`, que además es
+ * `null` en lo propio: no hay nada que ofrecer a quien ya es el autor.
  */
 export function toPost(
   doc: Doc<PostDoc>,
   votes: PostVotes = SIN_VOTOS,
   commentCount = 0,
+  authorFollowedByMe: boolean | null = null,
 ): Post {
   return {
     id: id(doc._id),
@@ -319,6 +321,7 @@ export function toPost(
     dislikeCount: votes.dislikeCount,
     commentCount,
     myVote: votes.myVote,
+    authorFollowedByMe,
     createdAt: toIso(doc.createdAt),
     updatedAt: toIso(doc.updatedAt),
   };

@@ -31,10 +31,14 @@ import type {
 /**
  * Publicación leída con `.lean()`.
  *
- * Lo único que este servicio necesita saber de ella es que tiene identificador:
- * de la forma completa —con los virtuales poblados— se ocupa el mapeador.
+ * De la forma completa —con los virtuales poblados— se ocupa el mapeador; aquí
+ * basta con el identificador y con el de su autor, que es lo que hace falta
+ * para decir si quien mira ya lo sigue.
  */
-type LeanPost = { _id: unknown };
+interface LeanPost {
+  _id: unknown;
+  author?: { _id: unknown } | null;
+}
 
 /** Filtro de búsqueda tal y como lo entiende `find`. */
 type PostFilter = Record<string, unknown>;
@@ -137,7 +141,7 @@ export class PostsService {
     const doc = await this.findDocOrFail(id);
     const [decorado] = await this.decorate([doc], viewerId);
 
-    return decorado!;
+    return decorado;
   }
 
   async create(userId: string, dto: CreatePostDto): Promise<PostDto> {
@@ -218,7 +222,7 @@ export class PostsService {
       throw AppException.notFound('Media');
     }
 
-    return toMedia(doc as never);
+    return toMedia(doc);
   }
 
   async removeMedia(id: string, mediaId: string, actor: AuthenticatedUser): Promise<void> {
@@ -293,23 +297,63 @@ export class PostsService {
   /**
    * Añade a cada publicación sus votos y su número de comentarios.
    *
-   * Tres consultas agrupadas para todo el listado —cifras de voto, voto propio
-   * y comentarios—, en lugar de una por tarjeta.
+   * Consultas agrupadas para todo el listado —cifras de voto, voto propio,
+   * comentarios y a qué autores sigue quien mira—, en lugar de una por tarjeta.
    */
   private async decorate(docs: LeanPost[], viewerId: string | null): Promise<PostDto[]> {
     const ids = docs.map((doc) => String(doc._id));
-    const [votos, comentarios] = await Promise.all([
+    const [votos, comentarios, seguidos] = await Promise.all([
       this.voteSummaries(viewerId, ids),
       this.commentCounts(ids),
+      this.followedAuthors(viewerId, docs),
     ]);
 
     return docs.map((doc) => {
       const id = String(doc._id);
+      const autor = String(doc.author?._id ?? '');
+      // Nada que ofrecer sin sesión ni en lo propio: en los dos casos va nulo y
+      // la tarjeta no enseña el botón de seguir.
+      const sigueAlAutor =
+        seguidos && autor && autor !== viewerId ? seguidos.has(autor) : null;
 
       return this.blurLocation(
-        toPost(doc as never, votos.get(id), comentarios.get(id) ?? 0),
+        toPost(doc as never, votos.get(id), comentarios.get(id) ?? 0, sigueAlAutor),
       );
     });
+  }
+
+  /**
+   * De los autores del listado, a cuáles sigue ya quien mira.
+   *
+   * Una sola consulta para toda la página, acotada a los autores que salen en
+   * ella: quien tiene miles de seguidos no paga por traerlos todos. Sin sesión
+   * no hay a quién referirlo y devuelve `null`, que es distinto de un conjunto
+   * vacío —«no sigues a ninguno»—.
+   */
+  private async followedAuthors(
+    viewerId: string | null,
+    docs: LeanPost[],
+  ): Promise<Set<string> | null> {
+    if (!viewerId) {
+      return null;
+    }
+
+    const autores = [
+      ...new Set(
+        docs.map((doc) => String(doc.author?._id ?? '')).filter((id) => id && id !== viewerId),
+      ),
+    ];
+
+    if (autores.length === 0) {
+      return new Set();
+    }
+
+    const follows = await this.follows
+      .find({ followerId: viewerId, followeeId: { $in: autores } })
+      .select('followeeId')
+      .lean();
+
+    return new Set(follows.map((doc) => String(doc.followeeId)));
   }
 
   private async commentCounts(postIds: string[]): Promise<Map<string, number>> {
@@ -393,7 +437,7 @@ export class PostsService {
       throw AppException.notFound('Post');
     }
 
-    return doc as LeanPost;
+    return doc;
   }
 
   private async assertExists(postId: string): Promise<void> {

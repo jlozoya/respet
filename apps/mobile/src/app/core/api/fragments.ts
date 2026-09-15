@@ -130,6 +130,7 @@ fragment PostFields on Post {
   dislikeCount
   commentCount
   myVote
+  authorFollowedByMe
   createdAt
   updatedAt
 }`;

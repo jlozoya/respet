@@ -28,6 +28,30 @@ $kinds: (
 }
 
 /*
+  «Seguir», junto al nombre: se lee como una acción —en el color de las
+  acciones y con algo más de cuerpo— pero sin marco, para no robarle el sitio al
+  nombre al que acompaña. El punto de en medio los separa sin pesar.
+*/
+:host .seguir {
+  background: none;
+  border: 0;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+}
+
+:host .seguir:hover {
+  text-decoration: underline;
+}
+
+:host .separador {
+  color: var(--ion-color-medium);
+  margin: 0 4px;
+}
+
+/*
   La dirección es un dato de la publicación, no una acción: se lee como texto
   secundario y sólo al pasar por encima se subraya, para no competir con los
   botones que tiene debajo.

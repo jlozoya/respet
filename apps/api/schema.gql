@@ -520,6 +520,9 @@ enum PaymentStatus {
 """Una publicación del muro."""
 type Post {
   author: UserSummary!
+
+  """Si quien mira sigue al autor. Nulo sin sesión y en lo propio."""
+  authorFollowedByMe: Boolean
   commentCount: Int!
   createdAt: String!
   description: String!

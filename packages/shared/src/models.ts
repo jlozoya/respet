@@ -152,6 +152,14 @@ export interface Post {
    * es lo mismo que haber votado en contra—.
    */
   myVote: VoteValue | null;
+  /**
+   * Si quien mira sigue al autor, para ofrecer seguirlo desde la propia
+   * publicación.
+   *
+   * Es `null` cuando no hay a quién referirlo: sin sesión, y en las
+   * publicaciones propias, donde seguirse a uno mismo no significa nada.
+   */
+  authorFollowedByMe: boolean | null;
   createdAt: string;
   updatedAt: string;
 }

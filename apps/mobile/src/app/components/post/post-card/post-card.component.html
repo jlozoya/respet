@@ -10,7 +10,26 @@
           <img [src]="authorAvatar()" [alt]="post.author.name" (error)="onAvatarError($event)" />
         </ion-avatar>
         <ion-label>
-          <h2>{{ post.author.name }}</h2>
+          <h2>
+            {{ post.author.name }}
+
+            <!--
+              Seguir se ofrece aquí mismo, pegado al nombre: quien ve algo que
+              le gusta no tiene que entrar a la ficha del autor para quedarse
+              con ella. Desaparece en cuanto se sigue —y en lo propio, y sin
+              sesión—, así que sólo está cuando hay algo que hacer con él.
+            -->
+            @if (canFollow()) {
+              <span class="separador" aria-hidden="true">•</span>
+              <button
+                type="button"
+                class="seguir"
+                (click)="$event.stopPropagation(); follow()"
+              >
+                {{ 'WALL.FOLLOW' | translate }}
+              </button>
+            }
+          </h2>
           <small>{{ post.updatedAt | date: 'medium' }}</small>
         </ion-label>
 
@@ -117,13 +136,6 @@
         >
           <ion-icon name="share-social-outline" slot="icon-only" />
         </ion-button>
-
-        @if (canMessageAuthor()) {
-          <ion-button fill="clear" color="primary" (click)="messageAuthor()">
-            <ion-icon name="chatbubbles-outline" slot="start" />
-            <ion-text>{{ 'CHAT.MESSAGE' | translate }}</ion-text>
-          </ion-button>
-        }
       </div>
     </ion-card-content>
   </ion-card>

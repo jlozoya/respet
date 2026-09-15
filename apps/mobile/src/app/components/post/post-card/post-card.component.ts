@@ -16,8 +16,8 @@ import { PopoverController } from '@ionic/angular/popover-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import type { Post, VoteValue } from '@respet/shared';
 
-import { ChatService } from '../../../core/api/chat.service';
 import { PostsService } from '../../../core/api/content.service';
+import { UsersService } from '../../../core/api/users.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';
 import { ShareService } from '../../../core/ui/share.service';
@@ -49,7 +49,7 @@ import { describeLocation } from '../../../shared/location-text';
 })
 export class PostCardComponent {
   private readonly posts = inject(PostsService);
-  private readonly chat = inject(ChatService);
+  private readonly users = inject(UsersService);
   private readonly auth = inject(AuthService);
   private readonly feedback = inject(FeedbackService);
   private readonly sharing = inject(ShareService);
@@ -126,26 +126,32 @@ export class PostCardComponent {
   });
 
   /**
-   * Abre el chat con el autor.
+   * Cierto sólo cuando hay a quién seguir y todavía no se le sigue.
    *
-   * Es la vía natural para responder en privado a una publicación, sin tener
-   * que ir a buscar los datos de contacto de su autor en otra pantalla.
+   * El servidor manda `null` cuando la pregunta no tiene sentido —sin sesión, y
+   * en las publicaciones propias—, así que basta con mirar si es `false`: ni
+   * quien ya sigue al autor ni quien no puede seguirlo ven el botón, igual que
+   * en cualquier muro.
    */
-  async messageAuthor(): Promise<void> {
-    const author = this.current().author;
+  readonly canFollow = computed(() => this.current().authorFollowedByMe === false);
+
+  /**
+   * Sigue al autor sin salir del muro.
+   *
+   * El botón se va al seguir, que es su propia confirmación. Dejar de seguir se
+   * hace desde la ficha de la persona: aquí sería un botón que aparece para
+   * deshacer lo que se acaba de hacer y estorba el resto del tiempo.
+   */
+  async follow(): Promise<void> {
+    const post = this.current();
 
     try {
-      const conversation = await this.chat.startConversationWith(author.id);
-      await this.router.navigate(['/chat', conversation.id]);
+      await this.users.follow(post.author.id);
+      this.apply({ ...post, authorFollowedByMe: true });
     } catch (error) {
       await this.feedback.error(error);
     }
   }
-
-  /** Cierto salvo que la publicación sea del propio usuario. */
-  readonly canMessageAuthor = computed(
-    () => this.isAuthenticated() && this.current().author.id !== this.auth.user()?.id,
-  );
 
   goToAuthor(): void {
     void this.router.navigate(['/profile', this.current().author.id]);

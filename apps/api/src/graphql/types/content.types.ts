@@ -53,6 +53,12 @@ export class PostType implements Post {
   })
   myVote!: VoteValue | null;
 
+  @Field(() => Boolean, {
+    nullable: true,
+    description: 'Si quien mira sigue al autor. Nulo sin sesión y en lo propio.',
+  })
+  authorFollowedByMe!: boolean | null;
+
   @Field()
   createdAt!: string;
 
