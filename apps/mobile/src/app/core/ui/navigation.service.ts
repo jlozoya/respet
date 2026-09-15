@@ -43,7 +43,7 @@ export class NavigationService {
     qué.
   */
   readonly accountPages: readonly NavEntry[] = [
-    { title: 'NAV.ACCOUNT', link: '/account', icon: 'person-outline' },
+    { title: 'NAV.SETTINGS', link: '/account', icon: 'settings-outline' },
   ];
 
   private readonly staffPages: readonly NavEntry[] = [

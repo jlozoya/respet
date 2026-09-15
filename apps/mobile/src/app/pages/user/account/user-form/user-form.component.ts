@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output, sign
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonDatetime } from '@ionic/angular/ion-datetime';
+import { IonDatetimeButton } from '@ionic/angular/ion-datetime-button';
+import { IonModal } from '@ionic/angular/ion-modal';
 import { IonInput } from '@ionic/angular/ion-input';
 import { IonItem } from '@ionic/angular/ion-item';
 import { IonLabel } from '@ionic/angular/ion-label';
@@ -47,6 +49,8 @@ import { phoneValidator } from '../../../../shared/validators/form-validators';
     IonSelect,
     IonSelectOption,
     IonDatetime,
+    IonDatetimeButton,
+    IonModal,
     IonButton,
   ],
 })
@@ -63,6 +67,9 @@ export class UserFormComponent {
 
   readonly saving = signal(false);
   readonly location = signal<LocationInput | null>(null);
+
+  /** Tope de la rueda: nadie ha nacido mañana. */
+  readonly today = new Date().toISOString().slice(0, 10);
 
   readonly genders = [
     { value: Gender.Female, label: 'FEMALE' },

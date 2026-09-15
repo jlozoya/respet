@@ -3,6 +3,7 @@ import {
   Component,
   type ElementRef,
   afterNextRender,
+  computed,
   effect,
   inject,
   input,
@@ -47,6 +48,16 @@ export class LocationPickerComponent {
   /** Muestra el mapa; con `false` sólo se ven los campos de dirección. */
   readonly showMap = input(true);
 
+  /**
+   * Si de verdad toca pintar mapa.
+   *
+   * Se pedía siempre que `showMap` fuera cierto, y sin clave configurada el
+   * intento acababa en un aviso rojo —«no se pudo cargar el mapa»— cada vez
+   * que alguien abría su dirección. No es un fallo suyo ni puede hacer nada
+   * con él: sin clave, el formulario se queda en los campos, que funcionan.
+   */
+  readonly withMap = computed(() => this.showMap() && this.maps.isConfigured);
+
   private readonly canvas = viewChild<ElementRef<HTMLElement>>('mapCanvas');
 
   private map?: google.maps.Map;
@@ -57,7 +68,7 @@ export class LocationPickerComponent {
 
   constructor() {
     afterNextRender(() => {
-      if (this.showMap()) {
+      if (this.withMap()) {
         void this.initMap();
       }
     });

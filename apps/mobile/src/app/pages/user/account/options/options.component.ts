@@ -59,10 +59,6 @@ export class OptionsComponent {
     }
   }
 
-  async logout(): Promise<void> {
-    await this.auth.logout();
-  }
-
   /** Descarga los datos del perfil en un archivo JSON. */
   downloadMyInfo(): void {
     const blob = new Blob([JSON.stringify(this.user(), null, 2)], { type: 'application/json' });

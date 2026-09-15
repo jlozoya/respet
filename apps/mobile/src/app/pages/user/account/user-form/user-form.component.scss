@@ -14,6 +14,23 @@
 }
 
 :host {
+  /*
+    Nombre y apellido en una fila: son dos mitades del mismo dato y sueltos
+    dejaban el formulario más largo de lo que hace falta. En pantalla estrecha
+    vuelven a apilarse.
+  */
+  .pareja {
+    display: grid;
+    gap: 0 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 480px) {
+    .pareja {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   .section {
     font-size: 1rem;
     padding: 16px 16px 0;

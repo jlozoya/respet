@@ -1,18 +1,13 @@
 <!--
-  El final de la pantalla: primero lo inocuo, luego salir, y abajo del todo lo
-  que no tiene vuelta. Los vínculos y la contraseña se fueron a `app-access`,
-  arriba, junto al correo.
+  El final de la pantalla: primero lo inocuo y abajo del todo lo que no tiene
+  vuelta. Salir vive en el menú lateral, que está a la vista en todas las
+  pantallas; repetirlo aquí era una segunda puerta al mismo sitio.
 -->
 <ion-list lines="full">
   @if (isSelf()) {
     <ion-item button detail="false" (click)="downloadMyInfo()">
       <ion-icon name="download-outline" slot="start" />
       <ion-label>{{ 'DOWNLOAD_MY_INFO' | translate }}</ion-label>
-    </ion-item>
-
-    <ion-item button detail="false" (click)="logout()">
-      <ion-icon name="log-out-outline" slot="start" />
-      <ion-label>{{ 'NAV.LOGOUT' | translate }}</ion-label>
     </ion-item>
   }
 

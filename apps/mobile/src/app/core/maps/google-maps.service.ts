@@ -32,6 +32,14 @@ export interface MarkerOptions {
  */
 @Injectable({ providedIn: 'root' })
 export class GoogleMapsService {
+  /**
+   * Cierto cuando hay clave con la que pedir la biblioteca.
+   *
+   * Sin ella el mapa no es que falle: es que no está configurado, y eso no es
+   * algo que quien rellena su dirección pueda arreglar ni deba leer.
+   */
+  readonly isConfigured = environment.googleMapsApiKey.length > 0;
+
   private loader?: Promise<void>;
 
   /** Carga la biblioteca. Las llamadas siguientes reutilizan la misma promesa. */

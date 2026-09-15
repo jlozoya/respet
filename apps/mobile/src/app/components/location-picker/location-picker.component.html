@@ -60,7 +60,11 @@
     />
   </ion-item>
 
-  <ion-item>
+  <!--
+    El país cierra la rejilla a todo lo ancho: impar entre seis campos, se
+    quedaba solo en media fila y parecía que faltaba algo al lado.
+  -->
+  <ion-item class="ancho">
     <ion-input
       [label]="'COUNTRY' | translate"
       labelPlacement="stacked"
@@ -72,16 +76,22 @@
   </ion-item>
 </div>
 
+<!--
+  Buscar en el mapa y usar la posición actual sólo tienen sentido si hay mapa
+  detrás; sin clave configurada quedaban dos botones que siempre fallaban.
+-->
 <div class="actions">
-  <ion-button fill="outline" size="small" [disabled]="loading()" (click)="locateFromFields()">
-    <ion-icon name="search-outline" slot="start" />
-    {{ 'LOCATION.SEARCH' | translate }}
-  </ion-button>
+  @if (withMap()) {
+    <ion-button fill="outline" size="small" [disabled]="loading()" (click)="locateFromFields()">
+      <ion-icon name="search-outline" slot="start" />
+      {{ 'LOCATION.SEARCH' | translate }}
+    </ion-button>
 
-  <ion-button fill="outline" size="small" [disabled]="loading()" (click)="useCurrentPosition()">
-    <ion-icon name="location-outline" slot="start" />
-    {{ 'LOCATION.USE_CURRENT' | translate }}
-  </ion-button>
+    <ion-button fill="outline" size="small" [disabled]="loading()" (click)="useCurrentPosition()">
+      <ion-icon name="location-outline" slot="start" />
+      {{ 'LOCATION.USE_CURRENT' | translate }}
+    </ion-button>
+  }
 
   @if (location()) {
     <ion-button fill="clear" size="small" color="danger" (click)="clear()">
@@ -95,7 +105,7 @@
   }
 </div>
 
-@if (showMap()) {
+@if (withMap()) {
   <div class="map-wrapper">
     <div #mapCanvas class="map-canvas"></div>
     @if (!ready()) {

@@ -31,15 +31,31 @@ const FALLBACK_AVATAR = './assets/imgs/avatar.png';
 /** Solicitudes que se traen de una vez: son pocas y caben en una pantalla. */
 const REQUESTS_PER_PAGE = 50;
 
-/** Interruptores de visibilidad, en el orden en que se muestran. */
+/**
+ * Interruptores de visibilidad, en el orden en que se muestran.
+ *
+ * Eran seis: uno para el correo principal y otro para los alternativos, y lo
+ * mismo con los teléfonos. Nadie decide enseñar su correo y esconder los otros
+ * —es el mismo canal y la misma pregunta—, así que quedan cuatro y cada uno de
+ * los dos primeros gobierna su pareja.
+ */
 const SWITCHES = [
-  { key: 'showMainEmail', label: 'PRIVACY.SHOW_MAIN_EMAIL' },
-  { key: 'showAlternativeEmails', label: 'PRIVACY.SHOW_ALTERNATIVE_EMAILS' },
-  { key: 'showMainPhone', label: 'PRIVACY.SHOW_MAIN_PHONE' },
-  { key: 'showAlternativePhones', label: 'PRIVACY.SHOW_ALTERNATIVE_PHONES' },
+  { key: 'showMainEmail', label: 'PRIVACY.SHOW_EMAIL' },
+  { key: 'showMainPhone', label: 'PRIVACY.SHOW_PHONE' },
   { key: 'showLocation', label: 'PRIVACY.SHOW_LOCATION' },
   { key: 'receiveMailAds', label: 'PRIVACY.RECEIVE_MAIL_ADS' },
 ] as const satisfies readonly { key: keyof UserPermissions; label: string }[];
+
+/**
+ * Los ajustes que viajan con otro.
+ *
+ * El servidor sigue guardando los cuatro campos, así que se escriben a la par
+ * en lugar de dejar dos huérfanos con un valor que nadie puede ya cambiar.
+ */
+const PAREJAS: Partial<Record<SwitchKey, keyof UserPermissions>> = {
+  showMainEmail: 'showAlternativeEmails',
+  showMainPhone: 'showAlternativePhones',
+};
 
 /** Los interruptores son los de tipo booleano; el resto tiene su propio mando. */
 type SwitchKey = (typeof SWITCHES)[number]['key'] | 'privateProfile';
@@ -128,12 +144,15 @@ export class PrivacyComponent {
       return;
     }
 
+    const pareja = PAREJAS[key];
+    const cambio = { [key]: value, ...(pareja ? { [pareja]: value } : {}) };
+
     // Se pinta el cambio antes de confirmarlo: un interruptor que tarda en
     // moverse se siente roto. Si el servidor falla se revierte.
-    this.permissions.set({ ...previous, [key]: value });
+    this.permissions.set({ ...previous, ...cambio });
 
     try {
-      this.permissions.set(await this.users.updatePermissions({ [key]: value }));
+      this.permissions.set(await this.users.updatePermissions(cambio));
 
       if (key === 'privateProfile' && value) {
         await this.loadRequests();
