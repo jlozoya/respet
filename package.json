@@ -7,7 +7,7 @@
   "author": "Fernando Lozoya",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jlozoya/respetv2.git"
+    "url": "git+https://github.com/jlozoya/respet.git"
   },
   "workspaces": [
     "packages/*",
