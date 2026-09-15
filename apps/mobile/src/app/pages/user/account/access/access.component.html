@@ -9,8 +9,13 @@
 <form [formGroup]="emailForm" (ngSubmit)="changeEmail()">
   <!--
     El correo no se guarda con el resto: hay que confirmarlo desde el enlace
-    que llega a la dirección nueva, así que lleva su propio formulario y su
-    propio botón.
+    que llega a la dirección nueva, así que lleva su propio formulario.
+
+    El botón va al lado del campo, no en una barra a todo lo ancho debajo: es
+    lo que hace ese campo, y ocupando una fila entera parecía la acción
+    principal de la pantalla. La contraseña se pide en una ventana al
+    confirmar, en lugar de tenerla pedida de antemano en un campo que casi
+    siempre se deja vacío.
   -->
   <p class="hint">{{ 'EMAIL_CHANGE_HINT' | translate }}</p>
 
@@ -20,28 +25,22 @@
         formControlName="email"
         type="email"
         inputmode="email"
-        [label]="'NEW_EMAIL' | translate"
+        [label]="'EMAIL' | translate"
         labelPlacement="stacked"
       />
+
+      <ion-button
+        slot="end"
+        fill="outline"
+        size="small"
+        type="submit"
+        [disabled]="changingEmail()"
+      >
+        {{ 'UPDATE' | translate }}
+      </ion-button>
     </ion-item>
     <app-control-messages [control]="emailForm.controls.email" />
-
-    @if (hasPassword()) {
-      <ion-item>
-        <ion-input
-          formControlName="password"
-          type="password"
-          autocomplete="current-password"
-          [label]="'CURRENT_PASSWORD' | translate"
-          labelPlacement="stacked"
-        />
-      </ion-item>
-    }
   </ion-list>
-
-  <ion-button expand="block" fill="outline" type="submit" [disabled]="changingEmail()">
-    {{ 'CHANGE_EMAIL' | translate }}
-  </ion-button>
 </form>
 
 <ion-list lines="full">

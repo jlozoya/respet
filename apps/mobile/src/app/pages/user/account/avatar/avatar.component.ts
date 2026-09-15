@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import type { Media, User } from '@respet/shared';
@@ -17,7 +16,7 @@ const FALLBACK = './assets/imgs/avatar.png';
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonButton, IonIcon],
+  imports: [TranslatePipe, IonIcon],
 })
 export class AvatarComponent {
   private readonly users = inject(UsersService);

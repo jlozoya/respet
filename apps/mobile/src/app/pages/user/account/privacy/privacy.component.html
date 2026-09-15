@@ -114,50 +114,24 @@
       </ion-item>
     }
   </ion-list>
+
+  <!--
+    Las novedades por correo no son cosa de privacidad: no deciden qué ve
+    nadie de uno, sino qué le llega a él. Estaban en la lista de arriba y ahí
+    respondían a otra pregunta.
+  -->
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>{{ 'SETTINGS.MAILINGS' | translate }}</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-toggle
+        [checked]="config.receiveMailAds"
+        (ionChange)="toggle('receiveMailAds', $event.detail.checked)"
+      >
+        {{ 'PRIVACY.RECEIVE_MAIL_ADS' | translate }}
+      </ion-toggle>
+    </ion-item>
+  </ion-list>
 }
-
-<!--
-  Los correos y teléfonos alternativos van aquí, junto a los interruptores que
-  deciden quién los ve: es la misma pregunta desde los dos lados.
--->
-<ion-list lines="full">
-  <ion-list-header>
-    <ion-label>{{ 'EMAILS' | translate }}</ion-label>
-    <ion-button fill="clear" (click)="manage('email')">
-      <ion-icon name="add-circle-outline" slot="start" />
-      {{ 'MANAGE' | translate }}
-    </ion-button>
-  </ion-list-header>
-
-  @for (email of emails(); track email.id) {
-    <ion-item [href]="'mailto:' + email.email">
-      <ion-icon name="mail" slot="start" />
-      <ion-label>{{ email.email }}</ion-label>
-    </ion-item>
-  } @empty {
-    <ion-item lines="none">
-      <ion-label color="medium">{{ 'PRIVACY.NO_EMAILS' | translate }}</ion-label>
-    </ion-item>
-  }
-</ion-list>
-
-<ion-list lines="full">
-  <ion-list-header>
-    <ion-label>{{ 'PHONES' | translate }}</ion-label>
-    <ion-button fill="clear" (click)="manage('phone')">
-      <ion-icon name="add-circle-outline" slot="start" />
-      {{ 'MANAGE' | translate }}
-    </ion-button>
-  </ion-list-header>
-
-  @for (phone of phones(); track phone.id) {
-    <ion-item [href]="'tel:' + phone.phone">
-      <ion-icon name="call" slot="start" />
-      <ion-label>{{ phone.phone }}</ion-label>
-    </ion-item>
-  } @empty {
-    <ion-item lines="none">
-      <ion-label color="medium">{{ 'PRIVACY.NO_PHONES' | translate }}</ion-label>
-    </ion-item>
-  }
-</ion-list>

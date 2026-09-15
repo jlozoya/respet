@@ -75,7 +75,6 @@ export class AccessComponent {
 
   readonly emailForm = this.builder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: [''],
   });
 
   /** Vínculo existente para cada proveedor, si lo hay. */
@@ -101,6 +100,13 @@ export class AccessComponent {
     });
   }
 
+  /**
+   * Pide el cambio de correo.
+   *
+   * La contraseña se pregunta aquí, al confirmar, y sólo a quien tiene una:
+   * como campo del formulario estaba pedida de antemano y casi siempre vacía,
+   * y a quien entró con Google le pedía algo que no existe.
+   */
   async changeEmail(): Promise<void> {
     if (this.emailForm.invalid) {
       this.emailForm.markAllAsTouched();
@@ -108,19 +114,51 @@ export class AccessComponent {
       return;
     }
 
+    const password = this.hasPassword() ? await this.askPassword() : null;
+
+    // Cadena vacía significa que se cerró la ventana sin escribir nada.
+    if (password === '') {
+      return;
+    }
+
     this.changingEmail.set(true);
 
     try {
-      const { email, password } = this.emailForm.getRawValue();
+      const { email } = this.emailForm.getRawValue();
 
       await this.users.requestEmailChange({ email, ...(password ? { password } : {}) });
       await this.feedback.toast('EMAIL_CHANGE_REQUESTED', { color: 'success' });
-      this.emailForm.patchValue({ password: '' });
     } catch (error) {
       await this.feedback.error(error);
     } finally {
       this.changingEmail.set(false);
     }
+  }
+
+  /** La contraseña actual, en una ventana. Cadena vacía si se cancela. */
+  private async askPassword(): Promise<string> {
+    const alert = await this.alertCtrl.create({
+      header: this.translate.instant('CHANGE_EMAIL') as string,
+      message: this.translate.instant('EMAIL_CHANGE_PASSWORD') as string,
+      inputs: [
+        {
+          type: 'password',
+          name: 'password',
+          attributes: { autocomplete: 'current-password' },
+          placeholder: this.translate.instant('CURRENT_PASSWORD') as string,
+        },
+      ],
+      buttons: [
+        { text: this.translate.instant('CANCEL') as string, role: 'cancel' },
+        { text: this.translate.instant('ACCEPT') as string, role: 'confirm' },
+      ],
+    });
+
+    await alert.present();
+
+    const { data, role } = await alert.onWillDismiss<{ values: { password?: string } }>();
+
+    return role === 'confirm' ? (data?.values.password ?? '') : '';
   }
 
   async toggleLink(provider: SocialProvider): Promise<void> {

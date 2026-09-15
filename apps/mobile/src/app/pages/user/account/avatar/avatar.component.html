@@ -1,11 +1,27 @@
-<div class="avatar">
-  <img [src]="imageUrl()" [alt]="user().name" (error)="onImageError($event)" />
+<!--
+  La foto es el botón.
 
+  Antes había un «CAMBIAR FOTO» rotulado al lado, que competía con la imagen y
+  ocupaba una línea para decir lo que la propia foto ya insinúa. Ahora se pulsa
+  la foto y un lápiz en su esquina lo recuerda, como en cualquier perfil.
+-->
+<div class="avatar">
   @if (editable()) {
-    <ion-button fill="clear" [disabled]="uploading()" (click)="change()">
-      <ion-icon name="images" slot="start" />
-      {{ 'CHANGE_AVATAR' | translate }}
-    </ion-button>
+    <button
+      type="button"
+      class="disparador"
+      [disabled]="uploading()"
+      (click)="change()"
+      [attr.aria-label]="'CHANGE_AVATAR' | translate"
+      [title]="'CHANGE_AVATAR' | translate"
+    >
+      <img [src]="imageUrl()" [alt]="user().name" (error)="onImageError($event)" />
+      <span class="lapiz" aria-hidden="true">
+        <ion-icon name="create-outline" />
+      </span>
+    </button>
+  } @else {
+    <img [src]="imageUrl()" [alt]="user().name" (error)="onImageError($event)" />
   }
 </div>
 

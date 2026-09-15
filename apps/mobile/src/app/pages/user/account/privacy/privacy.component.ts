@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { IonAvatar } from '@ionic/angular/ion-avatar';
 import { IonBadge } from '@ionic/angular/ion-badge';
 import { IonButton } from '@ionic/angular/ion-button';
-import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonItem } from '@ionic/angular/ion-item';
 import { IonLabel } from '@ionic/angular/ion-label';
 import { IonList } from '@ionic/angular/ion-list';
@@ -12,19 +11,15 @@ import { IonListHeader } from '@ionic/angular/ion-list-header';
 import { IonSelect } from '@ionic/angular/ion-select';
 import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonToggle } from '@ionic/angular/ion-toggle';
-import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
   MessagePolicy,
   type FollowRequest,
-  type UserEmail,
   type UserPermissions,
-  type UserPhone,
 } from '@respet/shared';
 
 import { UsersService } from '../../../../core/api/users.service';
 import { FeedbackService } from '../../../../core/ui/feedback.service';
-import { AddEmailsPhonesComponent } from '../../../../modals/add-emails-phones/add-emails-phones.component';
 
 const FALLBACK_AVATAR = './assets/imgs/avatar.png';
 
@@ -43,7 +38,6 @@ const SWITCHES = [
   { key: 'showMainEmail', label: 'PRIVACY.SHOW_EMAIL' },
   { key: 'showMainPhone', label: 'PRIVACY.SHOW_PHONE' },
   { key: 'showLocation', label: 'PRIVACY.SHOW_LOCATION' },
-  { key: 'receiveMailAds', label: 'PRIVACY.RECEIVE_MAIL_ADS' },
 ] as const satisfies readonly { key: keyof UserPermissions; label: string }[];
 
 /**
@@ -57,8 +51,13 @@ const PAREJAS: Partial<Record<SwitchKey, keyof UserPermissions>> = {
   showMainPhone: 'showAlternativePhones',
 };
 
-/** Los interruptores son los de tipo booleano; el resto tiene su propio mando. */
-type SwitchKey = (typeof SWITCHES)[number]['key'] | 'privateProfile';
+/**
+ * Lo que se enciende y se apaga desde aquí.
+ *
+ * Son los de la lista, más el perfil privado y las novedades por correo, que
+ * van cada uno en su propia sección pero se guardan igual.
+ */
+type SwitchKey = (typeof SWITCHES)[number]['key'] | 'privateProfile' | 'receiveMailAds';
 
 const MESSAGE_POLICIES = [
   { value: MessagePolicy.Everyone, label: 'SETTINGS.MESSAGE_POLICIES.EVERYONE' },
@@ -90,7 +89,6 @@ const MESSAGE_POLICIES = [
     IonSelect,
     IonSelectOption,
     IonButton,
-    IonIcon,
     IonAvatar,
     IonBadge,
   ],
@@ -98,14 +96,11 @@ const MESSAGE_POLICIES = [
 export class PrivacyComponent {
   private readonly users = inject(UsersService);
   private readonly feedback = inject(FeedbackService);
-  private readonly modalCtrl = inject(ModalController);
 
   readonly switches = SWITCHES;
   readonly messagePolicies = MESSAGE_POLICIES;
 
   readonly permissions = signal<UserPermissions | null>(null);
-  readonly emails = signal<readonly UserEmail[]>([]);
-  readonly phones = signal<readonly UserPhone[]>([]);
   readonly requests = signal<readonly FollowRequest[]>([]);
   readonly loading = signal(true);
 
@@ -207,19 +202,6 @@ export class PrivacyComponent {
     }
   }
 
-  async manage(kind: 'email' | 'phone'): Promise<void> {
-    const modal = await this.modalCtrl.create({
-      component: AddEmailsPhonesComponent,
-      componentProps: { kind },
-    });
-
-    await modal.present();
-    await modal.onWillDismiss();
-
-    // La ventana permite añadir y borrar, así que se recarga la lista entera.
-    await this.loadContacts();
-  }
-
   private async load(): Promise<void> {
     this.loading.set(true);
 
@@ -227,24 +209,16 @@ export class PrivacyComponent {
       const config = await this.users.permissions();
       this.permissions.set(config);
 
-      await Promise.all([
-        this.loadContacts(),
-        // Sin perfil privado no hay solicitudes que pedir: en público nadie
-        // espera respuesta.
-        config.privateProfile ? this.loadRequests() : Promise.resolve(),
-      ]);
+      // Sin perfil privado no hay solicitudes que pedir: en público nadie
+      // espera respuesta.
+      if (config.privateProfile) {
+        await this.loadRequests();
+      }
     } catch (error) {
       await this.feedback.error(error);
     } finally {
       this.loading.set(false);
     }
-  }
-
-  private async loadContacts(): Promise<void> {
-    const [emails, phones] = await Promise.all([this.users.emails(), this.users.phones()]);
-
-    this.emails.set(emails);
-    this.phones.set(phones);
   }
 
   private async loadRequests(): Promise<void> {

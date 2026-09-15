@@ -212,9 +212,10 @@
   "DISPLAY_NAME_HINT": "Es con el que te ven los demás en el muro y en los mensajes.",
   "DOWNLOAD_MY_INFO": "Descargar mi información",
   "EDIT": "Editar",
-  "EMAIL": "Email",
+  "EMAIL": "Correo",
   "EMAILS": "Emails",
   "EMAIL_CHANGE_HINT": "El cambio se aplicará cuando abras el enlace que enviaremos a la dirección nueva.",
+  "EMAIL_CHANGE_PASSWORD": "Escribe tu contraseña actual para confirmar el cambio.",
   "EMAIL_CHANGE_REQUESTED": "Te hemos enviado un correo para confirmar la dirección nueva.",
   "EMAIL_VERIFIED": "Tu correo ha quedado confirmado.",
   "EMPTY_CART": "El carrito está vacío",
@@ -418,7 +419,6 @@
     "WAREHOUSES": "Almacenes"
   },
   "NAV_TO_MAIN_PAGE": "Navegar a la página principal",
-  "NEW_EMAIL": "Correo nuevo",
   "NEW_PASSWORD": "Contraseña nueva",
   "NONE": "Ninguna",
   "NO_CONTACT_SHARED": "Esta persona no comparte sus datos de contacto.",
@@ -1051,6 +1051,7 @@
   "SETTINGS": {
     "ACCESS": "Quién puede acercarse",
     "APPEARANCE": "Apariencia",
+    "MAILINGS": "Qué te enviamos",
     "MESSAGE_POLICIES": {
       "EVERYONE": "Cualquiera",
       "FOLLOWING": "Sólo a quienes sigo",

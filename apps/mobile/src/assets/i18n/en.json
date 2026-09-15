@@ -215,6 +215,7 @@
   "EMAIL": "Email",
   "EMAILS": "Emails",
   "EMAIL_CHANGE_HINT": "The change takes effect once you open the link we send to the new address.",
+  "EMAIL_CHANGE_PASSWORD": "Enter your current password to confirm the change.",
   "EMAIL_CHANGE_REQUESTED": "We sent an email to confirm the new address.",
   "EMAIL_VERIFIED": "Your email is now confirmed.",
   "EMPTY_CART": "The cart is empty",
@@ -418,7 +419,6 @@
     "WAREHOUSES": "Warehouses"
   },
   "NAV_TO_MAIN_PAGE": "Navigate to the main page",
-  "NEW_EMAIL": "New email",
   "NEW_PASSWORD": "New password",
   "NONE": "None",
   "NO_CONTACT_SHARED": "This person does not share their contact details.",
@@ -1051,6 +1051,7 @@
   "SETTINGS": {
     "ACCESS": "Who can reach you",
     "APPEARANCE": "Appearance",
+    "MAILINGS": "What we send you",
     "MESSAGE_POLICIES": {
       "EVERYONE": "Anyone",
       "FOLLOWING": "Only people I follow",
