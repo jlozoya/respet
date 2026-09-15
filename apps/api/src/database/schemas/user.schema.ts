@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from '../../database/mongoose.js';
 import type { HydratedDocument, Types } from '../../database/mongoose.js';
 
-import { AuthProvider, Gender, UserRole } from './enums.js';
+import { AuthProvider, Gender, MessagePolicy, UserRole } from './enums.js';
 
 /**
  * Cuentas y todo lo que cuelga de ellas.
@@ -119,7 +119,7 @@ UserSchema.virtual('socialLinks', {
 UserSchema.set('toObject', { virtuals: true });
 UserSchema.set('toJSON', { virtuals: true });
 
-/** Preferencias de privacidad: qué datos de contacto ve el resto. */
+/** Preferencias de la cuenta: qué ve el resto y quién puede acercarse. */
 @Schema({ collection: 'user_permissions', timestamps: true })
 export class UserPermissions {
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true, unique: true })
@@ -142,6 +142,16 @@ export class UserPermissions {
 
   @Prop({ default: true })
   receiveMailAds!: boolean;
+
+  @Prop({ type: String, enum: Object.values(MessagePolicy), default: MessagePolicy.Everyone })
+  messagePolicy!: MessagePolicy;
+
+  /*
+    Con el perfil privado, seguir pasa por solicitud. Por defecto no: cambiar
+    el comportamiento de las cuentas que ya existen no es cosa de un despliegue.
+  */
+  @Prop({ default: false })
+  privateProfile!: boolean;
 }
 
 export type UserPermissionsDocument = HydratedDocument<UserPermissions>;

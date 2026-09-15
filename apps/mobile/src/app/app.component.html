@@ -41,37 +41,6 @@
             <app-nav-rail />
           </ion-menu-toggle>
 
-          <ion-item>
-            <ion-select
-              [ngModel]="themePreference()"
-              (ngModelChange)="changeTheme($event)"
-              name="theme"
-              [label]="'THEME.LABEL' | translate"
-              [cancelText]="'CANCEL' | translate"
-              [okText]="'ACCEPT' | translate"
-            >
-              @for (option of themeOptions; track option.value) {
-                <ion-select-option [value]="option.value">
-                  {{ option.label | translate }}
-                </ion-select-option>
-              }
-            </ion-select>
-          </ion-item>
-
-          <ion-item lines="none">
-            <ion-select
-              [ngModel]="currentLanguage()"
-              (ngModelChange)="changeLanguage($event)"
-              name="lang"
-              [label]="'LANG_SELECTOR' | translate"
-              [cancelText]="'CANCEL' | translate"
-              [okText]="'ACCEPT' | translate"
-            >
-              @for (option of languages(); track option.code) {
-                <ion-select-option [value]="option.code">{{ option.label }}</ion-select-option>
-              }
-            </ion-select>
-          </ion-item>
         }
       </ion-content>
     </ion-menu>

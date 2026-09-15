@@ -14,7 +14,7 @@ import { IonText } from '@ionic/angular/ion-text';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { PopoverController } from '@ionic/angular/popover-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Post, VoteValue } from '@respet/shared';
+import { FollowState, type Post, type VoteValue } from '@respet/shared';
 
 import { PostsService } from '../../../core/api/content.service';
 import { UsersService } from '../../../core/api/users.service';
@@ -126,28 +126,38 @@ export class PostCardComponent {
   });
 
   /**
-   * Cierto sólo cuando hay a quién seguir y todavía no se le sigue.
+   * Cierto cuando hay a quién seguir y todavía no se le sigue.
    *
    * El servidor manda `null` cuando la pregunta no tiene sentido —sin sesión, y
-   * en las publicaciones propias—, así que basta con mirar si es `false`: ni
-   * quien ya sigue al autor ni quien no puede seguirlo ven el botón, igual que
-   * en cualquier muro.
+   * en las publicaciones propias—, así que ni quien ya sigue al autor ni quien
+   * no puede seguirlo ven nada, igual que en cualquier muro.
    */
-  readonly canFollow = computed(() => this.current().authorFollowedByMe === false);
+  readonly canFollow = computed(() => this.current().authorFollowState === FollowState.None);
+
+  /** Cierto mientras la solicitud está echada y sin responder. */
+  readonly requested = computed(
+    () => this.current().authorFollowState === FollowState.Requested,
+  );
 
   /**
-   * Sigue al autor sin salir del muro.
+   * Sigue al autor sin salir del muro, o lo solicita.
    *
-   * El botón se va al seguir, que es su propia confirmación. Dejar de seguir se
-   * hace desde la ficha de la persona: aquí sería un botón que aparece para
-   * deshacer lo que se acaba de hacer y estorba el resto del tiempo.
+   * Con el perfil privado el servidor devuelve `requested` y el rótulo pasa a
+   * «Solicitado»: se queda a la vista, porque una solicitud sin respuesta es
+   * algo que sigue pasando y desaparecer parecería que no se hizo nada. Si el
+   * perfil es público se sigue en el acto y el botón se va, que es su propia
+   * confirmación.
+   *
+   * Dejar de seguir se hace desde la ficha de la persona: aquí sería un botón
+   * que aparece para deshacer lo que se acaba de hacer y estorba el resto del
+   * tiempo.
    */
   async follow(): Promise<void> {
     const post = this.current();
 
     try {
-      await this.users.follow(post.author.id);
-      this.apply({ ...post, authorFollowedByMe: true });
+      const { followState } = await this.users.follow(post.author.id);
+      this.apply({ ...post, authorFollowState: followState });
     } catch (error) {
       await this.feedback.error(error);
     }

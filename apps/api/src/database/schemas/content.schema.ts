@@ -184,7 +184,15 @@ CommentSchema.virtual('author', {
 CommentSchema.set('toObject', { virtuals: true });
 CommentSchema.set('toJSON', { virtuals: true });
 
-/** Seguimiento dirigido: `follower` sigue a `followee`, sin reciprocidad. */
+/**
+ * Seguimiento dirigido: `follower` sigue a `followee`, sin reciprocidad.
+ *
+ * Con el perfil privado el mismo documento nace pendiente y espera respuesta,
+ * en lugar de guardarse la solicitud en una colección aparte: es el mismo
+ * vínculo en un estado anterior, y separarlo obligaría a moverlo de sitio al
+ * aceptarlo —y a mirar en dos lados cada vez que hay que saber si se sigue a
+ * alguien—.
+ */
 @Schema({ collection: 'follows', timestamps: { createdAt: true, updatedAt: false } })
 export class Follow {
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
@@ -192,6 +200,13 @@ export class Follow {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
   followeeId!: Types.ObjectId;
+
+  /** Cierto mientras es una solicitud sin responder. */
+  @Prop({ default: false })
+  pending!: boolean;
+
+  /* Lo escribe `timestamps`; se declara para poder leerlo con tipos. */
+  createdAt!: Date;
 }
 
 export type FollowDocument = HydratedDocument<Follow>;
@@ -199,6 +214,8 @@ export const FollowSchema = SchemaFactory.createForClass(Follow);
 
 FollowSchema.index({ followerId: 1, followeeId: 1 }, { unique: true });
 FollowSchema.index({ followeeId: 1, createdAt: -1 });
+// Las solicitudes que le quedan a alguien por responder, en una sola pasada.
+FollowSchema.index({ followeeId: 1, pending: 1, createdAt: -1 });
 
 @Schema({ collection: 'post_reports', timestamps: true })
 export class PostReport {

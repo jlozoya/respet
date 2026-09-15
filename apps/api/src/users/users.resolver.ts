@@ -1,5 +1,7 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import type {
+  FollowRequest,
+  FollowRequestResult,
   FollowResult,
   Paginated,
   PublicProfile,
@@ -21,6 +23,8 @@ import {
 import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
 import { UserRole } from '../graphql/enums.js';
 import {
+  FollowRequestPage,
+  FollowRequestResultType,
   FollowResultType,
   PublicProfileType,
   UserContactType,
@@ -233,6 +237,34 @@ export class UsersResolver {
     @CurrentUser('id') userId: string,
   ): Promise<FollowResult> {
     return this.users.unfollow(userId, id);
+  }
+
+  @Query(() => FollowRequestPage, {
+    name: 'myFollowRequests',
+    description: 'Solicitudes de seguimiento que quedan por responder.',
+  })
+  async myFollowRequests(
+    @CurrentUser('id') userId: string,
+    @Args('query', { type: () => UserListQueryDto, nullable: true })
+    query: UserListQueryDto = {},
+  ): Promise<Paginated<FollowRequest>> {
+    return this.users.followRequests(userId, query);
+  }
+
+  @Mutation(() => FollowRequestResultType)
+  async acceptFollowRequest(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<FollowRequestResult> {
+    return this.users.acceptFollowRequest(userId, id);
+  }
+
+  @Mutation(() => FollowRequestResultType)
+  async rejectFollowRequest(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<FollowRequestResult> {
+    return this.users.rejectFollowRequest(userId, id);
   }
 
   // --- Administración -------------------------------------------------------

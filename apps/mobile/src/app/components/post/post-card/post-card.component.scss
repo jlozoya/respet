@@ -46,6 +46,12 @@ $kinds: (
   text-decoration: underline;
 }
 
+/* «Solicitado» no es una acción: se lee en voz baja, sin el color de enlace. */
+:host .solicitado {
+  color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
 :host .separador {
   color: var(--ion-color-medium);
   margin: 0 4px;

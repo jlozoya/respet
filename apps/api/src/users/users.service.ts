@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type {
+  FollowRequest,
+  FollowRequestResult,
   FollowResult,
   Media,
   Paginated,
@@ -13,6 +15,7 @@ import type {
   UserRole,
   UserSummary,
 } from '@respet/shared';
+import { FollowState } from '../database/schemas/enums.js';
 import { isValidObjectId } from '../database/mongoose.js';
 import type { Model } from '../database/mongoose.js';
 
@@ -118,17 +121,22 @@ export class UsersService {
     return toPublicProfile(doc as never, {
       followerCount: info.followerCount,
       followingCount: info.followingCount,
-      followedByMe: info.followedByMe,
+      followState: info.followState,
       postCount,
     });
   }
 
   /**
-   * Empieza a seguir a alguien.
+   * Empieza a seguir a alguien, o lo solicita.
    *
-   * No hace falta permiso ni reciprocidad: es lo que permite armar un muro de
-   * seguidos sin esperar a que nadie acepte. Repetir la llamada no añade nada,
-   * porque el índice único sobre el par lo impide.
+   * Sin reciprocidad: es lo que permite armar un muro de seguidos sin esperar
+   * a nadie. Con el perfil privado, en cambio, el vínculo nace pendiente y no
+   * cuenta hasta que su dueño responda.
+   *
+   * Repetir la llamada no añade nada —el índice único sobre el par lo impide—
+   * y tampoco reabre lo ya resuelto: `$setOnInsert` sólo escribe al crear, así
+   * que volver a pulsar sobre una solicitud pendiente la deja como está en
+   * lugar de reiniciarla.
    */
   async follow(followerId: string, followeeId: string): Promise<FollowResult> {
     if (followerId === followeeId) {
@@ -137,30 +145,156 @@ export class UsersService {
 
     await this.assertExists(followeeId);
 
+    const pending = await this.isPrivate(followeeId);
+
     await this.follows.updateOne(
       { followerId, followeeId },
-      { $setOnInsert: { followerId, followeeId } },
+      { $setOnInsert: { followerId, followeeId, pending } },
       { upsert: true },
     );
 
-    return { followerCount: await this.countFollowers(followeeId), followedByMe: true };
+    return {
+      followerCount: await this.countFollowers(followeeId),
+      followState: await this.followStateOf(followerId, followeeId),
+    };
   }
 
+  /**
+   * Deja de seguir, o retira la solicitud.
+   *
+   * Es la misma operación: en los dos casos se borra el vínculo, y quien lo
+   * pidió puede desdecirse mientras no le hayan contestado.
+   */
   async unfollow(followerId: string, followeeId: string): Promise<FollowResult> {
     await this.assertExists(followeeId);
     await this.follows.deleteOne({ followerId, followeeId });
 
-    return { followerCount: await this.countFollowers(followeeId), followedByMe: false };
+    return {
+      followerCount: await this.countFollowers(followeeId),
+      followState: FollowState.None,
+    };
   }
 
-  /** Quiénes siguen a esta persona, de lo más reciente a lo más antiguo. */
+  /**
+   * Las solicitudes que a alguien le quedan por responder.
+   *
+   * Sólo llegan aquí las de un perfil privado, que es el único que las genera;
+   * en uno público la lista sale vacía porque seguir no espera a nadie.
+   */
+  async followRequests(userId: string, query: UserListQueryDto): Promise<Paginated<FollowRequest>> {
+    const where = { followeeId: userId, pending: true };
+    const { skip, take, page, perPage } = toPage(query);
+
+    const [docs, total] = await Promise.all([
+      this.follows.find(where).sort({ createdAt: -1 }).skip(skip).limit(take).lean(),
+      this.follows.countDocuments(where),
+    ]);
+
+    const solicitantes = await this.users
+      .find({ _id: { $in: docs.map((doc) => doc.followerId) } })
+      .populate('avatar')
+      .lean();
+    const porId = new Map(solicitantes.map((doc) => [String(doc._id), doc]));
+
+    // Se recorre el orden de las solicitudes, no el de las personas: la
+    // consulta de usuarios no garantiza ninguno, y aquí manda la fecha.
+    const filas = docs.flatMap((doc) => {
+      const quien = porId.get(String(doc.followerId));
+
+      return quien
+        ? [
+            {
+              id: String(doc._id),
+              requester: toUserSummary(quien as never),
+              createdAt: doc.createdAt.toISOString(),
+            },
+          ]
+        : [];
+    });
+
+    return paginate(filas, total, page, perPage);
+  }
+
+  /** Acepta una solicitud: el vínculo deja de estar pendiente y ya cuenta. */
+  async acceptFollowRequest(userId: string, requestId: string): Promise<FollowRequestResult> {
+    const doc = await this.findPendingRequest(userId, requestId);
+
+    await this.follows.updateOne({ _id: doc._id }, { $set: { pending: false } });
+
+    return { followerCount: await this.countFollowers(userId) };
+  }
+
+  /**
+   * Rechaza una solicitud.
+   *
+   * Se borra el vínculo en lugar de marcarlo como rechazado: guardar el «no»
+   * sólo serviría para impedir que se vuelva a pedir, y quien rechaza no ha
+   * pedido bloquear a nadie.
+   */
+  async rejectFollowRequest(userId: string, requestId: string): Promise<FollowRequestResult> {
+    const doc = await this.findPendingRequest(userId, requestId);
+
+    await this.follows.deleteOne({ _id: doc._id });
+
+    return { followerCount: await this.countFollowers(userId) };
+  }
+
+  /**
+   * Busca una solicitud pendiente dirigida a esta persona.
+   *
+   * Se filtra también por destinatario: sin eso, cualquiera con el
+   * identificador de una solicitud podría responder a la de otro.
+   */
+  private async findPendingRequest(
+    userId: string,
+    requestId: string,
+  ): Promise<{ _id: unknown }> {
+    if (!isValidObjectId(requestId)) {
+      throw AppException.notFound('FollowRequest');
+    }
+
+    const doc = await this.follows
+      .findOne({ _id: requestId, followeeId: userId, pending: true })
+      .lean();
+
+    if (!doc) {
+      throw AppException.notFound('FollowRequest');
+    }
+
+    return doc;
+  }
+
+  /** Cierto si esta persona exige solicitud para que la sigan. */
+  private async isPrivate(userId: string): Promise<boolean> {
+    const doc = await this.permissions.findOne({ userId }).select('privateProfile').lean();
+
+    return doc?.privateProfile ?? false;
+  }
+
+  /** En qué punto está el seguimiento entre dos personas. */
+  private async followStateOf(followerId: string, followeeId: string): Promise<FollowState> {
+    const doc = await this.follows.findOne({ followerId, followeeId }).select('pending').lean();
+
+    if (!doc) {
+      return FollowState.None;
+    }
+
+    return doc.pending ? FollowState.Requested : FollowState.Following;
+  }
+
+  /**
+   * Quiénes siguen a esta persona, de lo más reciente a lo más antiguo.
+   *
+   * Las solicitudes pendientes quedan fuera: aparecen en `followRequests`, y
+   * sólo para quien tiene que responderlas.
+   */
   async followers(id: string, query: UserListQueryDto): Promise<Paginated<UserSummary>> {
-    return this.listFollows({ followeeId: id }, 'followerId', query);
+    return this.listFollows({ followeeId: id, pending: { $ne: true } }, 'followerId', query);
   }
 
   /** A quiénes sigue esta persona. */
   async following(id: string, query: UserListQueryDto): Promise<Paginated<UserSummary>> {
-    return this.listFollows({ followerId: id }, 'followeeId', query);
+    return this.listFollows({ followerId: id, pending: { $ne: true } }, 'followeeId', query);
   }
 
   /**
@@ -196,34 +330,31 @@ export class UsersService {
     return paginate(ordenados.map((doc) => toUserSummary(doc as never)), total, page, perPage);
   }
 
+  /** Seguidores de verdad: las solicitudes sin responder no suman. */
   private async countFollowers(id: string): Promise<number> {
-    return this.follows.countDocuments({ followeeId: id });
+    return this.follows.countDocuments({ followeeId: id, pending: { $ne: true } });
   }
 
   /**
-   * Cifras de seguimiento y si quien mira sigue a esta persona.
+   * Cifras de seguimiento y en qué punto está quien mira.
    *
    * Sin sesión no hay respuesta a lo último —`null`—, y en la ficha de uno
    * mismo tampoco: un botón de «seguir» sobre el propio perfil no significa
-   * nada.
+   * nada. Las dos cifras cuentan sólo lo aceptado; una solicitud pendiente no
+   * es un seguidor todavía.
    */
   private async followInfo(
     id: string,
     viewerId: string | null,
-  ): Promise<{ followerCount: number; followingCount: number; followedByMe: boolean | null }> {
-    const [followerCount, followingCount, propio] = await Promise.all([
-      this.follows.countDocuments({ followeeId: id }),
-      this.follows.countDocuments({ followerId: id }),
-      viewerId === null || viewerId === id
-        ? Promise.resolve(null)
-        : this.follows.exists({ followerId: viewerId, followeeId: id }),
+  ): Promise<{ followerCount: number; followingCount: number; followState: FollowState | null }> {
+    const ajeno = viewerId !== null && viewerId !== id;
+    const [followerCount, followingCount, followState] = await Promise.all([
+      this.countFollowers(id),
+      this.follows.countDocuments({ followerId: id, pending: { $ne: true } }),
+      ajeno ? this.followStateOf(viewerId, id) : Promise.resolve(null),
     ]);
 
-    return {
-      followerCount,
-      followingCount,
-      followedByMe: viewerId === null || viewerId === id ? null : propio !== null,
-    };
+    return { followerCount, followingCount, followState };
   }
 
   private async assertExists(id: string): Promise<void> {
@@ -400,6 +531,8 @@ export class UsersService {
       showAlternativePhones: doc.showAlternativePhones,
       showLocation: doc.showLocation,
       receiveMailAds: doc.receiveMailAds,
+      messagePolicy: doc.messagePolicy,
+      privateProfile: doc.privateProfile,
     };
   }
 

@@ -28,6 +28,14 @@
               >
                 {{ 'WALL.FOLLOW' | translate }}
               </button>
+            } @else if (requested()) {
+              <!--
+                Perfil privado: la solicitud queda echada y a la vista. No se
+                puede volver a pulsar —no hay nada que repetir— y retirarla se
+                hace desde la ficha, como dejar de seguir.
+              -->
+              <span class="separador" aria-hidden="true">•</span>
+              <span class="solicitado">{{ 'WALL.REQUESTED' | translate }}</span>
             }
           </h2>
           <small>{{ post.updatedAt | date: 'medium' }}</small>

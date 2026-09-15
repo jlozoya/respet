@@ -2,6 +2,8 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import type {
   AuthSession,
   AuthTokens,
+  FollowRequest,
+  FollowRequestResult,
   FollowResult,
   PublicProfile,
   SocialLink,
@@ -13,7 +15,7 @@ import type {
   UserSummary,
 } from '@respet/shared';
 
-import { AuthProvider, Gender, UserRole } from '../enums.js';
+import { AuthProvider, FollowState, Gender, MessagePolicy, UserRole } from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';
 
 @ObjectType('SocialLink', { description: 'Cuenta externa enlazada a la del usuario.' })
@@ -28,7 +30,7 @@ export class SocialLinkType implements SocialLink {
   externalId!: string;
 }
 
-@ObjectType('UserPermissions', { description: 'Qué acepta enseñar cada persona de su ficha.' })
+@ObjectType('UserPermissions', { description: 'Qué enseña cada persona y quién puede acercarse.' })
 export class UserPermissionsType implements UserPermissions {
   @Field()
   showMainEmail!: boolean;
@@ -47,6 +49,12 @@ export class UserPermissionsType implements UserPermissions {
 
   @Field()
   receiveMailAds!: boolean;
+
+  @Field(() => MessagePolicy, { description: 'Quién puede escribir por primera vez.' })
+  messagePolicy!: MessagePolicy;
+
+  @Field({ description: 'Con el perfil privado, seguir pasa por solicitud.' })
+  privateProfile!: boolean;
 }
 
 @ObjectType('UserEmail')
@@ -141,11 +149,11 @@ export class UserType implements User {
   @Field(() => Int)
   followingCount!: number;
 
-  @Field(() => Boolean, {
+  @Field(() => FollowState, {
     nullable: true,
     description: 'Nulo para quien no ha iniciado sesión, y también en la propia ficha.',
   })
-  followedByMe!: boolean | null;
+  followState!: FollowState | null;
 
   @Field()
   createdAt!: string;
@@ -206,8 +214,8 @@ export class PublicProfileType implements PublicProfile {
   @Field(() => Int)
   followingCount!: number;
 
-  @Field(() => Boolean, { nullable: true })
-  followedByMe!: boolean | null;
+  @Field(() => FollowState, { nullable: true })
+  followState!: FollowState | null;
 
   @Field()
   createdAt!: string;
@@ -218,8 +226,20 @@ export class FollowResultType implements FollowResult {
   @Field(() => Int)
   followerCount!: number;
 
+  @Field(() => FollowState)
+  followState!: FollowState;
+}
+
+@ObjectType('FollowRequest', { description: 'Solicitud de seguimiento sin responder.' })
+export class FollowRequestType implements FollowRequest {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => UserSummaryType, { description: 'Quien pide seguir.' })
+  requester!: UserSummaryType;
+
   @Field()
-  followedByMe!: boolean;
+  createdAt!: string;
 }
 
 @ObjectType('AuthTokens', { description: 'Par de tokens emitido al autenticarse.' })
@@ -245,3 +265,10 @@ export class AuthSessionType extends AuthTokensType implements AuthSession {
 
 export const UserPage = Paginated(UserType, 'User');
 export const UserSummaryPage = Paginated(UserSummaryType, 'UserSummary');
+export const FollowRequestPage = Paginated(FollowRequestType, 'FollowRequest');
+
+@ObjectType('FollowRequestResult', { description: 'Seguidores tras responder una solicitud.' })
+export class FollowRequestResultType implements FollowRequestResult {
+  @Field(() => Int)
+  followerCount!: number;
+}

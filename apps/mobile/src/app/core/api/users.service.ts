@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import type {
   AddEmailsRequest,
   AddPhonesRequest,
+  FollowRequest,
+  FollowRequestResult,
   FollowResult,
   Media,
   Paginated,
@@ -110,12 +112,33 @@ const PUBLIC_PROFILE = gql(
 
 const FOLLOW_USER = `
 mutation FollowUser($id: ID!) {
-  followUser(id: $id) { followerCount followedByMe }
+  followUser(id: $id) { followerCount followState }
 }`;
 
 const UNFOLLOW_USER = `
 mutation UnfollowUser($id: ID!) {
-  unfollowUser(id: $id) { followerCount followedByMe }
+  unfollowUser(id: $id) { followerCount followState }
+}`;
+
+const FOLLOW_REQUESTS = gql(
+  `query MyFollowRequests($query: UserListQueryInput) {
+    myFollowRequests(query: $query) {
+      data { id createdAt requester { ...UserSummaryFields } }
+      meta { ...PageMetaFields }
+    }
+  }`,
+  ...USER_SUMMARY_FRAGMENTS,
+  ...PAGE_META_FRAGMENTS,
+);
+
+const ACCEPT_FOLLOW_REQUEST = `
+mutation AcceptFollowRequest($id: ID!) {
+  acceptFollowRequest(id: $id) { followerCount }
+}`;
+
+const REJECT_FOLLOW_REQUEST = `
+mutation RejectFollowRequest($id: ID!) {
+  rejectFollowRequest(id: $id) { followerCount }
 }`;
 
 const FOLLOWERS = gql(
@@ -328,6 +351,33 @@ export class UsersService {
     });
 
     return unfollowUser;
+  }
+
+  /** Solicitudes que quedan por responder, de la más reciente a la más antigua. */
+  async followRequests(
+    query: { page?: number; perPage?: number } = {},
+  ): Promise<Paginated<FollowRequest>> {
+    const { myFollowRequests } = await this.gql.request<{
+      myFollowRequests: Paginated<FollowRequest>;
+    }>(FOLLOW_REQUESTS, { query });
+
+    return myFollowRequests;
+  }
+
+  async acceptFollowRequest(id: string): Promise<FollowRequestResult> {
+    const { acceptFollowRequest } = await this.gql.request<{
+      acceptFollowRequest: FollowRequestResult;
+    }>(ACCEPT_FOLLOW_REQUEST, { id });
+
+    return acceptFollowRequest;
+  }
+
+  async rejectFollowRequest(id: string): Promise<FollowRequestResult> {
+    const { rejectFollowRequest } = await this.gql.request<{
+      rejectFollowRequest: FollowRequestResult;
+    }>(REJECT_FOLLOW_REQUEST, { id });
+
+    return rejectFollowRequest;
   }
 
   async followers(

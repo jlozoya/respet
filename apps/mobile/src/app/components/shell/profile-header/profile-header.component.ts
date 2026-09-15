@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { PublicProfile } from '@respet/shared';
+import { FollowState, type PublicProfile } from '@respet/shared';
 
 const FALLBACK_AVATAR = './assets/imgs/avatar.png';
 
@@ -38,7 +38,25 @@ export class ProfileHeaderComponent {
   readonly avatarUrl = computed(() => this.profile().avatar?.url ?? FALLBACK_AVATAR);
 
   /** Nulo significa «no hay a quién referirlo»: sin sesión, o en el propio perfil. */
-  readonly canFollow = computed(() => this.profile().followedByMe !== null);
+  readonly canFollow = computed(() => this.profile().followState !== null);
+
+  /**
+   * Cómo se rotula el botón en cada uno de los tres estados.
+   *
+   * Sólo va relleno lo que invita a hacer algo nuevo —seguir—; lo que ya está
+   * hecho o pedido se enseña con el contorno, para que se distinga de un
+   * vistazo sin leer el texto.
+   */
+  readonly followLabel = computed(() => {
+    switch (this.profile().followState) {
+      case FollowState.Following:
+        return { text: 'WALL.UNFOLLOW', icon: 'checkmark-circle-outline', filled: false };
+      case FollowState.Requested:
+        return { text: 'WALL.REQUESTED', icon: 'time-outline', filled: false };
+      default:
+        return { text: 'WALL.FOLLOW', icon: 'person-add-outline', filled: true };
+    }
+  });
 
   onAvatarError(event: Event): void {
     (event.target as HTMLImageElement).src = FALLBACK_AVATAR;

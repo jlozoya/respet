@@ -7,8 +7,9 @@ import type { Model, Types } from '../database/mongoose.js';
 import { AppException, ErrorCode } from '../common/errors.js';
 import { toMediaOrNull, toUserSummary } from '../common/mappers.js';
 import { Conversation, ConversationMember, Message } from '../database/schemas/chat.schema.js';
-import { MessageKind } from '../database/schemas/enums.js';
-import { User } from '../database/schemas/user.schema.js';
+import { Follow } from '../database/schemas/content.schema.js';
+import { MessageKind, MessagePolicy } from '../database/schemas/enums.js';
+import { User, UserPermissions } from '../database/schemas/user.schema.js';
 import { MediaService } from '../media/media.service.js';
 
 /** Mensajes que devuelve cada tramo del hilo. */
@@ -31,6 +32,9 @@ export class ChatService {
     @InjectModel(ConversationMember.name) private readonly members: Model<ConversationMember>,
     @InjectModel(Message.name) private readonly messages: Model<Message>,
     @InjectModel(User.name) private readonly users: Model<User>,
+    @InjectModel(UserPermissions.name)
+    private readonly permissions: Model<UserPermissions>,
+    @InjectModel(Follow.name) private readonly follows: Model<Follow>,
     private readonly media: MediaService,
   ) {}
 
@@ -119,6 +123,11 @@ export class ChatService {
     if (existente) {
       return this.describeConversation(existente, userId, peer);
     }
+
+    // Se comprueba sólo al abrir una nueva: un hilo que ya existe sigue
+    // abierto aunque después se cierre la puerta, porque cerrarla es dejar de
+    // recibir desconocidos, no callar a quien ya estaba hablando.
+    await this.assertCanWrite(userId, peerId);
 
     const creada = await this.conversations.create({});
 
@@ -407,6 +416,37 @@ export class ChatService {
    * Sin uniones, se busca por el otro lado: las conversaciones en las que está
    * cada uno, y la que aparece en ambas listas.
    */
+  /**
+   * Comprueba que a esta persona se le pueda escribir.
+   *
+   * Lo decide ella en sus ajustes: cualquiera, sólo a quienes sigue, o nadie.
+   * Con «sólo a quienes sigo» lo que se mira es que ella siga a quien escribe
+   * —no al revés—: la idea es que no lleguen mensajes de desconocidos, y
+   * seguir a alguien no es autorizarle a escribirte.
+   */
+  private async assertCanWrite(writerId: string, peerId: string): Promise<void> {
+    const doc = await this.permissions.findOne({ userId: peerId }).select('messagePolicy').lean();
+    const policy = doc?.messagePolicy ?? MessagePolicy.Everyone;
+
+    if (policy === MessagePolicy.Everyone) {
+      return;
+    }
+
+    if (policy === MessagePolicy.Following) {
+      const sigue = await this.follows.exists({
+        followerId: peerId,
+        followeeId: writerId,
+        pending: { $ne: true },
+      });
+
+      if (sigue) {
+        return;
+      }
+    }
+
+    throw AppException.forbidden('This person does not accept messages from you');
+  }
+
   private async findDirectConversation(
     userId: string,
     peerId: string,

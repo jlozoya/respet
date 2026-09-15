@@ -19,8 +19,10 @@ import type {
   Warehouse,
 } from '@respet/shared';
 
+import { MessagePolicy } from '../database/schemas/enums.js';
 import type {
   AuthProvider,
+  FollowState,
   Gender,
   MediaType,
   PaymentProvider,
@@ -153,6 +155,9 @@ interface PermissionsDoc {
   showAlternativePhones: boolean;
   showLocation: boolean;
   receiveMailAds: boolean;
+  /* Opcionales: los documentos anteriores a estos ajustes no los traen. */
+  messagePolicy?: MessagePolicy;
+  privateProfile?: boolean;
 }
 
 interface UserDoc extends UserSummaryDoc {
@@ -248,12 +253,21 @@ export function toPermissions(doc: Doc<PermissionsDoc> | null | undefined): User
     showAlternativePhones: doc.showAlternativePhones,
     showLocation: doc.showLocation,
     receiveMailAds: doc.receiveMailAds,
+    // Las cuentas creadas antes de que existieran estos dos ajustes no los
+    // llevan en el documento: se leen con el mismo valor que da el esquema a
+    // las nuevas, en lugar de salir vacíos.
+    messagePolicy: doc.messagePolicy ?? MessagePolicy.Everyone,
+    privateProfile: doc.privateProfile ?? false,
   };
 }
 
 export function toUser(
   doc: Doc<UserDoc>,
-  extra: { followerCount?: number; followingCount?: number; followedByMe?: boolean | null } = {},
+  extra: {
+    followerCount?: number;
+    followingCount?: number;
+    followState?: FollowState | null;
+  } = {},
 ): User {
   return {
     id: id(doc._id),
@@ -274,7 +288,7 @@ export function toUser(
     socialLinks: (doc.socialLinks ?? []).map(toSocialLink),
     followerCount: extra.followerCount ?? 0,
     followingCount: extra.followingCount ?? 0,
-    followedByMe: extra.followedByMe ?? null,
+    followState: extra.followState ?? null,
     createdAt: toIso(doc.createdAt),
     updatedAt: toIso(doc.updatedAt),
   };
@@ -298,14 +312,14 @@ const SIN_VOTOS: PostVotes = { likeCount: 0, dislikeCount: 0, myVote: null };
  *
  * `myVote` necesita saber quién mira. Para quien no ha iniciado sesión es
  * `null`, igual que para quien no ha votado: en ninguno de los dos casos hay un
- * voto que marcar. Lo mismo vale para `authorFollowedByMe`, que además es
+ * voto que marcar. Lo mismo vale para `authorFollowState`, que además es
  * `null` en lo propio: no hay nada que ofrecer a quien ya es el autor.
  */
 export function toPost(
   doc: Doc<PostDoc>,
   votes: PostVotes = SIN_VOTOS,
   commentCount = 0,
-  authorFollowedByMe: boolean | null = null,
+  authorFollowState: FollowState | null = null,
 ): Post {
   return {
     id: id(doc._id),
@@ -321,7 +335,7 @@ export function toPost(
     dislikeCount: votes.dislikeCount,
     commentCount,
     myVote: votes.myVote,
-    authorFollowedByMe,
+    authorFollowState,
     createdAt: toIso(doc.createdAt),
     updatedAt: toIso(doc.updatedAt),
   };
@@ -333,7 +347,7 @@ export function toPublicProfile(
     followerCount: number;
     followingCount: number;
     postCount: number;
-    followedByMe: boolean | null;
+    followState: FollowState | null;
   },
 ): PublicProfile {
   return {
@@ -345,7 +359,7 @@ export function toPublicProfile(
     followerCount: extra.followerCount,
     followingCount: extra.followingCount,
     postCount: extra.postCount,
-    followedByMe: extra.followedByMe,
+    followState: extra.followState,
     createdAt: toIso(doc.createdAt),
   };
 }

@@ -47,6 +47,30 @@ export const Gender = {
 } as const;
 export type Gender = (typeof Gender)[keyof typeof Gender];
 
+/** Quién puede abrir una conversación con alguien. */
+export const MessagePolicy = {
+  /** Cualquiera con cuenta. */
+  Everyone: 'everyone',
+  /** Sólo aquellos a quienes uno sigue: hace falta el gesto previo. */
+  Following: 'following',
+  /** Nadie. Las conversaciones que ya existen siguen abiertas. */
+  Nobody: 'nobody',
+} as const;
+export type MessagePolicy = (typeof MessagePolicy)[keyof typeof MessagePolicy];
+
+/**
+ * En qué punto está el seguimiento, visto por quien mira.
+ *
+ * Con el perfil privado seguir deja de ser inmediato, así que «sí o no» ya no
+ * alcanza: entre medias está lo pedido y aún sin responder.
+ */
+export const FollowState = {
+  None: 'none',
+  Requested: 'requested',
+  Following: 'following',
+} as const;
+export type FollowState = (typeof FollowState)[keyof typeof FollowState];
+
 export const MediaType = {
   Image: 'image',
   Video: 'video',

@@ -1,5 +1,5 @@
-import type { Gender, UserRole } from '../enums.js';
-import type { Location, UserPermissions } from '../models.js';
+import type { FollowState, Gender, UserRole } from '../enums.js';
+import type { Location, UserPermissions, UserSummary } from '../models.js';
 
 export type LocationInput = Partial<Omit<Location, 'id'>>;
 
@@ -39,7 +39,23 @@ export interface AddPhonesRequest {
 /** Estado del seguimiento después de cambiarlo. */
 export interface FollowResult {
   followerCount: number;
-  followedByMe: boolean;
+  followState: FollowState;
+}
+
+/**
+ * Solicitud de seguimiento pendiente de respuesta.
+ *
+ * Sólo las ve quien tiene el perfil privado, que es el único que las recibe.
+ */
+export interface FollowRequest {
+  id: string;
+  requester: UserSummary;
+  createdAt: string;
+}
+
+/** Cómo queda la cuenta de seguidores tras responder una solicitud. */
+export interface FollowRequestResult {
+  followerCount: number;
 }
 
 export interface UserListQuery {

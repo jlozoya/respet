@@ -28,7 +28,7 @@ import {
 
 import { LocationDto } from '../../common/dto/location.dto.js';
 import { SearchQueryDto } from '../../common/dto/pagination.dto.js';
-import { Gender, UserRole } from '../../graphql/enums.js';
+import { Gender, MessagePolicy, UserRole } from '../../graphql/enums.js';
 import { normalizeEmail, normalizeEmailEach, trim, trimEach } from '../../common/dto/transforms.js';
 
 /** Formato laxo a propósito: los teléfonos internacionales varían mucho. */
@@ -140,6 +140,16 @@ export class UpdatePermissionsDto implements UpdatePermissionsRequest {
   @IsOptional()
   @IsBoolean()
   receiveMailAds?: boolean;
+
+  @Field(() => MessagePolicy, { nullable: true })
+  @IsOptional()
+  @IsEnum(MessagePolicy)
+  messagePolicy?: MessagePolicy;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  privateProfile?: boolean;
 }
 
 @InputType('AddEmailsInput')

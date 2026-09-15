@@ -41,14 +41,13 @@ export class NavigationService {
 
   /** La tienda va aparte: es otra cosa, y mezclada alargaba la lista de arriba. */
   readonly storePages: readonly NavEntry[] = [
-    { title: 'NAV.WAREHOUSES', link: '/warehouses', icon: 'archive-outline' },
     { title: 'NAV.PRODUCTS', link: '/products', icon: 'pricetags-outline' },
     { title: 'NAV.CART', link: '/cart', icon: 'cart-outline' },
   ];
 
   readonly accountPages: readonly NavEntry[] = [
     { title: 'NAV.ACCOUNT', link: '/account', icon: 'person-outline' },
-    { title: 'NAV.PRIVACY_CONFIG', link: '/privacy', icon: 'shield-checkmark-outline' },
+    { title: 'NAV.SETTINGS', link: '/settings', icon: 'settings-outline' },
   ];
 
   private readonly staffPages: readonly NavEntry[] = [

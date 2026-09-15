@@ -385,10 +385,10 @@
   "NAME": "Username",
   "NAV": {
     "ABOUT_US": "About us",
-    "BULLETINS": "Announcements",
     "ACCOUNT": "Account",
     "ANALYTICS": "Information",
     "APP_NAME": "ResPet",
+    "BULLETINS": "Announcements",
     "CART": "Cart",
     "CHAT": "Messages",
     "ERROR": "Error",
@@ -400,8 +400,8 @@
     "ORDERS": "Orders",
     "POLITICS": "Policies",
     "PRESENTATION": "Presentation",
-    "PRIVACY_CONFIG": "Privacy settings",
     "PRODUCTS": "Products",
+    "SETTINGS": "Settings",
     "SIGNUP": "Signup",
     "STORE": "Store",
     "SURF": "Browse",
@@ -1042,6 +1042,21 @@
     "WRONG_TOKEN": "Token invalidated",
     "WRONG_USER": "Incorrect user"
   },
+  "SETTINGS": {
+    "ACCESS": "Who can reach you",
+    "APPEARANCE": "Appearance",
+    "MESSAGE_POLICIES": {
+      "EVERYONE": "Anyone",
+      "FOLLOWING": "Only people I follow",
+      "NOBODY": "Nobody"
+    },
+    "MESSAGE_POLICY": "Who can message me",
+    "NO_REQUESTS": "No pending requests.",
+    "PRIVATE_PROFILE": "Private profile",
+    "PRIVATE_PROFILE_HINT": "Anyone who wants to follow you sends a request and you decide. What you have already posted stays visible.",
+    "REJECT": "Decline",
+    "REQUESTS": "Follow requests"
+  },
   "SHARE": {
     "ERROR": {
       "GENERIC": "Could not share."
@@ -1176,6 +1191,7 @@
     "FOLLOWERS": "followers",
     "FOLLOWING_COUNT": "following",
     "POSTS": "posts",
+    "REQUESTED": "Requested",
     "UNFOLLOW": "Following"
   },
   "WAREHOUSE": {

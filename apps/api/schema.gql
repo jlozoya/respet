@@ -199,10 +199,37 @@ input CreateWarehouseInput {
   name: String!
 }
 
+"""Solicitud de seguimiento sin responder."""
+type FollowRequest {
+  createdAt: String!
+  id: ID!
+
+  """Quien pide seguir."""
+  requester: UserSummary!
+}
+
+"""Página de FollowRequest."""
+type FollowRequestPage {
+  data: [FollowRequest!]!
+  meta: PaginationMeta!
+}
+
+"""Seguidores tras responder una solicitud."""
+type FollowRequestResult {
+  followerCount: Int!
+}
+
 """Cómo queda el seguimiento tras cambiarlo."""
 type FollowResult {
-  followedByMe: Boolean!
+  followState: FollowState!
   followerCount: Int!
+}
+
+"""En qué punto está el seguimiento. `requested` espera respuesta."""
+enum FollowState {
+  following
+  none
+  requested
 }
 
 input ForgotPasswordInput {
@@ -316,7 +343,17 @@ type MessagePage {
   nextCursor: ID
 }
 
+"""
+Quién puede abrir una conversación: cualquiera, a quienes sigo, o nadie.
+"""
+enum MessagePolicy {
+  everyone
+  following
+  nobody
+}
+
 type Mutation {
+  acceptFollowRequest(id: ID!): FollowRequestResult!
   addEmails(input: AddEmailsInput!): [UserEmail!]!
   addOrderItem(id: ID!, input: AddOrderItemInput!): Order!
   addPhones(input: AddPhonesInput!): [UserPhone!]!
@@ -375,6 +412,7 @@ type Mutation {
 
   """Da de alta una cuenta y abre sesión."""
   register(input: RegisterInput!): AuthSession!
+  rejectFollowRequest(id: ID!): FollowRequestResult!
   removeEmail(id: ID!): Boolean!
   removeOrderItem(id: ID!, itemId: ID!): Order!
   removePhone(id: ID!): Boolean!
@@ -521,8 +559,10 @@ enum PaymentStatus {
 type Post {
   author: UserSummary!
 
-  """Si quien mira sigue al autor. Nulo sin sesión y en lo propio."""
-  authorFollowedByMe: Boolean
+  """
+  En qué punto sigue quien mira al autor. Nulo sin sesión y en lo propio.
+  """
+  authorFollowState: FollowState
   commentCount: Int!
   createdAt: String!
   description: String!
@@ -634,7 +674,7 @@ type PublicProfile {
   avatar: Media
   createdAt: String!
   firstName: String!
-  followedByMe: Boolean
+  followState: FollowState
   followerCount: Int!
   followingCount: Int!
   id: ID!
@@ -667,6 +707,9 @@ type Query {
   me: User!
   messages(conversationId: ID!, query: MessageListQueryInput): MessagePage!
   myEmails: [UserEmail!]!
+
+  """Solicitudes de seguimiento que quedan por responder."""
+  myFollowRequests(query: UserListQueryInput): FollowRequestPage!
   myOrders(query: OrderListQueryInput): OrderPage!
 
   """Preferencias de privacidad."""
@@ -826,6 +869,8 @@ input UpdateOrderStateInput {
 }
 
 input UpdatePermissionsInput {
+  messagePolicy: MessagePolicy
+  privateProfile: Boolean
   receiveMailAds: Boolean
   showAlternativeEmails: Boolean
   showAlternativePhones: Boolean
@@ -883,7 +928,7 @@ type User {
   firstName: String!
 
   """Nulo para quien no ha iniciado sesión, y también en la propia ficha."""
-  followedByMe: Boolean
+  followState: FollowState
   followerCount: Int!
   followingCount: Int!
   gender: Gender
@@ -931,8 +976,13 @@ type UserPage {
   meta: PaginationMeta!
 }
 
-"""Qué acepta enseñar cada persona de su ficha."""
+"""Qué enseña cada persona y quién puede acercarse."""
 type UserPermissions {
+  """Quién puede escribir por primera vez."""
+  messagePolicy: MessagePolicy!
+
+  """Con el perfil privado, seguir pasa por solicitud."""
+  privateProfile: Boolean!
   receiveMailAds: Boolean!
   showAlternativeEmails: Boolean!
   showAlternativePhones: Boolean!

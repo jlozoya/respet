@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { App } from '@capacitor/app';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -12,8 +11,6 @@ import { IonItem } from '@ionic/angular/ion-item';
 import { IonMenu } from '@ionic/angular/ion-menu';
 import { IonMenuToggle } from '@ionic/angular/ion-menu-toggle';
 import { IonRouterOutlet } from '@ionic/angular/ion-router-outlet';
-import { IonSelect } from '@ionic/angular/ion-select';
-import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonSplitPane } from '@ionic/angular/ion-split-pane';
 import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
@@ -25,9 +22,7 @@ import { ChatDockComponent } from './components/chat/chat-dock/chat-dock.compone
 import { NavRailComponent } from './components/shell/nav-rail/nav-rail.component';
 import { ChatService } from './core/api/chat.service';
 import { AuthService } from './core/auth/auth.service';
-import { LanguageService } from './core/i18n/language.service';
 import { registerAppIcons } from './core/ui/icons';
-import { ThemeService, type ThemePreference } from './core/ui/theme.service';
 
 /**
  * El armazón de la aplicación: el menú y el hueco donde vive cada pantalla.
@@ -43,7 +38,6 @@ import { ThemeService, type ThemePreference } from './core/ui/theme.service';
   styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
     TranslatePipe,
     ChatDockComponent,
     NavRailComponent,
@@ -54,8 +48,6 @@ import { ThemeService, type ThemePreference } from './core/ui/theme.service';
     IonMenu,
     IonMenuToggle,
     IonRouterOutlet,
-    IonSelect,
-    IonSelectOption,
     IonSplitPane,
     IonTitle,
     IonToolbar,
@@ -63,18 +55,11 @@ import { ThemeService, type ThemePreference } from './core/ui/theme.service';
 })
 export class AppComponent {
   private readonly auth = inject(AuthService);
-  private readonly language = inject(LanguageService);
   private readonly chat = inject(ChatService);
-  private readonly theme = inject(ThemeService);
   private readonly menu = inject(MenuController);
   private readonly platform = inject(Platform);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
-  readonly themePreference = this.theme.preference;
-  readonly themeOptions = this.theme.options;
-  readonly currentLanguage = signal(this.language.current());
-  readonly languages = this.language.available;
-
   constructor() {
     registerAppIcons();
     void this.initializeNativeShell();
@@ -86,16 +71,6 @@ export class AppComponent {
         void this.chat.start();
       }
     });
-  }
-
-  async changeTheme(preference: string): Promise<void> {
-    await this.theme.use(preference as ThemePreference);
-  }
-
-  async changeLanguage(lang: string): Promise<void> {
-    this.currentLanguage.set(this.language.normalize(lang));
-    await this.language.use(lang);
-    await this.menu.close();
   }
 
   /**

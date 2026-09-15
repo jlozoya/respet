@@ -9,7 +9,7 @@ import type {
   UsersRegistrationPoint,
 } from '@respet/shared';
 
-import { PostKind, VoteValue } from '../enums.js';
+import { FollowState, PostKind, VoteValue } from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';
 import { UserSummaryType } from './user.types.js';
 
@@ -53,11 +53,11 @@ export class PostType implements Post {
   })
   myVote!: VoteValue | null;
 
-  @Field(() => Boolean, {
+  @Field(() => FollowState, {
     nullable: true,
-    description: 'Si quien mira sigue al autor. Nulo sin sesión y en lo propio.',
+    description: 'En qué punto sigue quien mira al autor. Nulo sin sesión y en lo propio.',
   })
-  authorFollowedByMe!: boolean | null;
+  authorFollowState!: FollowState | null;
 
   @Field()
   createdAt!: string;

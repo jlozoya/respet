@@ -121,9 +121,9 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
   },
   {
-    path: 'privacy',
+    path: 'settings',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/user/privacy/privacy.page').then((m) => m.PrivacyPage),
+    loadComponent: () => import('./pages/user/settings/settings.page').then((m) => m.SettingsPage),
   },
 
   // --- Tienda ---------------------------------------------------------------

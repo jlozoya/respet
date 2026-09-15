@@ -57,6 +57,12 @@ export type PaymentStatus = dominio.PaymentStatus;
 export const MessageKind = esquema(dominio.MessageKind);
 export type MessageKind = dominio.MessageKind;
 
+export const MessagePolicy = esquema(dominio.MessagePolicy);
+export type MessagePolicy = dominio.MessagePolicy;
+
+export const FollowState = esquema(dominio.FollowState);
+export type FollowState = dominio.FollowState;
+
 /** De qué muro se trata: el de todos o el de a quienes se sigue. */
 export const PostFeed = { discover: 'discover', following: 'following' } as const;
 export type PostFeed = (typeof PostFeed)[keyof typeof PostFeed];
@@ -99,6 +105,16 @@ registerEnumType(PaymentProvider, { name: 'PaymentProvider' });
 registerEnumType(PaymentStatus, { name: 'PaymentStatus' });
 
 registerEnumType(MessageKind, { name: 'MessageKind' });
+
+registerEnumType(MessagePolicy, {
+  name: 'MessagePolicy',
+  description: 'Quién puede abrir una conversación: cualquiera, a quienes sigo, o nadie.',
+});
+
+registerEnumType(FollowState, {
+  name: 'FollowState',
+  description: 'En qué punto está el seguimiento. `requested` espera respuesta.',
+});
 
 registerEnumType(PostFeed, {
   name: 'PostFeed',

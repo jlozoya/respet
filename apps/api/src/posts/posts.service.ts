@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Media, Paginated, Post as PostDto, PostVoteResult, VoteValue } from '@respet/shared';
+import { FollowState } from '../database/schemas/enums.js';
 import { ObjectId, isValidObjectId } from '../database/mongoose.js';
 import type { Model, Types } from '../database/mongoose.js';
 
@@ -318,27 +319,30 @@ export class PostsService {
       const autor = String(doc.author?._id ?? '');
       // Nada que ofrecer sin sesión ni en lo propio: en los dos casos va nulo y
       // la tarjeta no enseña el botón de seguir.
-      const sigueAlAutor =
-        seguidos && autor && autor !== viewerId ? seguidos.has(autor) : null;
+      const seguimiento =
+        seguidos && autor && autor !== viewerId
+          ? (seguidos.get(autor) ?? FollowState.None)
+          : null;
 
       return this.blurLocation(
-        toPost(doc as never, votos.get(id), comentarios.get(id) ?? 0, sigueAlAutor),
+        toPost(doc as never, votos.get(id), comentarios.get(id) ?? 0, seguimiento),
       );
     });
   }
 
   /**
-   * De los autores del listado, a cuáles sigue ya quien mira.
+   * De los autores del listado, en qué punto los sigue quien mira.
    *
    * Una sola consulta para toda la página, acotada a los autores que salen en
    * ella: quien tiene miles de seguidos no paga por traerlos todos. Sin sesión
-   * no hay a quién referirlo y devuelve `null`, que es distinto de un conjunto
-   * vacío —«no sigues a ninguno»—.
+   * no hay a quién referirlo y devuelve `null`, que es distinto de un mapa
+   * vacío —«no sigues a ninguno»—. Los autores que no aparecen en el mapa no
+   * se siguen: el estado se completa al leerlo.
    */
   private async followedAuthors(
     viewerId: string | null,
     docs: LeanPost[],
-  ): Promise<Set<string> | null> {
+  ): Promise<Map<string, FollowState> | null> {
     if (!viewerId) {
       return null;
     }
@@ -350,15 +354,20 @@ export class PostsService {
     ];
 
     if (autores.length === 0) {
-      return new Set();
+      return new Map();
     }
 
     const follows = await this.follows
       .find({ followerId: viewerId, followeeId: { $in: autores } })
-      .select('followeeId')
+      .select('followeeId pending')
       .lean();
 
-    return new Set(follows.map((doc) => String(doc.followeeId)));
+    return new Map(
+      follows.map((doc) => [
+        String(doc.followeeId),
+        doc.pending ? FollowState.Requested : FollowState.Following,
+      ]),
+    );
   }
 
   private async commentCounts(postIds: string[]): Promise<Map<string, number>> {

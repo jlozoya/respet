@@ -1,7 +1,9 @@
 import type {
   AuthProvider,
+  FollowState,
   Gender,
   MediaType,
+  MessagePolicy,
   OrderState,
   PaymentProvider,
   PaymentStatus,
@@ -53,6 +55,16 @@ export interface UserPermissions {
   showAlternativePhones: boolean;
   showLocation: boolean;
   receiveMailAds: boolean;
+  /** Quién puede escribir por primera vez. */
+  messagePolicy: MessagePolicy;
+  /**
+   * Con el perfil privado, seguir deja de ser inmediato.
+   *
+   * Quien pulsa «Seguir» manda una solicitud y espera; hasta que se acepta no
+   * cuenta como seguidor. Lo ya publicado no se esconde: esto gobierna quién
+   * entra en la lista, no qué se puede leer.
+   */
+  privateProfile: boolean;
 }
 
 export interface UserEmail {
@@ -86,7 +98,7 @@ export interface User {
   followerCount: number;
   followingCount: number;
   /** Nulo para quien no ha iniciado sesión, y también en la propia ficha. */
-  followedByMe: boolean | null;
+  followState: FollowState | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -111,12 +123,12 @@ export interface UserSummary {
   avatar: Media | null;
 }
 
-/** Cifras de seguimiento de una persona, y si quien mira la sigue. */
+/** Cifras de seguimiento de una persona, y en qué punto está quien mira. */
 export interface FollowInfo {
   followerCount: number;
   followingCount: number;
-  /** Nulo para quien no ha iniciado sesión: no hay a quién referirlo. */
-  followedByMe: boolean | null;
+  /** Nulo para quien no ha iniciado sesión, y en la propia ficha. */
+  followState: FollowState | null;
 }
 
 /**
@@ -153,13 +165,13 @@ export interface Post {
    */
   myVote: VoteValue | null;
   /**
-   * Si quien mira sigue al autor, para ofrecer seguirlo desde la propia
+   * En qué punto está el seguimiento del autor, para ofrecerlo desde la propia
    * publicación.
    *
    * Es `null` cuando no hay a quién referirlo: sin sesión, y en las
    * publicaciones propias, donde seguirse a uno mismo no significa nada.
    */
-  authorFollowedByMe: boolean | null;
+  authorFollowState: FollowState | null;
   createdAt: string;
   updatedAt: string;
 }

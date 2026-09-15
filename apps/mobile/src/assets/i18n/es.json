@@ -385,10 +385,10 @@
   "NAME": "Nombre de usuario",
   "NAV": {
     "ABOUT_US": "Nosotros",
-    "BULLETINS": "Avisos",
     "ACCOUNT": "Cuenta",
     "ANALYTICS": "Información",
     "APP_NAME": "ResPet",
+    "BULLETINS": "Avisos",
     "CART": "Carrito",
     "CHAT": "Mensajes",
     "ERROR": "Error",
@@ -400,8 +400,8 @@
     "ORDERS": "Pedidos",
     "POLITICS": "Políticas",
     "PRESENTATION": "Presentación",
-    "PRIVACY_CONFIG": "Configuración de privacidad",
     "PRODUCTS": "Productos",
+    "SETTINGS": "Configuración",
     "SIGNUP": "Registrarme",
     "STORE": "Tienda",
     "SURF": "Navegar",
@@ -1042,6 +1042,21 @@
     "WRONG_TOKEN": "Token invalido",
     "WRONG_USER": "Usuario incorrecto"
   },
+  "SETTINGS": {
+    "ACCESS": "Quién puede acercarse",
+    "APPEARANCE": "Apariencia",
+    "MESSAGE_POLICIES": {
+      "EVERYONE": "Cualquiera",
+      "FOLLOWING": "Sólo a quienes sigo",
+      "NOBODY": "Nadie"
+    },
+    "MESSAGE_POLICY": "Quién puede enviarme mensajes",
+    "NO_REQUESTS": "No tienes solicitudes pendientes.",
+    "PRIVATE_PROFILE": "Perfil privado",
+    "PRIVATE_PROFILE_HINT": "Quien quiera seguirte manda una solicitud y decides tú. Lo que ya has publicado no se esconde.",
+    "REJECT": "Rechazar",
+    "REQUESTS": "Solicitudes de seguimiento"
+  },
   "SHARE": {
     "ERROR": {
       "GENERIC": "No se pudo compartir."
@@ -1176,6 +1191,7 @@
     "FOLLOWERS": "seguidores",
     "FOLLOWING_COUNT": "siguiendo",
     "POSTS": "publicaciones",
+    "REQUESTED": "Solicitado",
     "UNFOLLOW": "Siguiendo"
   },
   "WAREHOUSE": {

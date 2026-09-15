@@ -100,3 +100,22 @@ export const MessageKind = {
   Image: 'image',
 } as const;
 export type MessageKind = (typeof MessageKind)[keyof typeof MessageKind];
+
+export const MessagePolicy = {
+  Everyone: 'everyone',
+  Following: 'following',
+  Nobody: 'nobody',
+} as const;
+export type MessagePolicy = (typeof MessagePolicy)[keyof typeof MessagePolicy];
+
+/*
+  No se guarda en ningún documento: se deduce de si el vínculo existe y de si
+  está pendiente. Vive aquí porque es lo que el esquema publica, y el resto de
+  los enumerados que publica están en este archivo.
+*/
+export const FollowState = {
+  None: 'none',
+  Requested: 'requested',
+  Following: 'following',
+} as const;
+export type FollowState = (typeof FollowState)[keyof typeof FollowState];

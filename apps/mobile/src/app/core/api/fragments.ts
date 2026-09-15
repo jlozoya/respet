@@ -65,6 +65,8 @@ fragment PermissionsFields on UserPermissions {
   showAlternativePhones
   showLocation
   receiveMailAds
+  messagePolicy
+  privateProfile
 }`;
 
 const USER = `
@@ -87,7 +89,7 @@ fragment UserFields on User {
   socialLinks { id provider externalId }
   followerCount
   followingCount
-  followedByMe
+  followState
   createdAt
   updatedAt
 }`;
@@ -102,7 +104,7 @@ fragment PublicProfileFields on PublicProfile {
   postCount
   followerCount
   followingCount
-  followedByMe
+  followState
   createdAt
 }`;
 
@@ -130,7 +132,7 @@ fragment PostFields on Post {
   dislikeCount
   commentCount
   myVote
-  authorFollowedByMe
+  authorFollowState
   createdAt
   updatedAt
 }`;

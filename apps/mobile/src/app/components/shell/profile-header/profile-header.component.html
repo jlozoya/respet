@@ -29,17 +29,19 @@
           </ion-button>
         }
 
+        <!--
+          Un solo botón para los tres estados. Con la solicitud echada sigue
+          pulsable: retirarla es lo único que se puede hacer mientras no
+          contesten, y esconderlo dejaría a quien pidió sin salida.
+        -->
         @if (canFollow()) {
           <ion-button
             size="small"
-            [fill]="persona.followedByMe ? 'outline' : 'solid'"
+            [fill]="followLabel().filled ? 'solid' : 'outline'"
             (click)="followToggled.emit()"
           >
-            <ion-icon
-              slot="start"
-              [name]="persona.followedByMe ? 'checkmark-circle-outline' : 'person-add-outline'"
-            />
-            {{ (persona.followedByMe ? 'WALL.UNFOLLOW' : 'WALL.FOLLOW') | translate }}
+            <ion-icon slot="start" [name]="followLabel().icon" />
+            {{ followLabel().text | translate }}
           </ion-button>
         }
 

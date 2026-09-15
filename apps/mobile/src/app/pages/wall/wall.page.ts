@@ -18,7 +18,7 @@ import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { NgTemplateOutlet } from '@angular/common';
-import type { Post, PublicProfile, UserContact } from '@respet/shared';
+import { FollowState, type Post, type PublicProfile, type UserContact } from '@respet/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { PostsService } from '../../core/api/content.service';
@@ -122,7 +122,7 @@ export class WallPage {
 
   /** Cierto cuando se puede escribir a quien firma este muro: no a uno mismo. */
   readonly canMessage = computed(
-    () => this.isAuthenticated() && this.profile()?.followedByMe !== null,
+    () => this.isAuthenticated() && this.profile()?.followState !== null,
   );
 
   /** Abre la conversación con esta persona, creándola si no la había. */
@@ -135,22 +135,29 @@ export class WallPage {
     }
   }
 
+  /**
+   * Sigue, deja de seguir o retira la solicitud.
+   *
+   * Lo pedido se retira igual que se deja de seguir: en los dos casos lo que
+   * hay es un vínculo que se quita, y al servidor le da lo mismo.
+   */
   async toggleFollow(): Promise<void> {
     const person = this.profile();
 
-    if (!person || person.followedByMe === null) {
+    if (!person || person.followState === null) {
       return;
     }
 
     try {
-      const result = person.followedByMe
-        ? await this.users.unfollow(person.id)
-        : await this.users.follow(person.id);
+      const result =
+        person.followState === FollowState.None
+          ? await this.users.follow(person.id)
+          : await this.users.unfollow(person.id);
 
       this.profile.set({
         ...person,
         followerCount: result.followerCount,
-        followedByMe: result.followedByMe,
+        followState: result.followState,
       });
     } catch (error) {
       await this.feedback.error(error);
