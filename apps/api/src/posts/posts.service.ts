@@ -37,7 +37,12 @@ import type {
  */
 interface LeanPost {
   _id: unknown;
-  author?: { _id: unknown } | null;
+  /*
+    El del autor va tipado, y no como `unknown` igual que el suyo: de éste hay
+    que sacar el texto para comparar seguimientos, y de un `unknown` sólo se
+    saca «[object Object]».
+  */
+  author?: { _id: Types.ObjectId } | null;
 }
 
 /** Filtro de búsqueda tal y como lo entiende `find`. */
