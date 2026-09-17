@@ -192,7 +192,7 @@ export class ProductFormComponent {
 
     for (const image of images) {
       try {
-        uploaded.push(await this.products.addImage(product.id, image.blob, 'product.webp'));
+        uploaded.push(await this.products.addImage(product.id, image.blob));
         URL.revokeObjectURL(image.previewUrl);
       } catch (error) {
         await this.feedback.error(error, 'PRODUCT.IMAGE_UPLOAD_FAILED');

@@ -1,0 +1,161 @@
+.studio {
+  --background: #000;
+}
+
+.stage {
+  background: #000;
+  color: #fff;
+  height: 100%;
+  margin: 0 auto;
+  max-width: 560px;
+  overflow: hidden;
+  position: relative;
+}
+
+.video {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.video.hidden {
+  visibility: hidden;
+}
+
+.camera-off {
+  align-items: center;
+  color: rgb(255 255 255 / 60%);
+  display: flex;
+  font-size: 64px;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+}
+
+.top {
+  align-items: center;
+  background: linear-gradient(rgb(0 0 0 / 55%), transparent);
+  display: flex;
+  gap: 8px;
+  left: 0;
+  padding: calc(8px + var(--ion-safe-area-top, 0px)) 8px 24px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.icon {
+  align-items: center;
+  background: rgb(0 0 0 / 30%);
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 22px;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+
+.pill {
+  align-items: center;
+  background: rgb(0 0 0 / 45%);
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  gap: 4px;
+  padding: 2px 8px;
+}
+
+.host {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.host .name {
+  font-weight: 700;
+}
+
+.center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: absolute;
+  text-align: center;
+}
+
+.panel {
+  background: rgb(0 0 0 / 65%);
+}
+
+.panel ion-icon {
+  font-size: 64px;
+}
+
+.setup {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  left: 0;
+  padding: 16px 16px calc(16px + var(--ion-safe-area-bottom, 0px));
+  position: absolute;
+  right: 0;
+  background: linear-gradient(transparent, rgb(0 0 0 / 70%));
+}
+
+.title {
+  background: rgb(0 0 0 / 35%);
+  border: 1px solid rgb(255 255 255 / 50%);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.0625rem;
+  height: 48px;
+  outline: none;
+  padding: 0 14px;
+}
+
+.title::placeholder {
+  color: rgb(255 255 255 / 75%);
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.audience {
+  --padding-end: 10px;
+  --padding-start: 12px;
+  background: rgb(0 0 0 / 40%);
+  border-radius: 999px;
+  color: #fff;
+  min-height: 36px;
+}
+
+.end {
+  position: absolute;
+  right: 12px;
+  top: calc(64px + var(--ion-safe-area-top, 0px));
+}
+
+.unmute {
+  left: 50%;
+  position: absolute;
+  top: 40%;
+  transform: translate(-50%, -50%);
+}

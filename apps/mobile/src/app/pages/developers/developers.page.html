@@ -1,0 +1,92 @@
+<app-page-header title="NAV.DEVELOPERS" />
+
+<ion-content>
+  <div class="rs-container wide">
+    <header class="hero rs-card">
+      <div class="hero-text">
+        <span class="eyebrow">{{ 'DEVELOPERS.EYEBROW' | translate }}</span>
+        <h1>{{ 'DEVELOPERS.TITLE' | translate }}</h1>
+        <p>{{ 'DEVELOPERS.SUBTITLE' | translate }}</p>
+        <ion-button (click)="create()"><ion-icon slot="start" name="add" /> {{ 'DEVELOPERS.CREATE_APP' | translate }}</ion-button>
+      </div>
+      <ion-icon name="code-slash" class="hero-icon" />
+    </header>
+
+    <section class="rs-card block">
+      <h2>{{ 'DEVELOPERS.MY_APPS' | translate }}</h2>
+      @if (loading()) {
+        <div class="rs-empty"><ion-spinner /></div>
+      } @else {
+        <div class="apps">
+          @for (app of apps(); track app.id) {
+            <a class="app" [routerLink]="['/developers', app.id]">
+              <app-avatar [src]="app.icon?.url" [label]="app.name" [size]="48" />
+              <span class="app-text">
+                <span class="rs-strong rs-ellipsis">{{ app.name }}</span>
+                <span class="rs-small rs-muted">{{ 'DEVELOPERS.USERS' | translate: { count: app.userCount } }}</span>
+              </span>
+              <span class="badge" [class]="app.status">{{ 'DEVELOPERS.STATUS.' + app.status.toUpperCase() | translate }}</span>
+            </a>
+          } @empty {
+            <p class="rs-muted">{{ 'DEVELOPERS.NO_APPS' | translate }}</p>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="rs-card block docs">
+      <h2>{{ 'DEVELOPERS.QUICKSTART' | translate }}</h2>
+
+      <h3>1. {{ 'DEVELOPERS.STEP_AUTHORIZE' | translate }}</h3>
+      <p class="rs-muted">{{ 'DEVELOPERS.STEP_AUTHORIZE_HINT' | translate }}</p>
+      <pre><code>{{ authorizeUrl }}?response_type=code&client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=public_profile%20user_posts&state=STATE&code_challenge=CHALLENGE&code_challenge_method=S256</code></pre>
+
+      <h3>2. {{ 'DEVELOPERS.STEP_TOKEN' | translate }}</h3>
+      <p class="rs-muted">{{ 'DEVELOPERS.STEP_TOKEN_HINT' | translate }}</p>
+      <pre><code>POST {{ apiUrl }}/oauth/token
+grant_type=authorization_code&code=CODE&redirect_uri=REDIRECT_URI&client_id=CLIENT_ID&client_secret=CLIENT_SECRET</code></pre>
+
+      <h3>3. {{ 'DEVELOPERS.STEP_CALL' | translate }}</h3>
+      <p class="rs-muted">{{ 'DEVELOPERS.STEP_CALL_HINT' | translate }}</p>
+      <pre><code>{{ example() }}</code></pre>
+
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="rs-small rs-muted">GraphQL</span>
+          <button type="button" class="copy" (click)="copy(graphqlUrl)">{{ graphqlUrl }} <ion-icon name="copy-outline" /></button>
+        </div>
+        <div class="endpoint">
+          <span class="rs-small rs-muted">{{ 'DEVELOPERS.REALTIME' | translate }}</span>
+          <button type="button" class="copy" (click)="copy(wsUrl())">{{ wsUrl() }} <ion-icon name="copy-outline" /></button>
+        </div>
+        <div class="endpoint">
+          <span class="rs-small rs-muted">{{ 'DEVELOPERS.DISCOVERY' | translate }}</span>
+          <button type="button" class="copy" (click)="copy(apiUrl + '/.well-known/oauth-authorization-server')">
+            {{ apiUrl }}/.well-known/oauth-authorization-server <ion-icon name="copy-outline" />
+          </button>
+        </div>
+      </div>
+
+      <h3>{{ 'DEVELOPERS.WEBHOOKS' | translate }}</h3>
+      <p class="rs-muted">{{ 'DEVELOPERS.WEBHOOKS_HINT' | translate }}</p>
+      <pre><code>X-Respet-Signature-256: sha256=HMAC_SHA256(webhook_secret, timestamp + "." + body)
+X-Respet-Timestamp: 1758100000</code></pre>
+    </section>
+
+    <section class="rs-card block">
+      <h2>{{ 'DEVELOPERS.PERMISSIONS' | translate }}</h2>
+      <div class="scopes">
+        @for (scope of scopes(); track scope.scope) {
+          <div class="scope">
+            <code>{{ scope.scope }}</code>
+            <span class="rs-strong">{{ scope.title }}</span>
+            <span class="rs-small rs-muted">{{ scope.description }}</span>
+            @if (scope.sensitive) {
+              <span class="sensitive">{{ 'DEVELOPERS.SENSITIVE' | translate }}</span>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</ion-content>

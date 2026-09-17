@@ -9,23 +9,23 @@ import {
 import { inject } from '@angular/core';
 import { type Observable, catchError, from, of, switchMap, throwError } from 'rxjs';
 
-import type { GraphqlError } from '../api/api-error';
 import { environment } from '../../../environments/environment';
+import type { GraphqlError } from '../api/api-error';
 import { AuthService, PUBLIC_OPERATIONS } from './auth.service';
 
 /**
  * Añade el token de acceso y renueva la sesión cuando caduca.
  *
  * Ante una respuesta que dice «hace falta sesión» pide un token nuevo y repite
- * la petición una sola vez. Al ser un access token de vida corta (quince
- * minutos), esto ocurre con normalidad mientras se usa la aplicación y debe
- * resultar invisible: sin este reintento, la sesión parecería cerrarse sola
- * cada cuarto de hora.
+ * la petición una sola vez. El token de acceso vive quince minutos, así que
+ * esto ocurre con normalidad mientras se usa la aplicación y debe resultar
+ * invisible: sin el reintento, la sesión parecería cerrarse sola cada cuarto de
+ * hora.
  *
- * Con GraphQL hay que mirar en dos sitios. Las subidas de archivos siguen
- * respondiendo 401, como antes; una operación del esquema, en cambio, responde
- * 200 con el fallo dentro de `errors[]`, porque el transporte funcionó: lo que
- * no valía era el token.
+ * Con GraphQL hay que mirar en dos sitios: una operación responde 200 con el
+ * fallo dentro de `errors[]`, porque el transporte funcionó y lo que no valía
+ * era el token; y un proxy o el propio servidor pueden cortar antes con un 401
+ * de toda la vida.
  */
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const auth = inject(AuthService);
@@ -46,17 +46,11 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       return of(event);
     }),
     catchError((error: unknown) => {
-      if (!(error instanceof HttpErrorResponse) || error.status !== 401) {
+      if (!(error instanceof HttpErrorResponse) || error.status !== 401 || isPublicOperation(request)) {
         return throwError(() => error);
       }
 
-      return retryWithFreshToken(request, next, auth, () =>
-        // `refreshAccessToken` ya ha cerrado la sesión; se propaga el 401 para
-        // que el guard de rutas lleve al inicio de sesión.
-        throwError(
-          () => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized', url: request.url }),
-        ),
-      );
+      return retryWithFreshToken(request, next, auth, () => throwError(() => error));
     }),
   );
 };
@@ -68,7 +62,19 @@ function retryWithFreshToken(
   onFailure: () => Observable<HttpEvent<unknown>>,
 ): Observable<HttpEvent<unknown>> {
   return from(auth.refreshAccessToken()).pipe(
-    switchMap((token) => (token ? next(withToken(request, token)) : onFailure())),
+    switchMap((token) => {
+      if (token) {
+        return next(withToken(request, token));
+      }
+
+      // La sesión ya no vale y `refreshAccessToken` la ha olvidado: se lleva
+      // a la pantalla de acceso en lugar de dejar una interfaz a medias.
+      if (!auth.isAuthenticated()) {
+        void auth.forgetSession();
+      }
+
+      return onFailure();
+    }),
   );
 }
 
@@ -90,18 +96,10 @@ function isApiRequest(url: string): boolean {
 function isExpiredSession(response: HttpResponse<unknown>): boolean {
   const body = response.body as { errors?: GraphqlError[] } | null;
 
-  return (
-    body?.errors?.some((error) => error.extensions?.statusCode === 401) === true
-  );
+  return body?.errors?.some((error) => error.extensions?.statusCode === 401) === true;
 }
 
-/**
- * Cierto para las operaciones que no dependen de la sesión.
- *
- * Entrar, darse de alta o renovar el token fallan por lo que fallan —una
- * contraseña equivocada, un refresh token ya usado—, y reintentarlas con un
- * token nuevo no arreglaría nada: sólo gastaría otra renovación.
- */
+/** Cierto para las operaciones que no dependen de la sesión. */
 function isPublicOperation(request: HttpRequest<unknown>): boolean {
   const body = request.body as { operationName?: unknown } | null;
 

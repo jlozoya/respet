@@ -1,0 +1,169 @@
+:host {
+  background: var(--rs-surface);
+  border-top: 1px solid var(--rs-divider);
+  display: block;
+  padding-bottom: var(--ion-safe-area-bottom, 0px);
+}
+
+.banner {
+  align-items: center;
+  border-bottom: 1px solid var(--rs-divider);
+  display: flex;
+  gap: 8px;
+  padding: 6px 8px 6px 16px;
+}
+
+.banner-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  font-size: 0.8125rem;
+  min-width: 0;
+}
+
+.previews {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 12px 0;
+}
+
+.preview {
+  border-radius: 10px;
+  flex: 0 0 64px;
+  height: 64px;
+  overflow: hidden;
+  position: relative;
+  width: 64px;
+}
+
+.preview img,
+.preview video {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.preview .file {
+  align-items: center;
+  background: var(--rs-surface-2);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.625rem;
+  gap: 2px;
+  height: 100%;
+  justify-content: center;
+  padding: 4px;
+}
+
+.preview .file ion-icon {
+  font-size: 22px;
+}
+
+.remove {
+  align-items: center;
+  background: rgb(0 0 0 / 60%);
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  width: 20px;
+}
+
+.bar {
+  align-items: flex-end;
+  display: flex;
+  gap: 2px;
+  padding: 8px;
+}
+
+.rs-icon-btn {
+  height: 36px;
+  width: 36px;
+}
+
+.accent {
+  color: var(--ion-color-primary);
+}
+
+.danger {
+  color: var(--ion-color-danger);
+}
+
+.like {
+  font-size: 1.4rem;
+}
+
+.field {
+  background: var(--rs-surface-2);
+  border-radius: 20px;
+  display: flex;
+  flex: 1 1 auto;
+  margin: 0 4px;
+  min-width: 0;
+  padding: 8px 14px;
+}
+
+textarea {
+  background: transparent;
+  border: 0;
+  color: var(--ion-text-color);
+  font: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  max-height: 120px;
+  outline: none;
+  resize: none;
+  width: 100%;
+}
+
+.recording {
+  align-items: center;
+}
+
+.wave {
+  align-items: center;
+  background: var(--ion-color-primary);
+  border-radius: 20px;
+  color: #fff;
+  display: flex;
+  flex: 1 1 auto;
+  font-weight: 600;
+  gap: 8px;
+  height: 36px;
+  margin: 0 6px;
+  padding: 0 14px;
+}
+
+.pulse {
+  animation: pulse 1s ease-in-out infinite;
+  background: #fff;
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+}
+
+.send {
+  background: var(--ion-color-primary);
+  color: #fff;
+}
+
+.read-only {
+  color: var(--rs-text-2);
+  font-size: 0.875rem;
+  margin: 0;
+  padding: 14px 16px;
+  text-align: center;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}

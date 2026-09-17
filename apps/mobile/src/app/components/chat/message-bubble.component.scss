@@ -1,0 +1,344 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  padding: 1px 12px;
+}
+
+:host(.first) {
+  padding-top: 8px;
+}
+
+.sender-name {
+  color: var(--rs-text-2);
+  font-size: 0.75rem;
+  margin: 0 0 2px 48px;
+}
+
+.row {
+  align-items: flex-end;
+  display: flex;
+  gap: 8px;
+  position: relative;
+}
+
+:host(.own) .row {
+  flex-direction: row-reverse;
+}
+
+.avatar-slot {
+  flex: 0 0 28px;
+}
+
+:host(.own) .avatar-slot {
+  display: none;
+}
+
+.stack {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  max-width: min(75%, 520px);
+  min-width: 0;
+}
+
+:host(.own) .stack {
+  align-items: flex-end;
+}
+
+.bubble {
+  background: var(--rs-bubble-peer);
+  border-radius: 18px;
+  color: var(--rs-bubble-peer-text);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  max-width: 100%;
+  padding: 8px 12px;
+}
+
+:host(.own) .bubble {
+  background: var(--rs-bubble-own);
+  color: var(--rs-bubble-own-text);
+}
+
+:host(.own) .bubble.text ::ng-deep .link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Las esquinas del lado de quien habla se aplanan dentro de un grupo de burbujas. */
+:host(:not(.own):not(.first)) .bubble {
+  border-top-left-radius: 4px;
+}
+
+:host(:not(.own):not(.last)) .bubble {
+  border-bottom-left-radius: 4px;
+}
+
+:host(.own:not(.first)) .bubble {
+  border-top-right-radius: 4px;
+}
+
+:host(.own:not(.last)) .bubble {
+  border-bottom-right-radius: 4px;
+}
+
+.bubble.deleted {
+  background: transparent !important;
+  border: 1px solid var(--rs-divider);
+  color: var(--rs-text-2) !important;
+  font-style: italic;
+}
+
+.jumbo {
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+.media {
+  border-radius: 18px;
+  margin-bottom: 2px;
+  width: min(320px, 70vw);
+}
+
+.audio {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.audio audio {
+  height: 36px;
+  max-width: 240px;
+}
+
+.file {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.file ion-icon {
+  flex: 0 0 auto;
+  font-size: 24px;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.quote {
+  background: var(--rs-surface-2);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8125rem;
+  margin-bottom: -10px;
+  max-width: 100%;
+  opacity: 0.85;
+  padding: 6px 12px 14px;
+}
+
+.quote-label {
+  align-items: center;
+  color: var(--rs-text-2);
+  display: flex;
+  gap: 4px;
+}
+
+.quote-body {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.story-ref {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.story-ref img {
+  border-radius: 12px;
+  height: 160px;
+  object-fit: cover;
+  width: 96px;
+}
+
+.story-text {
+  background: var(--rs-brand-gradient);
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 600;
+  padding: 16px 12px;
+}
+
+.shared-post {
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-divider);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+  overflow: hidden;
+  width: min(280px, 70vw);
+}
+
+.shared-post img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  width: 100%;
+}
+
+.shared-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+}
+
+.clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.reactions {
+  display: flex;
+  gap: 2px;
+  margin-top: -6px;
+  position: relative;
+  z-index: 1;
+}
+
+.reaction {
+  align-items: center;
+  background: var(--rs-surface);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: var(--rs-shadow-1);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8125rem;
+  gap: 2px;
+  padding: 1px 6px;
+}
+
+.reaction.mine {
+  box-shadow: 0 0 0 1.5px var(--ion-color-primary);
+}
+
+.tools {
+  align-items: center;
+  align-self: center;
+  display: flex;
+  opacity: 0;
+  position: relative;
+  transition: opacity 0.12s ease;
+}
+
+.row:hover .tools,
+.tools:focus-within {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .tools {
+    display: none;
+  }
+}
+
+.tool {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--rs-text-2);
+  cursor: pointer;
+  display: flex;
+  font-size: 18px;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.tool:hover {
+  background: var(--rs-hover);
+}
+
+.picker {
+  background: var(--rs-surface);
+  border-radius: 999px;
+  bottom: 34px;
+  box-shadow: var(--rs-shadow-2);
+  display: flex;
+  padding: 4px;
+  position: absolute;
+  z-index: 5;
+}
+
+:host(.own) .picker {
+  right: 0;
+}
+
+.picker button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 2px 4px;
+  transition: transform 0.12s ease;
+}
+
+.picker button:hover {
+  transform: scale(1.25);
+}
+
+.meta {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  padding: 0 4px;
+}
+
+:host(:not(.own)) .meta {
+  justify-content: flex-start;
+  padding-left: 40px;
+}
+
+.meta:empty {
+  display: none;
+}
+
+.status {
+  align-items: center;
+  color: var(--rs-text-2);
+  display: inline-flex;
+  font-size: 0.6875rem;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.status ion-spinner {
+  height: 12px;
+  width: 16px;
+}
+
+.status.failed {
+  color: var(--ion-color-danger);
+}
+
+.status.failed .rs-text-btn {
+  color: inherit;
+  font-size: inherit;
+}
+
+.seen {
+  margin-top: 2px;
+}

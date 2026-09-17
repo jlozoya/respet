@@ -156,13 +156,15 @@ async function main(): Promise<void> {
 
   try {
     // --- Cuentas ------------------------------------------------------------
+    // Los nombres de usuario van en minúsculas: son los que viajan en la
+    // dirección del perfil, y es lo que exige el alta de verdad.
     const gente = [
-      { email: 'admin@respet.test', name: 'Admin', firstName: 'Ana', lastName: 'Ruiz', role: 'admin' },
-      { email: 'supervisor@respet.test', name: 'Supervisor', firstName: 'Sara', lastName: 'Gil', role: 'supervisor' },
-      { email: 'repartidor@respet.test', name: 'Repartidor', firstName: 'Raúl', lastName: 'Mena', role: 'roundsman' },
-      { email: 'usuario@respet.test', name: 'Usuario', firstName: 'Uxía', lastName: 'Soto', role: 'user' },
-      { email: 'marta@respet.test', name: 'Marta', firstName: 'Marta', lastName: 'Bravo', role: 'user' },
-      { email: 'kike@respet.test', name: 'Kike', firstName: 'Enrique', lastName: 'Nava', role: 'user' },
+      { email: 'admin@respet.test', name: 'admin', firstName: 'Ana', lastName: 'Ruiz', role: 'admin' },
+      { email: 'supervisor@respet.test', name: 'supervisor', firstName: 'Sara', lastName: 'Gil', role: 'supervisor' },
+      { email: 'repartidor@respet.test', name: 'repartidor', firstName: 'Raúl', lastName: 'Mena', role: 'roundsman' },
+      { email: 'usuario@respet.test', name: 'usuario', firstName: 'Uxía', lastName: 'Soto', role: 'user' },
+      { email: 'marta@respet.test', name: 'marta', firstName: 'Marta', lastName: 'Bravo', role: 'user' },
+      { email: 'kike@respet.test', name: 'kike', firstName: 'Enrique', lastName: 'Nava', role: 'user' },
     ] as const;
 
     const ids = new Map<string, Id>();

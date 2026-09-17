@@ -1,0 +1,136 @@
+:host {
+  display: block;
+  flex: 0 0 auto;
+  z-index: 20;
+}
+
+.bar {
+  align-items: center;
+  background: var(--rs-surface);
+  box-shadow: var(--rs-shadow-1);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
+  height: var(--rs-topbar-height);
+  padding: 0 16px;
+  position: relative;
+}
+
+.left {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand {
+  flex: 0 0 auto;
+}
+
+.search {
+  max-width: 260px;
+}
+
+@media (max-width: 1259.98px) {
+  .search {
+    max-width: 200px;
+  }
+}
+
+.center {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+  justify-content: center;
+}
+
+.tab {
+  align-items: center;
+  border-bottom: 3px solid transparent;
+  color: var(--rs-text-2);
+  display: flex;
+  font-size: 26px;
+  justify-content: center;
+  margin-top: 3px;
+  position: relative;
+  width: clamp(72px, 8vw, 112px);
+}
+
+.tab::before {
+  border-radius: 8px;
+  bottom: 4px;
+  content: '';
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 4px;
+  transition: background-color 0.12s ease;
+}
+
+.tab:hover::before {
+  background: var(--rs-hover);
+}
+
+.tab .on {
+  display: none;
+}
+
+.tab.active {
+  border-bottom-color: var(--ion-color-primary);
+  color: var(--ion-color-primary);
+}
+
+.tab.active::before {
+  display: none;
+}
+
+.tab.active .on {
+  display: block;
+}
+
+.tab.active .off {
+  display: none;
+}
+
+.tab .rs-badge {
+  right: calc(50% - 26px);
+  top: 6px;
+}
+
+.right {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.account {
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.account:hover {
+  filter: brightness(0.92);
+}
+
+.menu-title {
+  font-size: 1.25rem;
+  padding: 4px 8px 8px;
+}
+
+.popover-list {
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+}
+
+.see-all {
+  border-top: 1px solid var(--rs-divider);
+  color: var(--ion-color-primary);
+  display: block;
+  font-weight: 600;
+  padding: 12px;
+  text-align: center;
+}

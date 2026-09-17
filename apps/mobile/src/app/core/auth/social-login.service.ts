@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { SocialLogin } from '@capgo/capacitor-social-login';
-import type { SocialLoginRequest, User } from '@respet/shared';
+import type { SocialLoginRequest } from '@respet/shared';
 
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth.service';
+import { AuthService, type LoginOutcome } from './auth.service';
 
 export type SocialProvider = SocialLoginRequest['provider'];
 
@@ -25,7 +25,13 @@ export class SocialLoginService {
 
   private initialized?: Promise<void>;
 
-  async signIn(provider: SocialProvider, lang?: string): Promise<User> {
+  /**
+   * Entra con un proveedor.
+   *
+   * Como con la contraseña, puede quedar pendiente el segundo paso si la
+   * cuenta tiene activa la verificación en dos pasos.
+   */
+  async signIn(provider: SocialProvider, lang?: string): Promise<LoginOutcome> {
     await this.initialize();
 
     const token = await this.requestToken(provider);

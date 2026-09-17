@@ -19,8 +19,8 @@ import type {
   Warehouse,
 } from '@respet/shared';
 
-import { ApiClientService } from './api-client.service';
 import {
+  MEDIA_FRAGMENTS,
   ORDER_FRAGMENTS,
   PAGE_META_FRAGMENTS,
   PAYMENT_FRAGMENTS,
@@ -64,10 +64,16 @@ const UPDATE_WAREHOUSE = gql(
 
 const DELETE_WAREHOUSE = `mutation DeleteWarehouse($id: ID!) { deleteWarehouse(id: $id) }`;
 
+const SET_WAREHOUSE_IMAGE = gql(
+  `mutation SetWarehouseImage($id: ID!, $file: Upload!) {
+    setWarehouseImage(id: $id, file: $file) { ...WarehouseFields }
+  }`,
+  ...WAREHOUSE_FRAGMENTS,
+);
+
 @Injectable({ providedIn: 'root' })
 export class WarehousesService {
   private readonly gql = inject(GraphqlClientService);
-  private readonly api = inject(ApiClientService);
 
   async list(
     query: { page?: number; perPage?: number; search?: string } = {},
@@ -104,8 +110,13 @@ export class WarehousesService {
     return updateWarehouse;
   }
 
-  setImage(id: string, file: Blob, filename?: string): Promise<Warehouse> {
-    return this.api.upload<Warehouse>(`/warehouses/${id}/media`, file, filename, 'PUT');
+  async setImage(id: string, file: Blob): Promise<Warehouse> {
+    const { setWarehouseImage } = await this.gql.request<{ setWarehouseImage: Warehouse }>(
+      SET_WAREHOUSE_IMAGE,
+      { id, file },
+    );
+
+    return setWarehouseImage;
   }
 
   async remove(id: string): Promise<void> {
@@ -145,6 +156,13 @@ const UPDATE_PRODUCT = gql(
   ...PRODUCT_FRAGMENTS,
 );
 
+const ADD_PRODUCT_MEDIA = gql(
+  `mutation AddProductMedia($id: ID!, $file: Upload!) {
+    addProductMedia(id: $id, file: $file) { ...MediaFields }
+  }`,
+  ...MEDIA_FRAGMENTS,
+);
+
 const REMOVE_PRODUCT_MEDIA = `
 mutation RemoveProductMedia($id: ID!, $mediaId: ID!) {
   removeProductMedia(id: $id, mediaId: $mediaId)
@@ -155,7 +173,6 @@ const DELETE_PRODUCT = `mutation DeleteProduct($id: ID!) { deleteProduct(id: $id
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
   private readonly gql = inject(GraphqlClientService);
-  private readonly api = inject(ApiClientService);
 
   async list(query: ProductListQuery = {}): Promise<Paginated<Product>> {
     const { products } = await this.gql.request<{ products: Paginated<Product> }>(PRODUCTS, {
@@ -188,8 +205,13 @@ export class ProductsService {
     return updateProduct;
   }
 
-  addImage(id: string, file: Blob, filename?: string): Promise<Media> {
-    return this.api.upload<Media>(`/products/${id}/media`, file, filename);
+  async addImage(id: string, file: Blob): Promise<Media> {
+    const { addProductMedia } = await this.gql.request<{ addProductMedia: Media }>(ADD_PRODUCT_MEDIA, {
+      id,
+      file,
+    });
+
+    return addProductMedia;
   }
 
   async removeImage(id: string, mediaId: string): Promise<void> {

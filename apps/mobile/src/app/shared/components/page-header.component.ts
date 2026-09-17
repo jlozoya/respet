@@ -1,51 +1,32 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IonBackButton } from '@ionic/angular/ion-back-button';
 import { IonButtons } from '@ionic/angular/ion-buttons';
 import { IonHeader } from '@ionic/angular/ion-header';
-import { IonMenuButton } from '@ionic/angular/ion-menu-button';
 import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AuthService } from '../../core/auth/auth.service';
-
 /**
- * Cabecera común de las páginas.
+ * Cabecera de las pantallas en el móvil.
  *
- * Las veintitantas pantallas repetían el mismo bloque de `ion-header` con el
- * botón de menú y el título traducido; aquí queda en un solo sitio, y con
- * `backTo` puede mostrar en su lugar el botón de volver.
+ * En el escritorio manda la barra superior común y esta cabecera se esconde
+ * —salvo con `always`—; en el móvil cada pantalla lleva la suya, con el botón
+ * de volver y sus propias acciones a la derecha, como en Instagram.
  */
 @Component({
   selector: 'app-page-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton, IonBackButton],
+  imports: [TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton],
   template: `
-    <ion-header>
-      <ion-toolbar color="dark-accent">
-        <ion-buttons slot="start">
-          @if (backTo(); as target) {
-            <ion-back-button color="primary" [defaultHref]="target" />
-          } @else if (isAuthenticated()) {
-<!--
-              Con autoHide el botón se esconde solo cuando cree que no hay menú
-              que abrir, y esa cuenta la hace al nacer, antes de que el panel
-              lateral se haya registrado: el resultado era una cabecera sin
-              botón en el móvil. Quien lo esconde ahora es una regla de
-              global.scss, atenta a si el panel está fijo a la vista.
-            -->
-            <ion-menu-button color="primary" [autoHide]="false" />
-          } @else {
-            <!--
-              Sin sesión sólo se pueden leer la presentación, el quiénes somos
-              y los textos legales; de todos ellos se vuelve al mismo sitio,
-              que es la puerta de entrada.
-            -->
-            <ion-back-button color="primary" defaultHref="/login" />
-          }
-        </ion-buttons>
+    <ion-header [class.rs-mobile-only]="!always()">
+      <ion-toolbar>
+        @if (backTo(); as target) {
+          <ion-buttons slot="start">
+            <ion-back-button [defaultHref]="target" text="" />
+          </ion-buttons>
+        }
 
-        <ion-title color="medium">{{ title() | translate }}</ion-title>
+        <ion-title>{{ translateTitle() ? (title() | translate) : title() }}</ion-title>
 
         <ion-buttons slot="end">
           <ng-content select="[slot=end]" />
@@ -57,17 +38,11 @@ import { AuthService } from '../../core/auth/auth.service';
   `,
 })
 export class PageHeaderComponent {
-  /**
-   * Cierto cuando hay menú que abrir.
-   *
-   * Sin sesión el menú ni siquiera se monta, así que el botón abriría un cajón
-   * que no existe: en las pocas pantallas que se pueden ver sin cuenta —los
-   * textos legales, la presentación— la cabecera se queda sin él.
-   */
-  readonly isAuthenticated = inject(AuthService).isAuthenticated;
-
-  /** Clave de traducción del título. */
+  /** Clave de traducción del título, o el título tal cual con `translateTitle` en falso. */
   readonly title = input.required<string>();
-  /** Ruta a la que vuelve el botón de retroceso; sin ella se muestra el menú. */
-  readonly backTo = input<string | null>(null);
+  readonly translateTitle = input(true);
+  /** Adónde vuelve el botón de retroceso si no hay historial. Nulo, sin botón. */
+  readonly backTo = input<string | null>('/');
+  /** Visible también en el escritorio. */
+  readonly always = input(false);
 }

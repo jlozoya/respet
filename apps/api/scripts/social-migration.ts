@@ -69,7 +69,23 @@ async function normalizeUsers(db: Db, log: (message: string) => void): Promise<v
     { $set: { showOnlineStatus: true, storyReplyPolicy: 'everyone', loginAlerts: true } },
   );
 
-  log(`  cuentas: ${result.modifiedCount} con los campos nuevos`);
+  // El nombre de usuario viaja en la dirección del perfil, y desde el alta
+  // nueva sólo admite minúsculas. Los de antes se pasan a minúsculas salvo
+  // que ya exista otra cuenta con ese nombre, en cuyo caso se deja como está:
+  // renombrar a alguien sin avisarle sería peor que la inconsistencia.
+  let renamed = 0;
+
+  for await (const user of users.find({ name: /[A-ZÁÉÍÓÚÜÑ]/ }).project({ name: 1 })) {
+    const lowered = String(user['name']).toLowerCase();
+    const taken = await users.findOne({ _id: { $ne: user._id }, name: lowered }, { projection: { _id: 1 } });
+
+    if (!taken) {
+      await users.updateOne({ _id: user._id }, { $set: { name: lowered } });
+      renamed++;
+    }
+  }
+
+  log(`  cuentas: ${result.modifiedCount} con los campos nuevos, ${renamed} nombres en minúsculas`);
 }
 
 /**

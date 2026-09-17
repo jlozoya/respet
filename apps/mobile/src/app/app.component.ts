@@ -1,81 +1,118 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
 import { App } from '@capacitor/app';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
-// Ionic 9 no trae un barril de componentes: cada uno se importa de su propia
-// entrada, de modo que al paquete final sólo llega lo que se usa.
 import { IonApp } from '@ionic/angular/ion-app';
-import { IonContent } from '@ionic/angular/ion-content';
-import { IonHeader } from '@ionic/angular/ion-header';
-import { IonMenu } from '@ionic/angular/ion-menu';
-import { IonMenuToggle } from '@ionic/angular/ion-menu-toggle';
 import { IonRouterOutlet } from '@ionic/angular/ion-router-outlet';
-import { IonSplitPane } from '@ionic/angular/ion-split-pane';
-import { IonTitle } from '@ionic/angular/ion-title';
-import { IonToolbar } from '@ionic/angular/ion-toolbar';
-import { MenuController } from '@ionic/angular/menu-controller';
 import { Platform } from '@ionic/angular/platform';
-import { TranslatePipe } from '@ngx-translate/core';
+import { filter } from 'rxjs';
 
-import { ChatDockComponent } from './components/chat/chat-dock/chat-dock.component';
-import { NavRailComponent } from './components/shell/nav-rail/nav-rail.component';
-import { ChatService } from './core/api/chat.service';
+import { ChatDockComponent } from './components/chat/chat-dock.component';
+import { TabBarComponent } from './components/shell/tab-bar.component';
+import { TopBarComponent } from './components/shell/top-bar.component';
 import { AuthService } from './core/auth/auth.service';
 import { registerAppIcons } from './core/ui/icons';
+import { NavigationService } from './core/ui/navigation.service';
 
 /**
- * El armazón de la aplicación: el menú y el hueco donde vive cada pantalla.
+ * Pantallas que ocupan todo: sin barras alrededor.
  *
- * De la navegación se ocupa `NavRailComponent`, que es la misma tanto si el
- * panel está fijo al lado del contenido como si se abre por encima. Aquí
- * quedan sólo las dos preferencias que no son sitios a los que ir —tema e
- * idioma— y los ajustes de la aplicación nativa.
+ * El hilo de una conversación en el móvil necesita la caja de escribir pegada
+ * abajo, los directos y la pantalla de autorizar una aplicación van a pantalla
+ * completa.
+ */
+const IMMERSIVE = [/^\/messages\/[^/]+/, /^\/live\/.+/, /^\/oauth\//, /^\/stories\/view/];
+
+/**
+ * El armazón: la barra superior en el escritorio, la de pestañas en el móvil y
+ * el muelle del chat.
+ *
+ * También decide cuándo arranca lo que depende de la sesión —la conexión en
+ * tiempo real, el chat, los avisos—: en cuanto hay usuario, y se suelta en
+ * cuanto deja de haberlo, sea porque salió o porque la sesión se cerró desde
+ * otro sitio.
  */
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslatePipe,
-    ChatDockComponent,
-    NavRailComponent,
-    IonApp,
-    IonContent,
-    IonHeader,
-    IonMenu,
-    IonMenuToggle,
-    IonRouterOutlet,
-    IonSplitPane,
-    IonTitle,
-    IonToolbar,
-  ],
+  imports: [IonApp, IonRouterOutlet, TopBarComponent, TabBarComponent, ChatDockComponent],
+  template: `
+    <ion-app>
+      @if (isAuthenticated()) {
+        <app-top-bar class="rs-desktop-only" />
+      }
+
+      <div class="body">
+        <ion-router-outlet />
+      </div>
+
+      @if (isAuthenticated() && !immersive()) {
+        <app-tab-bar class="rs-mobile-only" />
+      }
+
+      @if (isAuthenticated()) {
+        <app-chat-dock />
+      }
+    </ion-app>
+  `,
+  styles: `
+    ion-app {
+      justify-content: flex-start;
+    }
+
+    .body {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+    }
+  `,
 })
 export class AppComponent {
   private readonly auth = inject(AuthService);
-  private readonly chat = inject(ChatService);
-  private readonly menu = inject(MenuController);
+  private readonly navigation = inject(NavigationService);
   private readonly platform = inject(Platform);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isAuthenticated = this.auth.isAuthenticated;
+  private readonly url = signal(this.router.url);
+  readonly immersive = computed(() => IMMERSIVE.some((pattern) => pattern.test(this.url())));
+
+  private sessionStarted = false;
+
   constructor() {
     registerAppIcons();
     void this.initializeNativeShell();
 
-    // Con la sesión ya abierta se conecta el chat, para que el contador de
-    // mensajes sin leer aparezca en el menú sin tener que entrar en él.
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((event) => this.url.set(event.urlAfterRedirects));
+
     effect(() => {
-      if (this.isAuthenticated()) {
-        void this.chat.start();
-      }
+      const authenticated = this.isAuthenticated();
+
+      untracked(() => {
+        if (authenticated && !this.sessionStarted) {
+          this.sessionStarted = true;
+          this.navigation.startSession();
+        } else if (!authenticated && this.sessionStarted) {
+          this.sessionStarted = false;
+          this.navigation.stopSession();
+        }
+      });
     });
   }
 
   /**
    * Ajustes que sólo tienen sentido dentro de la app nativa.
    *
-   * En el navegador estos plugins no hacen nada, pero conviene envolverlos
-   * igualmente: un fallo aquí no debe impedir que la aplicación arranque.
+   * En el navegador estos plugins no hacen nada, pero conviene envolverlos: un
+   * fallo aquí no debe impedir que la aplicación arranque.
    */
   private async initializeNativeShell(): Promise<void> {
     await this.platform.ready();
@@ -88,8 +125,6 @@ export class AppComponent {
       await StatusBar.setStyle({ style: Style.Default });
       await SplashScreen.hide();
 
-      // El botón físico de retroceso de Android debe cerrar la aplicación sólo
-      // cuando ya no queda nada a lo que volver.
       void App.addListener('backButton', ({ canGoBack }) => {
         if (canGoBack) {
           window.history.back();

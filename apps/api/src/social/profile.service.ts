@@ -66,10 +66,17 @@ export class ProfileService {
     return profile;
   }
 
-  /** Por nombre de usuario, que es lo que va en la dirección del perfil. */
+  /**
+   * Por nombre de usuario, que es lo que va en la dirección del perfil.
+   *
+   * Sin distinguir mayúsculas: una dirección compartida por WhatsApp llega con
+   * la primera letra en mayúscula más veces de las que parece, y las cuentas
+   * creadas antes de que el nombre se exigiera en minúsculas también las
+   * tienen.
+   */
   async byName(name: string, viewerId: string | null): Promise<PublicProfile> {
     const doc = await this.users
-      .findOne({ name: name.toLowerCase() })
+      .findOne({ name: new RegExp(`^${escapeRegex(name.trim())}$`, 'i') })
       .select(PROFILE_FIELDS)
       .populate(['avatar', 'cover'])
       .lean();
@@ -240,4 +247,9 @@ export class ProfileService {
       '$followeeId',
     );
   }
+}
+
+/** Escapa lo que en una expresión regular significaría otra cosa. */
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 }

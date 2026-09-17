@@ -1,0 +1,295 @@
+.header {
+  background: var(--rs-surface);
+  box-shadow: var(--rs-shadow-1);
+}
+
+.header-inner {
+  margin: 0 auto;
+  max-width: 1040px;
+}
+
+.cover {
+  aspect-ratio: 16 / 6;
+  background: linear-gradient(135deg, #f7931e33 0%, #f05a2240 45%, #e1306c40 100%), var(--rs-surface-2);
+  background-position: center;
+  background-size: cover;
+  max-height: 400px;
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 1040px) {
+  .cover {
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+.cover-button {
+  bottom: 16px;
+  position: absolute;
+  right: 16px;
+}
+
+.identity {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 32px 16px;
+}
+
+.avatar-wrap {
+  margin-top: -84px;
+  position: relative;
+}
+
+.avatar-button {
+  background: var(--rs-surface);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.avatar.small {
+  display: none;
+}
+
+.camera {
+  bottom: 12px;
+  position: absolute;
+  right: 8px;
+}
+
+.online {
+  background: var(--rs-online);
+  border: 4px solid var(--rs-surface);
+  border-radius: 50%;
+  bottom: 16px;
+  height: 26px;
+  position: absolute;
+  right: 16px;
+  width: 26px;
+}
+
+.names {
+  display: flex;
+  flex: 1 1 280px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-bottom: 4px;
+}
+
+h1 {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  gap: 6px;
+}
+
+.verified {
+  color: #1877f2;
+  font-size: 1.5rem;
+}
+
+.handle {
+  color: var(--rs-text-2);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 4px;
+}
+
+.stats button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+}
+
+.stats button:hover {
+  text-decoration: underline;
+}
+
+.presence {
+  color: var(--rs-online);
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.about {
+  border-top: 1px solid var(--rs-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 32px;
+  padding: 12px 0;
+}
+
+.website {
+  align-items: center;
+  color: var(--ion-color-primary);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.highlights {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 32px 16px;
+  scrollbar-width: none;
+}
+
+.highlight {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 80px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+}
+
+.highlight-cover {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border: 3px solid var(--rs-surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--rs-divider);
+  display: flex;
+  font-size: 32px;
+  height: 72px;
+  justify-content: center;
+  overflow: hidden;
+  width: 72px;
+}
+
+.highlight-cover img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.highlight-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabs {
+  border-bottom: 0;
+  border-top: 1px solid var(--rs-divider);
+  margin: 0 32px;
+}
+
+.tabs .rs-tab {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.body {
+  margin: 16px auto 48px;
+  max-width: 680px;
+}
+
+@media (max-width: 767.98px) {
+  .cover {
+    aspect-ratio: 16 / 7;
+  }
+
+  .identity {
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px 12px;
+    text-align: center;
+  }
+
+  .avatar-wrap {
+    margin-top: -60px;
+  }
+
+  .avatar.big {
+    display: none;
+  }
+
+  .avatar.small {
+    display: inline-flex;
+  }
+
+  .camera {
+    bottom: 4px;
+    height: 34px;
+    right: 0;
+    width: 34px;
+  }
+
+  .online {
+    bottom: 8px;
+    height: 20px;
+    right: 8px;
+    width: 20px;
+  }
+
+  .names {
+    align-items: center;
+    flex-basis: auto;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    justify-content: center;
+  }
+
+  .stats {
+    justify-content: center;
+  }
+
+  .buttons {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .buttons > * {
+    flex: 1 1 0;
+  }
+
+  .about,
+  .tabs {
+    margin: 0 16px;
+  }
+
+  .highlights {
+    padding: 8px 16px 12px;
+  }
+
+  .tabs .rs-tab {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .body {
+    margin-top: 8px;
+  }
+}

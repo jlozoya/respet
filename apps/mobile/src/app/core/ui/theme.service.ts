@@ -12,16 +12,16 @@ export const ThemePreference = {
 
 export type ThemePreference = (typeof ThemePreference)[keyof typeof ThemePreference];
 
-/** Clase que activa la paleta clara; sin ella queda la oscura, que es la base. */
-const LIGHT_CLASS = 'ion-palette-light';
+/** Clase que activa la paleta oscura; sin ella queda la clara, que es la base. */
+const DARK_CLASS = 'ion-palette-dark';
 
 /**
  * Tema de la interfaz.
  *
- * El oscuro es el de partida, así que la hoja de estilos lo define en `:root`
- * y el claro se activa añadiendo una clase. Hacerlo en ese orden —y no al
- * revés, como sugiere Ionic— evita el destello blanco que se vería mientras
- * arranca la aplicación.
+ * El claro es el de partida, como en Facebook e Instagram: la hoja de estilos
+ * lo define en `:root` y el oscuro se activa añadiendo una clase. Para que no
+ * se vea un destello blanco al arrancar con el oscuro, `index.html` pone la
+ * clase antes de que Angular empiece, leyendo la misma preferencia guardada.
  *
  * La opción «seguir al sistema» escucha `prefers-color-scheme`, de modo que
  * cambiar el tema del dispositivo se refleja al momento sin reiniciar.
@@ -30,8 +30,8 @@ const LIGHT_CLASS = 'ion-palette-light';
 export class ThemeService {
   private readonly storage = inject(StorageService);
 
-  private readonly preferenceSignal = signal<ThemePreference>(ThemePreference.Dark);
-  private readonly systemPrefersDark = signal(true);
+  private readonly preferenceSignal = signal<ThemePreference>(ThemePreference.System);
+  private readonly systemPrefersDark = signal(false);
 
   readonly preference = this.preferenceSignal.asReadonly();
 
@@ -47,8 +47,8 @@ export class ThemeService {
   });
 
   readonly options = [
-    { value: ThemePreference.Dark, label: 'THEME.DARK', icon: 'moon-outline' },
     { value: ThemePreference.Light, label: 'THEME.LIGHT', icon: 'sunny-outline' },
+    { value: ThemePreference.Dark, label: 'THEME.DARK', icon: 'moon-outline' },
     { value: ThemePreference.System, label: 'THEME.SYSTEM', icon: 'phone-portrait-outline' },
   ];
 
@@ -60,7 +60,7 @@ export class ThemeService {
 
     const stored = await this.storage.get<string>(StorageKey.Theme);
 
-    this.preferenceSignal.set(isPreference(stored) ? stored : ThemePreference.Dark);
+    this.preferenceSignal.set(isPreference(stored) ? stored : ThemePreference.System);
     this.apply();
   }
 
@@ -78,7 +78,7 @@ export class ThemeService {
   private apply(): void {
     const dark = this.isDark();
 
-    document.documentElement.classList.toggle(LIGHT_CLASS, !dark);
+    document.documentElement.classList.toggle(DARK_CLASS, dark);
     // `color-scheme` hace que el navegador pinte con el tema correcto las
     // partes que no controlamos: barras de desplazamiento y controles nativos.
     document.documentElement.style.colorScheme = dark ? 'dark' : 'light';

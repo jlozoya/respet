@@ -50,5 +50,5 @@ export function runtimeEnvironment(): RuntimeEnvironment {
 
   return Object.fromEntries(
     Object.entries(raw).filter(([, value]) => typeof value === 'string' && value.length > 0),
-  ) as RuntimeEnvironment;
+  );
 }

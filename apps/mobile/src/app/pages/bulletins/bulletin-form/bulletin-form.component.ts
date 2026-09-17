@@ -117,7 +117,7 @@ export class BulletinFormComponent {
       const image = this.pendingImage();
 
       if (image) {
-        result = await this.bulletins.setImage(result.id, image, 'bulletin.webp');
+        result = await this.bulletins.setImage(result.id, image);
         this.pendingImage.set(null);
       }
 

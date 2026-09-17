@@ -11,11 +11,24 @@ import { Preferences } from '@capacitor/preferences';
 export const StorageKey = {
   AccessToken: 'respet.accessToken',
   RefreshToken: 'respet.refreshToken',
+  SessionId: 'respet.sessionId',
   User: 'respet.user',
+  /**
+   * El token del dispositivo de confianza de cada cuenta, por correo.
+   *
+   * Sobrevive al cierre de sesión a propósito: es justo lo que evita que se
+   * vuelva a pedir el código al entrar otra vez en este dispositivo.
+   */
+  TrustedDevices: 'respet.trustedDevices',
   Language: 'respet.language',
   Theme: 'respet.theme',
   HasSeenTutorial: 'respet.hasSeenTutorial',
   CartOrderId: 'respet.cartOrderId',
+  /** Mensajes del chat que aún no han llegado al servidor. */
+  ChatOutbox: 'respet.chatOutbox',
+  /** Borradores de lo que se estaba escribiendo en cada conversación. */
+  ChatDrafts: 'respet.chatDrafts',
+  RecentSearches: 'respet.recentSearches',
 } as const;
 
 export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey];
@@ -23,11 +36,9 @@ export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey];
 /**
  * Almacenamiento persistente del dispositivo.
  *
- * Sustituye a `@ionic/storage`, que en el proyecto anterior arrastraba
- * IndexedDB y SQLite sólo para guardar un puñado de valores. `Preferences` de
- * Capacitor usa el almacén nativo de cada plataforma —`SharedPreferences` en
- * Android, `UserDefaults` en iOS y `localStorage` en la web— sin dependencias
- * extra.
+ * `Preferences` de Capacitor usa el almacén nativo de cada plataforma
+ * —`SharedPreferences` en Android, `UserDefaults` en iOS y `localStorage` en la
+ * web— sin dependencias extra.
  *
  * Todo se serializa a JSON, así que los valores deben ser serializables.
  */
@@ -70,8 +81,11 @@ export class StorageService {
     await Promise.all([
       this.remove(StorageKey.AccessToken),
       this.remove(StorageKey.RefreshToken),
+      this.remove(StorageKey.SessionId),
       this.remove(StorageKey.User),
       this.remove(StorageKey.CartOrderId),
+      this.remove(StorageKey.ChatOutbox),
+      this.remove(StorageKey.ChatDrafts),
     ]);
   }
 }

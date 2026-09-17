@@ -1,13 +1,13 @@
 /*
  * Estilos globales de Respet.
  *
- * Aquí van sólo tres cosas: los estilos base de Ionic, las tipografías y un
- * puñado de utilidades que se repetían en casi todas las pantallas —estados
- * vacíos, esqueletos de carga y el ajuste de tarjetas—. Todo lo demás vive en
- * el componente que lo usa.
+ * Además de lo imprescindible de Ionic, aquí vive el pequeño sistema de diseño
+ * que comparten todas las pantallas: tarjetas, avatares, botones grises,
+ * listas con avatar, cuadrículas de fotos. Son clases `rs-*` en lugar de estilos
+ * de cada componente porque se repiten en decenas de sitios, y Angular pone un
+ * tope al tamaño de la hoja de cada componente.
  */
 
-/* Ionic: lo imprescindible para que sus componentes funcionen. */
 @import '@ionic/angular/css/core.css';
 
 @import '@ionic/angular/css/normalize.css';
@@ -21,161 +21,518 @@
 @import '@ionic/angular/css/text-transformation.css';
 @import '@ionic/angular/css/flex-utils.css';
 
-/*
- * Tipografías.
- *
- * `font-display: swap` deja que el texto se lea con la tipografía del sistema
- * mientras se descarga la propia, en lugar de dejar huecos en blanco.
- */
-@font-face {
-  font-family: 'Eczar';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./assets/fonts/eczar/Eczar-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Eczar';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('./assets/fonts/eczar/Eczar-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Eczar';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('./assets/fonts/eczar/Eczar-ExtraBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: italic;
-  font-weight: 300;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-LightItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Italic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Roboto Condensed';
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url('./assets/fonts/roboto-condensed/RobotoCondensed-BoldItalic.ttf') format('truetype');
-}
-
 /* --- Base ----------------------------------------------------------------- */
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.3333;
+}
 
 h1,
 h2,
-h3 {
-  font-family: var(--respet-font-display);
+h3,
+h4 {
+  font-weight: 700;
   letter-spacing: -0.01em;
+  margin: 0;
 }
 
-/*
- * Ionic pinta un borde de foco sólo al navegar con teclado. Se refuerza para
- * que se vea también sobre las superficies oscuras.
- */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
 :focus-visible {
   outline: 2px solid var(--ion-color-primary);
   outline-offset: 2px;
 }
 
-/* --- Tarjetas ------------------------------------------------------------- */
-
-ion-card {
-  border-radius: var(--respet-radius-md);
-  box-shadow: var(--respet-shadow);
-  margin-inline: var(--respet-space-sm);
+ion-content {
+  --background: var(--ion-background-color);
 }
 
-ion-card img {
-  display: block;
+ion-toolbar {
+  --border-width: 0;
+  --min-height: var(--rs-topbar-height);
+}
+
+ion-header.header-md {
+  box-shadow: var(--rs-shadow-1);
+}
+
+ion-header ion-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* Un campo relleno no es un logro: sin el verde de «válido». */
+ion-input.ion-valid,
+ion-select.ion-valid,
+ion-textarea.ion-valid {
+  --highlight-color-valid: var(--ion-color-step-300, #b3b3b3);
+}
+
+/*
+  Chrome pinta los campos autocompletados con un azul propio que no atiende a
+  `background-color`: sólo una sombra interior que cubra el campo lo tapa.
+*/
+input.native-input:-webkit-autofill,
+input.native-input:-webkit-autofill:hover,
+input.native-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100vh var(--rs-surface) inset;
+  -webkit-text-fill-color: var(--ion-text-color);
+  caret-color: var(--ion-text-color);
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/* --- Rejilla del armazón -------------------------------------------------- */
+
+/* Lo que sólo se ve en el escritorio, o sólo en el móvil. */
+@media (max-width: 991.98px) {
+  .rs-desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .rs-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Una columna centrada, del ancho de un muro. */
+.rs-container {
+  margin: 0 auto;
+  max-width: 680px;
+  padding: var(--rs-space-4) 0 calc(var(--rs-space-5) * 2);
   width: 100%;
 }
 
-/* --- Utilidades ----------------------------------------------------------- */
+.rs-container.wide {
+  max-width: 960px;
+}
 
-/*
- * Estado vacío. Lo usan el muro, los avisos, el catálogo y los pedidos, que
- * repetían el mismo párrafo centrado en gris.
- */
-.respet-empty {
+.rs-container.narrow {
+  max-width: 560px;
+}
+
+@media (max-width: 991.98px) {
+  .rs-container {
+    padding-top: var(--rs-space-2);
+  }
+}
+
+/* --- Tarjetas ------------------------------------------------------------- */
+
+.rs-card {
+  background: var(--rs-surface);
+  border-radius: var(--rs-radius-sm);
+  box-shadow: var(--rs-shadow-1);
+  margin-bottom: var(--rs-space-4);
+}
+
+@media (max-width: 679.98px) {
+  /* En el móvil, de borde a borde, como en las aplicaciones. */
+  .rs-card {
+    border-radius: 0;
+    margin-bottom: var(--rs-space-2);
+  }
+}
+
+.rs-card-body {
+  padding: var(--rs-space-3) var(--rs-space-4);
+}
+
+.rs-card-title {
   align-items: center;
-  color: var(--ion-color-medium);
+  display: flex;
+  font-size: 1.05rem;
+  font-weight: 700;
+  gap: var(--rs-space-2);
+  justify-content: space-between;
+  padding: var(--rs-space-3) var(--rs-space-4) var(--rs-space-1);
+}
+
+.rs-card-title a,
+.rs-link {
+  color: var(--ion-color-primary);
+  font-size: 0.93rem;
+  font-weight: 500;
+}
+
+.rs-divider {
+  background: var(--rs-divider);
+  border: 0;
+  height: 1px;
+  margin: 0 var(--rs-space-4);
+}
+
+/* --- Texto ---------------------------------------------------------------- */
+
+.rs-muted {
+  color: var(--rs-text-2);
+}
+
+.rs-small {
+  font-size: 0.8125rem;
+}
+
+.rs-strong {
+  font-weight: 600;
+}
+
+.rs-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-section-title {
+  color: var(--rs-text-2);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  padding: var(--rs-space-3) var(--rs-space-2) var(--rs-space-2);
+}
+
+/* --- Avatares ------------------------------------------------------------- */
+
+.rs-avatar {
+  --size: 40px;
+
+  background: var(--rs-surface-3);
+  border-radius: 50%;
+  display: block;
+  flex: 0 0 var(--size);
+  height: var(--size);
+  object-fit: cover;
+  overflow: hidden;
+  width: var(--size);
+}
+
+/* --- Botones -------------------------------------------------------------- */
+
+/* El botón gris de Facebook: «Mensaje», «Editar perfil», «Cancelar». */
+ion-button.rs-soft {
+  --background: var(--rs-surface-2);
+  --background-hover: var(--rs-surface-3);
+  --background-activated: var(--rs-surface-3);
+  --color: var(--ion-text-color);
+  --box-shadow: none;
+}
+
+/* El destacado suave: fondo del acento y texto del acento. */
+ion-button.rs-tinted {
+  --background: var(--rs-accent-soft);
+  --background-hover: var(--rs-accent-soft);
+  --color: var(--ion-color-primary);
+  --box-shadow: none;
+}
+
+ion-button {
+  --border-radius: var(--rs-radius-sm);
+  --box-shadow: none;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Botón redondo con icono, como los de la barra superior de Facebook. */
+.rs-icon-btn {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border: 0;
+  border-radius: 50%;
+  color: var(--ion-text-color);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  height: 40px;
+  justify-content: center;
+  position: relative;
+  transition: background-color 0.15s ease;
+  width: 40px;
+}
+
+.rs-icon-btn:hover {
+  background: var(--rs-surface-3);
+}
+
+.rs-icon-btn.active {
+  background: var(--rs-accent-soft);
+  color: var(--ion-color-primary);
+}
+
+.rs-icon-btn.plain {
+  background: transparent;
+}
+
+.rs-icon-btn.plain:hover {
+  background: var(--rs-hover);
+}
+
+/* Distintivo con número, arriba a la derecha de un icono. */
+.rs-badge {
+  align-items: center;
+  background: var(--ion-color-danger);
+  border: 2px solid var(--rs-surface);
+  border-radius: var(--rs-radius-pill);
+  color: #fff;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  height: 19px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 19px;
+  padding: 0 4px;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+}
+
+/* Botón sin forma, del tamaño del texto. */
+.rs-text-btn {
+  background: none;
+  border: 0;
+  color: var(--rs-text-2);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0;
+}
+
+.rs-text-btn:hover {
+  text-decoration: underline;
+}
+
+.anchor-button {
+  background: none;
+  border: 0;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* --- Filas con avatar ----------------------------------------------------- */
+
+.rs-row {
+  align-items: center;
+  border-radius: var(--rs-radius-sm);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: var(--rs-space-3);
+  min-height: 52px;
+  padding: var(--rs-space-2);
+  text-align: start;
+  transition: background-color 0.12s ease;
+  width: 100%;
+}
+
+button.rs-row {
+  background: none;
+  border: 0;
+}
+
+.rs-row:hover,
+.rs-row.active {
+  background: var(--rs-hover);
+}
+
+.rs-row-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rs-row-text .title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-row-text .subtitle {
+  color: var(--rs-text-2);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Icono redondo de color, para los atajos del menú. */
+.rs-row-icon {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border-radius: 50%;
+  color: var(--ion-text-color);
+  display: flex;
+  flex: 0 0 36px;
+  font-size: 20px;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+/* --- Píldoras y campos ---------------------------------------------------- */
+
+.rs-pill-input {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border-radius: var(--rs-radius-pill);
+  color: var(--rs-text-2);
+  display: flex;
+  gap: var(--rs-space-2);
+  height: 40px;
+  padding: 0 var(--rs-space-3);
+}
+
+.rs-pill-input input {
+  background: transparent;
+  border: 0;
+  color: var(--ion-text-color);
+  flex: 1 1 auto;
+  font-size: 0.9375rem;
+  min-width: 0;
+  outline: none;
+}
+
+.rs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rs-space-2);
+}
+
+.rs-chip {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border: 0;
+  border-radius: var(--rs-radius-pill);
+  color: var(--ion-text-color);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--rs-space-3);
+  white-space: nowrap;
+}
+
+.rs-chip.active {
+  background: var(--rs-accent-soft);
+  color: var(--ion-color-primary);
+}
+
+/* Pestañas subrayadas, como las del perfil. */
+.rs-tabs {
+  border-bottom: 1px solid var(--rs-divider);
+  display: flex;
+  gap: var(--rs-space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rs-tab {
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  color: var(--rs-text-2);
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: var(--rs-space-3) var(--rs-space-4);
+  white-space: nowrap;
+}
+
+.rs-tab.active {
+  border-bottom-color: var(--ion-color-primary);
+  color: var(--ion-color-primary);
+}
+
+/* --- Cuadrícula de fotos, la de Instagram --------------------------------- */
+
+.rs-grid {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rs-grid-tile {
+  aspect-ratio: 1;
+  background: var(--rs-skeleton);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.rs-grid-tile img,
+.rs-grid-tile video {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+  width: 100%;
+}
+
+.rs-grid-tile:hover img {
+  transform: scale(1.03);
+}
+
+/* --- Estados -------------------------------------------------------------- */
+
+.rs-empty {
+  align-items: center;
+  color: var(--rs-text-2);
   display: flex;
   flex-direction: column;
-  gap: var(--respet-space-sm);
-  padding: var(--respet-space-lg) var(--respet-space-md);
+  gap: var(--rs-space-2);
+  padding: calc(var(--rs-space-5) * 2) var(--rs-space-4);
   text-align: center;
 }
 
-.respet-empty ion-icon {
-  font-size: 3rem;
-  opacity: 0.5;
+.rs-empty ion-icon {
+  font-size: 56px;
+  opacity: 0.55;
 }
 
-/*
- * Esqueleto de carga: un bloque que late mientras llegan los datos. Se prefiere
- * a un indicador giratorio porque anticipa la forma de lo que va a aparecer, y
- * la pantalla no da un salto al rellenarse.
- */
-.respet-skeleton {
-  animation: respet-pulse 1.4s ease-in-out infinite;
-  background: var(--respet-skeleton);
-  border-radius: var(--respet-radius-sm);
+.rs-empty h3 {
+  color: var(--ion-text-color);
+  font-size: 1.25rem;
 }
 
-@keyframes respet-pulse {
+.rs-skeleton {
+  animation: rs-pulse 1.4s ease-in-out infinite;
+  background: var(--rs-skeleton);
+  border-radius: var(--rs-radius-sm);
+}
+
+@keyframes rs-pulse {
   0%,
   100% {
     opacity: 1;
   }
 
   50% {
-    opacity: 0.55;
+    opacity: 0.5;
   }
 }
 
-/* Quien prefiere menos animación no debería ver nada latir. */
 @media (prefers-reduced-motion: reduce) {
-  .respet-skeleton {
+  .rs-skeleton {
     animation: none;
   }
 
@@ -188,15 +545,57 @@ ion-card img {
   }
 }
 
-/*
-  La ventana de una publicación ocupa la pantalla entera.
+/* Punto verde de «conectado», abajo a la derecha de un avatar. */
+.rs-online-dot {
+  background: var(--rs-online);
+  border: 2px solid var(--rs-surface);
+  border-radius: 50%;
+  bottom: 0;
+  height: 12px;
+  position: absolute;
+  right: 0;
+  width: 12px;
+}
 
-  Ionic centra los modales a 600 px en escritorio, y ahí dentro la foto y la
-  conversación no caben una al lado de la otra sin estrangularse las dos. Estas
-  medidas van aquí y no en el componente porque las declara el propio
-  `ion-modal`, que vive fuera de él.
-*/
-.modal-publicacion {
+/* Etiqueta roja de «EN DIRECTO». */
+.rs-live-badge {
+  background: var(--rs-live);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  text-transform: uppercase;
+}
+
+/* --- Ventanas ------------------------------------------------------------- */
+
+/* Modal a pantalla completa en el móvil y tarjeta centrada en el escritorio. */
+ion-modal.rs-dialog {
+  --border-radius: var(--rs-radius-md);
+  --height: auto;
+  --max-height: min(90vh, 820px);
+  --width: min(560px, 100vw);
+}
+
+@media (max-width: 767.98px) {
+  ion-modal.rs-dialog {
+    --border-radius: 0;
+    --height: 100%;
+    --max-height: 100%;
+    --width: 100%;
+  }
+}
+
+ion-modal.rs-dialog .ion-page {
+  contain: content;
+  position: relative;
+}
+
+/* Visores a pantalla completa: historias, fotos, directos. */
+ion-modal.rs-fullscreen {
+  --background: #000;
   --border-radius: 0;
   --height: 100%;
   --max-height: 100%;
@@ -204,66 +603,35 @@ ion-card img {
   --width: 100%;
 }
 
-/* Botón que parece un enlace, para el texto legal de los formularios. */
-.anchor-button {
-  background: none;
-  border: 0;
-  color: var(--ion-color-primary);
-  cursor: pointer;
-  font: inherit;
-  padding: 0;
-  text-decoration: underline;
+/* Hoja inferior para listas cortas: quién reaccionó, quién vio una historia. */
+ion-modal.rs-sheet {
+  --border-radius: var(--rs-radius-md) var(--rs-radius-md) 0 0;
 }
 
-/*
-  Un solo menú a la vez.
-
-  Con el panel lateral fijo —lo que Ionic marca con `split-pane-visible`— el
-  botón de la cabecera abriría un cajón con las mismas entradas que ya están a
-  la vista. Se va con el panel y vuelve con él, sin repetir en cada pantalla la
-  medida a la que eso ocurre.
-*/
-ion-split-pane.split-pane-visible ion-menu-button {
-  display: none;
+ion-popover.rs-menu {
+  --box-shadow: var(--rs-shadow-2);
+  --width: 320px;
 }
 
-/*
-  Lo que rellena el navegador por su cuenta.
-
-  Chrome pinta los campos autocompletados con un azul propio que no atiende a
-  `background-color`: la única forma de taparlo es una sombra interior que
-  cubra todo el campo. Sin esto, el correo y la contraseña de la pantalla de
-  acceso aparecían sobre un bloque azul con el texto en negro, ilegible encima
-  del tema oscuro. `ion-input` no usa «shadow DOM», así que su campo nativo se
-  alcanza desde aquí.
-*/
-input.native-input:-webkit-autofill,
-input.native-input:-webkit-autofill:hover,
-input.native-input:-webkit-autofill:focus,
-input.native-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 100vh var(--ion-item-background, var(--ion-background-color, #121212))
-    inset;
-  -webkit-text-fill-color: var(--ion-text-color, #fff);
-
-  caret-color: var(--ion-text-color, #fff);
-  /* La transición imposible evita el parpadeo azul del primer instante. */
-  transition: background-color 100000s ease-in-out 0s;
+ion-popover.rs-menu.wide {
+  --width: 360px;
 }
 
-/*
-  Un campo relleno no es un logro.
+ion-popover.rs-menu::part(content) {
+  border-radius: var(--rs-radius-sm);
+}
 
-  Ionic le pone el borde verde de «válido» en cuanto tiene algo dentro, y en un
-  formulario de acceso eso se lee como que ha pasado algo. El campo vuelve a su
-  borde de siempre; el color sigue avisando de lo que importa, que es cuando
-  algo está mal.
-*/
-ion-input.ion-valid,
-ion-select.ion-valid,
-ion-textarea.ion-valid {
-  /*
-    Ionic declara el color en el propio elemento, así que hace falta ir por la
-    clase del estado para pisarlo: con el selector a secas gana el suyo.
-  */
-  --highlight-color-valid: var(--ion-color-step-300, #b3b3b3);
+/* Contenido de un menú contextual hecho a mano. */
+.rs-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--rs-space-2);
+}
+
+.rs-menu-list .rs-row {
+  min-height: 44px;
+}
+
+.rs-menu-list ion-icon {
+  font-size: 20px;
 }

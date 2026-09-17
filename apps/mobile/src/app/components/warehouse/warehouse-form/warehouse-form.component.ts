@@ -130,7 +130,7 @@ export class WarehouseFormComponent {
       const image = this.pendingImage();
 
       if (image) {
-        result = await this.warehouses.setImage(result.id, image, 'warehouse.webp');
+        result = await this.warehouses.setImage(result.id, image);
         this.pendingImage.set(null);
       }
 

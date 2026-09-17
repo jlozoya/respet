@@ -1,0 +1,266 @@
+.hero {
+  align-items: center;
+  background: linear-gradient(135deg, #1c1e21 0%, #3a1c5c 60%, #8a3ab9 100%) !important;
+  color: #fff;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 32px;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 560px;
+}
+
+.hero-text ion-button {
+  align-self: flex-start;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 2rem;
+}
+
+.hero p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.hero-icon {
+  font-size: 120px;
+  opacity: 0.25;
+}
+
+@media (max-width: 767.98px) {
+  .hero-icon {
+    display: none;
+  }
+}
+
+.block {
+  padding: 16px 20px;
+}
+
+.block h2 {
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.block h3 {
+  font-size: 1rem;
+  margin-top: 16px;
+}
+
+.block p {
+  margin: 4px 0 8px;
+}
+
+.apps {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.app {
+  align-items: center;
+  border: 1px solid var(--rs-divider);
+  border-radius: 10px;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.app:hover {
+  background: var(--rs-hover);
+}
+
+.app-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.badge {
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+.badge.development {
+  background: rgb(247 185 40 / 20%);
+  color: #9a6b00;
+}
+
+.badge.live {
+  background: rgb(49 162 76 / 15%);
+  color: var(--ion-color-success);
+}
+
+.badge.suspended {
+  background: rgb(228 30 63 / 15%);
+  color: var(--ion-color-danger);
+}
+
+pre {
+  background: #1c1e21;
+  border-radius: 8px;
+  color: #e4e6eb;
+  font-size: 0.8125rem;
+  margin: 8px 0;
+  overflow-x: auto;
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.endpoints {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+
+.endpoint {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.copy {
+  align-items: center;
+  background: var(--rs-surface-2);
+  border: 0;
+  border-radius: 6px;
+  color: inherit;
+  cursor: copy;
+  display: flex;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
+  gap: 8px;
+  justify-content: space-between;
+  overflow-wrap: anywhere;
+  padding: 8px 12px;
+  text-align: start;
+}
+
+.scopes {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.scope {
+  border: 1px solid var(--rs-divider);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+}
+
+.scope code {
+  color: var(--ion-color-primary);
+  font-size: 0.8125rem;
+}
+
+.sensitive {
+  align-self: flex-start;
+  background: rgb(247 185 40 / 20%);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 1px 8px;
+}
+
+.tabs {
+  margin-bottom: 12px;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.checks {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.usage {
+  align-items: flex-end;
+  display: flex;
+  gap: 3px;
+  height: 140px;
+  margin-top: 12px;
+}
+
+.bar {
+  background: var(--rs-accent-soft);
+  border-radius: 3px 3px 0 0;
+  flex: 1 1 0;
+  min-height: 2px;
+  position: relative;
+}
+
+.bar .errors {
+  background: var(--ion-color-danger);
+  border-radius: 3px 3px 0 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.bar .requests {
+  background: var(--ion-color-primary);
+  border-radius: 3px 3px 0 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.delivery {
+  align-items: center;
+  border-top: 1px solid var(--rs-divider);
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.delivery .text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}

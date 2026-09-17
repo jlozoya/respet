@@ -1,0 +1,183 @@
+:host {
+  display: block;
+}
+
+.card {
+  overflow: visible;
+}
+
+.head {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  padding: 12px 8px 0 16px;
+}
+
+.avatar-link {
+  display: flex;
+}
+
+.meta {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.line {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.9375rem;
+  gap: 4px;
+}
+
+.follow {
+  background: none;
+  border: 0;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+
+.sub {
+  align-items: center;
+  color: var(--rs-text-2);
+  display: flex;
+  font-size: 0.8125rem;
+  gap: 4px;
+}
+
+.sub ion-icon {
+  font-size: 12px;
+}
+
+.date:hover {
+  text-decoration: underline;
+}
+
+.kind {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.text {
+  font-size: 0.9375rem;
+  padding: 8px 16px 12px;
+}
+
+.text.big {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.place {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  padding: 0 16px 10px;
+}
+
+.shared {
+  margin: 0 16px 12px;
+}
+
+.media {
+  margin-bottom: 0;
+}
+
+.stats {
+  align-items: center;
+  color: var(--rs-text-2);
+  display: flex;
+  font-size: 0.9375rem;
+  justify-content: space-between;
+  margin: 0 16px;
+  padding: 10px 0;
+}
+
+.stats button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.stats button:hover {
+  text-decoration: underline;
+}
+
+.reactions {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+}
+
+.emojis {
+  display: flex;
+}
+
+.emoji {
+  background: var(--rs-surface);
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 20px;
+  margin-left: -3px;
+  text-align: center;
+  width: 20px;
+}
+
+.emoji:first-child {
+  margin-left: 0;
+}
+
+.counts {
+  display: flex;
+  gap: 12px;
+}
+
+.actions {
+  border-top: 1px solid var(--rs-divider);
+  display: flex;
+  gap: 4px;
+  margin: 0 12px;
+  padding: 4px 0;
+}
+
+.action {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: var(--rs-text-2);
+  cursor: pointer;
+  display: flex;
+  flex: 1 1 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  gap: 6px;
+  height: 40px;
+  justify-content: center;
+}
+
+.action:hover {
+  background: var(--rs-hover);
+}
+
+.action:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.action ion-icon {
+  font-size: 20px;
+}
+
+app-comments-section {
+  border-top: 1px solid var(--rs-divider);
+  margin: 0 16px;
+  padding-left: 0;
+  padding-right: 0;
+}

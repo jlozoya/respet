@@ -8,6 +8,7 @@ import type {
   Media,
   Paginated,
   PublicProfile,
+  ReauthRequest,
   UpdateEmailRequest,
   UpdateLocationRequest,
   UpdatePermissionsRequest,
@@ -22,8 +23,8 @@ import type {
   UserSummary,
 } from '@respet/shared';
 
-import { ApiClientService } from './api-client.service';
 import {
+  MEDIA_FRAGMENTS,
   PAGE_META_FRAGMENTS,
   PERMISSIONS_FRAGMENTS,
   PUBLIC_PROFILE_FRAGMENTS,
@@ -34,14 +35,25 @@ import {
 } from './fragments';
 import { GraphqlClientService } from './graphql-client.service';
 
-export const ME = gql(`query Me { me { ...UserFields } }`, ...USER_FRAGMENTS);
-
 const UPDATE_PROFILE = gql(
   `mutation UpdateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) { ...UserFields }
   }`,
   ...USER_FRAGMENTS,
 );
+
+const UPDATE_MY_AVATAR = gql(
+  `mutation UpdateMyAvatar($file: Upload!) { updateMyAvatar(file: $file) { ...MediaFields } }`,
+  ...MEDIA_FRAGMENTS,
+);
+
+const UPDATE_MY_COVER = gql(
+  `mutation UpdateMyCover($file: Upload!) { updateMyCover(file: $file) { ...MediaFields } }`,
+  ...MEDIA_FRAGMENTS,
+);
+
+const REMOVE_MY_AVATAR = `mutation RemoveMyAvatar { removeMyAvatar }`;
+const REMOVE_MY_COVER = `mutation RemoveMyCover { removeMyCover }`;
 
 const REQUEST_EMAIL_CHANGE = `
 mutation RequestEmailChange($input: UpdateEmailInput!) {
@@ -75,50 +87,36 @@ const UPDATE_PERMISSIONS = gql(
 );
 
 const MY_EMAILS = `query MyEmails { myEmails { id email } }`;
-
-const ADD_EMAILS = `
-mutation AddEmails($input: AddEmailsInput!) {
-  addEmails(input: $input) { id email }
-}`;
-
+const ADD_EMAILS = `mutation AddEmails($input: AddEmailsInput!) { addEmails(input: $input) { id email } }`;
 const REMOVE_EMAIL = `mutation RemoveEmail($id: ID!) { removeEmail(id: $id) }`;
-
 const MY_PHONES = `query MyPhones { myPhones { id phone } }`;
-
-const ADD_PHONES = `
-mutation AddPhones($input: AddPhonesInput!) {
-  addPhones(input: $input) { id phone }
-}`;
-
+const ADD_PHONES = `mutation AddPhones($input: AddPhonesInput!) { addPhones(input: $input) { id phone } }`;
 const REMOVE_PHONE = `mutation RemovePhone($id: ID!) { removePhone(id: $id) }`;
-
 const REMOVE_SOCIAL_LINK = `mutation RemoveSocialLink($id: ID!) { removeSocialLink(id: $id) }`;
 
-const DELETE_MY_ACCOUNT = `mutation DeleteMyAccount { deleteMyAccount }`;
+const DELETE_MY_ACCOUNT = `
+mutation DeleteMyAccount($reauth: ReauthInput!) {
+  deleteMyAccount(reauth: $reauth)
+}`;
 
 const USER_CONTACT = gql(
-  `query UserContactById($id: ID!) {
-    userContact(id: $id) { ...UserContactFields }
-  }`,
+  `query UserContactById($id: ID!) { userContact(id: $id) { ...UserContactFields } }`,
   ...USER_CONTACT_FRAGMENTS,
 );
 
 const PUBLIC_PROFILE = gql(
-  `query PublicProfileById($id: ID!) {
-    publicProfile(id: $id) { ...PublicProfileFields }
-  }`,
+  `query PublicProfileById($id: ID!) { publicProfile(id: $id) { ...PublicProfileFields } }`,
   ...PUBLIC_PROFILE_FRAGMENTS,
 );
 
-const FOLLOW_USER = `
-mutation FollowUser($id: ID!) {
-  followUser(id: $id) { followerCount followState }
-}`;
+const PROFILE_BY_NAME = gql(
+  `query ProfileByName($name: String!) { profileByName(name: $name) { ...PublicProfileFields } }`,
+  ...PUBLIC_PROFILE_FRAGMENTS,
+);
 
-const UNFOLLOW_USER = `
-mutation UnfollowUser($id: ID!) {
-  unfollowUser(id: $id) { followerCount followState }
-}`;
+const FOLLOW_USER = `mutation FollowUser($id: ID!) { followUser(id: $id) { followerCount followState } }`;
+const UNFOLLOW_USER = `mutation UnfollowUser($id: ID!) { unfollowUser(id: $id) { followerCount followState } }`;
+const REMOVE_FOLLOWER = `mutation RemoveFollower($id: ID!) { removeFollower(id: $id) { followerCount } }`;
 
 const FOLLOW_REQUESTS = gql(
   `query MyFollowRequests($query: UserListQueryInput) {
@@ -132,14 +130,10 @@ const FOLLOW_REQUESTS = gql(
 );
 
 const ACCEPT_FOLLOW_REQUEST = `
-mutation AcceptFollowRequest($id: ID!) {
-  acceptFollowRequest(id: $id) { followerCount }
-}`;
+mutation AcceptFollowRequest($id: ID!) { acceptFollowRequest(id: $id) { followerCount } }`;
 
 const REJECT_FOLLOW_REQUEST = `
-mutation RejectFollowRequest($id: ID!) {
-  rejectFollowRequest(id: $id) { followerCount }
-}`;
+mutation RejectFollowRequest($id: ID!) { rejectFollowRequest(id: $id) { followerCount } }`;
 
 const FOLLOWERS = gql(
   `query Followers($id: ID!, $query: UserListQueryInput) {
@@ -174,12 +168,7 @@ const USERS = gql(
   ...PAGE_META_FRAGMENTS,
 );
 
-const USER = gql(
-  `query UserById($id: ID!) {
-    user(id: $id) { ...UserFields }
-  }`,
-  ...USER_FRAGMENTS,
-);
+const USER = gql(`query UserById($id: ID!) { user(id: $id) { ...UserFields } }`, ...USER_FRAGMENTS);
 
 const UPDATE_USER_PROFILE = gql(
   `mutation UpdateUserProfile($id: ID!, $input: UpdateProfileInput!) {
@@ -189,8 +178,13 @@ const UPDATE_USER_PROFILE = gql(
 );
 
 const SET_USER_ROLE = gql(
-  `mutation SetUserRole($id: ID!, $role: UserRole!) {
-    setUserRole(id: $id, role: $role) { ...UserFields }
+  `mutation SetUserRole($id: ID!, $role: UserRole!) { setUserRole(id: $id, role: $role) { ...UserFields } }`,
+  ...USER_FRAGMENTS,
+);
+
+const SET_USER_VERIFIED = gql(
+  `mutation SetUserVerified($id: ID!, $verified: Boolean!) {
+    setUserVerified(id: $id, verified: $verified) { ...UserFields }
   }`,
   ...USER_FRAGMENTS,
 );
@@ -202,101 +196,89 @@ const UPDATE_USER_LOCATION = gql(
   ...USER_FRAGMENTS,
 );
 
+const UPDATE_USER_AVATAR = gql(
+  `mutation UpdateUserAvatar($id: ID!, $file: Upload!) {
+    updateUserAvatar(id: $id, file: $file) { ...MediaFields }
+  }`,
+  ...MEDIA_FRAGMENTS,
+);
+
 const DELETE_USER = `mutation DeleteUser($id: ID!) { deleteUser(id: $id) }`;
 
+/** Un id de MongoDB: veinticuatro cifras hexadecimales. */
+const OBJECT_ID = /^[a-f0-9]{24}$/i;
+
+/**
+ * Personas: la cuenta propia, los perfiles ajenos y el seguimiento.
+ *
+ * Las fotos de perfil y de portada viajan dentro de la propia mutación, como
+ * cualquier otro archivo desde que toda la API es GraphQL.
+ */
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly gql = inject(GraphqlClientService);
-  private readonly api = inject(ApiClientService);
 
-  // --- Cuenta propia --------------------------------------------------------
+  // --- La cuenta propia -----------------------------------------------------
 
-  async me(): Promise<User> {
-    const { me } = await this.gql.request<{ me: User }>(ME);
-
-    return me;
+  updateProfile(request: UpdateProfileRequest): Promise<User> {
+    return this.gql.field(UPDATE_PROFILE, { input: request });
   }
 
-  async updateProfile(request: UpdateProfileRequest): Promise<User> {
-    const { updateProfile } = await this.gql.request<{ updateProfile: User }>(UPDATE_PROFILE, {
-      input: request,
-    });
-
-    return updateProfile;
+  updateAvatar(file: Blob): Promise<Media> {
+    return this.gql.field(UPDATE_MY_AVATAR, { file });
   }
 
-  /** El cambio no surte efecto hasta abrir el enlace enviado al correo nuevo. */
+  updateCover(file: Blob): Promise<Media> {
+    return this.gql.field(UPDATE_MY_COVER, { file });
+  }
+
+  async removeAvatar(): Promise<void> {
+    await this.gql.request(REMOVE_MY_AVATAR);
+  }
+
+  async removeCover(): Promise<void> {
+    await this.gql.request(REMOVE_MY_COVER);
+  }
+
+  /** Pide el cambio; se aplica al abrir el enlace que llega a la dirección nueva. */
   async requestEmailChange(request: UpdateEmailRequest): Promise<void> {
     await this.gql.request(REQUEST_EMAIL_CHANGE, { input: request });
   }
 
-  async updateLanguage(lang: string): Promise<User> {
-    const { updateLanguage } = await this.gql.request<{ updateLanguage: User }>(UPDATE_LANGUAGE, {
-      input: { lang },
-    });
-
-    return updateLanguage;
+  updateLanguage(lang: string): Promise<User> {
+    return this.gql.field(UPDATE_LANGUAGE, { input: { lang } });
   }
 
-  async updateLocation(request: UpdateLocationRequest): Promise<User> {
-    const { updateLocation } = await this.gql.request<{ updateLocation: User }>(UPDATE_LOCATION, {
-      input: request,
-    });
-
-    return updateLocation;
+  updateLocation(request: UpdateLocationRequest): Promise<User> {
+    return this.gql.field(UPDATE_LOCATION, { input: request });
   }
 
-  updateAvatar(file: Blob, filename?: string): Promise<Media> {
-    return this.api.upload<Media>('/users/me/avatar', file, filename, 'PUT');
+  permissions(): Promise<UserPermissions> {
+    return this.gql.field(MY_PERMISSIONS);
   }
 
-  async permissions(): Promise<UserPermissions> {
-    const { myPermissions } = await this.gql.request<{ myPermissions: UserPermissions }>(
-      MY_PERMISSIONS,
-    );
-
-    return myPermissions;
+  updatePermissions(request: UpdatePermissionsRequest): Promise<UserPermissions> {
+    return this.gql.field(UPDATE_PERMISSIONS, { input: request });
   }
 
-  async updatePermissions(request: UpdatePermissionsRequest): Promise<UserPermissions> {
-    const { updatePermissions } = await this.gql.request<{ updatePermissions: UserPermissions }>(
-      UPDATE_PERMISSIONS,
-      { input: request },
-    );
-
-    return updatePermissions;
+  emails(): Promise<UserEmail[]> {
+    return this.gql.field(MY_EMAILS);
   }
 
-  async emails(): Promise<UserEmail[]> {
-    const { myEmails } = await this.gql.request<{ myEmails: UserEmail[] }>(MY_EMAILS);
-
-    return myEmails;
-  }
-
-  async addEmails(request: AddEmailsRequest): Promise<UserEmail[]> {
-    const { addEmails } = await this.gql.request<{ addEmails: UserEmail[] }>(ADD_EMAILS, {
-      input: request,
-    });
-
-    return addEmails;
+  addEmails(request: AddEmailsRequest): Promise<UserEmail[]> {
+    return this.gql.field(ADD_EMAILS, { input: request });
   }
 
   async removeEmail(id: string): Promise<void> {
     await this.gql.request(REMOVE_EMAIL, { id });
   }
 
-  async phones(): Promise<UserPhone[]> {
-    const { myPhones } = await this.gql.request<{ myPhones: UserPhone[] }>(MY_PHONES);
-
-    return myPhones;
+  phones(): Promise<UserPhone[]> {
+    return this.gql.field(MY_PHONES);
   }
 
-  async addPhones(request: AddPhonesRequest): Promise<UserPhone[]> {
-    const { addPhones } = await this.gql.request<{ addPhones: UserPhone[] }>(ADD_PHONES, {
-      input: request,
-    });
-
-    return addPhones;
+  addPhones(request: AddPhonesRequest): Promise<UserPhone[]> {
+    return this.gql.field(ADD_PHONES, { input: request });
   }
 
   async removePhone(id: string): Promise<void> {
@@ -307,146 +289,89 @@ export class UsersService {
     await this.gql.request(REMOVE_SOCIAL_LINK, { id });
   }
 
-  async deleteMyAccount(): Promise<void> {
-    await this.gql.request(DELETE_MY_ACCOUNT);
+  /** Borra la cuenta. Pide confirmar la identidad. */
+  async deleteMyAccount(reauth: ReauthRequest): Promise<void> {
+    await this.gql.request(DELETE_MY_ACCOUNT, { reauth });
   }
 
-  // --- Consulta pública -----------------------------------------------------
+  // --- Perfiles ajenos ------------------------------------------------------
 
-  /** Datos de contacto, ya filtrados por el servidor según su privacidad. */
-  async contact(userId: string): Promise<UserContact> {
-    const { userContact } = await this.gql.request<{ userContact: UserContact }>(USER_CONTACT, {
-      id: userId,
-    });
-
-    return userContact;
+  contact(userId: string): Promise<UserContact> {
+    return this.gql.field(USER_CONTACT, { id: userId });
   }
 
   /**
-   * Ficha pública de una persona.
+   * La ficha de una persona, por id o por nombre de usuario.
    *
-   * `findById` es la ficha completa y sólo la sirve el servidor a la
-   * administración; ésta la puede ver cualquiera, con o sin cuenta.
+   * La dirección del perfil lleva el nombre —`/profile/ana`—, pero los enlaces
+   * antiguos y los avisos llevan el id; los dos caminos acaban aquí.
    */
-  async profile(userId: string): Promise<PublicProfile> {
-    const { publicProfile } = await this.gql.request<{ publicProfile: PublicProfile }>(
-      PUBLIC_PROFILE,
-      { id: userId },
-    );
-
-    return publicProfile;
+  profile(handle: string): Promise<PublicProfile> {
+    return OBJECT_ID.test(handle)
+      ? this.gql.field(PUBLIC_PROFILE, { id: handle })
+      : this.gql.field(PROFILE_BY_NAME, { name: handle });
   }
 
-  async follow(userId: string): Promise<FollowResult> {
-    const { followUser } = await this.gql.request<{ followUser: FollowResult }>(FOLLOW_USER, {
-      id: userId,
-    });
-
-    return followUser;
+  follow(userId: string): Promise<FollowResult> {
+    return this.gql.field(FOLLOW_USER, { id: userId });
   }
 
-  async unfollow(userId: string): Promise<FollowResult> {
-    const { unfollowUser } = await this.gql.request<{ unfollowUser: FollowResult }>(UNFOLLOW_USER, {
-      id: userId,
-    });
-
-    return unfollowUser;
+  unfollow(userId: string): Promise<FollowResult> {
+    return this.gql.field(UNFOLLOW_USER, { id: userId });
   }
 
-  /** Solicitudes que quedan por responder, de la más reciente a la más antigua. */
-  async followRequests(
-    query: { page?: number; perPage?: number } = {},
-  ): Promise<Paginated<FollowRequest>> {
-    const { myFollowRequests } = await this.gql.request<{
-      myFollowRequests: Paginated<FollowRequest>;
-    }>(FOLLOW_REQUESTS, { query });
-
-    return myFollowRequests;
+  removeFollower(userId: string): Promise<FollowRequestResult> {
+    return this.gql.field(REMOVE_FOLLOWER, { id: userId });
   }
 
-  async acceptFollowRequest(id: string): Promise<FollowRequestResult> {
-    const { acceptFollowRequest } = await this.gql.request<{
-      acceptFollowRequest: FollowRequestResult;
-    }>(ACCEPT_FOLLOW_REQUEST, { id });
-
-    return acceptFollowRequest;
+  followRequests(query: UserListQuery = {}): Promise<Paginated<FollowRequest>> {
+    return this.gql.field(FOLLOW_REQUESTS, { query });
   }
 
-  async rejectFollowRequest(id: string): Promise<FollowRequestResult> {
-    const { rejectFollowRequest } = await this.gql.request<{
-      rejectFollowRequest: FollowRequestResult;
-    }>(REJECT_FOLLOW_REQUEST, { id });
-
-    return rejectFollowRequest;
+  acceptFollowRequest(id: string): Promise<FollowRequestResult> {
+    return this.gql.field(ACCEPT_FOLLOW_REQUEST, { id });
   }
 
-  async followers(
-    userId: string,
-    query: { page?: number; perPage?: number } = {},
-  ): Promise<Paginated<UserSummary>> {
-    const { followers } = await this.gql.request<{ followers: Paginated<UserSummary> }>(FOLLOWERS, {
-      id: userId,
-      query,
-    });
-
-    return followers;
+  rejectFollowRequest(id: string): Promise<FollowRequestResult> {
+    return this.gql.field(REJECT_FOLLOW_REQUEST, { id });
   }
 
-  async following(
-    userId: string,
-    query: { page?: number; perPage?: number } = {},
-  ): Promise<Paginated<UserSummary>> {
-    const { following } = await this.gql.request<{ following: Paginated<UserSummary> }>(FOLLOWING, {
-      id: userId,
-      query,
-    });
+  followers(userId: string, query: UserListQuery = {}): Promise<Paginated<UserSummary>> {
+    return this.gql.field(FOLLOWERS, { id: userId, query });
+  }
 
-    return following;
+  following(userId: string, query: UserListQuery = {}): Promise<Paginated<UserSummary>> {
+    return this.gql.field(FOLLOWING, { id: userId, query });
   }
 
   // --- Administración -------------------------------------------------------
 
-  async list(query: UserListQuery = {}): Promise<Paginated<User>> {
-    const { users } = await this.gql.request<{ users: Paginated<User> }>(USERS, { query });
-
-    return users;
+  list(query: UserListQuery = {}): Promise<Paginated<User>> {
+    return this.gql.field(USERS, { query });
   }
 
-  async findById(id: string): Promise<User> {
-    const { user } = await this.gql.request<{ user: User }>(USER, { id });
-
-    return user;
+  findById(id: string): Promise<User> {
+    return this.gql.field(USER, { id });
   }
 
-  async updateProfileById(id: string, request: UpdateProfileRequest): Promise<User> {
-    const { updateUserProfile } = await this.gql.request<{ updateUserProfile: User }>(
-      UPDATE_USER_PROFILE,
-      { id, input: request },
-    );
-
-    return updateUserProfile;
+  updateProfileById(id: string, request: UpdateProfileRequest): Promise<User> {
+    return this.gql.field(UPDATE_USER_PROFILE, { id, input: request });
   }
 
-  async setRole(id: string, role: UserRole): Promise<User> {
-    const { setUserRole } = await this.gql.request<{ setUserRole: User }>(SET_USER_ROLE, {
-      id,
-      role,
-    });
-
-    return setUserRole;
+  setRole(id: string, role: UserRole): Promise<User> {
+    return this.gql.field(SET_USER_ROLE, { id, role });
   }
 
-  async updateLocationById(id: string, request: UpdateLocationRequest): Promise<User> {
-    const { updateUserLocation } = await this.gql.request<{ updateUserLocation: User }>(
-      UPDATE_USER_LOCATION,
-      { id, input: request },
-    );
-
-    return updateUserLocation;
+  setVerified(id: string, verified: boolean): Promise<User> {
+    return this.gql.field(SET_USER_VERIFIED, { id, verified });
   }
 
-  updateAvatarById(id: string, file: Blob, filename?: string): Promise<Media> {
-    return this.api.upload<Media>(`/users/${id}/avatar`, file, filename, 'PUT');
+  updateLocationById(id: string, request: UpdateLocationRequest): Promise<User> {
+    return this.gql.field(UPDATE_USER_LOCATION, { id, input: request });
+  }
+
+  updateAvatarById(id: string, file: Blob): Promise<Media> {
+    return this.gql.field(UPDATE_USER_AVATAR, { id, file });
   }
 
   async remove(id: string): Promise<void> {

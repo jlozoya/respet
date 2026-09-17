@@ -1,68 +1,66 @@
 /**
  * Tema de Respet.
  *
- * El modo oscuro es el de partida y el claro se activa añadiendo la clase
- * `ion-palette-light` al `<html>`; lo gestiona `ThemeService`. Ionic recomienda
- * lo contrario —claro por defecto y clase para oscuro—, pero aquí el oscuro es
- * la elección de diseño, y hacerlo así evita que la aplicación aparezca en
- * blanco durante el instante que tarda en aplicarse la clase.
+ * Superficies neutras como las de Facebook —gris muy claro de fondo, tarjetas
+ * blancas— con el naranja de Respet como acento, y en oscuro los grises de su
+ * modo nocturno. El claro es el de partida y el oscuro se activa con la clase
+ * `ion-palette-dark` en `<html>`, que pone `ThemeService` y, antes aún, el
+ * guion de `index.html` para que la aplicación no destelle al arrancar.
  *
- * Los colores de marca se declaran una sola vez en `:root` porque funcionan
- * sobre ambos fondos; lo que cambia entre temas son las superficies y el texto.
+ * Además de las variables de Ionic se declaran unas propias, `--rs-*`, para lo
+ * que Ionic no cubre: superficies secundarias, el gris del texto de apoyo, las
+ * burbujas del chat o el degradado de las historias.
  */
 
 :root {
   // --- Marca ---------------------------------------------------------------
 
-  /** primary — el naranja cálido de Respet */
-  --ion-color-primary: #ff6b35;
-  --ion-color-primary-rgb: 255, 107, 53;
-  --ion-color-primary-contrast: #1a1a1f;
-  --ion-color-primary-contrast-rgb: 26, 26, 31;
-  --ion-color-primary-shade: #e05e2f;
-  --ion-color-primary-tint: #ff7a49;
+  /** primary — el naranja de Respet, algo más hondo para leer bien en blanco */
+  --ion-color-primary: #f05a22;
+  --ion-color-primary-rgb: 240, 90, 34;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #d34f1e;
+  --ion-color-primary-tint: #f26b38;
 
-  /** secondary — verde azulado, para lo secundario y los acentos */
-  --ion-color-secondary: #2ec4b6;
-  --ion-color-secondary-rgb: 46, 196, 182;
-  --ion-color-secondary-contrast: #04201d;
-  --ion-color-secondary-contrast-rgb: 4, 32, 29;
-  --ion-color-secondary-shade: #28aca0;
-  --ion-color-secondary-tint: #43cabe;
+  /** secondary — verde azulado */
+  --ion-color-secondary: #14a697;
+  --ion-color-secondary-rgb: 20, 166, 151;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #129285;
+  --ion-color-secondary-tint: #2cafa1;
 
-  /** tertiary */
-  --ion-color-tertiary: #8367c7;
-  --ion-color-tertiary-rgb: 131, 103, 199;
+  /** tertiary — morado, el del final del degradado de las historias */
+  --ion-color-tertiary: #8a3ab9;
+  --ion-color-tertiary-rgb: 138, 58, 185;
   --ion-color-tertiary-contrast: #ffffff;
   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: #735baf;
-  --ion-color-tertiary-tint: #8f76cd;
+  --ion-color-tertiary-shade: #7933a3;
+  --ion-color-tertiary-tint: #964ec0;
 
-  // --- Estados -------------------------------------------------------------
+  --ion-color-success: #31a24c;
+  --ion-color-success-rgb: 49, 162, 76;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #2b8f43;
+  --ion-color-success-tint: #46ab5e;
 
-  --ion-color-success: #2dd36f;
-  --ion-color-success-rgb: 45, 211, 111;
-  --ion-color-success-contrast: #06210f;
-  --ion-color-success-contrast-rgb: 6, 33, 15;
-  --ion-color-success-shade: #28ba62;
-  --ion-color-success-tint: #42d77d;
+  --ion-color-warning: #f7b928;
+  --ion-color-warning-rgb: 247, 185, 40;
+  --ion-color-warning-contrast: #1c1e21;
+  --ion-color-warning-contrast-rgb: 28, 30, 33;
+  --ion-color-warning-shade: #d9a323;
+  --ion-color-warning-tint: #f8c03e;
 
-  --ion-color-warning: #ffc409;
-  --ion-color-warning-rgb: 255, 196, 9;
-  --ion-color-warning-contrast: #241c00;
-  --ion-color-warning-contrast-rgb: 36, 28, 0;
-  --ion-color-warning-shade: #e0ac08;
-  --ion-color-warning-tint: #ffca22;
-
-  --ion-color-danger: #ff4d5e;
-  --ion-color-danger-rgb: 255, 77, 94;
+  --ion-color-danger: #e41e3f;
+  --ion-color-danger-rgb: 228, 30, 63;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
-  --ion-color-danger-shade: #e04453;
-  --ion-color-danger-tint: #ff5f6e;
+  --ion-color-danger-shade: #c91a37;
+  --ion-color-danger-tint: #e73552;
 
-  // --- Redes sociales ------------------------------------------------------
-  // Son los colores oficiales de cada marca; no cambian con el tema.
+  // --- Redes sociales: sus colores oficiales, iguales en los dos temas ------
 
   --ion-color-facebook: #1877f2;
   --ion-color-facebook-rgb: 24, 119, 242;
@@ -85,198 +83,223 @@
   --ion-color-instagram-shade: #c62a5f;
   --ion-color-instagram-tint: #e4457b;
 
-  // Se conservan los nombres antiguos porque las plantillas los usan.
-  --ion-color-cyan: #2ec4b6;
-  --ion-color-cyan-rgb: 46, 196, 182;
-  --ion-color-cyan-contrast: #04201d;
-  --ion-color-cyan-contrast-rgb: 4, 32, 29;
-  --ion-color-cyan-shade: #28aca0;
-  --ion-color-cyan-tint: #43cabe;
+  // Nombres antiguos que aún usan las pantallas de la tienda.
+  --ion-color-green: #31a24c;
+  --ion-color-green-rgb: 49, 162, 76;
+  --ion-color-green-contrast: #ffffff;
+  --ion-color-green-contrast-rgb: 255, 255, 255;
+  --ion-color-green-shade: #2b8f43;
+  --ion-color-green-tint: #46ab5e;
 
-  --ion-color-green: #2dd36f;
-  --ion-color-green-rgb: 45, 211, 111;
-  --ion-color-green-contrast: #06210f;
-  --ion-color-green-contrast-rgb: 6, 33, 15;
-  --ion-color-green-shade: #28ba62;
-  --ion-color-green-tint: #42d77d;
+  --ion-color-cyan: #14a697;
+  --ion-color-cyan-rgb: 20, 166, 151;
+  --ion-color-cyan-contrast: #ffffff;
+  --ion-color-cyan-contrast-rgb: 255, 255, 255;
+  --ion-color-cyan-shade: #129285;
+  --ion-color-cyan-tint: #2cafa1;
 
-  // --- Diseño --------------------------------------------------------------
+  // --- Tipografía y forma --------------------------------------------------
 
-  /** Radio de las esquinas, unificado en toda la aplicación. */
-  --respet-radius-sm: 8px;
-  --respet-radius-md: 12px;
-  --respet-radius-lg: 20px;
-  /** Radio de las burbujas del chat. */
-  --respet-radius-bubble: 18px;
+  --ion-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
 
-  --respet-space-xs: 4px;
-  --respet-space-sm: 8px;
-  --respet-space-md: 16px;
-  --respet-space-lg: 24px;
+  --rs-radius-xs: 6px;
+  --rs-radius-sm: 8px;
+  --rs-radius-md: 12px;
+  --rs-radius-lg: 18px;
+  --rs-radius-pill: 999px;
 
-  --ion-font-family: 'Roboto Condensed', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --respet-font-display: 'Eczar', Georgia, serif;
-}
+  --rs-space-1: 4px;
+  --rs-space-2: 8px;
+  --rs-space-3: 12px;
+  --rs-space-4: 16px;
+  --rs-space-5: 24px;
 
-/**
- * Tema oscuro: el de partida.
- *
- * Los grises no son neutros puros sino ligeramente azulados, que es lo que
- * evita que una pantalla oscura se vea sucia o parda.
- */
-:root {
-  --ion-background-color: #15161a;
-  --ion-background-color-rgb: 21, 22, 26;
+  --rs-topbar-height: 56px;
+  --rs-tabbar-height: 52px;
 
-  --ion-text-color: #f2f3f5;
-  --ion-text-color-rgb: 242, 243, 245;
+  /** El anillo de las historias sin ver. */
+  --rs-story-ring: linear-gradient(45deg, #fcaf45 0%, #f77737 25%, #f05a22 45%, #e1306c 70%, #8a3ab9 100%);
+  /** El degradado de la marca, para el logotipo y los botones destacados. */
+  --rs-brand-gradient: linear-gradient(90deg, #f7931e 0%, #f05a22 45%, #e1306c 100%);
 
-  --ion-border-color: #2a2c33;
+  --rs-reaction-like: #f05a22;
+  --rs-reaction-love: #f33e58;
+  --rs-reaction-yellow: #e0a000;
+  --rs-reaction-angry: #e9710f;
 
-  /** Superficie de tarjetas, listas y modales: un punto por encima del fondo. */
-  --ion-item-background: #1d1f24;
-  --ion-card-background: #1d1f24;
-  --ion-toolbar-background: #1a1c21;
-  --ion-tab-bar-background: #1a1c21;
-  --ion-overlay-background-color: #1d1f24;
+  --rs-online: #31a24c;
+  --rs-live: #e41e3f;
 
-  --ion-color-step-50: #1b1d22;
-  --ion-color-step-100: #212329;
-  --ion-color-step-150: #272930;
-  --ion-color-step-200: #2d3037;
-  --ion-color-step-250: #33363e;
-  --ion-color-step-300: #393c45;
-  --ion-color-step-350: #40434c;
-  --ion-color-step-400: #464953;
-  --ion-color-step-450: #4c505a;
-  --ion-color-step-500: #525661;
-  --ion-color-step-550: #5f636e;
-  --ion-color-step-600: #6c707b;
-  --ion-color-step-650: #797d88;
-  --ion-color-step-700: #868a95;
-  --ion-color-step-750: #9397a2;
-  --ion-color-step-800: #a0a4af;
-  --ion-color-step-850: #adb1bc;
-  --ion-color-step-900: #babec9;
-  --ion-color-step-950: #c7cbd6;
+  // --- Tema claro, el de partida -------------------------------------------
 
-  --ion-color-dark: #f2f3f5;
-  --ion-color-dark-rgb: 242, 243, 245;
-  --ion-color-dark-contrast: #15161a;
-  --ion-color-dark-contrast-rgb: 21, 22, 26;
-  --ion-color-dark-shade: #d5d6d8;
-  --ion-color-dark-tint: #f3f4f6;
-
-  --ion-color-medium: #8b8f9a;
-  --ion-color-medium-rgb: 139, 143, 154;
-  --ion-color-medium-contrast: #15161a;
-  --ion-color-medium-contrast-rgb: 21, 22, 26;
-  --ion-color-medium-shade: #7a7e87;
-  --ion-color-medium-tint: #979aa4;
-
-  --ion-color-light: #1d1f24;
-  --ion-color-light-rgb: 29, 31, 36;
-  --ion-color-light-contrast: #f2f3f5;
-  --ion-color-light-contrast-rgb: 242, 243, 245;
-  --ion-color-light-shade: #1a1c20;
-  --ion-color-light-tint: #34363a;
-
-  /** Color de las barras superiores. */
-  --ion-color-dark-accent: #1a1c21;
-  --ion-color-dark-accent-rgb: 26, 28, 33;
-  --ion-color-dark-accent-contrast: #f2f3f5;
-  --ion-color-dark-accent-contrast-rgb: 242, 243, 245;
-  --ion-color-dark-accent-shade: #17191d;
-  --ion-color-dark-accent-tint: #313337;
-
-  /** Burbujas del chat. */
-  --respet-bubble-own: var(--ion-color-primary);
-  --respet-bubble-own-text: var(--ion-color-primary-contrast);
-  --respet-bubble-peer: #2a2d34;
-  --respet-bubble-peer-text: #f2f3f5;
-
-  --respet-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 24%);
-  --respet-skeleton: #262930;
-}
-
-/**
- * Tema claro.
- *
- * Se aplica con la clase `ion-palette-light` en el `<html>`, no con
- * `prefers-color-scheme`: el usuario puede elegir un tema distinto al del
- * sistema, y `ThemeService` resuelve la opción «seguir al sistema» poniendo o
- * quitando esta clase.
- */
-.ion-palette-light {
-  --ion-background-color: #f7f7f9;
-  --ion-background-color-rgb: 247, 247, 249;
-
-  --ion-text-color: #1a1b20;
-  --ion-text-color-rgb: 26, 27, 32;
-
-  --ion-border-color: #e2e3e8;
+  --ion-background-color: #f0f2f5;
+  --ion-background-color-rgb: 240, 242, 245;
+  --ion-text-color: #050505;
+  --ion-text-color-rgb: 5, 5, 5;
+  --ion-border-color: #dadde1;
 
   --ion-item-background: #ffffff;
   --ion-card-background: #ffffff;
   --ion-toolbar-background: #ffffff;
   --ion-tab-bar-background: #ffffff;
   --ion-overlay-background-color: #ffffff;
+  --ion-placeholder-color: #65676b;
 
-  --ion-color-step-50: #f2f2f5;
-  --ion-color-step-100: #e9e9ee;
-  --ion-color-step-150: #e0e0e6;
-  --ion-color-step-200: #d7d7df;
-  --ion-color-step-250: #cecfd7;
-  --ion-color-step-300: #c5c6cf;
-  --ion-color-step-350: #bcbdc8;
-  --ion-color-step-400: #b3b4c0;
-  --ion-color-step-450: #aaabb8;
-  --ion-color-step-500: #a1a2b1;
-  --ion-color-step-550: #90919f;
-  --ion-color-step-600: #7f808d;
-  --ion-color-step-650: #6e6f7b;
-  --ion-color-step-700: #5d5e69;
-  --ion-color-step-750: #4c4d57;
-  --ion-color-step-800: #3b3c45;
-  --ion-color-step-850: #2a2b33;
-  --ion-color-step-900: #232429;
-  --ion-color-step-950: #1a1b20;
+  --ion-color-step-50: #f2f2f2;
+  --ion-color-step-100: #e6e6e6;
+  --ion-color-step-150: #d9d9d9;
+  --ion-color-step-200: #cccccc;
+  --ion-color-step-250: #bfbfbf;
+  --ion-color-step-300: #b3b3b3;
+  --ion-color-step-350: #a6a6a6;
+  --ion-color-step-400: #999999;
+  --ion-color-step-450: #8c8c8c;
+  --ion-color-step-500: #808080;
+  --ion-color-step-550: #737373;
+  --ion-color-step-600: #666666;
+  --ion-color-step-650: #595959;
+  --ion-color-step-700: #4d4d4d;
+  --ion-color-step-750: #404040;
+  --ion-color-step-800: #333333;
+  --ion-color-step-850: #262626;
+  --ion-color-step-900: #191919;
+  --ion-color-step-950: #0d0d0d;
 
-  --ion-color-dark: #1a1b20;
-  --ion-color-dark-rgb: 26, 27, 32;
-  --ion-color-dark-contrast: #ffffff;
-  --ion-color-dark-contrast-rgb: 255, 255, 255;
-  --ion-color-dark-shade: #17181c;
-  --ion-color-dark-tint: #313236;
-
-  --ion-color-medium: #6e7180;
-  --ion-color-medium-rgb: 110, 113, 128;
+  --ion-color-medium: #65676b;
+  --ion-color-medium-rgb: 101, 103, 107;
   --ion-color-medium-contrast: #ffffff;
   --ion-color-medium-contrast-rgb: 255, 255, 255;
-  --ion-color-medium-shade: #616371;
-  --ion-color-medium-tint: #7d808d;
+  --ion-color-medium-shade: #595b5e;
+  --ion-color-medium-tint: #747679;
 
-  --ion-color-light: #f2f2f5;
-  --ion-color-light-rgb: 242, 242, 245;
-  --ion-color-light-contrast: #1a1b20;
-  --ion-color-light-contrast-rgb: 26, 27, 32;
-  --ion-color-light-shade: #d5d5d8;
-  --ion-color-light-tint: #f3f3f6;
+  --ion-color-light: #f0f2f5;
+  --ion-color-light-rgb: 240, 242, 245;
+  --ion-color-light-contrast: #050505;
+  --ion-color-light-contrast-rgb: 5, 5, 5;
+  --ion-color-light-shade: #d3d5d8;
+  --ion-color-light-tint: #f2f3f6;
 
+  --ion-color-dark: #1c1e21;
+  --ion-color-dark-rgb: 28, 30, 33;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #191a1d;
+  --ion-color-dark-tint: #333437;
+
+  /** Las barras superiores, que en claro son blancas. */
   --ion-color-dark-accent: #ffffff;
   --ion-color-dark-accent-rgb: 255, 255, 255;
-  --ion-color-dark-accent-contrast: #1a1b20;
-  --ion-color-dark-accent-contrast-rgb: 26, 27, 32;
+  --ion-color-dark-accent-contrast: #050505;
+  --ion-color-dark-accent-contrast-rgb: 5, 5, 5;
   --ion-color-dark-accent-shade: #e0e0e0;
   --ion-color-dark-accent-tint: #ffffff;
 
-  --respet-bubble-own: var(--ion-color-primary);
-  --respet-bubble-own-text: #ffffff;
-  --respet-bubble-peer: #e9eaef;
-  --respet-bubble-peer-text: #1a1b20;
+  --rs-surface: #ffffff;
+  /** Campos, píldoras y botones grises sobre una tarjeta. */
+  --rs-surface-2: #f0f2f5;
+  --rs-surface-3: #e4e6eb;
+  --rs-hover: rgb(0 0 0 / 5%);
+  --rs-pressed: rgb(0 0 0 / 10%);
+  --rs-divider: #ced0d4;
+  --rs-text-2: #65676b;
+  --rs-text-3: #8a8d91;
+  --rs-accent-soft: rgb(240 90 34 / 12%);
+  --rs-shadow-1: 0 1px 2px rgb(0 0 0 / 20%);
+  --rs-shadow-2: 0 12px 28px rgb(0 0 0 / 20%), 0 2px 4px rgb(0 0 0 / 10%);
+  --rs-overlay: rgb(244 244 244 / 80%);
+  --rs-skeleton: #e4e6eb;
 
-  --respet-shadow: 0 1px 2px rgb(16 18 24 / 8%), 0 2px 8px rgb(16 18 24 / 6%);
-  --respet-skeleton: #e4e5ea;
+  --rs-bubble-own: var(--ion-color-primary);
+  --rs-bubble-own-text: #ffffff;
+  --rs-bubble-peer: #e4e6eb;
+  --rs-bubble-peer-text: #050505;
+}
+
+/**
+ * Tema oscuro.
+ *
+ * Los grises de Facebook de noche: el fondo casi negro y las tarjetas un punto
+ * más claras, para que se separen sin necesidad de bordes.
+ */
+.ion-palette-dark {
+  --ion-background-color: #18191a;
+  --ion-background-color-rgb: 24, 25, 26;
+  --ion-text-color: #e4e6eb;
+  --ion-text-color-rgb: 228, 230, 235;
+  --ion-border-color: #3e4042;
+
+  --ion-item-background: #242526;
+  --ion-card-background: #242526;
+  --ion-toolbar-background: #242526;
+  --ion-tab-bar-background: #242526;
+  --ion-overlay-background-color: #242526;
+  --ion-placeholder-color: #b0b3b8;
+
+  --ion-color-step-50: #1e1f20;
+  --ion-color-step-100: #2a2b2c;
+  --ion-color-step-150: #363738;
+  --ion-color-step-200: #414243;
+  --ion-color-step-250: #4d4e4f;
+  --ion-color-step-300: #595a5b;
+  --ion-color-step-350: #656667;
+  --ion-color-step-400: #717273;
+  --ion-color-step-450: #7c7d7e;
+  --ion-color-step-500: #88898a;
+  --ion-color-step-550: #949595;
+  --ion-color-step-600: #a0a1a1;
+  --ion-color-step-650: #acadad;
+  --ion-color-step-700: #b8b8b9;
+  --ion-color-step-750: #c3c4c5;
+  --ion-color-step-800: #cfd0d0;
+  --ion-color-step-850: #dbdbdc;
+  --ion-color-step-900: #e7e7e8;
+  --ion-color-step-950: #f3f3f3;
+
+  --ion-color-medium: #b0b3b8;
+  --ion-color-medium-rgb: 176, 179, 184;
+  --ion-color-medium-contrast: #18191a;
+  --ion-color-medium-contrast-rgb: 24, 25, 26;
+  --ion-color-medium-shade: #9b9ea2;
+  --ion-color-medium-tint: #b8bbbf;
+
+  --ion-color-light: #3a3b3c;
+  --ion-color-light-rgb: 58, 59, 60;
+  --ion-color-light-contrast: #e4e6eb;
+  --ion-color-light-contrast-rgb: 228, 230, 235;
+  --ion-color-light-shade: #333435;
+  --ion-color-light-tint: #4e4f50;
+
+  --ion-color-dark: #e4e6eb;
+  --ion-color-dark-rgb: 228, 230, 235;
+  --ion-color-dark-contrast: #18191a;
+  --ion-color-dark-contrast-rgb: 24, 25, 26;
+  --ion-color-dark-shade: #c9cbcf;
+  --ion-color-dark-tint: #e7e9ed;
+
+  --ion-color-dark-accent: #242526;
+  --ion-color-dark-accent-rgb: 36, 37, 38;
+  --ion-color-dark-accent-contrast: #e4e6eb;
+  --ion-color-dark-accent-contrast-rgb: 228, 230, 235;
+  --ion-color-dark-accent-shade: #202122;
+  --ion-color-dark-accent-tint: #3a3b3c;
+
+  --rs-surface: #242526;
+  --rs-surface-2: #3a3b3c;
+  --rs-surface-3: #4e4f50;
+  --rs-hover: rgb(255 255 255 / 8%);
+  --rs-pressed: rgb(255 255 255 / 14%);
+  --rs-divider: #3e4042;
+  --rs-text-2: #b0b3b8;
+  --rs-text-3: #8a8d91;
+  --rs-accent-soft: rgb(240 90 34 / 20%);
+  --rs-shadow-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --rs-shadow-2: 0 12px 28px rgb(0 0 0 / 45%), 0 2px 4px rgb(0 0 0 / 25%);
+  --rs-overlay: rgb(11 11 11 / 80%);
+  --rs-skeleton: #3a3b3c;
+
+  --rs-bubble-peer: #303031;
+  --rs-bubble-peer-text: #e4e6eb;
 }
 
 /**
@@ -285,8 +308,8 @@
  * Ionic sólo genera las clases `.ion-color-*` de su paleta de fábrica; las que
  * se añaden hay que declararlas para poder usarlas con `color="…"`.
  */
-// Los nombres van entrecomillados porque `cyan` y `green` son colores de CSS:
-// sin comillas, Sass los interpola como color y genera un selector inválido.
+// Entrecomillados porque `cyan` y `green` son colores de CSS: sin comillas,
+// Sass los interpola como color y genera un selector inválido.
 @each $name in ('dark-accent', 'facebook', 'google', 'instagram', 'cyan', 'green') {
   .ion-color-#{$name} {
     --ion-color-base: var(--ion-color-#{$name}) !important;

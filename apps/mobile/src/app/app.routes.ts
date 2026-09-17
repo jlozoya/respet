@@ -5,144 +5,186 @@ import { authGuard, guestGuard, roleGuard } from './core/auth/auth.guard';
 /**
  * Rutas de la aplicación.
  *
- * Todas cargan su componente de forma perezosa con `loadComponent`. El proyecto
- * anterior usaba la sintaxis de cadena `'./ruta/x.module#XModule'`, que Angular
- * retiró en la versión 11 y que además obligaba a mantener un `NgModule` por
- * pantalla sin más función que declararla.
+ * Todas cargan su pantalla de forma perezosa: quien sólo mira el muro no
+ * descarga el estudio de directos ni el portal para desarrolladores.
  */
 export const routes: Routes = [
+  // --- Red social -----------------------------------------------------------
   {
-    // El muro es la portada: entrar en la aplicación es entrar en él, sin un
-    // salto intermedio a otra dirección. Quien llega sin sesión no ve un muro
-    // a medias, sino la pantalla de acceso, que es lo que hace cualquier red
-    // social: aquí se viene a participar, y para eso hace falta una cuenta.
     path: '',
-    title: 'Muro',
     pathMatch: 'full',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/wall/wall.page').then((m) => m.WallPage),
+    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
   },
+  { path: 'wall', redirectTo: '', pathMatch: 'full' },
+  { path: 'main', redirectTo: '', pathMatch: 'full' },
   {
-    // Donde vivía antes. Se queda como redirección porque hay enlaces
-    // compartidos y marcadores apuntando ahí.
-    path: 'wall',
-    redirectTo: '',
-    pathMatch: 'full',
-  },
-  {
-    /*
-     * El muro de otra persona.
-     *
-     * Es la misma pantalla que el muro, con su ficha arriba y filtrada por
-     * autor; lo que cambia es que tiene dirección propia. Antes se llegaba con
-     * `/?userId=…`, y eso metía a una persona concreta dentro de la portada,
-     * que es de todos.
-     */
-    path: 'profile/:userId',
+    path: 'explore',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/wall/wall.page').then((m) => m.WallPage),
+    loadComponent: () => import('./pages/explore/explore.page').then((m) => m.ExplorePage),
   },
   {
-    // El detalle de una publicación: destino de los enlaces que se comparten.
-    // Sigue colgando de `wall` en lugar de subir a la raíz: un `:id` suelto
-    // arriba se tragaría cualquier ruta que se añadiera después.
-    path: 'wall/:id',
+    path: 'search',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/post/post.page').then((m) => m.PostPage),
+    loadComponent: () => import('./pages/search/search.page').then((m) => m.SearchPage),
   },
   {
-    path: 'main',
+    path: 'hashtag/:tag',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/main/main.page').then((m) => m.MainPage),
-  },
-  // Lo que se puede leer sin cuenta es lo que cuenta qué es esto y bajo qué
-  // condiciones: la presentación, el quiénes somos y los textos legales. Son
-  // los enlaces del pie de la pantalla de acceso.
-  {
-    path: 'about',
-    loadComponent: () => import('./pages/about/about.page').then((m) => m.AboutPage),
+    loadComponent: () => import('./pages/hashtag/hashtag.page').then((m) => m.HashtagPage),
   },
   {
-    path: 'tutorial',
-    loadComponent: () => import('./pages/tutorial/tutorial.page').then((m) => m.TutorialPage),
+    path: 'post/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/post/post-detail.page').then((m) => m.PostDetailPage),
+  },
+  // Los enlaces compartidos antes de la red social apuntaban aquí.
+  { path: 'wall/:id', redirectTo: 'post/:id' },
+  {
+    path: 'profile/:handle',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/profile.page').then((m) => m.ProfilePage),
   },
   {
-    // El panel desde el que se escriben los avisos del muro. Los avisos se
-    // leen en el muro, así que aquí sólo entra quien puede publicarlos.
-    path: 'bulletins',
-    canActivate: [roleGuard('admin')],
-    loadComponent: () => import('./pages/bulletins/bulletins.page').then((m) => m.BulletinsPage),
+    path: 'saved',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/saved/saved.page').then((m) => m.SavedPage),
   },
   {
-    path: 'politics/:segment',
-    loadComponent: () => import('./pages/politics/politics.page').then((m) => m.PoliticsPage),
+    path: 'follow-requests',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/follow-requests/follow-requests.page').then((m) => m.FollowRequestsPage),
   },
   {
-    path: 'terms-and-conditions/:segment',
-    loadComponent: () =>
-      import('./pages/terms-and-conditions/terms-and-conditions.page').then(
-        (m) => m.TermsAndConditionsPage,
-      ),
+    path: 'notifications',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage),
+  },
+  {
+    path: 'messages',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/messages/messages.page').then((m) => m.MessagesPage),
+  },
+  {
+    path: 'messages/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/messages/messages.page').then((m) => m.MessagesPage),
+  },
+  { path: 'chat', redirectTo: 'messages', pathMatch: 'full' },
+  { path: 'chat/:id', redirectTo: 'messages/:id' },
+  {
+    path: 'stories/archive',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/stories/story-archive.page').then((m) => m.StoryArchivePage),
+  },
+  {
+    path: 'live',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/live/live-list.page').then((m) => m.LiveListPage),
+  },
+  {
+    path: 'live/new',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/live/live-studio.page').then((m) => m.LiveStudioPage),
+  },
+  {
+    path: 'live/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/live/live-watch.page').then((m) => m.LiveWatchPage),
+  },
+  {
+    path: 'menu',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/menu/menu.page').then((m) => m.MenuPage),
+  },
+
+  // --- Configuración --------------------------------------------------------
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage),
+  },
+  {
+    path: 'settings/profile',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/profile-settings.page').then((m) => m.ProfileSettingsPage),
+  },
+  {
+    path: 'settings/account',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/account-settings.page').then((m) => m.AccountSettingsPage),
+  },
+  {
+    path: 'settings/privacy',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/privacy-settings.page').then((m) => m.PrivacySettingsPage),
+  },
+  {
+    path: 'settings/security',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/security-settings.page').then((m) => m.SecuritySettingsPage),
+  },
+  {
+    path: 'settings/apps',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/apps-settings.page').then((m) => m.AppsSettingsPage),
+  },
+  {
+    path: 'settings/blocked',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/blocked-settings.page').then((m) => m.BlockedSettingsPage),
+  },
+  {
+    path: 'settings/preferences',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/preferences-settings.page').then((m) => m.PreferencesSettingsPage),
+  },
+  { path: 'account', redirectTo: 'settings', pathMatch: 'full' },
+  { path: 'account/:section', redirectTo: 'settings' },
+
+  // --- Plataforma para desarrolladores --------------------------------------
+  {
+    path: 'developers',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/developers/developers.page').then((m) => m.DevelopersPage),
+  },
+  {
+    path: 'developers/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/developers/developer-app.page').then((m) => m.DeveloperAppPage),
+  },
+  {
+    path: 'oauth/authorize',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/oauth/authorize.page').then((m) => m.AuthorizePage),
   },
 
   // --- Acceso ---------------------------------------------------------------
   {
     path: 'login',
     canActivate: [guestGuard],
-    loadComponent: () => import('./pages/login/login.page').then((m) => m.LoginPage),
+    loadComponent: () => import('./pages/auth/login.page').then((m) => m.LoginPage),
   },
   {
     path: 'signup',
     canActivate: [guestGuard],
-    loadComponent: () => import('./pages/signup/signup.page').then((m) => m.SignupPage),
+    loadComponent: () => import('./pages/auth/signup.page').then((m) => m.SignupPage),
+  },
+  {
+    path: 'forgot-password',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./pages/auth/forgot-password.page').then((m) => m.ForgotPasswordPage),
   },
   {
     path: 'reset-password',
-    loadComponent: () =>
-      import('./pages/reset-password/reset-password.page').then((m) => m.ResetPasswordPage),
-  },
-
-  // --- Chat -----------------------------------------------------------------
-  {
-    path: 'chat',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/chat/conversations/conversations.page').then((m) => m.ConversationsPage),
+    loadComponent: () => import('./pages/auth/reset-password.page').then((m) => m.ResetPasswordPage),
   },
   {
-    path: 'chat/:id',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/chat/conversation/conversation.page').then((m) => m.ConversationPage),
-  },
-
-  // --- Cuenta ---------------------------------------------------------------
-  {
-    path: 'account',
-    canActivate: [authGuard],
-    loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
-  },
-  {
-    // La sección elige la pestaña, para poder enlazar a una en concreto.
-    path: 'account/:section',
-    canActivate: [authGuard],
-    loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
-  },
-  {
-    // La configuración dejó de ser una pantalla aparte: son pestañas de la
-    // cuenta. La dirección vieja sigue llevando a donde ahora vive.
-    path: 'settings',
-    redirectTo: 'account/access',
-    pathMatch: 'full',
+    path: 'verify-email',
+    loadComponent: () => import('./pages/auth/verify-email.page').then((m) => m.VerifyEmailPage),
   },
 
   // --- Tienda ---------------------------------------------------------------
-  {
-    path: 'warehouses',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/warehouses/warehouses.page').then((m) => m.WarehousesPage),
-  },
   {
     path: 'products',
     canActivate: [authGuard],
@@ -163,13 +205,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/orders/order/order.page').then((m) => m.OrderPage),
   },
+  {
+    path: 'warehouses',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/warehouses/warehouses.page').then((m) => m.WarehousesPage),
+  },
 
   // --- Administración -------------------------------------------------------
   {
+    path: 'admin/reports',
+    canActivate: [roleGuard('admin')],
+    loadComponent: () => import('./pages/admin/reports/reports.page').then((m) => m.ReportsPage),
+  },
+  {
     path: 'analytics',
     canActivate: [roleGuard('admin')],
-    loadComponent: () =>
-      import('./pages/admin/analytics/analytics.page').then((m) => m.AnalyticsPage),
+    loadComponent: () => import('./pages/admin/analytics/analytics.page').then((m) => m.AnalyticsPage),
   },
   {
     path: 'users',
@@ -177,19 +228,37 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/users/users.page').then((m) => m.UsersPage),
   },
   {
-    // La ficha de otro usuario reutiliza la pantalla de cuenta, que se pone en
-    // modo lectura y edición administrativa cuando recibe un `id`.
     path: 'users/:id',
     canActivate: [roleGuard('admin')],
-    loadComponent: () => import('./pages/user/account/account.page').then((m) => m.AccountPage),
+    loadComponent: () => import('./pages/admin/user-detail/user-detail.page').then((m) => m.UserDetailPage),
+  },
+  {
+    path: 'bulletins',
+    canActivate: [roleGuard('admin')],
+    loadComponent: () => import('./pages/bulletins/bulletins.page').then((m) => m.BulletinsPage),
   },
 
+  // --- Lo que se lee sin cuenta ---------------------------------------------
+  {
+    path: 'about',
+    loadComponent: () => import('./pages/about/about.page').then((m) => m.AboutPage),
+  },
+  {
+    path: 'tutorial',
+    loadComponent: () => import('./pages/tutorial/tutorial.page').then((m) => m.TutorialPage),
+  },
+  {
+    path: 'politics/:segment',
+    loadComponent: () => import('./pages/politics/politics.page').then((m) => m.PoliticsPage),
+  },
+  {
+    path: 'terms-and-conditions/:segment',
+    loadComponent: () =>
+      import('./pages/terms-and-conditions/terms-and-conditions.page').then((m) => m.TermsAndConditionsPage),
+  },
   {
     path: 'error',
     loadComponent: () => import('./pages/error/error.page').then((m) => m.ErrorPage),
   },
-  {
-    path: '**',
-    redirectTo: 'error',
-  },
+  { path: '**', redirectTo: 'error' },
 ];

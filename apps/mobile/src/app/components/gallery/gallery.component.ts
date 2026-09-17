@@ -1,13 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ModalController } from '@ionic/angular/modal-controller';
-import type { Media, Post } from '@respet/shared';
+import type { Media } from '@respet/shared';
 
 import { ImgModalComponent } from './img-modal/img-modal.component';
 
@@ -33,17 +26,6 @@ export class GalleryComponent {
   private readonly modalCtrl = inject(ModalController);
 
   readonly images = input<readonly Media[]>([]);
-
-  /**
-   * Publicación a la que pertenecen las fotos, si pertenecen a alguna.
-   *
-   * Con ella, pulsar una foto abre el detalle entero —fotos y comentarios—; sin
-   * ella, como en un producto, sólo hay fotos que enseñar.
-   */
-  readonly post = input<Post | null>(null);
-
-  /** Lo que se haya votado o comentado dentro, para quien pinta la tarjeta. */
-  readonly postUpdated = output<Post>();
 
   /**
    * Composición de la cuadrícula según cuántas imágenes haya, o `null` si no
@@ -77,37 +59,11 @@ export class GalleryComponent {
   });
 
   async openViewer(image: Media): Promise<void> {
-    const startIndex = Math.max(0, this.images().indexOf(image));
-    const post = this.post();
-
-    if (!post) {
-      const modal = await this.modalCtrl.create({
-        component: ImgModalComponent,
-        componentProps: { images: this.images(), startIndex },
-      });
-
-      await modal.present();
-
-      return;
-    }
-
-    // Se carga aquí y no arriba porque el detalle enseña la tarjeta, y la
-    // tarjeta contiene esta galería: importarlo de la forma normal dejaría dos
-    // ficheros esperándose el uno al otro.
-    const { PostModalComponent } = await import('../post/post-modal/post-modal.component');
-
     const modal = await this.modalCtrl.create({
-      component: PostModalComponent,
-      componentProps: { post, startIndex },
-      cssClass: 'modal-publicacion',
+      component: ImgModalComponent,
+      componentProps: { images: this.images(), startIndex: Math.max(0, this.images().indexOf(image)) },
     });
 
     await modal.present();
-
-    const { data } = await modal.onWillDismiss<Post>();
-
-    if (data) {
-      this.postUpdated.emit(data);
-    }
   }
 }

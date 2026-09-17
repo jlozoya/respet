@@ -9,9 +9,9 @@ import type { ApiErrorBody } from '@respet/shared';
  *
  * Los errores llegan por dos caminos. Los de GraphQL vienen dentro de la
  * respuesta, en `errors[]`, con un 200 por encima: el transporte funcionó, lo
- * que falló fue la operación. Los de las subidas de archivos siguen llegando
- * como un error HTTP de toda la vida. Las dos formas acaban aquí para que el
- * resto de la aplicación no tenga que distinguirlas.
+ * que falló fue la operación. Los de transporte —sin red, un proxy que corta—
+ * llegan como un error HTTP de toda la vida. Las dos formas acaban aquí para
+ * que el resto de la aplicación no tenga que distinguirlas.
  */
 export class ApiError extends Error {
   constructor(
@@ -32,6 +32,11 @@ export class ApiError extends Error {
   /** Cierto cuando hace falta una sesión y la que hay no vale. */
   get isUnauthorized(): boolean {
     return this.status === 401;
+  }
+
+  /** Cierto si el servidor respondió con esta clave (`SERVER.REAUTH_REQUIRED`). */
+  is(code: string): boolean {
+    return this.code === code;
   }
 
   static from(response: HttpErrorResponse): ApiError {
