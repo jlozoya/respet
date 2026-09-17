@@ -1,19 +1,32 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { AuthSession, AuthTokens, User } from '@respet/shared';
-import type { Request } from 'express';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import type { AuthSession, AuthTokens, LoginResult, MfaLoginResult, User } from '@respet/shared';
 
-import { CurrentUser, Public, RateLimit } from '../common/decorators/index.js';
-import { AuthSessionType, AuthTokensType, UserType } from '../graphql/types/user.types.js';
+import {
+  Client,
+  CurrentUser,
+  Public,
+  RateLimit,
+  Scopes,
+  type AuthenticatedUser,
+  type ClientInfo,
+} from '../common/decorators/index.js';
+import {
+  AuthSessionType,
+  AuthTokensType,
+  LoginResultType,
+  MfaLoginResultType,
+} from '../graphql/types/auth.types.js';
+import { UserType } from '../graphql/types/user.types.js';
 import { AuthService } from './auth.service.js';
 import {
   ChangePasswordDto,
+  CompleteMfaLoginDto,
   ForgotPasswordDto,
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
   SocialLoginDto,
 } from './dto/auth.dto.js';
-import type { TokenContext } from './token.service.js';
 
 /**
  * Alta, acceso y salida.
@@ -29,21 +42,17 @@ export class AuthResolver {
   @Public()
   @RateLimit({ limit: 5, windowSeconds: 900 })
   @Mutation(() => AuthSessionType, { description: 'Da de alta una cuenta y abre sesión.' })
-  async register(
-    @Args('input') input: RegisterDto,
-    @Context('req') request: Request,
-  ): Promise<AuthSession> {
-    return this.auth.register(input, contextOf(request));
+  async register(@Args('input') input: RegisterDto, @Client() client: ClientInfo): Promise<AuthSession> {
+    return this.auth.register(input, client);
   }
 
   @Public()
   @RateLimit({ limit: 10, windowSeconds: 300 })
-  @Mutation(() => AuthSessionType)
-  async login(
-    @Args('input') input: LoginDto,
-    @Context('req') request: Request,
-  ): Promise<AuthSession> {
-    return this.auth.login(input, contextOf(request));
+  @Mutation(() => LoginResultType, {
+    description: 'Primer paso del inicio de sesión. Con verificación en dos pasos devuelve un reto.',
+  })
+  async login(@Args('input') input: LoginDto, @Client() client: ClientInfo): Promise<LoginResult> {
+    return this.auth.login(input, client);
   }
 
   /**
@@ -55,38 +64,50 @@ export class AuthResolver {
    */
   @Public()
   @RateLimit({ limit: 20, windowSeconds: 300 })
-  @Mutation(() => AuthSessionType)
-  async socialLogin(
-    @Args('input') input: SocialLoginDto,
-    @Context('req') request: Request,
-  ): Promise<AuthSession> {
-    return this.auth.socialLogin(input, contextOf(request));
+  @Mutation(() => LoginResultType)
+  async socialLogin(@Args('input') input: SocialLoginDto, @Client() client: ClientInfo): Promise<LoginResult> {
+    return this.auth.socialLogin(input, client);
+  }
+
+  @Public()
+  @RateLimit({ limit: 10, windowSeconds: 300 })
+  @Mutation(() => MfaLoginResultType, {
+    description: 'Segundo paso: completa el inicio de sesión con el código de la app o uno de recuperación.',
+  })
+  async completeMfaLogin(
+    @Args('input') input: CompleteMfaLoginDto,
+    @Client() client: ClientInfo,
+  ): Promise<MfaLoginResult> {
+    return this.auth.completeMfaLogin(input, client);
   }
 
   @Public()
   @RateLimit({ limit: 60, windowSeconds: 300 })
-  @Mutation(() => AuthTokensType, { description: 'Canjea un refresh token por un par nuevo.' })
+  @Mutation(() => AuthTokensType, {
+    description: 'Canjea un refresh token por un par nuevo. El usado deja de valer.',
+  })
   async refreshTokens(
     @Args('refreshToken') refreshToken: string,
-    @Context('req') request: Request,
+    @Client() client: ClientInfo,
   ): Promise<AuthTokens> {
-    return this.auth.refresh(refreshToken, contextOf(request));
+    return this.auth.refresh(refreshToken, client);
   }
 
   @Mutation(() => Boolean, {
-    description: 'Cierra la sesión. Sin `refreshToken`, cierra todas las abiertas.',
+    description: 'Cierra la sesión de este dispositivo, o todas con `everywhere`.',
   })
   async logout(
-    @CurrentUser('id') userId: string,
-    @Args('refreshToken', { type: () => String, nullable: true }) refreshToken?: string,
+    @CurrentUser() actor: AuthenticatedUser,
+    @Client() client: ClientInfo,
     @Args('everywhere', { type: () => Boolean, nullable: true, defaultValue: false })
     everywhere?: boolean,
   ): Promise<boolean> {
-    await this.auth.logout(refreshToken, userId, everywhere === true);
+    await this.auth.logout(actor, everywhere === true, client);
 
     return true;
   }
 
+  @Scopes('public_profile')
   @Query(() => UserType, { name: 'me', description: 'Perfil de quien consulta.' })
   async me(@CurrentUser('id') userId: string): Promise<User> {
     return this.auth.me(userId);
@@ -110,18 +131,36 @@ export class AuthResolver {
   @Public()
   @RateLimit({ limit: 10, windowSeconds: 900 })
   @Mutation(() => Boolean, { description: 'Fija una contraseña nueva con el token del correo.' })
-  async resetPassword(@Args('input') input: ResetPasswordDto): Promise<boolean> {
-    await this.auth.resetPassword(input);
+  async resetPassword(@Args('input') input: ResetPasswordDto, @Client() client: ClientInfo): Promise<boolean> {
+    await this.auth.resetPassword(input, client);
 
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, {
+    description: 'Cambia la contraseña. Por defecto cierra el resto de sesiones, no ésta.',
+  })
   async changePassword(
-    @CurrentUser('id') userId: string,
+    @CurrentUser() actor: AuthenticatedUser,
     @Args('input') input: ChangePasswordDto,
+    @Client() client: ClientInfo,
   ): Promise<boolean> {
-    await this.auth.changePassword(userId, input);
+    await this.auth.changePassword(actor, input, client);
+
+    return true;
+  }
+
+  /**
+   * Confirma el correo con el token del enlace.
+   *
+   * Antes era una ruta HTTP que redirigía; ahora el enlace abre la aplicación
+   * y es ella quien llama aquí, así que todo pasa por el esquema.
+   */
+  @Public()
+  @RateLimit({ limit: 20, windowSeconds: 900 })
+  @Mutation(() => Boolean, { description: 'Confirma una dirección de correo con el token del enlace.' })
+  async verifyEmail(@Args('token') token: string): Promise<boolean> {
+    await this.auth.verifyEmail(token);
 
     return true;
   }
@@ -133,11 +172,4 @@ export class AuthResolver {
 
     return true;
   }
-}
-
-function contextOf(request: Request): TokenContext {
-  return {
-    userAgent: request.get('user-agent') ?? undefined,
-    ip: request.ip ?? undefined,
-  };
 }

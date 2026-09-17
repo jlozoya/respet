@@ -1,18 +1,22 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 import type {
   ChangePasswordRequest,
+  CompleteMfaLoginRequest,
   ForgotPasswordRequest,
   LoginRequest,
+  ReauthRequest,
   RegisterRequest,
   ResetPasswordRequest,
   SocialLoginRequest,
 } from '@respet/shared';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsEnum,
   IsIn,
+  IsMongoId,
   IsOptional,
   IsString,
   Length,
@@ -20,7 +24,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-import { AuthProvider, Gender } from '../../graphql/enums.js';
+import { AuthProvider, Gender, MfaMethod } from '../../graphql/enums.js';
 import { normalizeEmail, trim } from '../../common/dto/transforms.js';
 
 /*
@@ -28,11 +32,11 @@ import { normalizeEmail, trim } from '../../common/dto/transforms.js';
   guion bajo, empezando y acabando en letra o número. El mismo patrón que
   `UpdateProfileDto` y que valida la aplicación antes de enviar.
 */
-const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
+export const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
 
 /** Longitud mínima recomendada por NIST SP 800-63B. */
-const PASSWORD_MIN = 8;
-const PASSWORD_MAX = 128;
+export const PASSWORD_MIN = 8;
+export const PASSWORD_MAX = 128;
 
 @InputType('LoginInput')
 export class LoginDto implements LoginRequest {
@@ -46,6 +50,15 @@ export class LoginDto implements LoginRequest {
   @IsString()
   @Length(PASSWORD_MIN, PASSWORD_MAX)
   password!: string;
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'Token de dispositivo de confianza: con él no se pide el segundo factor.',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  trustedDeviceToken?: string;
 }
 
 @InputType('SocialLoginInput')
@@ -70,6 +83,35 @@ export class SocialLoginDto implements SocialLoginRequest {
   @IsString()
   @Length(2, 5)
   lang?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  trustedDeviceToken?: string;
+}
+
+@InputType('CompleteMfaLoginInput')
+export class CompleteMfaLoginDto implements CompleteMfaLoginRequest {
+  @Field()
+  @IsString()
+  @Length(20, 200)
+  challengeToken!: string;
+
+  @Field(() => MfaMethod)
+  @IsEnum(MfaMethod)
+  method!: MfaMethod;
+
+  @Field({ description: 'Seis cifras de la app, o un código de recuperación.' })
+  @Transform(trim)
+  @IsString()
+  @Length(6, 20)
+  code!: string;
+
+  @Field(() => Boolean, { nullable: true, description: 'No volver a pedir el código en este dispositivo.' })
+  @IsOptional()
+  @IsBoolean()
+  trustDevice?: boolean;
 }
 
 @InputType('RegisterInput')
@@ -166,11 +208,42 @@ export class ChangePasswordDto implements ChangePasswordRequest {
   @Matches(/[a-zA-Z]/, { message: 'newPassword must contain at least one letter' })
   @Matches(/\d/, { message: 'newPassword must contain at least one digit' })
   newPassword!: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  @IsOptional()
+  @IsBoolean()
+  signOutOtherSessions?: boolean;
 }
 
-/** El token que llega por la cadena de consulta del enlace del correo. */
-export class VerifyEmailQueryDto {
+@InputType('ReauthInput', {
+  description: 'Confirmación de identidad: la contraseña o, sin ella, el código del segundo factor.',
+})
+export class ReauthDto implements ReauthRequest {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString()
-  @Length(10, 200)
-  token!: string;
+  @Length(1, PASSWORD_MAX)
+  password?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @Transform(trim)
+  @IsString()
+  @Length(6, 20)
+  code?: string;
+}
+
+@InputType('ConfirmTotpInput')
+export class ConfirmTotpDto {
+  @Field({ description: 'El código de seis cifras que muestra la app.' })
+  @Transform(trim)
+  @Matches(/^\d{6}$/, { message: 'code must be six digits' })
+  code!: string;
+}
+
+@InputType('RevokeSessionInput')
+export class RevokeSessionDto {
+  @Field(() => ID)
+  @IsMongoId()
+  sessionId!: string;
 }

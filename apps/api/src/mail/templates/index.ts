@@ -188,3 +188,97 @@ export function paymentConfirmationMail(params: {
     text: `Hola ${name}, hemos recibido tu pago de ${total} por el pedido n.º ${orderId}.`,
   };
 }
+
+/** De qué avisa un correo de seguridad. */
+export type SecurityAlertKind =
+  | 'new_login'
+  | 'password_changed'
+  | 'mfa_enabled'
+  | 'mfa_disabled'
+  | 'session_hijack'
+  | 'app_authorized';
+
+const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; body: string }>> = {
+  es: {
+    new_login: {
+      subject: 'Nuevo inicio de sesión en tu cuenta',
+      body: 'Alguien ha entrado en tu cuenta de Respet desde un dispositivo que no habíamos visto antes.',
+    },
+    password_changed: {
+      subject: 'Tu contraseña ha cambiado',
+      body: 'La contraseña de tu cuenta de Respet se acaba de cambiar y se han cerrado las demás sesiones.',
+    },
+    mfa_enabled: {
+      subject: 'Verificación en dos pasos activada',
+      body: 'Has activado la verificación en dos pasos. A partir de ahora te pediremos un código al iniciar sesión.',
+    },
+    mfa_disabled: {
+      subject: 'Verificación en dos pasos desactivada',
+      body: 'Se ha desactivado la verificación en dos pasos de tu cuenta de Respet.',
+    },
+    session_hijack: {
+      subject: 'Hemos cerrado una sesión sospechosa',
+      body: 'Detectamos que una sesión de tu cuenta se estaba usando desde dos sitios a la vez y la hemos cerrado por seguridad.',
+    },
+    app_authorized: {
+      subject: 'Has conectado una aplicación a tu cuenta',
+      body: 'Una aplicación de terceros tiene ahora acceso a tu cuenta de Respet con los permisos que aprobaste.',
+    },
+  },
+  en: {
+    new_login: {
+      subject: 'New sign-in to your account',
+      body: 'Someone signed in to your Respet account from a device we had not seen before.',
+    },
+    password_changed: {
+      subject: 'Your password was changed',
+      body: 'The password of your Respet account was just changed and your other sessions were signed out.',
+    },
+    mfa_enabled: {
+      subject: 'Two-step verification turned on',
+      body: 'You turned on two-step verification. From now on we will ask for a code when you sign in.',
+    },
+    mfa_disabled: {
+      subject: 'Two-step verification turned off',
+      body: 'Two-step verification was turned off for your Respet account.',
+    },
+    session_hijack: {
+      subject: 'We closed a suspicious session',
+      body: 'A session of your account was being used from two places at once, so we signed it out for your safety.',
+    },
+    app_authorized: {
+      subject: 'You connected an app to your account',
+      body: 'A third-party app now has access to your Respet account with the permissions you approved.',
+    },
+  },
+};
+
+export function securityAlertMail(params: {
+  name: string;
+  kind: SecurityAlertKind;
+  lang: Lang;
+  /** Líneas de detalle: el dispositivo, la IP, la aplicación. */
+  details: string[];
+  url: string;
+}): RenderedMail {
+  const copy = SECURITY_COPY[params.lang][params.kind];
+  const greeting = params.lang === 'en' ? `Hi ${params.name},` : `Hola ${params.name}:`;
+  const notYou =
+    params.lang === 'en'
+      ? "If it wasn't you, change your password and review your active sessions right away."
+      : 'Si no has sido tú, cambia tu contraseña y revisa tus sesiones abiertas cuanto antes.';
+  const label = params.lang === 'en' ? 'Review security' : 'Revisar la seguridad';
+  const details = params.details.map((line) => `<li>${escape(line)}</li>`).join('');
+
+  return {
+    subject: copy.subject,
+    html: layout({
+      title: copy.subject,
+      body: `<p>${escape(greeting)}</p><p>${escape(copy.body)}</p>
+             ${details ? `<ul style="color:#6b7280;font-size:14px">${details}</ul>` : ''}
+             <p>${escape(notYou)}</p>`,
+      action: { label, url: params.url },
+    }),
+    text: [greeting, copy.body, ...params.details, notYou, params.url].join('\n'),
+  };
+}

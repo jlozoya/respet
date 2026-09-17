@@ -6,10 +6,12 @@ import {
   paymentConfirmationMail,
   resetPasswordMail,
   resolveLang,
+  securityAlertMail,
   supportConfirmationMail,
   supportNotificationMail,
   verifyEmailMail,
   type RenderedMail,
+  type SecurityAlertKind,
 } from './templates/index.js';
 
 /**
@@ -64,6 +66,24 @@ export class MailService implements OnModuleDestroy {
     await this.send(
       to,
       paymentConfirmationMail({ ...params, lang: resolveLang(params.lang) }),
+    );
+  }
+
+  /**
+   * Avisa de algo que ha pasado en la seguridad de la cuenta.
+   *
+   * Lleva siempre un enlace a la pantalla de seguridad: quien no reconoce lo
+   * que le cuentan tiene que poder reaccionar en un clic.
+   */
+  async sendSecurityAlert(
+    to: string,
+    params: { name: string; lang: string; kind: SecurityAlertKind; details: string[] },
+  ): Promise<void> {
+    const url = `${this.config.getOrThrow<string>('clientUrl')}/settings/security`;
+
+    await this.send(
+      to,
+      securityAlertMail({ ...params, lang: resolveLang(params.lang), url }),
     );
   }
 

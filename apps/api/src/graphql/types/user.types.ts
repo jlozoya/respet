@@ -1,10 +1,10 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import type {
-  AuthSession,
-  AuthTokens,
+  BlockedUser,
   FollowRequest,
   FollowRequestResult,
   FollowResult,
+  OnlineContact,
   PublicProfile,
   SocialLink,
   User,
@@ -12,6 +12,7 @@ import type {
   UserEmail,
   UserPermissions,
   UserPhone,
+  UserSuggestion,
   UserSummary,
 } from '@respet/shared';
 
@@ -53,8 +54,17 @@ export class UserPermissionsType implements UserPermissions {
   @Field(() => MessagePolicy, { description: 'Quién puede escribir por primera vez.' })
   messagePolicy!: MessagePolicy;
 
-  @Field({ description: 'Con el perfil privado, seguir pasa por solicitud.' })
+  @Field({ description: 'Con el perfil privado, seguir pasa por solicitud y lo publicado es para los seguidores.' })
   privateProfile!: boolean;
+
+  @Field({ description: 'Si los demás ven cuándo está conectada.' })
+  showOnlineStatus!: boolean;
+
+  @Field(() => MessagePolicy, { description: 'Quién puede contestar a sus historias.' })
+  storyReplyPolicy!: MessagePolicy;
+
+  @Field({ description: 'Correo de aviso al entrar desde un dispositivo nuevo.' })
+  loginAlerts!: boolean;
 }
 
 @ObjectType('UserEmail')
@@ -80,7 +90,7 @@ export class UserSummaryType implements UserSummary {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field({ description: 'Nombre de usuario.' })
   name!: string;
 
   @Field()
@@ -91,6 +101,9 @@ export class UserSummaryType implements UserSummary {
 
   @Field(() => MediaType, { nullable: true })
   avatar!: MediaType | null;
+
+  @Field({ description: 'Insignia de cuenta verificada.' })
+  verified!: boolean;
 }
 
 @ObjectType('User', { description: 'Ficha completa. Nunca incluye credenciales.' })
@@ -133,6 +146,21 @@ export class UserType implements User {
 
   @Field(() => MediaType, { nullable: true })
   avatar!: MediaType | null;
+
+  @Field(() => MediaType, { nullable: true, description: 'Foto de portada.' })
+  cover!: MediaType | null;
+
+  @Field(() => String, { nullable: true })
+  bio!: string | null;
+
+  @Field(() => String, { nullable: true })
+  website!: string | null;
+
+  @Field()
+  verified!: boolean;
+
+  @Field({ description: 'Si tiene activa la verificación en dos pasos.' })
+  mfaEnabled!: boolean;
 
   @Field(() => LocationType, { nullable: true })
   location!: LocationType | null;
@@ -205,6 +233,18 @@ export class PublicProfileType implements PublicProfile {
   @Field(() => MediaType, { nullable: true })
   avatar!: MediaType | null;
 
+  @Field(() => MediaType, { nullable: true })
+  cover!: MediaType | null;
+
+  @Field(() => String, { nullable: true })
+  bio!: string | null;
+
+  @Field(() => String, { nullable: true })
+  website!: string | null;
+
+  @Field()
+  verified!: boolean;
+
   @Field(() => Int)
   postCount!: number;
 
@@ -216,6 +256,33 @@ export class PublicProfileType implements PublicProfile {
 
   @Field(() => FollowState, { nullable: true })
   followState!: FollowState | null;
+
+  @Field()
+  isPrivate!: boolean;
+
+  @Field({ description: 'Si quien mira puede ver sus publicaciones e historias.' })
+  canViewContent!: boolean;
+
+  @Field()
+  blockedByViewer!: boolean;
+
+  @Field()
+  hasActiveStory!: boolean;
+
+  @Field()
+  hasUnseenStory!: boolean;
+
+  @Field(() => Boolean, { nullable: true, description: 'Nulo si no comparte su estado.' })
+  isOnline!: boolean | null;
+
+  @Field(() => String, { nullable: true })
+  lastSeenAt!: string | null;
+
+  @Field()
+  canMessage!: boolean;
+
+  @Field(() => Int)
+  mutualFollowerCount!: number;
 
   @Field()
   createdAt!: string;
@@ -242,33 +309,45 @@ export class FollowRequestType implements FollowRequest {
   createdAt!: string;
 }
 
-@ObjectType('AuthTokens', { description: 'Par de tokens emitido al autenticarse.' })
-export class AuthTokensType implements AuthTokens {
-  @Field()
-  accessToken!: string;
-
-  @Field()
-  refreshToken!: string;
-
-  @Field()
-  tokenType!: 'Bearer';
-
-  @Field(() => Int, { description: 'Vida del `accessToken`, en segundos.' })
-  expiresIn!: number;
-}
-
-@ObjectType('AuthSession', { description: 'Los tokens y la persona a la que pertenecen.' })
-export class AuthSessionType extends AuthTokensType implements AuthSession {
-  @Field(() => UserType)
-  user!: UserType;
-}
-
-export const UserPage = Paginated(UserType, 'User');
-export const UserSummaryPage = Paginated(UserSummaryType, 'UserSummary');
-export const FollowRequestPage = Paginated(FollowRequestType, 'FollowRequest');
-
 @ObjectType('FollowRequestResult', { description: 'Seguidores tras responder una solicitud.' })
 export class FollowRequestResultType implements FollowRequestResult {
   @Field(() => Int)
   followerCount!: number;
 }
+
+@ObjectType('UserSuggestion', { description: 'Alguien que quizá conozcas.' })
+export class UserSuggestionType implements UserSuggestion {
+  @Field(() => UserSummaryType)
+  user!: UserSummaryType;
+
+  @Field(() => Int)
+  mutualCount!: number;
+
+  @Field(() => [UserSummaryType])
+  mutuals!: UserSummaryType[];
+}
+
+@ObjectType('OnlineContact', { description: 'Una persona que sigues, con su estado de conexión.' })
+export class OnlineContactType implements OnlineContact {
+  @Field(() => UserSummaryType)
+  user!: UserSummaryType;
+
+  @Field()
+  online!: boolean;
+
+  @Field(() => String, { nullable: true })
+  lastSeenAt!: string | null;
+}
+
+@ObjectType('BlockedUser')
+export class BlockedUserType implements BlockedUser {
+  @Field(() => UserSummaryType)
+  user!: UserSummaryType;
+
+  @Field()
+  blockedAt!: string;
+}
+
+export const UserPage = Paginated(UserType, 'User');
+export const UserSummaryPage = Paginated(UserSummaryType, 'UserSummary');
+export const FollowRequestPage = Paginated(FollowRequestType, 'FollowRequest');
