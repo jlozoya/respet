@@ -1,8 +1,9 @@
-import type { PostKind, VoteValue } from '../enums.js';
+import type { Audience, PostKind, ReactionType, ReportTarget } from '../enums.js';
 
 export interface CreatePostRequest {
-  description: string;
-  kind: PostKind;
+  description?: string;
+  kind?: PostKind;
+  audience?: Audience;
   location?: {
     country?: string | null;
     state?: string | null;
@@ -15,9 +16,12 @@ export interface CreatePostRequest {
   } | null;
   /** 0 = ubicación exacta; valores mayores difuminan el punto en el mapa. */
   locationAccuracy?: number;
+  /** La publicación que se comparte. */
+  sharedPostId?: string;
+  commentsDisabled?: boolean;
 }
 
-export type UpdatePostRequest = Partial<CreatePostRequest>;
+export type UpdatePostRequest = Partial<Omit<CreatePostRequest, 'sharedPostId'>>;
 
 export interface PostListQuery {
   page?: number;
@@ -25,43 +29,66 @@ export interface PostListQuery {
   search?: string;
   kind?: PostKind;
   userId?: string;
+  hashtag?: string;
   lat?: number;
   lng?: number;
   radiusKm?: number;
   /**
-   * `following` limita el muro a quienes sigue quien consulta; `discover`, el
-   * valor por defecto, lo abre a todo el mundo.
+   * `following` limita el muro a quienes sigue quien consulta; `discover`
+   * lo abre a todo el mundo, y `home` —el de portada— mezcla lo de quienes
+   * sigue con lo más destacado del resto cuando se acaba lo primero.
    */
   feed?: PostFeed;
+  /** Sólo publicaciones con fotos o vídeos: la cuadrícula del perfil y de explorar. */
+  withMediaOnly?: boolean;
 }
 
 export const PostFeed = {
+  Home: 'home',
   Discover: 'discover',
   Following: 'following',
 } as const;
 export type PostFeed = (typeof PostFeed)[keyof typeof PostFeed];
 
 /**
- * Recuento de votos de una publicación después de cambiar el propio.
+ * Reacciones de una publicación después de cambiar la propia.
  *
  * El servidor devuelve las cuentas ya hechas: si cada cliente sumara uno por su
  * cuenta, dos sesiones abiertas acabarían enseñando cifras distintas.
  */
-export interface PostVoteResult {
-  likeCount: number;
-  dislikeCount: number;
-  myVote: VoteValue | null;
+export interface ReactionResult {
+  reactionCount: number;
+  reactionSummary: { type: ReactionType; count: number }[];
+  myReaction: ReactionType | null;
 }
 
 export interface CreateCommentRequest {
   body: string;
+  /** El comentario al que se responde. */
+  parentId?: string;
 }
 
-export type UpdateCommentRequest = CreateCommentRequest;
+export interface UpdateCommentRequest {
+  body: string;
+}
 
 export interface CommentListQuery {
   page?: number;
   perPage?: number;
+  /** Las respuestas de este comentario, en lugar de los de primer nivel. */
+  parentId?: string;
+}
+
+export interface CommentLikeResult {
+  likeCount: number;
+  likedByMe: boolean;
+}
+
+/** Denuncia de cualquier cosa denunciable. */
+export interface CreateReportRequest {
+  targetType: ReportTarget;
+  targetId: string;
+  reason: string;
 }
 
 /** Denuncia de una publicación. */

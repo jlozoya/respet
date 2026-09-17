@@ -1,4 +1,5 @@
 import type {
+  Audience,
   AuthProvider,
   FollowState,
   Gender,
@@ -8,8 +9,10 @@ import type {
   PaymentProvider,
   PaymentStatus,
   PostKind,
+  ReactionType,
+  ReportStatus,
+  ReportTarget,
   UserRole,
-  VoteValue,
 } from './enums.js';
 
 /**
@@ -33,6 +36,7 @@ export interface Location {
   lng: number | null;
 }
 
+/** Un archivo: imagen, vídeo, audio o documento. */
 export interface Media {
   id: string;
   type: MediaType;
@@ -40,6 +44,14 @@ export interface Media {
   alt: string;
   width: number | null;
   height: number | null;
+  mimeType: string | null;
+  sizeBytes: number | null;
+  /** Duración de vídeos y audios, en milisegundos. */
+  durationMs: number | null;
+  /** Fotograma de portada de un vídeo. */
+  posterUrl: string | null;
+  /** Nombre con el que se descarga un documento. */
+  fileName: string | null;
 }
 
 export interface SocialLink {
@@ -58,13 +70,16 @@ export interface UserPermissions {
   /** Quién puede escribir por primera vez. */
   messagePolicy: MessagePolicy;
   /**
-   * Con el perfil privado, seguir deja de ser inmediato.
-   *
-   * Quien pulsa «Seguir» manda una solicitud y espera; hasta que se acepta no
-   * cuenta como seguidor. Lo ya publicado no se esconde: esto gobierna quién
-   * entra en la lista, no qué se puede leer.
+   * Con el perfil privado, seguir deja de ser inmediato y lo publicado sólo lo
+   * ven los seguidores aceptados.
    */
   privateProfile: boolean;
+  /** Si los demás ven cuándo está conectada. */
+  showOnlineStatus: boolean;
+  /** Quién puede contestar a sus historias. */
+  storyReplyPolicy: MessagePolicy;
+  /** Correo de aviso al entrar desde un dispositivo nuevo. */
+  loginAlerts: boolean;
 }
 
 export interface UserEmail {
@@ -92,6 +107,12 @@ export interface User {
   provider: AuthProvider;
   emailVerified: boolean;
   avatar: Media | null;
+  cover: Media | null;
+  bio: string | null;
+  website: string | null;
+  verified: boolean;
+  /** Si la cuenta tiene activo el segundo factor. */
+  mfaEnabled: boolean;
   location: Location | null;
   permissions: UserPermissions | null;
   socialLinks: SocialLink[];
@@ -114,13 +135,14 @@ export interface UserContact {
   location: Location | null;
 }
 
-/** Autor embebido en publicaciones y pedidos. */
+/** Autor embebido en publicaciones, comentarios y mensajes: lo justo para una firma. */
 export interface UserSummary {
   id: string;
   name: string;
   firstName: string;
   lastName: string;
   avatar: Media | null;
+  verified: boolean;
 }
 
 /** Cifras de seguimiento de una persona, y en qué punto está quien mira. */
@@ -144,34 +166,70 @@ export interface PublicProfile extends FollowInfo {
   firstName: string;
   lastName: string;
   avatar: Media | null;
+  cover: Media | null;
+  bio: string | null;
+  website: string | null;
+  verified: boolean;
   postCount: number;
+  /** Perfil privado: seguir es una solicitud y lo publicado se reserva a los seguidores. */
+  isPrivate: boolean;
+  /** Cierto si quien mira puede ver sus publicaciones e historias. */
+  canViewContent: boolean;
+  /** Cierto si quien mira la tiene bloqueada. */
+  blockedByViewer: boolean;
+  /** Cierto si tiene historias vigentes que quien mira puede ver. */
+  hasActiveStory: boolean;
+  /** Cierto si de esas historias queda alguna sin ver. */
+  hasUnseenStory: boolean;
+  /** Nulo si no comparte su estado o no hay sesión. */
+  isOnline: boolean | null;
+  lastSeenAt: string | null;
+  /** Cierto si quien mira puede escribirle. */
+  canMessage: boolean;
+  /** Cuántos de los que sigue quien mira la siguen a ella. */
+  mutualFollowerCount: number;
   createdAt: string;
+}
+
+/** Cuántas reacciones de un tipo tiene algo. */
+export interface ReactionCount {
+  type: ReactionType;
+  count: number;
 }
 
 export interface Post {
   id: string;
   description: string;
   kind: PostKind;
+  audience: Audience;
   locationAccuracy: number;
   author: UserSummary;
   location: Location | null;
   media: Media[];
-  likeCount: number;
-  dislikeCount: number;
+  hashtags: string[];
+  mentions: UserSummary[];
+  /** La publicación compartida, si ésta comparte otra. Nula si ya no existe o no se puede ver. */
+  sharedPost: Post | null;
+  /** Cierto si compartía algo que ya no está disponible. */
+  sharedPostUnavailable: boolean;
+  reactionCount: number;
+  /** Las reacciones presentes, de la más usada a la menos. */
+  reactionSummary: ReactionCount[];
+  /** La reacción de quien mira, o nula. */
+  myReaction: ReactionType | null;
   commentCount: number;
-  /**
-   * Voto de quien mira, o `null` si no ha votado —o si no hay sesión, que no
-   * es lo mismo que haber votado en contra—.
-   */
-  myVote: VoteValue | null;
+  shareCount: number;
+  /** Cierto si quien mira la ha guardado. */
+  saved: boolean;
+  commentsDisabled: boolean;
   /**
    * En qué punto está el seguimiento del autor, para ofrecerlo desde la propia
-   * publicación.
-   *
-   * Es `null` cuando no hay a quién referirlo: sin sesión, y en las
-   * publicaciones propias, donde seguirse a uno mismo no significa nada.
+   * publicación. Nulo sin sesión y en lo propio.
    */
   authorFollowState: FollowState | null;
+  /** Los últimos comentarios, para enseñarlos bajo la tarjeta sin abrirla. */
+  commentPreview: Comment[];
+  editedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -179,12 +237,57 @@ export interface Post {
 export interface Comment {
   id: string;
   postId: string;
+  /** El comentario al que responde; nulo en los de primer nivel. */
+  parentId: string | null;
   body: string;
   author: UserSummary;
+  mentions: UserSummary[];
+  likeCount: number;
+  likedByMe: boolean;
+  replyCount: number;
   /** Los comentarios retirados no se borran: dejarían huecos en el hilo. */
   deleted: boolean;
+  editedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+/** Quién reaccionó y con qué. */
+export interface PostReactor {
+  user: UserSummary;
+  type: ReactionType;
+  followState: FollowState | null;
+}
+
+export interface Hashtag {
+  tag: string;
+  postCount: number;
+}
+
+/** Lo que encuentra el buscador. */
+export interface SearchResults {
+  users: PublicProfile[];
+  hashtags: Hashtag[];
+  posts: Post[];
+}
+
+/** Persona bloqueada por quien consulta. */
+export interface BlockedUser {
+  user: UserSummary;
+  blockedAt: string;
+}
+
+/** Una denuncia, vista desde moderación. */
+export interface Report {
+  id: string;
+  targetType: ReportTarget;
+  targetId: string;
+  targetOwner: UserSummary | null;
+  reporter: UserSummary | null;
+  reason: string;
+  status: ReportStatus;
+  createdAt: string;
+  reviewedAt: string | null;
 }
 
 export interface Bulletin {
