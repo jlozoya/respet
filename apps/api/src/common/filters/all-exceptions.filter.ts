@@ -29,7 +29,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const { status, code, message, errors } = describeException(exception);
 
-    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+    if (status >= Number(HttpStatus.INTERNAL_SERVER_ERROR)) {
       this.logger.error(
         `${request.method} ${request.url} -> ${status} ${message}`,
         exception instanceof Error ? exception.stack : String(exception),

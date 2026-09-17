@@ -44,6 +44,37 @@ input AnalyticsQueryInput {
   to: String
 }
 
+type ApiUsagePoint {
+  errors: Int!
+  hour: String!
+  requests: Int!
+}
+
+"""Secretos recién generados. Sólo se ven esta vez."""
+type AppCredentials {
+  app: DeveloperApp!
+  clientSecret: String
+  webhookSecret: String
+}
+
+"""Quién puede ver lo publicado."""
+enum Audience {
+  followers
+  only_me
+  public
+}
+
+enum AuthMethod {
+  apple
+  facebook
+  google
+  password
+  recovery_code
+  registration
+  totp
+  trusted_device
+}
+
 """Con qué se autentica la cuenta."""
 enum AuthProvider {
   apple
@@ -58,19 +89,46 @@ type AuthSession {
 
   """Vida del `accessToken`, en segundos."""
   expiresIn: Int!
+
+  """Token opaco de renovación. Rota en cada uso."""
   refreshToken: String!
+
+  """La sesión a la que pertenecen."""
+  sessionId: ID!
   tokenType: String!
   user: User!
 }
 
-"""Par de tokens emitido al autenticarse."""
+"""Par de tokens emitido al autenticarse o renovar."""
 type AuthTokens {
   accessToken: String!
 
   """Vida del `accessToken`, en segundos."""
   expiresIn: Int!
+
+  """Token opaco de renovación. Rota en cada uso."""
   refreshToken: String!
+
+  """La sesión a la que pertenecen."""
+  sessionId: ID!
   tokenType: String!
+}
+
+"""Una aplicación que has autorizado."""
+type AuthorizedApp {
+  appId: ID!
+  createdAt: String!
+  icon: Media
+  id: ID!
+  lastUsedAt: String
+  name: String!
+  scopes: [OAuthScopeInfo!]!
+  websiteUrl: String
+}
+
+type BlockedUser {
+  blockedAt: String!
+  user: UserSummary!
 }
 
 """Aviso publicado por la administración."""
@@ -101,6 +159,31 @@ type BulletinPage {
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
+  signOutOtherSessions: Boolean = true
+}
+
+"""Un aviso del chat. `type` dice qué campos vienen rellenos."""
+type ChatEvent {
+  at: String
+  conversation: Conversation
+  conversationId: ID!
+  lastReadMessageId: ID
+  message: Message
+  type: ChatEventType!
+  typing: Boolean
+  userId: ID
+}
+
+enum ChatEventType {
+  conversation_removed
+  conversation_updated
+  delivered
+  message_created
+  message_deleted
+  message_updated
+  reactions_changed
+  read
+  typing
 }
 
 """Cobro recién abierto: la app lleva a `approvalUrl`."""
@@ -118,13 +201,29 @@ type Comment {
 
   """Los retirados no se borran: dejarían huecos en el hilo."""
   deleted: Boolean!
+  editedAt: String
   id: ID!
+  likeCount: Int!
+  likedByMe: Boolean!
+  mentions: [UserSummary!]!
+
+  """El comentario al que responde."""
+  parentId: ID
   postId: ID!
+  replyCount: Int!
   updatedAt: String!
+}
+
+type CommentLikeResult {
+  likeCount: Int!
+  likedByMe: Boolean!
 }
 
 input CommentListQueryInput {
   page: Int = 1
+
+  """Las respuestas de este comentario, en lugar de los de primer nivel."""
+  parentId: ID
   perPage: Int = 20
 }
 
@@ -134,17 +233,76 @@ type CommentPage {
   meta: PaginationMeta!
 }
 
+input CompleteMfaLoginInput {
+  challengeToken: String!
+
+  """Seis cifras de la app, o un código de recuperación."""
+  code: String!
+  method: MfaMethod!
+
+  """No volver a pedir el código en este dispositivo."""
+  trustDevice: Boolean
+}
+
+input ConfirmTotpInput {
+  """El código de seis cifras que muestra la app."""
+  code: String!
+}
+
 type Conversation {
+  archived: Boolean!
+  createdAt: String!
   id: ID!
   lastMessageAt: String
 
   """Resumen del último mensaje, para la lista."""
   lastPreview: String
+  lastSenderId: ID
+  members: [ConversationMember!]!
   muted: Boolean!
+  myRole: ConversationRole!
 
-  """La otra persona."""
-  peer: UserSummary!
+  """La otra persona, en las de dos."""
+  peer: UserSummary
+  photo: Media
+  pinned: Boolean!
+
+  """
+  Cierto si ya no se puede escribir: se salió del grupo o hay un bloqueo.
+  """
+  readOnly: Boolean!
+
+  """Nombre del grupo."""
+  title: String
+  type: ConversationType!
   unreadCount: Int!
+}
+
+input ConversationListQueryInput {
+  """Las archivadas en lugar de la bandeja."""
+  archived: Boolean
+
+  """Filtra por nombre del grupo o de la otra persona."""
+  search: String
+}
+
+type ConversationMember {
+  joinedAt: String!
+  lastReadAt: String
+  lastReadMessageId: ID
+  role: ConversationRole!
+  user: UserSummary!
+}
+
+enum ConversationRole {
+  admin
+  member
+  owner
+}
+
+enum ConversationType {
+  direct
+  group
 }
 
 input CreateBulletinInput {
@@ -156,6 +314,28 @@ input CreateBulletinInput {
 
 input CreateCommentInput {
   body: String!
+
+  """El comentario al que se responde."""
+  parentId: ID
+}
+
+input CreateDeveloperAppInput {
+  allowedScopes: [String!]
+
+  """
+  `public` para apps móviles o de navegador, que usan PKCE en lugar de secreto.
+  """
+  clientType: OAuthClientType = confidential
+  description: String
+  name: String!
+  privacyPolicyUrl: String
+  redirectUris: [String!]!
+  websiteUrl: String
+}
+
+input CreateGroupInput {
+  memberIds: [ID!]!
+  title: String!
 }
 
 input CreateOrderInput {
@@ -163,14 +343,21 @@ input CreateOrderInput {
 }
 
 input CreatePostInput {
-  description: String!
-  kind: PostKind!
+  audience: Audience = public
+  commentsDisabled: Boolean
+
+  """Puede ir vacío si la publicación lleva fotos o comparte otra."""
+  description: String
+  kind: PostKind = general
   location: LocationInput
 
   """
   Radio de difuminado en kilómetros. 0 publica la ubicación exacta; útil para no revelar un domicilio.
   """
   locationAccuracy: Int
+
+  """La publicación que se comparte."""
+  sharedPostId: ID
 }
 
 input CreateProductInput {
@@ -185,6 +372,25 @@ input CreateProductInput {
   warehouseId: ID
 }
 
+input CreateStoryInput {
+  audience: Audience = followers
+
+  """Fondo: sunset, ocean, forest, berry, night, sand, coral, mint."""
+  background: String
+
+  """Duración de un vídeo, por si el servidor no puede medirla."""
+  durationMs: Int
+
+  """Tipografía: classic, modern, typewriter, bold."""
+  font: String
+
+  """Sólo hace falta para las de texto; con archivo se deduce."""
+  kind: StoryKind
+
+  """El texto de una historia de texto, o el pie de una foto."""
+  text: String
+}
+
 input CreateSupportInput {
   email: String!
   lang: String
@@ -197,6 +403,62 @@ input CreateWarehouseInput {
   description: String
   location: LocationInput
   name: String!
+}
+
+"""Una aplicación de terceros, vista por su dueño."""
+type DeveloperApp {
+  allowedScopes: [String!]!
+  clientId: String!
+
+  """Últimos caracteres del secreto."""
+  clientSecretHint: String
+  clientType: OAuthClientType!
+  createdAt: String!
+  description: String!
+  icon: Media
+  id: ID!
+  name: String!
+  privacyPolicyUrl: String
+  rateLimitPerHour: Int!
+  redirectUris: [String!]!
+  status: OAuthAppStatus!
+  testers: [UserSummary!]!
+  updatedAt: String!
+
+  """Personas que la tienen autorizada."""
+  userCount: Int!
+  webhook: WebhookConfig!
+  websiteUrl: String
+}
+
+type DeviceInfo {
+  browser: String
+  name: String!
+  os: String
+  type: DeviceType!
+}
+
+"""Una sesión abierta en un dispositivo."""
+type DeviceSession {
+  authMethods: [AuthMethod!]!
+  createdAt: String!
+
+  """Cierto en la sesión desde la que se consulta."""
+  current: Boolean!
+  device: DeviceInfo!
+  expiresAt: String!
+  id: ID!
+  ip: String
+  lastUsedAt: String!
+  revokedAt: String
+  revokedReason: SessionEndReason
+}
+
+enum DeviceType {
+  desktop
+  mobile
+  tablet
+  unknown
 }
 
 """Solicitud de seguimiento sin responder."""
@@ -255,6 +517,73 @@ type GenderBreakdown {
   unspecified: Int!
 }
 
+type Hashtag {
+  postCount: Int!
+  tag: String!
+}
+
+type LiveComment {
+  author: UserSummary!
+  body: String!
+  createdAt: String!
+  id: ID!
+  streamId: ID!
+}
+
+"""Tramo de LiveComment, paginado por cursor."""
+type LiveCommentConnection {
+  data: [LiveComment!]!
+
+  """Cursor del siguiente tramo; nulo al final."""
+  nextCursor: String
+}
+
+"""Lo necesario para conectarse a la sala de LiveKit."""
+type LiveConnection {
+  """Dirección `wss://` del servidor de LiveKit."""
+  serverUrl: String!
+  stream: LiveStream!
+
+  """Token de LiveKit para esta sala."""
+  token: String!
+}
+
+type LiveEvent {
+  comment: LiveComment
+  reaction: String
+  streamId: ID!
+  type: LiveEventType!
+  user: UserSummary
+  viewerCount: Int
+}
+
+enum LiveEventType {
+  comment
+  ended
+  reaction
+  viewer_count
+}
+
+enum LiveStatus {
+  ended
+  live
+}
+
+"""Una emisión en directo."""
+type LiveStream {
+  audience: Audience!
+  commentCount: Int!
+  endedAt: String
+  host: UserSummary!
+  id: ID!
+  peakViewerCount: Int!
+  reactionCount: Int!
+  startedAt: String!
+  status: LiveStatus!
+  title: String!
+  viewerCount: Int!
+}
+
 """Un sitio, con o sin coordenadas."""
 type Location {
   """Ciudad o municipio."""
@@ -292,19 +621,54 @@ input LocationInput {
 input LoginInput {
   email: String!
   password: String!
+
+  """
+  Token de dispositivo de confianza: con él no se pide el segundo factor.
+  """
+  trustedDeviceToken: String
 }
 
-"""Un archivo subido, normalmente una imagen."""
+"""
+O la sesión abierta, o el reto del segundo factor; nunca las dos cosas.
+"""
+type LoginResult {
+  challenge: MfaChallenge
+  session: AuthSession
+  status: LoginStatus!
+}
+
+"""
+`mfa_required` pide completar el inicio de sesión con el segundo factor.
+"""
+enum LoginStatus {
+  authenticated
+  mfa_required
+}
+
+"""Un archivo subido: imagen, vídeo, audio o documento."""
 type Media {
   alt: String!
+
+  """Duración de vídeos y audios, en milisegundos."""
+  durationMs: Int
+
+  """Nombre con el que se descarga un documento."""
+  fileName: String
   height: Int
   id: ID!
+  mimeType: String
+
+  """Fotograma de portada de un vídeo."""
+  posterUrl: String
+  sizeBytes: Int
   type: MediaType!
   url: String!
   width: Int
 }
 
 enum MediaType {
+  audio
+  file
   image
   link
   other
@@ -312,26 +676,49 @@ enum MediaType {
 }
 
 type Message {
-  """Nulo en imágenes y en los retirados."""
+  attachments: [Media!]!
+
+  """Nulo en los mensajes sólo con adjuntos y en los retirados."""
   body: String
+  clientId: String
   conversationId: ID!
   createdAt: String!
 
   """Cierto si su autor lo retiró; el hilo lo enseña como eliminado."""
   deleted: Boolean!
+  editedAt: String
   id: ID!
   kind: MessageKind!
-  media: Media
+  reactions: [MessageReactionGroup!]!
+
+  """En los grupos, cuántos lo han leído."""
+  readCount: Int!
+  replyTo: MessageReference
   sender: UserSummary!
+  sharedPost: Post
+
+  """Sólo en los propios: enviado, entregado o leído."""
+  status: MessageStatus
+  story: StoryReference
+  system: SystemEventInfo
 }
 
 enum MessageKind {
+  audio
+  file
   image
+  post_share
+  story_reply
+  system
   text
+  video
 }
 
 input MessageListQueryInput {
-  """Devuelve los mensajes anteriores a este id, para seguir hacia atrás."""
+  """Mensajes posteriores a este, para ponerse al día."""
+  after: ID
+
+  """Mensajes anteriores a este, para seguir hacia atrás."""
   before: ID
   limit: Int = 30
 }
@@ -352,37 +739,156 @@ enum MessagePolicy {
   nobody
 }
 
+"""Las reacciones de un mensaje con el mismo emoji."""
+type MessageReactionGroup {
+  count: Int!
+  emoji: String!
+  reactedByMe: Boolean!
+  userIds: [ID!]!
+}
+
+"""Un mensaje citado encima de su respuesta."""
+type MessageReference {
+  body: String
+  deleted: Boolean!
+  id: ID!
+  kind: MessageKind!
+  sender: UserSummary!
+  thumbnail: Media
+}
+
+"""Hasta dónde ha llegado un mensaje propio: enviado, entregado o leído."""
+enum MessageStatus {
+  delivered
+  failed
+  read
+  sending
+  sent
+}
+
+"""El segundo paso pendiente de un inicio de sesión."""
+type MfaChallenge {
+  expiresAt: String!
+  methods: [MfaMethod!]!
+  token: String!
+}
+
+type MfaLoginResult {
+  accessToken: String!
+
+  """Vida del `accessToken`, en segundos."""
+  expiresIn: Int!
+
+  """Token opaco de renovación. Rota en cada uso."""
+  refreshToken: String!
+
+  """La sesión a la que pertenecen."""
+  sessionId: ID!
+  tokenType: String!
+
+  """
+  Presente si se pidió confiar en el dispositivo: hay que enviarlo en los próximos inicios.
+  """
+  trustedDeviceToken: String
+  user: User!
+}
+
+enum MfaMethod {
+  recovery_code
+  totp
+}
+
+"""Estado de la verificación en dos pasos."""
+type MfaStatus {
+  enabled: Boolean!
+  enabledAt: String
+  methods: [MfaMethod!]!
+  recoveryCodesRemaining: Int!
+  trustedDevices: [TrustedDevice!]!
+}
+
 type Mutation {
   acceptFollowRequest(id: ID!): FollowRequestResult!
+
+  """Añade un probador por nombre de usuario."""
+  addDeveloperAppTester(id: ID!, username: String!): DeveloperApp!
   addEmails(input: AddEmailsInput!): [UserEmail!]!
+  addGroupMembers(id: ID!, userIds: [ID!]!): Conversation!
   addOrderItem(id: ID!, input: AddOrderItemInput!): Order!
   addPhones(input: AddPhonesInput!): [UserPhone!]!
 
+  """Añade una foto o un vídeo a una publicación ya creada."""
+  addPostMedia(file: Upload!, id: ID!): Media!
+
+  """Añade una foto al producto, subida en la propia operación."""
+  addProductMedia(file: Upload!, id: ID!): Media!
+
+  """Aprueba la autorización y devuelve adónde volver con el código."""
+  approveOAuthAuthorization(input: OAuthAuthorizeInput!): OAuthAuthorizeResult!
+  archiveConversation(archived: Boolean!, id: ID!): Boolean!
+
+  """
+  Empieza a activar la app de autenticación. Pide confirmar la identidad.
+  """
+  beginTotpSetup(reauth: ReauthInput): TotpSetup!
+
+  """Bloquea a alguien y deshace los seguimientos entre ambos."""
+  blockUser(id: ID!): Boolean!
+
   """Cobra un pago ya aprobado, cuando PayPal devuelve al comprador."""
   capturePayment(id: ID!): Payment!
+
+  """
+  Cambia la contraseña. Por defecto cierra el resto de sesiones, no ésta.
+  """
   changePassword(input: ChangePasswordInput!): Boolean!
 
   """Inicia el cobro y devuelve el enlace de PayPal al que ir."""
   checkout(orderId: ID!): CheckoutSession!
+
+  """Vacía el hilo sólo para ti."""
+  clearConversation(id: ID!): Boolean!
+  commentOnLiveStream(body: String!, id: ID!): LiveComment!
+
+  """
+  Segundo paso: completa el inicio de sesión con el código de la app o uno de recuperación.
+  """
+  completeMfaLogin(input: CompleteMfaLoginInput!): MfaLoginResult!
+
+  """
+  Confirma la app con un código y activa la verificación. Devuelve los códigos de recuperación.
+  """
+  confirmTotpSetup(input: ConfirmTotpInput!): RecoveryCodes!
   createBulletin(input: CreateBulletinInput!): Bulletin!
   createComment(input: CreateCommentInput!, postId: ID!): Comment!
+
+  """Registra una aplicación. El secreto sólo se ve ahora."""
+  createDeveloperApp(input: CreateDeveloperAppInput!): AppCredentials!
+
+  """Crea un grupo."""
+  createGroup(input: CreateGroupInput!): Conversation!
   createOrder(input: CreateOrderInput): Order!
-  createPost(input: CreatePostInput!): Post!
+  createPost(files: [Upload!], input: CreatePostInput!): Post!
   createProduct(input: CreateProductInput!): Product!
+  createStory(file: Upload, input: CreateStoryInput): Story!
+  createStoryHighlight(input: StoryHighlightInput!): StoryHighlight!
 
   """Envía un mensaje desde el formulario de contacto."""
   createSupportTicket(input: CreateSupportInput!): SupportTicket!
   createWarehouse(input: CreateWarehouseInput!): Warehouse!
   deleteBulletin(id: ID!): Boolean!
 
-  """Retira un comentario propio."""
+  """Retira un comentario propio, o uno ajeno en una publicación propia."""
   deleteComment(id: ID!): Boolean!
+  deleteDeveloperApp(id: ID!): Boolean!
 
-  """Retira un mensaje propio."""
+  """Retira un mensaje propio para todos."""
   deleteMessage(id: ID!): Message!
 
-  """Borra la cuenta propia y todo su contenido."""
-  deleteMyAccount: Boolean!
+  """
+  Borra la cuenta propia y todo su contenido. Pide confirmar la identidad.
+  """
+  deleteMyAccount(reauth: ReauthInput!): Boolean!
 
   """Borra un pedido que aún no se ha confirmado."""
   deleteOrder(id: ID!): Boolean!
@@ -390,37 +896,122 @@ type Mutation {
 
   """Borra un producto que no aparezca en ningún pedido."""
   deleteProduct(id: ID!): Boolean!
+  deleteStory(id: ID!): Boolean!
+  deleteStoryHighlight(id: ID!): Boolean!
   deleteUser(id: ID!): Boolean!
 
   """Borra una bodega vacía."""
   deleteWarehouse(id: ID!): Boolean!
+
+  """Rechaza la autorización."""
+  denyOAuthAuthorization(input: OAuthAuthorizeInput!): OAuthAuthorizeResult!
+
+  """Desactiva la verificación en dos pasos."""
+  disableMfa(reauth: ReauthInput!): Boolean!
+
+  """Edita un mensaje propio durante los 15 minutos siguientes a enviarlo."""
+  editMessage(body: String!, id: ID!): Message!
+  endLiveStream(id: ID!): LiveStream!
+
+  """
+  Canjea un código de autorización. Equivale a `POST /oauth/token` con `authorization_code`.
+  """
+  exchangeOAuthCode(input: OAuthCodeExchangeInput!): OAuthTokenResponse!
   followUser(id: ID!): FollowResult!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
-  login(input: LoginInput!): AuthSession!
 
-  """Cierra la sesión. Sin `refreshToken`, cierra todas las abiertas."""
-  logout(everywhere: Boolean = false, refreshToken: String): Boolean!
+  """Quita un mensaje sólo de tu vista."""
+  hideMessage(id: ID!): Boolean!
 
-  """Marca la conversación como leída y devuelve el momento en que se hizo."""
+  """Entra a mirar un directo."""
+  joinLiveStream(id: ID!): LiveConnection!
+
+  """Sale de un grupo."""
+  leaveGroup(id: ID!): Boolean!
+  likeComment(id: ID!): CommentLikeResult!
+
+  """Señal de vida de quien emite, cada pocos segundos."""
+  liveStreamHeartbeat(id: ID!): LiveStream!
+
+  """
+  Primer paso del inicio de sesión. Con verificación en dos pasos devuelve un reto.
+  """
+  login(input: LoginInput!): LoginResult!
+
+  """Cierra la sesión de este dispositivo, o todas con `everywhere`."""
+  logout(everywhere: Boolean = false): Boolean!
+
+  """Marca todos los avisos como leídos."""
+  markAllNotificationsRead: Int!
+
+  """Confirma que los mensajes llegaron a este dispositivo."""
+  markConversationDelivered(id: ID!): Boolean!
+
+  """Marca la conversación como leída y devuelve el momento."""
   markConversationRead(id: ID!): String!
+
+  """Marca avisos como leídos. Devuelve los que quedan sin leer."""
+  markNotificationsRead(ids: [ID!]!): Int!
+
+  """Apunta que has visto una historia."""
+  markStoryViewed(id: ID!): Boolean!
 
   """Silencia o reactiva los avisos de una conversación."""
   muteConversation(id: ID!, muted: Boolean!): Boolean!
+  pinConversation(id: ID!, pinned: Boolean!): Boolean!
+  reactToLiveStream(emoji: String!, id: ID!): Boolean!
 
-  """Canjea un refresh token por un par nuevo."""
+  """Reacciona con un emoji. Repetir el mismo lo quita."""
+  reactToMessage(emoji: String!, id: ID!): Message!
+  reactToPost(id: ID!, type: ReactionType!): ReactionResult!
+
+  """Reacciona con un emoji; llega también por privado."""
+  reactToStory(emoji: String!, id: ID!): Story!
+
+  """
+  Renueva el token de una aplicación. Equivale a `POST /oauth/token` con `refresh_token`.
+  """
+  refreshOAuthToken(input: OAuthRefreshInput!): OAuthTokenResponse!
+
+  """Canjea un refresh token por un par nuevo. El usado deja de valer."""
   refreshTokens(refreshToken: String!): AuthTokens!
+
+  """Genera códigos de recuperación nuevos; los anteriores dejan de valer."""
+  regenerateRecoveryCodes(reauth: ReauthInput!): RecoveryCodes!
 
   """Da de alta una cuenta y abre sesión."""
   register(input: RegisterInput!): AuthSession!
+
+  """Registra este dispositivo para recibir notificaciones push."""
+  registerPushDevice(input: RegisterPushDeviceInput!): Boolean!
   rejectFollowRequest(id: ID!): FollowRequestResult!
+  removeDeveloperAppTester(id: ID!, userId: ID!): DeveloperApp!
   removeEmail(id: ID!): Boolean!
+
+  """Quita a alguien de tus seguidores sin bloquearle."""
+  removeFollower(id: ID!): FollowRequestResult!
+  removeGroupMember(id: ID!, userId: ID!): Conversation!
+  removeMyAvatar: Boolean!
+  removeMyCover: Boolean!
   removeOrderItem(id: ID!, itemId: ID!): Order!
   removePhone(id: ID!): Boolean!
   removePostMedia(id: ID!, mediaId: ID!): Boolean!
+
+  """Retira la reacción propia."""
+  removePostReaction(id: ID!): ReactionResult!
   removeProductMedia(id: ID!, mediaId: ID!): Boolean!
 
   """Desvincula una cuenta externa."""
   removeSocialLink(id: ID!): Boolean!
+  renameGroup(id: ID!, title: String!): Conversation!
+
+  """Contesta a una historia por privado."""
+  replyToStory(body: String!, id: ID!): Message!
+
+  """
+  Denuncia una publicación, comentario, persona, historia, mensaje o directo.
+  """
+  reportContent(input: ReportContentInput!): Boolean!
 
   """Denuncia una publicación para que la revisen."""
   reportPost(id: ID!, input: ReportPostInput!): Boolean!
@@ -435,20 +1026,79 @@ type Mutation {
 
   """Fija una contraseña nueva con el token del correo."""
   resetPassword(input: ResetPasswordInput!): Boolean!
-  sendMessage(conversationId: ID!, input: SendMessageInput!): Message!
+
+  """Marca una denuncia —y las iguales— como revisada o descartada."""
+  resolveReport(id: ID!, status: ReportStatus!): Boolean!
+
+  """Retira el acceso a una aplicación. Surte efecto en el acto."""
+  revokeAuthorizedApp(id: ID!): Boolean!
+
+  """Cierra todas las demás sesiones. Devuelve cuántas cerró."""
+  revokeOtherSessions: Int!
+
+  """Cierra la sesión de otro dispositivo."""
+  revokeSession(id: ID!): Boolean!
+
+  """Deja de confiar en un dispositivo, o en todos si no se indica ninguno."""
+  revokeTrustedDevice(id: ID): Boolean!
+
+  """Genera un secreto nuevo; el anterior deja de valer."""
+  rotateDeveloperAppSecret(id: ID!): AppCredentials!
+  rotateDeveloperAppWebhookSecret(id: ID!): AppCredentials!
+
+  """Guarda una publicación. Devuelve si queda guardada."""
+  savePost(id: ID!): Boolean!
+
+  """Encola una entrega de prueba."""
+  sendDeveloperAppTestWebhook(id: ID!): Boolean!
+  sendMessage(conversationId: ID!, files: [Upload!], input: SendMessageInput!): Message!
+
+  """Cambia la imagen del aviso, subida en la propia operación."""
+  setBulletinImage(file: Upload!, id: ID!): Bulletin!
+  setDeveloperAppIcon(file: Upload!, id: ID!): DeveloperApp!
+
+  """Publica la aplicación o la devuelve a desarrollo."""
+  setDeveloperAppStatus(id: ID!, status: OAuthAppStatus!): DeveloperApp!
+  setGroupAdmin(admin: Boolean!, id: ID!, userId: ID!): Conversation!
+  setGroupPhoto(file: Upload!, id: ID!): Conversation!
+
+  """Anuncia «escribiendo…» a los demás participantes."""
+  setTyping(conversationId: ID!, typing: Boolean!): Boolean!
   setUserRole(id: ID!, role: UserRole!): User!
-  socialLogin(input: SocialLoginInput!): AuthSession!
+
+  """Concede o retira la insignia de cuenta verificada."""
+  setUserVerified(id: ID!, verified: Boolean!): User!
+
+  """Cambia la imagen de la bodega, subida en la propia operación."""
+  setWarehouseImage(file: Upload!, id: ID!): Warehouse!
+  socialLogin(input: SocialLoginInput!): LoginResult!
 
   """Abre una conversación con alguien; si ya existía, devuelve la misma."""
   startConversation(userId: ID!): Conversation!
-  unfollowUser(id: ID!): FollowResult!
 
-  """Retira el voto propio, sea cual sea."""
-  unvotePost(id: ID!): PostVoteResult!
+  """Empieza un directo. Devuelve el pase para emitir."""
+  startLiveStream(input: StartLiveInput): LiveConnection!
+  unblockUser(id: ID!): Boolean!
+  unfollowUser(id: ID!): FollowResult!
+  unlikeComment(id: ID!): CommentLikeResult!
+  unregisterPushDevice(token: String!): Boolean!
+
+  """Deja de guardarla. Devuelve si queda guardada."""
+  unsavePost(id: ID!): Boolean!
   updateBulletin(id: ID!, input: UpdateBulletinInput!): Bulletin!
   updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  updateDeveloperApp(id: ID!, input: UpdateDeveloperAppInput!): DeveloperApp!
+
+  """Configura el webhook. La primera vez devuelve el secreto de firma."""
+  updateDeveloperAppWebhook(id: ID!, input: UpdateWebhookInput!): AppCredentials!
   updateLanguage(input: UpdateLanguageInput!): User!
   updateLocation(input: UpdateLocationInput!): User!
+
+  """Cambia la foto de perfil. Se sube en la propia operación."""
+  updateMyAvatar(file: Upload!): Media!
+
+  """Cambia la foto de portada."""
+  updateMyCover(file: Upload!): Media!
 
   """Edita el destino o las fechas de un pedido."""
   updateOrder(id: ID!, input: UpdateOrderInput!): Order!
@@ -462,10 +1112,154 @@ type Mutation {
   updatePost(id: ID!, input: UpdatePostInput!): Post!
   updateProduct(id: ID!, input: UpdateProductInput!): Product!
   updateProfile(input: UpdateProfileInput!): User!
+  updateStoryHighlight(id: ID!, input: StoryHighlightInput!): StoryHighlight!
+  updateUserAvatar(file: Upload!, id: ID!): Media!
   updateUserLocation(id: ID!, input: UpdateLocationInput!): User!
   updateUserProfile(id: ID!, input: UpdateProfileInput!): User!
   updateWarehouse(id: ID!, input: UpdateWarehouseInput!): Warehouse!
-  votePost(id: ID!, value: VoteValue!): PostVoteResult!
+
+  """Verifica la dirección del webhook con un reto."""
+  verifyDeveloperAppWebhook(id: ID!): DeveloperApp!
+
+  """Confirma una dirección de correo con el token del enlace."""
+  verifyEmail(token: String!): Boolean!
+}
+
+"""Un aviso: reacciones, comentarios, seguidores, directos…"""
+type Notification {
+  """Cuántas personas en total."""
+  actorCount: Int!
+
+  """Los últimos en provocarlo."""
+  actors: [UserSummary!]!
+  commentId: ID
+  createdAt: String!
+  id: ID!
+  liveStreamId: ID
+  postId: ID
+  preview: String
+  read: Boolean!
+  storyId: ID
+  thumbnail: Media
+  type: NotificationType!
+
+  """Última actividad."""
+  updatedAt: String!
+}
+
+type NotificationEvent {
+  notification: Notification
+  type: NotificationEventType!
+  unreadCount: Int!
+}
+
+enum NotificationEventType {
+  all_read
+  upserted
+}
+
+type NotificationPage {
+  data: [Notification!]!
+  nextCursor: String
+  unreadCount: Int!
+}
+
+enum NotificationType {
+  comment
+  comment_like
+  follow
+  follow_accepted
+  follow_request
+  live_started
+  mention
+  post_shared
+  reaction
+  reply
+  security_alert
+  story_reaction
+}
+
+type OAuthAppPreview {
+  description: String!
+  icon: Media
+  inDevelopment: Boolean!
+  name: String!
+  owner: UserSummary!
+  privacyPolicyUrl: String
+  websiteUrl: String
+}
+
+enum OAuthAppStatus {
+  development
+  live
+  suspended
+}
+
+"""La pantalla de «¿Autorizar esta aplicación?»."""
+type OAuthAuthorizationPreview {
+  alreadyGranted: [String!]!
+  app: OAuthAppPreview!
+  redirectUri: String!
+  requestedScopes: [OAuthScopeInfo!]!
+}
+
+"""Los parámetros de `/oauth/authorize`, tal cual llegan en la URL."""
+input OAuthAuthorizeInput {
+  clientId: String!
+  codeChallenge: String
+  codeChallengeMethod: String
+  redirectUri: String!
+  responseType: String
+  scope: String
+  state: String
+}
+
+type OAuthAuthorizeResult {
+  """Adónde llevar a la persona."""
+  redirectTo: String!
+}
+
+enum OAuthClientType {
+  confidential
+  public
+}
+
+input OAuthCodeExchangeInput {
+  clientId: String!
+  clientSecret: String
+  code: String!
+  codeVerifier: String
+  redirectUri: String!
+}
+
+input OAuthRefreshInput {
+  clientId: String!
+  clientSecret: String
+  refreshToken: String!
+}
+
+"""Un permiso con su explicación."""
+type OAuthScopeInfo {
+  description: String!
+  scope: String!
+  sensitive: Boolean!
+  title: String!
+}
+
+"""La respuesta de RFC 6749, con sus nombres."""
+type OAuthTokenResponse {
+  access_token: String!
+  expires_in: Int!
+  refresh_token: String
+  scope: String!
+  token_type: String!
+}
+
+"""Una persona que sigues, con su estado de conexión."""
+type OnlineContact {
+  lastSeenAt: String
+  online: Boolean!
+  user: UserSummary!
 }
 
 type Order {
@@ -555,8 +1349,9 @@ enum PaymentStatus {
   refunded
 }
 
-"""Una publicación del muro."""
+"""Una publicación."""
 type Post {
+  audience: Audience!
   author: UserSummary!
 
   """
@@ -564,27 +1359,47 @@ type Post {
   """
   authorFollowState: FollowState
   commentCount: Int!
+
+  """Los últimos comentarios, para enseñarlos bajo la tarjeta."""
+  commentPreview: [Comment!]!
+  commentsDisabled: Boolean!
   createdAt: String!
   description: String!
-  dislikeCount: Int!
+  editedAt: String
+  hashtags: [String!]!
   id: ID!
   kind: PostKind!
-  likeCount: Int!
   location: Location
 
   """0 publica la ubicación exacta; más difumina el punto en el mapa."""
   locationAccuracy: Int!
   media: [Media!]!
+  mentions: [UserSummary!]!
 
-  """Voto de quien mira. Nulo si no ha votado, que no es votar en contra."""
-  myVote: VoteValue
+  """La reacción de quien mira."""
+  myReaction: ReactionType
+  reactionCount: Int!
+  reactionSummary: [ReactionCount!]!
+
+  """Cierto si quien mira la ha guardado."""
+  saved: Boolean!
+  shareCount: Int!
+
+  """La publicación que comparte."""
+  sharedPost: Post
+
+  """Cierto si compartía algo que ya no está disponible."""
+  sharedPostUnavailable: Boolean!
   updatedAt: String!
 }
 
-"""`following` limita el muro a quienes sigue quien consulta."""
+"""
+`home` mezcla lo de quienes sigues con lo destacado; `following` sólo lo de quienes sigues; `discover`, todo.
+"""
 enum PostFeed {
   discover
   following
+  home
 }
 
 """Intención de una publicación: se cuenta algo, se ofrece o se pide."""
@@ -598,9 +1413,12 @@ enum PostKind {
 
 input PostListQueryInput {
   """
-  `following` limita el muro a las publicaciones de quienes sigue el usuario —y a las suyas—. Sin sesión se ignora.
+  `home` —el de portada— mezcla lo de quienes sigues con lo destacado; `following`, sólo lo de quienes sigues; `discover`, todo lo público.
   """
   feed: PostFeed
+
+  """Filtra por etiqueta, sin la almohadilla."""
+  hashtag: String
   kind: PostKind
   lat: Float
   lng: Float
@@ -615,6 +1433,9 @@ input PostListQueryInput {
 
   """Filtra por autor."""
   userId: ID
+
+  """Sólo publicaciones con fotos o vídeos."""
+  withMediaOnly: Boolean
 }
 
 """Página de Post."""
@@ -623,11 +1444,23 @@ type PostPage {
   meta: PaginationMeta!
 }
 
-"""Recuento de votos después de cambiar el propio."""
-type PostVoteResult {
-  dislikeCount: Int!
-  likeCount: Int!
-  myVote: VoteValue
+type PostReactor {
+  followState: FollowState
+  type: ReactionType!
+  user: UserSummary!
+}
+
+"""Página de PostReactor."""
+type PostReactorPage {
+  data: [PostReactor!]!
+  meta: PaginationMeta!
+}
+
+"""Alguien se ha conectado o desconectado."""
+type PresenceChange {
+  lastSeenAt: String
+  online: Boolean!
+  userId: ID!
 }
 
 type Product {
@@ -672,40 +1505,85 @@ type ProviderBreakdown {
 """Lo que puede ver cualquiera, con o sin cuenta."""
 type PublicProfile {
   avatar: Media
+  bio: String
+  blockedByViewer: Boolean!
+  canMessage: Boolean!
+
+  """Si quien mira puede ver sus publicaciones e historias."""
+  canViewContent: Boolean!
+  cover: Media
   createdAt: String!
   firstName: String!
   followState: FollowState
   followerCount: Int!
   followingCount: Int!
+  hasActiveStory: Boolean!
+  hasUnseenStory: Boolean!
   id: ID!
+
+  """Nulo si no comparte su estado."""
+  isOnline: Boolean
+  isPrivate: Boolean!
   lastName: String!
+  lastSeenAt: String
+  mutualFollowerCount: Int!
   name: String!
   postCount: Int!
+  verified: Boolean!
+  website: String
 }
 
 type Query {
   """Cifras generales."""
   analytics: Analytics!
+
+  """Aplicaciones que tienen acceso a tu cuenta."""
+  authorizedApps: [AuthorizedApp!]!
+  blockedUsers: [BlockedUser!]!
   bulletin(id: ID!): Bulletin!
 
   """Avisos publicados, del más reciente al más antiguo."""
   bulletins(query: BulletinListQueryInput): BulletinPage!
 
-  """Hilo de una publicación."""
+  """
+  Comentarios de primer nivel de una publicación, o las respuestas de uno con `parentId`.
+  """
   comments(postId: ID!, query: CommentListQueryInput): CommentPage!
   conversation(id: ID!): Conversation!
 
-  """Conversaciones del usuario, de la más reciente a la más antigua."""
-  conversations: [Conversation!]!
+  """
+  La bandeja: fijadas primero y luego de la más reciente a la más antigua.
+  """
+  conversations(query: ConversationListQueryInput): [Conversation!]!
 
   """Carrito abierto. Si no había ninguno sin confirmar, se crea uno vacío."""
   currentOrder: Order!
+  developerApp(id: ID!): DeveloperApp!
+
+  """Peticiones por hora."""
+  developerAppUsage(hours: Int = 24, id: ID!): [ApiUsagePoint!]!
+  developerAppWebhookDeliveries(id: ID!, page: Int = 1, perPage: Int = 20): WebhookDeliveryPage!
+  developerApps: [DeveloperApp!]!
+
+  """Lo más destacado del último mes, con foto o vídeo."""
+  explore(page: Int = 1, perPage: Int = 30): PostPage!
   followers(id: ID!, query: UserListQueryInput): UserSummaryPage!
   following(id: ID!, query: UserListQueryInput): UserSummaryPage!
+  liveComments(before: ID, id: ID!, limit: Int = 50): LiveCommentConnection!
+  liveStream(id: ID!): LiveStream!
+
+  """Si el servidor tiene configurados los directos."""
+  liveStreamingEnabled: Boolean!
+
+  """Directos en curso."""
+  liveStreams: [LiveStream!]!
 
   """Perfil de quien consulta."""
   me: User!
+
+  """Un tramo del hilo: con `before` hacia atrás, con `after` lo posterior."""
   messages(conversationId: ID!, query: MessageListQueryInput): MessagePage!
+  mfaStatus: MfaStatus!
   myEmails: [UserEmail!]!
 
   """Solicitudes de seguimiento que quedan por responder."""
@@ -715,36 +1593,140 @@ type Query {
   """Preferencias de privacidad."""
   myPermissions: UserPermissions!
   myPhones: [UserPhone!]!
+  mySecurityEvents(page: Int = 1, perPage: Int = 20): SecurityEventPage!
+
+  """Dispositivos con la sesión abierta, empezando por éste."""
+  mySessions: [DeviceSession!]!
+
+  """Avisos, del más reciente al más antiguo, paginados por cursor."""
+  notifications(cursor: String, limit: Int = 20): NotificationPage!
+
+  """Valida una petición de autorización y describe lo que pide."""
+  oauthAuthorizationPreview(input: OAuthAuthorizeInput!): OAuthAuthorizationPreview!
+
+  """Los permisos que puede pedir una aplicación."""
+  oauthScopes: [OAuthScopeInfo!]!
+
+  """Las personas que sigues, primero las conectadas."""
+  onlineContacts: [OnlineContact!]!
   order(id: ID!): Order!
   orderPayments(orderId: ID!): [Payment!]!
 
   """Todos los pedidos, para el personal."""
   orders(query: OrderListQueryInput): OrderPage!
   post(id: ID!): Post!
+
+  """Quién reaccionó y con qué."""
+  postReactors(id: ID!, query: ReactorListQueryInput): PostReactorPage!
   posts(query: PostListQueryInput): PostPage!
   product(id: ID!): Product!
 
   """Catálogo."""
   products(query: ProductListQueryInput): ProductPage!
 
-  """Ficha pública. Con sesión indica además si ya la sigues."""
-  publicProfile(id: ID!): PublicProfile!
-  supportTickets(query: SupportListQueryInput): SupportTicketPage!
+  """
+  Ficha pública por nombre de usuario, el que va en la dirección del perfil.
+  """
+  profileByName(name: String!): PublicProfile!
 
-  """Total de mensajes sin leer, para el distintivo del menú."""
+  """
+  Ficha pública por id. Con sesión dice además si la sigues, si tiene historias…
+  """
+  publicProfile(id: ID!): PublicProfile!
+  reports(page: Int = 1, perPage: Int = 20, status: ReportStatus): ReportPage!
+
+  """Lo que has guardado, de lo último a lo primero."""
+  savedPosts(page: Int = 1, perPage: Int = 20): PostPage!
+
+  """
+  Busca personas, etiquetas y publicaciones. Con `#` delante, sólo etiquetas.
+  """
+  search(limit: Int = 10, term: String!): SearchResults!
+  searchMessages(conversationId: ID!, term: String!): [Message!]!
+  story(id: ID!): Story!
+
+  """Todas las historias propias, caducadas incluidas."""
+  storyArchive(page: Int = 1, perPage: Int = 30): StoryPage!
+
+  """
+  La barra de historias: las propias primero, luego las de quienes sigues sin ver.
+  """
+  storyFeed: [StoryGroup!]!
+  storyHighlights(userId: ID!): [StoryHighlight!]!
+
+  """Quién ha visto una historia propia."""
+  storyViewers(id: ID!, page: Int = 1, perPage: Int = 50): StoryViewerPage!
+
+  """Personas que quizá conozcas."""
+  suggestedUsers(limit: Int = 10): [UserSuggestion!]!
+  supportTickets(query: SupportListQueryInput): SupportTicketPage!
+  trendingHashtags(limit: Int = 10): [Hashtag!]!
+
+  """Mensajes sin leer, para el distintivo del menú."""
   unreadMessageCount: Int!
+  unreadNotificationCount: Int!
 
   """Ficha completa de un usuario."""
   user(id: ID!): User!
 
   """Sólo devuelve los campos que su dueño ha decidido mostrar."""
   userContact(id: ID!): UserContact!
+
+  """Las historias vigentes de una persona."""
+  userStories(userId: ID!): [Story!]!
   users(query: UserListQueryInput): UserPage!
 
   """Altas de usuarios agrupadas por intervalo."""
   usersRegistration(query: AnalyticsQueryInput): [UsersRegistrationPoint!]!
   warehouse(id: ID!): Warehouse!
   warehouses(query: WarehouseListQueryInput): WarehousePage!
+}
+
+type ReactionCount {
+  count: Int!
+  type: ReactionType!
+}
+
+"""Reacciones tras cambiar la propia."""
+type ReactionResult {
+  myReaction: ReactionType
+  reactionCount: Int!
+  reactionSummary: [ReactionCount!]!
+}
+
+"""Las reacciones de una publicación."""
+enum ReactionType {
+  angry
+  care
+  haha
+  like
+  love
+  sad
+  wow
+}
+
+input ReactorListQueryInput {
+  page: Int = 1
+  perPage: Int = 20
+
+  """Texto libre a buscar."""
+  search: String
+
+  """Sólo quienes reaccionaron así."""
+  type: ReactionType
+}
+
+"""
+Confirmación de identidad: la contraseña o, sin ella, el código del segundo factor.
+"""
+input ReauthInput {
+  code: String
+  password: String
+}
+
+"""Códigos de recuperación. Sólo se enseñan una vez."""
+type RecoveryCodes {
+  codes: [String!]!
 }
 
 input RegisterInput {
@@ -756,9 +1738,17 @@ input RegisterInput {
   lang: String
   lastName: String!
 
-  """Nombre visible dentro de la aplicación."""
+  """Nombre de usuario; viaja en la dirección del perfil."""
   name: String!
   password: String!
+}
+
+input RegisterPushDeviceInput {
+  """`android`, `ios` o `web`."""
+  platform: String!
+
+  """Token de Firebase Cloud Messaging del dispositivo."""
+  token: String!
 }
 
 enum RegistrationInterval {
@@ -768,9 +1758,50 @@ enum RegistrationInterval {
   year
 }
 
+"""Una denuncia, vista desde moderación."""
+type Report {
+  createdAt: String!
+  id: ID!
+  reason: String!
+  reporter: UserSummary
+  reviewedAt: String
+  status: ReportStatus!
+  targetId: ID!
+  targetOwner: UserSummary
+  targetType: ReportTarget!
+}
+
+input ReportContentInput {
+  """Motivo, tal y como lo escribe quien denuncia."""
+  reason: String!
+  targetId: ID!
+  targetType: ReportTarget!
+}
+
+"""Página de Report."""
+type ReportPage {
+  data: [Report!]!
+  meta: PaginationMeta!
+}
+
 input ReportPostInput {
   """Motivo de la denuncia, tal y como lo escribe quien la envía."""
   reason: String!
+}
+
+enum ReportStatus {
+  dismissed
+  pending
+  reviewed
+}
+
+enum ReportTarget {
+  comment
+  live
+  message
+  post
+  story
+  user
 }
 
 input ResetPasswordInput {
@@ -778,8 +1809,73 @@ input ResetPasswordInput {
   token: String!
 }
 
+type SearchResults {
+  hashtags: [Hashtag!]!
+  posts: [Post!]!
+  users: [PublicProfile!]!
+}
+
+type SecurityEvent {
+  createdAt: String!
+  detail: String
+  device: DeviceInfo
+  id: ID!
+  ip: String
+  type: SecurityEventType!
+}
+
+"""Página de SecurityEvent."""
+type SecurityEventPage {
+  data: [SecurityEvent!]!
+  meta: PaginationMeta!
+}
+
+enum SecurityEventType {
+  app_authorized
+  app_revoked
+  email_changed
+  login
+  login_failed
+  logout
+  mfa_disabled
+  mfa_enabled
+  mfa_failed
+  password_changed
+  password_reset
+  recovery_code_used
+  recovery_codes_regenerated
+  refresh_reuse_detected
+  session_revoked
+  trusted_device_revoked
+}
+
 input SendMessageInput {
-  body: String!
+  body: String
+
+  """
+  Identificador del cliente: reintentar con el mismo no duplica el mensaje.
+  """
+  clientId: String
+
+  """Duración de una nota de voz, en milisegundos."""
+  durationMs: Int
+
+  """El mensaje al que se contesta."""
+  replyToId: ID
+
+  """Una publicación que se comparte por privado."""
+  sharedPostId: ID
+}
+
+enum SessionEndReason {
+  account_deleted
+  admin
+  expired
+  logout
+  mfa_changed
+  password_changed
+  reuse_detected
+  revoked_by_user
 }
 
 """Cuenta externa enlazada a la del usuario."""
@@ -795,6 +1891,106 @@ input SocialLoginInput {
 
   """idToken en Google y Apple; accessToken en Facebook."""
   token: String!
+  trustedDeviceToken: String
+}
+
+input StartLiveInput {
+  audience: Audience = public
+  title: String
+}
+
+"""Una foto, un vídeo o un texto que se ve durante un día."""
+type Story {
+  audience: Audience!
+  author: UserSummary!
+
+  """Si quien mira puede contestarla por mensaje."""
+  canReply: Boolean!
+  createdAt: String!
+  durationMs: Int!
+  expiresAt: String!
+  id: ID!
+  kind: StoryKind!
+  media: Media
+  myReaction: String
+
+  """Sólo en las propias."""
+  reactionCount: Int
+
+  """Cierto si quien mira ya la ha visto."""
+  seen: Boolean!
+  style: StoryStyle!
+  text: String
+
+  """Sólo en las propias."""
+  viewCount: Int
+}
+
+"""Las historias de una persona: un círculo de la barra."""
+type StoryGroup {
+  hasUnseen: Boolean!
+  latestAt: String!
+  stories: [Story!]!
+  user: UserSummary!
+}
+
+"""Una colección de historias fija en el perfil."""
+type StoryHighlight {
+  cover: Media
+  createdAt: String!
+  id: ID!
+  stories: [Story!]!
+  title: String!
+}
+
+input StoryHighlightInput {
+  coverStoryId: ID
+  storyIds: [ID!]!
+  title: String!
+}
+
+enum StoryKind {
+  image
+  text
+  video
+}
+
+"""Página de Story."""
+type StoryPage {
+  data: [Story!]!
+  meta: PaginationMeta!
+}
+
+"""La historia a la que contesta un mensaje."""
+type StoryReference {
+  expired: Boolean!
+  id: ID!
+  media: Media
+  text: String
+}
+
+type StoryStyle {
+  background: String!
+  font: String!
+}
+
+type StoryViewer {
+  reaction: String
+  user: UserSummary!
+  viewedAt: String!
+}
+
+"""Página de StoryViewer."""
+type StoryViewerPage {
+  data: [StoryViewer!]!
+  meta: PaginationMeta!
+}
+
+type Subscription {
+  chatEvents: ChatEvent!
+  liveStreamEvents(id: ID!): LiveEvent!
+  notificationEvents: NotificationEvent!
+  presenceChanged(userIds: [ID!]!): PresenceChange!
 }
 
 input SupportListQueryInput {
@@ -822,6 +2018,43 @@ type SupportTicketPage {
   meta: PaginationMeta!
 }
 
+"""Lo que cuenta un mensaje de sistema."""
+type SystemEventInfo {
+  action: SystemMessageAction!
+  targets: [UserSummary!]!
+  value: String
+}
+
+enum SystemMessageAction {
+  admin_granted
+  created
+  member_left
+  member_removed
+  members_added
+  photo_changed
+  renamed
+}
+
+"""Lo necesario para dar de alta la app de autenticación."""
+type TotpSetup {
+  otpauthUrl: String!
+
+  """El código QR como imagen `data:`."""
+  qrCodeDataUrl: String!
+
+  """Secreto en base32, para teclearlo si no se puede leer el QR."""
+  secret: String!
+}
+
+type TrustedDevice {
+  createdAt: String!
+  device: DeviceInfo!
+  expiresAt: String!
+  id: ID!
+  ip: String
+  lastUsedAt: String
+}
+
 input UpdateBulletinInput {
   """Fecha del aviso, en formato ISO-8601 (2026-09-10)."""
   date: String
@@ -831,6 +2064,15 @@ input UpdateBulletinInput {
 
 input UpdateCommentInput {
   body: String!
+}
+
+input UpdateDeveloperAppInput {
+  allowedScopes: [String!]
+  description: String
+  name: String
+  privacyPolicyUrl: String
+  redirectUris: [String!]
+  websiteUrl: String
 }
 
 input UpdateEmailInput {
@@ -869,6 +2111,7 @@ input UpdateOrderStateInput {
 }
 
 input UpdatePermissionsInput {
+  loginAlerts: Boolean
   messagePolicy: MessagePolicy
   privateProfile: Boolean
   receiveMailAds: Boolean
@@ -877,11 +2120,17 @@ input UpdatePermissionsInput {
   showLocation: Boolean
   showMainEmail: Boolean
   showMainPhone: Boolean
+  showOnlineStatus: Boolean
+  storyReplyPolicy: MessagePolicy
 }
 
 input UpdatePostInput {
+  audience: Audience = public
+  commentsDisabled: Boolean
+
+  """Puede ir vacío si la publicación lleva fotos o comparte otra."""
   description: String
-  kind: PostKind
+  kind: PostKind = general
   location: LocationInput
 
   """
@@ -903,6 +2152,9 @@ input UpdateProductInput {
 }
 
 input UpdateProfileInput {
+  """Presentación breve, hasta 280 caracteres."""
+  bio: String
+
   """Fecha de nacimiento, en ISO-8601."""
   birthday: String
   firstName: String
@@ -910,6 +2162,7 @@ input UpdateProfileInput {
   lastName: String
   name: String
   phone: String
+  website: String
 }
 
 input UpdateWarehouseInput {
@@ -918,10 +2171,23 @@ input UpdateWarehouseInput {
   name: String
 }
 
+input UpdateWebhookInput {
+  active: Boolean!
+  events: [String!]!
+  url: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 """Ficha completa. Nunca incluye credenciales."""
 type User {
   avatar: Media
+  bio: String
   birthday: String
+
+  """Foto de portada."""
+  cover: Media
   createdAt: String!
   email: String!
   emailVerified: Boolean!
@@ -936,6 +2202,9 @@ type User {
   lang: String!
   lastName: String!
   location: Location
+
+  """Si tiene activa la verificación en dos pasos."""
+  mfaEnabled: Boolean!
   name: String!
   permissions: UserPermissions
   phone: String
@@ -943,6 +2212,8 @@ type User {
   role: UserRole!
   socialLinks: [SocialLink!]!
   updatedAt: String!
+  verified: Boolean!
+  website: String
 }
 
 """Datos de contacto ya filtrados según lo que su dueño enseña."""
@@ -978,10 +2249,15 @@ type UserPage {
 
 """Qué enseña cada persona y quién puede acercarse."""
 type UserPermissions {
+  """Correo de aviso al entrar desde un dispositivo nuevo."""
+  loginAlerts: Boolean!
+
   """Quién puede escribir por primera vez."""
   messagePolicy: MessagePolicy!
 
-  """Con el perfil privado, seguir pasa por solicitud."""
+  """
+  Con el perfil privado, seguir pasa por solicitud y lo publicado es para los seguidores.
+  """
   privateProfile: Boolean!
   receiveMailAds: Boolean!
   showAlternativeEmails: Boolean!
@@ -989,6 +2265,12 @@ type UserPermissions {
   showLocation: Boolean!
   showMainEmail: Boolean!
   showMainPhone: Boolean!
+
+  """Si los demás ven cuándo está conectada."""
+  showOnlineStatus: Boolean!
+
+  """Quién puede contestar a sus historias."""
+  storyReplyPolicy: MessagePolicy!
 }
 
 type UserPhone {
@@ -1005,13 +2287,25 @@ enum UserRole {
   visitor
 }
 
+"""Alguien que quizá conozcas."""
+type UserSuggestion {
+  mutualCount: Int!
+  mutuals: [UserSummary!]!
+  user: UserSummary!
+}
+
 """El autor de algo: lo justo para pintar una firma."""
 type UserSummary {
   avatar: Media
   firstName: String!
   id: ID!
   lastName: String!
+
+  """Nombre de usuario."""
   name: String!
+
+  """Insignia de cuenta verificada."""
+  verified: Boolean!
 }
 
 """Página de UserSummary."""
@@ -1025,11 +2319,6 @@ type UsersRegistrationPoint {
   """Inicio del intervalo, en formato ISO-8601."""
   date: String!
   users: Int!
-}
-
-enum VoteValue {
-  down
-  up
 }
 
 """Bodega desde la que salen los pedidos."""
@@ -1055,4 +2344,34 @@ input WarehouseListQueryInput {
 type WarehousePage {
   data: [Warehouse!]!
   meta: PaginationMeta!
+}
+
+type WebhookConfig {
+  active: Boolean!
+  events: [String!]!
+  url: String
+  verifiedAt: String
+}
+
+type WebhookDelivery {
+  attempts: Int!
+  createdAt: String!
+  deliveredAt: String
+  event: String!
+  id: ID!
+  lastError: String
+  responseStatus: Int
+  status: WebhookDeliveryStatus!
+}
+
+"""Página de WebhookDelivery."""
+type WebhookDeliveryPage {
+  data: [WebhookDelivery!]!
+  meta: PaginationMeta!
+}
+
+enum WebhookDeliveryStatus {
+  delivered
+  failed
+  pending
 }

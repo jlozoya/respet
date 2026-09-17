@@ -166,23 +166,17 @@ function groupValidationMessages(messages: string[]): Record<string, string[]> {
   return grouped;
 }
 
+/** La clave que corresponde a cada estado HTTP sin una propia. */
+const CODE_BY_STATUS: ReadonlyMap<number, string> = new Map<number, string>([
+  [HttpStatus.UNAUTHORIZED, ErrorCode.Unauthorized],
+  [HttpStatus.FORBIDDEN, ErrorCode.NotEnoughRights],
+  [HttpStatus.NOT_FOUND, ErrorCode.NotFound],
+  [HttpStatus.CONFLICT, ErrorCode.Conflict],
+  [HttpStatus.PAYLOAD_TOO_LARGE, ErrorCode.FileTooLarge],
+  [HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCode.UnsupportedMedia],
+  [HttpStatus.TOO_MANY_REQUESTS, ErrorCode.TooManyRequests],
+]);
+
 function statusToCode(status: number): string {
-  switch (status) {
-    case HttpStatus.UNAUTHORIZED:
-      return ErrorCode.Unauthorized;
-    case HttpStatus.FORBIDDEN:
-      return ErrorCode.NotEnoughRights;
-    case HttpStatus.NOT_FOUND:
-      return ErrorCode.NotFound;
-    case HttpStatus.CONFLICT:
-      return ErrorCode.Conflict;
-    case HttpStatus.PAYLOAD_TOO_LARGE:
-      return ErrorCode.FileTooLarge;
-    case HttpStatus.UNSUPPORTED_MEDIA_TYPE:
-      return ErrorCode.UnsupportedMedia;
-    case HttpStatus.TOO_MANY_REQUESTS:
-      return ErrorCode.TooManyRequests;
-    default:
-      return ErrorCode.Error;
-  }
+  return CODE_BY_STATUS.get(status) ?? ErrorCode.Error;
 }

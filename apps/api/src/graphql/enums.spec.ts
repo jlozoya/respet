@@ -20,7 +20,12 @@ const enumerados = [
   ['Gender', esquema.Gender, dominio.Gender],
   ['MediaType', esquema.MediaType, dominio.MediaType],
   ['PostKind', esquema.PostKind, dominio.PostKind],
-  ['VoteValue', esquema.VoteValue, dominio.VoteValue],
+  ['ReactionType', esquema.ReactionType, dominio.ReactionType],
+  ['Audience', esquema.Audience, dominio.Audience],
+  ['ConversationType', esquema.ConversationType, dominio.ConversationType],
+  ['StoryKind', esquema.StoryKind, dominio.StoryKind],
+  ['NotificationType', esquema.NotificationType, dominio.NotificationType],
+  ['AuthMethod', esquema.AuthMethod, dominio.AuthMethod],
   ['OrderState', esquema.OrderState, dominio.OrderState],
   ['PaymentProvider', esquema.PaymentProvider, dominio.PaymentProvider],
   ['PaymentStatus', esquema.PaymentStatus, dominio.PaymentStatus],
@@ -39,7 +44,7 @@ describe('enumerados del esquema', () => {
   });
 
   it('describe los muros y los intervalos con sus propios valores', () => {
-    expect(esquema.PostFeed).toEqual({ discover: 'discover', following: 'following' });
+    expect(esquema.PostFeed).toEqual({ home: 'home', discover: 'discover', following: 'following' });
     expect(Object.keys(esquema.RegistrationInterval)).toEqual(['day', 'week', 'month', 'year']);
   });
 });

@@ -60,6 +60,28 @@ export function Paginated<T>(classRef: Type<T>, name: string): Type<{ data: T[];
   return PageType;
 }
 
+/**
+ * Construye el tipo `XConnection` de un listado por cursor.
+ *
+ * Para lo que crece mientras se lee —notificaciones, comentarios de un
+ * directo—, donde numerar páginas repetiría o saltaría elementos.
+ */
+export function CursorPaginated<T>(
+  classRef: Type<T>,
+  name: string,
+): Type<{ data: T[]; nextCursor: string | null }> {
+  @ObjectType(`${name}Connection`, { description: `Tramo de ${name}, paginado por cursor.` })
+  class ConnectionType {
+    @Field(() => [classRef])
+    data!: T[];
+
+    @Field(() => String, { nullable: true, description: 'Cursor del siguiente tramo; nulo al final.' })
+    nextCursor!: string | null;
+  }
+
+  return ConnectionType;
+}
+
 @ObjectType('Location', { description: 'Un sitio, con o sin coordenadas.' })
 export class LocationType implements Location {
   @Field(() => ID)
@@ -90,7 +112,7 @@ export class LocationType implements Location {
   lng!: number | null;
 }
 
-@ObjectType('Media', { description: 'Un archivo subido, normalmente una imagen.' })
+@ObjectType('Media', { description: 'Un archivo subido: imagen, vídeo, audio o documento.' })
 export class MediaType implements Media {
   @Field(() => ID)
   id!: string;
@@ -109,4 +131,19 @@ export class MediaType implements Media {
 
   @Field(() => Int, { nullable: true })
   height!: number | null;
+
+  @Field(() => String, { nullable: true })
+  mimeType!: string | null;
+
+  @Field(() => Int, { nullable: true })
+  sizeBytes!: number | null;
+
+  @Field(() => Int, { nullable: true, description: 'Duración de vídeos y audios, en milisegundos.' })
+  durationMs!: number | null;
+
+  @Field(() => String, { nullable: true, description: 'Fotograma de portada de un vídeo.' })
+  posterUrl!: string | null;
+
+  @Field(() => String, { nullable: true, description: 'Nombre con el que se descarga un documento.' })
+  fileName!: string | null;
 }

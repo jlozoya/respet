@@ -3,11 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import helmet from 'helmet';
 import { mkdir } from 'node:fs/promises';
+import type { ServerResponse } from 'node:http';
 
 import { AppModule } from './app.module.js';
-import { ConfiguredIoAdapter } from './common/adapters/socket-io.adapter.js';
+import { MediaService } from './media/media.service.js';
 import { StorageService } from './media/storage.service.js';
 
 async function bootstrap(): Promise<void> {
@@ -22,11 +24,11 @@ async function bootstrap(): Promise<void> {
   const isProduction = config.getOrThrow<boolean>('isProduction');
 
   app.setGlobalPrefix(prefix, {
-    // Estas rutas quedan fuera del prefijo: la primera para que los monitores
-    // la encuentren donde suelen mirar, la segunda porque las URL de las
-    // imágenes ya están guardadas en la base de datos. El esquema se sirve en
-    // `/graphql`, que tampoco lleva prefijo: lo monta el propio módulo.
-    exclude: ['health', 'graphql', 'uploads/{*path}'],
+    // Fuera del prefijo: `/graphql`, que es la API; `/health`, donde lo buscan
+    // los monitores; `/uploads`, porque las URL de las imágenes ya están
+    // guardadas en la base; y `/oauth` y `/.well-known`, donde los esperan las
+    // bibliotecas de OAuth de las aplicaciones de terceros.
+    exclude: ['health', 'graphql', 'uploads/{*path}', 'oauth/{*path}', '.well-known/{*path}'],
   });
 
   app.use(
@@ -34,25 +36,49 @@ async function bootstrap(): Promise<void> {
       // Las imágenes se sirven desde este mismo origen hacia una app en otro
       // dominio, así que la política estricta por defecto las bloquearía.
       crossOriginResourcePolicy: { policy: 'cross-origin' },
-      contentSecurityPolicy: isProduction ? undefined : false,
+      // GraphiQL carga sus hojas de estilo y scripts de una CDN.
+      contentSecurityPolicy: false,
     }),
   );
   app.use(compression());
 
   app.enableCors({
     origin: config.getOrThrow<string[]>('corsOrigins'),
-    // Casi todo va por POST a `/graphql`; el resto son las subidas de archivos
-    // y los dos enlaces que abre un navegador.
-    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
-    allowedHeaders: ['Authorization', 'Content-Type', 'Accept', 'Accept-Language'],
-    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: [
+      'Authorization',
+      'Content-Type',
+      'Accept',
+      'Accept-Language',
+      // Las subidas viajan como `multipart/form-data`, que el navegador manda
+      // sin preflight; Apollo sólo las acepta si llevan alguna de estas
+      // cabeceras, que es lo que impide que otra web las provoque a ciegas.
+      'Apollo-Require-Preflight',
+      'X-Apollo-Operation-Name',
+    ],
+    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'X-App-Usage'],
     credentials: false,
     maxAge: 86_400,
   });
 
   // Necesario detrás de un proxy inverso para que `request.ip` sea la del
-  // cliente y no la del propio proxy, de la que depende el límite de peticiones.
+  // cliente y no la del propio proxy, de la que dependen los límites.
   app.set('trust proxy', 1);
+
+  /*
+    Los archivos de las mutaciones.
+
+    Lee el formulario multipart antes de que llegue a Apollo y deja cada
+    archivo en su variable como una promesa. El tope es el del tipo de archivo
+    más grande —un vídeo—; cada operación aplica después el suyo.
+  */
+  app.use(
+    '/graphql',
+    graphqlUploadExpress({
+      maxFileSize: app.get(MediaService).maxUploadBytes,
+      maxFiles: 10,
+    }),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -73,10 +99,15 @@ async function bootstrap(): Promise<void> {
     prefix: '/uploads/',
     maxAge: '30d',
     immutable: true,
-  });
+    // Un documento adjunto se descarga, no se abre dentro de nuestro dominio.
+    setHeaders: (response: ServerResponse, path: string) => {
+      if (/\.(pdf|zip|docx|xlsx|pptx)$/i.test(path)) {
+        response.setHeader('Content-Disposition', 'attachment');
+      }
 
-  // El chat en tiempo real usa la misma lista de orígenes que el resto.
-  app.useWebSocketAdapter(new ConfiguredIoAdapter(app));
+      response.setHeader('X-Content-Type-Options', 'nosniff');
+    },
+  });
 
   app.enableShutdownHooks();
 

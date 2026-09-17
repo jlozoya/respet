@@ -74,7 +74,7 @@ export class StorageService {
    * Resuelve una clave a una ruta absoluta, comprobando que no se escape del
    * directorio raíz.
    */
-  private absolutePathOf(key: string): string {
+  absolutePathOf(key: string): string {
     const absolute = resolve(this.root, normalize(key));
 
     if (absolute !== this.root && !absolute.startsWith(this.root + sep)) {
@@ -100,4 +100,3 @@ function sanitizeExtension(value: string): string {
 function describe(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
-

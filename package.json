@@ -38,7 +38,8 @@
     "typecheck:mobile": "cd apps/mobile && npm run typecheck",
     "db:seed": "cd apps/api && npm run db:seed",
     "migrate:mongo": "cd apps/api && npm run migrate:mongo",
-    "clean": "rimraf \"apps/*/dist\" \"apps/*/www\" \"apps/*/.angular\" \"packages/*/dist\""
+    "clean": "rimraf \"apps/*/dist\" \"apps/*/www\" \"apps/*/.angular\" \"packages/*/dist\"",
+    "test:e2e": "cd apps/api && npm run test:e2e"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

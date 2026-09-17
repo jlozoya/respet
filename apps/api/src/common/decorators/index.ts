@@ -7,6 +7,7 @@ import { requestOf } from '../execution-context.js';
 export const IS_PUBLIC_KEY = 'respet:isPublic';
 export const ROLES_KEY = 'respet:roles';
 export const RATE_LIMIT_KEY = 'respet:rateLimit';
+export const SCOPES_KEY = 'respet:scopes';
 
 /** Marca una ruta como accesible sin sesión. */
 export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(IS_PUBLIC_KEY, true);
@@ -20,6 +21,16 @@ export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(IS_PUB
 export const Roles = (...roles: UserRole[]): MethodDecorator & ClassDecorator =>
   SetMetadata(ROLES_KEY, roles);
 
+/**
+ * Abre una operación a las aplicaciones de terceros que tengan esos permisos.
+ *
+ * Lo que no lo lleva sólo lo puede usar la propia aplicación: una operación
+ * nueva no queda expuesta a terceros por olvido, igual que no queda abierta
+ * sin sesión por olvidar `@Public()`. Ver `ScopesGuard`.
+ */
+export const Scopes = (...scopes: string[]): MethodDecorator & ClassDecorator =>
+  SetMetadata(SCOPES_KEY, scopes);
+
 export interface RateLimitOptions {
   /** Peticiones permitidas dentro de la ventana. */
   limit: number;
@@ -31,19 +42,27 @@ export interface RateLimitOptions {
 export const RateLimit = (options: RateLimitOptions): MethodDecorator & ClassDecorator =>
   SetMetadata(RATE_LIMIT_KEY, options);
 
+/** Una aplicación de terceros que actúa en nombre de alguien. */
+export interface ThirdPartyApp {
+  /** Id interno de la aplicación. */
+  id: string;
+  clientId: string;
+  /** Id del consentimiento del que cuelga el token. */
+  grantId: string;
+  scopes: string[];
+}
+
 /** Identidad del usuario autenticado, tal y como la deja `JwtStrategy`. */
 export interface AuthenticatedUser {
   id: string;
   email: string;
   role: UserRole;
+  /** La sesión propia desde la que se opera. Nula con un token de terceros. */
+  sessionId: string | null;
+  /** La aplicación de terceros, si la petición viene de una. */
+  app: ThirdPartyApp | null;
 }
 
-/**
- * Inyecta el usuario autenticado en un parámetro del controlador.
- *
- * `@CurrentUser()` devuelve el objeto completo y `@CurrentUser('id')` sólo esa
- * propiedad, que es lo habitual.
- */
 /**
  * Usuario autenticado en una ruta pública, o `null` si no viene ninguno.
  *
@@ -57,6 +76,12 @@ export const OptionalUser = createParamDecorator(
     requestOf(context).user ?? null,
 );
 
+/**
+ * Inyecta el usuario autenticado en un parámetro del resolutor.
+ *
+ * `@CurrentUser()` devuelve el objeto completo y `@CurrentUser('id')` sólo esa
+ * propiedad, que es lo habitual.
+ */
 export const CurrentUser = createParamDecorator(
   <K extends keyof AuthenticatedUser>(
     property: K | undefined,
@@ -71,5 +96,23 @@ export const CurrentUser = createParamDecorator(
     }
 
     return property ? user[property] : user;
+  },
+);
+
+/** Quién pide y desde dónde: lo que se apunta en sesiones y registros de seguridad. */
+export interface ClientInfo {
+  ip: string | null;
+  userAgent: string | null;
+}
+
+export const Client = createParamDecorator(
+  (_data: unknown, context: ExecutionContext): ClientInfo => {
+    const request = requestOf(context);
+    const header = request.headers?.['user-agent'];
+
+    return {
+      ip: request.ip ?? null,
+      userAgent: typeof header === 'string' ? header.slice(0, 500) : null,
+    };
   },
 );

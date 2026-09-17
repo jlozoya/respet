@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+/** Lee `true`/`false` de una variable de entorno, que siempre llega como texto. */
+const bool = (fallback: 'true' | 'false') =>
+  z
+    .string()
+    .default(fallback)
+    .transform((value) => value === 'true');
+
 /**
  * Esquema de las variables de entorno.
  *
@@ -7,66 +14,162 @@ import { z } from 'zod';
  * proceso muere de inmediato en lugar de fallar más tarde con un error opaco
  * en mitad de una petición.
  */
-const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().positive().default(3000),
-  API_PREFIX: z.string().default('api'),
+const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PORT: z.coerce.number().int().positive().default(3000),
+    API_PREFIX: z.string().default('api'),
 
-  DATABASE_URL: z.string().min(1, 'DATABASE_URL es obligatoria'),
-  /** Conexiones simultáneas del pool. */
-  DATABASE_POOL_SIZE: z.coerce.number().int().positive().max(100).default(20),
+    DATABASE_URL: z.string().min(1, 'DATABASE_URL es obligatoria'),
+    /** Conexiones simultáneas del pool. */
+    DATABASE_POOL_SIZE: z.coerce.number().int().positive().max(100).default(20),
 
-  /** URL pública de la propia API, usada para construir enlaces absolutos. */
-  APP_URL: z.url().default('http://localhost:3000'),
-  /** URL pública de la app, destino de los enlaces de los correos. */
-  CLIENT_URL: z.url().default('http://localhost:8100'),
-  /** Orígenes permitidos por CORS, separados por comas. */
-  CORS_ORIGINS: z.string().default('http://localhost:8100'),
+    /**
+     * Redis, opcional.
+     *
+     * Sin él, los avisos en tiempo real, la presencia y los límites de
+     * peticiones viven en la memoria del proceso: basta con una instancia.
+     * Con varias detrás de un balanceador hace falta, o cada una sólo vería
+     * a los clientes que tiene conectados.
+     */
+    REDIS_URL: z.string().optional(),
 
-  JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET debe tener al menos 32 caracteres'),
-  JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET debe tener al menos 32 caracteres'),
-  JWT_ACCESS_TTL: z.string().default('15m'),
-  JWT_REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(30),
+    /** URL pública de la propia API, usada para construir enlaces absolutos. */
+    APP_URL: z.url().default('http://localhost:3000'),
+    /** URL pública de la app, destino de los enlaces de los correos. */
+    CLIENT_URL: z.url().default('http://localhost:8100'),
+    /** Orígenes permitidos por CORS, separados por comas. */
+    CORS_ORIGINS: z.string().default('http://localhost:8100'),
 
-  GOOGLE_CLIENT_ID: z.string().optional(),
-  FACEBOOK_APP_ID: z.string().optional(),
-  FACEBOOK_APP_SECRET: z.string().optional(),
+    JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET debe tener al menos 32 caracteres'),
+    /**
+     * Clave con la que se firman los hash de los tokens opacos: refresh
+     * tokens, códigos de OAuth y dispositivos de confianza.
+     *
+     * Conserva el nombre de cuando el refresh token era un JWT firmado con
+     * ella, para que los `.env` que ya existen sigan sirviendo.
+     */
+    JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET debe tener al menos 32 caracteres'),
+    JWT_ACCESS_TTL: z.string().default('15m'),
+    /** Días sin usar la sesión tras los que caduca. Cada uso los renueva. */
+    JWT_REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(30),
+    /** Vida máxima de una sesión, se use o no: pasado esto hay que volver a entrar. */
+    SESSION_ABSOLUTE_TTL_DAYS: z.coerce.number().int().positive().default(180),
 
-  STORAGE_DRIVER: z.enum(['local']).default('local'),
-  STORAGE_ROOT: z.string().default('storage/uploads'),
-  /** Tamaño máximo de subida, en megabytes. */
-  UPLOAD_MAX_MB: z.coerce.number().positive().default(10),
+    /**
+     * Clave de 32 bytes, en base64, con la que se cifran los secretos TOTP.
+     *
+     * Obligatoria en producción. En desarrollo, si falta, se deriva de
+     * `JWT_REFRESH_SECRET`: cambiar esa variable dejaría entonces inservibles
+     * los segundos factores ya configurados.
+     */
+    MFA_ENCRYPTION_KEY: z.string().optional(),
+    /** Nombre con el que aparece la cuenta en la app de autenticación. */
+    MFA_ISSUER: z.string().default('Respet'),
+    /** Días que un dispositivo marcado como de confianza se salta el segundo factor. */
+    TRUSTED_DEVICE_TTL_DAYS: z.coerce.number().int().positive().default(30),
 
-  MAIL_ENABLED: z
-    .string()
-    .default('false')
-    .transform((value) => value === 'true'),
-  MAIL_HOST: z.string().default('localhost'),
-  MAIL_PORT: z.coerce.number().int().positive().default(587),
-  MAIL_SECURE: z
-    .string()
-    .default('false')
-    .transform((value) => value === 'true'),
-  MAIL_USER: z.string().optional(),
-  MAIL_PASSWORD: z.string().optional(),
-  MAIL_FROM: z.string().default('Respet <no-reply@respet.app>'),
-  /** Buzón que recibe copia de los mensajes del formulario de contacto. */
-  SUPPORT_MAIL: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    FACEBOOK_APP_ID: z.string().optional(),
+    FACEBOOK_APP_SECRET: z.string().optional(),
 
-  PAYPAL_ENABLED: z
-    .string()
-    .default('false')
-    .transform((value) => value === 'true'),
-  PAYPAL_CLIENT_ID: z.string().optional(),
-  PAYPAL_CLIENT_SECRET: z.string().optional(),
-  PAYPAL_ENVIRONMENT: z.enum(['sandbox', 'production']).default('sandbox'),
-  /** Id del webhook dado de alta en el panel de PayPal; sin él no se verifica la firma. */
-  PAYPAL_WEBHOOK_ID: z.string().optional(),
-  PAYPAL_CURRENCY: z.string().length(3).default('MXN'),
+    STORAGE_DRIVER: z.enum(['local']).default('local'),
+    STORAGE_ROOT: z.string().default('storage/uploads'),
+    /** Tamaño máximo de una imagen, en megabytes. */
+    UPLOAD_MAX_MB: z.coerce.number().positive().default(10),
+    /** Tamaño máximo de un vídeo, en megabytes. */
+    VIDEO_UPLOAD_MAX_MB: z.coerce.number().positive().default(100),
+    /** Tamaño máximo de un audio —las notas de voz—, en megabytes. */
+    AUDIO_UPLOAD_MAX_MB: z.coerce.number().positive().default(15),
+    /**
+     * Ejecutables de FFmpeg, para sacar la portada y la duración de los
+     * vídeos. Opcionales: sin ellos los vídeos se guardan igual, sólo que sin
+     * portada. La imagen de Docker los trae instalados.
+     */
+    FFMPEG_PATH: z.string().optional(),
+    FFPROBE_PATH: z.string().optional(),
 
-  THROTTLE_TTL_SECONDS: z.coerce.number().int().positive().default(60),
-  THROTTLE_LIMIT: z.coerce.number().int().positive().default(120),
-});
+    MAIL_ENABLED: bool('false'),
+    MAIL_HOST: z.string().default('localhost'),
+    MAIL_PORT: z.coerce.number().int().positive().default(587),
+    MAIL_SECURE: bool('false'),
+    MAIL_USER: z.string().optional(),
+    MAIL_PASSWORD: z.string().optional(),
+    MAIL_FROM: z.string().default('Respet <no-reply@respet.app>'),
+    /** Buzón que recibe copia de los mensajes del formulario de contacto. */
+    SUPPORT_MAIL: z.string().optional(),
+
+    PAYPAL_ENABLED: bool('false'),
+    PAYPAL_CLIENT_ID: z.string().optional(),
+    PAYPAL_CLIENT_SECRET: z.string().optional(),
+    PAYPAL_ENVIRONMENT: z.enum(['sandbox', 'production']).default('sandbox'),
+    /** Id del webhook dado de alta en el panel de PayPal; sin él no se verifica la firma. */
+    PAYPAL_WEBHOOK_ID: z.string().optional(),
+    PAYPAL_CURRENCY: z.string().length(3).default('MXN'),
+
+    THROTTLE_TTL_SECONDS: z.coerce.number().int().positive().default(60),
+    THROTTLE_LIMIT: z.coerce.number().int().positive().default(120),
+
+    /**
+     * Si el esquema se puede inspeccionar.
+     *
+     * Encendido por defecto también en producción: la API se ofrece a
+     * aplicaciones de terceros, y sin introspección no hay explorador ni
+     * generadores de tipos que valgan. Lo que protege al servidor son los
+     * límites de profundidad y de coste, no esconder el esquema.
+     */
+    GRAPHQL_INTROSPECTION: bool('true'),
+    /** Anidamiento máximo de una consulta. */
+    GRAPHQL_MAX_DEPTH: z.coerce.number().int().positive().default(12),
+    /** Coste máximo de una consulta, estimado antes de ejecutarla. */
+    GRAPHQL_MAX_COMPLEXITY: z.coerce.number().int().positive().default(5000),
+
+    /** Vida del access token de una aplicación de terceros. */
+    OAUTH_ACCESS_TTL: z.string().default('1h'),
+    /** Días que dura el refresh token de una aplicación de terceros. */
+    OAUTH_REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(60),
+    /** Peticiones por hora que puede hacer cada aplicación en nombre de cada persona. */
+    OAUTH_RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(600),
+
+    /**
+     * Servidor de LiveKit para los directos.
+     *
+     * `LIVEKIT_URL` es la dirección `wss://` a la que se conectan los
+     * clientes; `LIVEKIT_API_URL`, la `https://` que usa la API para
+     * gestionar las salas —si falta, se deduce de la primera—. Sin la clave y
+     * el secreto los directos quedan desactivados.
+     */
+    LIVEKIT_URL: z.string().optional(),
+    LIVEKIT_API_URL: z.string().optional(),
+    LIVEKIT_API_KEY: z.string().optional(),
+    LIVEKIT_API_SECRET: z.string().optional(),
+
+    /** Horas que se ve una historia. */
+    STORY_TTL_HOURS: z.coerce.number().int().positive().max(168).default(24),
+
+    /**
+     * Cuenta de servicio de Firebase, en JSON o en base64, para las
+     * notificaciones push. Opcional: sin ella sólo hay avisos dentro de la app.
+     */
+    FIREBASE_SERVICE_ACCOUNT: z.string().optional(),
+  })
+  .superRefine((env, context) => {
+    if (env.NODE_ENV === 'production' && !env.MFA_ENCRYPTION_KEY) {
+      context.addIssue({
+        code: 'custom',
+        path: ['MFA_ENCRYPTION_KEY'],
+        message: 'MFA_ENCRYPTION_KEY es obligatoria en producción',
+      });
+    }
+
+    if (env.MFA_ENCRYPTION_KEY && Buffer.from(env.MFA_ENCRYPTION_KEY, 'base64').length !== 32) {
+      context.addIssue({
+        code: 'custom',
+        path: ['MFA_ENCRYPTION_KEY'],
+        message: 'MFA_ENCRYPTION_KEY debe ser una clave de 32 bytes en base64',
+      });
+    }
+  });
 
 export type Env = z.infer<typeof envSchema>;
 
@@ -84,18 +187,29 @@ export interface AppConfig {
   clientUrl: string;
   corsOrigins: string[];
   database: { url: string; poolSize: number };
+  redis: { url?: string };
   jwt: {
     accessSecret: string;
     refreshSecret: string;
     accessTtl: string;
     refreshTtlDays: number;
   };
+  session: { idleTtlDays: number; absoluteTtlDays: number };
+  mfa: { encryptionKey?: string; issuer: string; trustedDeviceTtlDays: number };
   social: {
     googleClientId?: string;
     facebookAppId?: string;
     facebookAppSecret?: string;
   };
-  storage: { driver: 'local'; root: string; maxBytes: number };
+  storage: {
+    driver: 'local';
+    root: string;
+    maxBytes: number;
+    maxVideoBytes: number;
+    maxAudioBytes: number;
+    ffmpegPath?: string;
+    ffprobePath?: string;
+  };
   mail: {
     enabled: boolean;
     host: string;
@@ -115,6 +229,11 @@ export interface AppConfig {
     webhookId?: string;
   };
   throttle: { ttlSeconds: number; limit: number };
+  graphql: { introspection: boolean; maxDepth: number; maxComplexity: number };
+  oauth: { accessTtl: string; refreshTtlDays: number; rateLimitPerHour: number };
+  livekit: { url?: string; apiUrl?: string; apiKey?: string; apiSecret?: string };
+  stories: { ttlHours: number };
+  push: { firebaseServiceAccount?: string };
 }
 
 export function validateEnv(raw: Record<string, unknown>): Env {
@@ -128,6 +247,13 @@ export function validateEnv(raw: Record<string, unknown>): Env {
   }
 
   return parsed.data;
+}
+
+const megabytes = (value: number): number => Math.round(value * 1024 * 1024);
+
+/** De `wss://host` a `https://host`: la API de LiveKit escucha en el mismo sitio. */
+function httpUrlOf(websocketUrl: string | undefined): string | undefined {
+  return websocketUrl?.replace(/^ws(s?):/, 'http$1:');
 }
 
 export function buildConfig(): AppConfig {
@@ -144,11 +270,21 @@ export function buildConfig(): AppConfig {
       .map((origin) => origin.trim())
       .filter(Boolean),
     database: { url: env.DATABASE_URL, poolSize: env.DATABASE_POOL_SIZE },
+    redis: { url: env.REDIS_URL || undefined },
     jwt: {
       accessSecret: env.JWT_ACCESS_SECRET,
       refreshSecret: env.JWT_REFRESH_SECRET,
       accessTtl: env.JWT_ACCESS_TTL,
       refreshTtlDays: env.JWT_REFRESH_TTL_DAYS,
+    },
+    session: {
+      idleTtlDays: env.JWT_REFRESH_TTL_DAYS,
+      absoluteTtlDays: Math.max(env.SESSION_ABSOLUTE_TTL_DAYS, env.JWT_REFRESH_TTL_DAYS),
+    },
+    mfa: {
+      encryptionKey: env.MFA_ENCRYPTION_KEY,
+      issuer: env.MFA_ISSUER,
+      trustedDeviceTtlDays: env.TRUSTED_DEVICE_TTL_DAYS,
     },
     social: {
       googleClientId: env.GOOGLE_CLIENT_ID,
@@ -158,7 +294,11 @@ export function buildConfig(): AppConfig {
     storage: {
       driver: env.STORAGE_DRIVER,
       root: env.STORAGE_ROOT,
-      maxBytes: Math.round(env.UPLOAD_MAX_MB * 1024 * 1024),
+      maxBytes: megabytes(env.UPLOAD_MAX_MB),
+      maxVideoBytes: megabytes(env.VIDEO_UPLOAD_MAX_MB),
+      maxAudioBytes: megabytes(env.AUDIO_UPLOAD_MAX_MB),
+      ffmpegPath: env.FFMPEG_PATH || undefined,
+      ffprobePath: env.FFPROBE_PATH || undefined,
     },
     mail: {
       enabled: env.MAIL_ENABLED,
@@ -179,5 +319,23 @@ export function buildConfig(): AppConfig {
       webhookId: env.PAYPAL_WEBHOOK_ID,
     },
     throttle: { ttlSeconds: env.THROTTLE_TTL_SECONDS, limit: env.THROTTLE_LIMIT },
+    graphql: {
+      introspection: env.GRAPHQL_INTROSPECTION,
+      maxDepth: env.GRAPHQL_MAX_DEPTH,
+      maxComplexity: env.GRAPHQL_MAX_COMPLEXITY,
+    },
+    oauth: {
+      accessTtl: env.OAUTH_ACCESS_TTL,
+      refreshTtlDays: env.OAUTH_REFRESH_TTL_DAYS,
+      rateLimitPerHour: env.OAUTH_RATE_LIMIT_PER_HOUR,
+    },
+    livekit: {
+      url: env.LIVEKIT_URL || undefined,
+      apiUrl: env.LIVEKIT_API_URL || httpUrlOf(env.LIVEKIT_URL || undefined),
+      apiKey: env.LIVEKIT_API_KEY || undefined,
+      apiSecret: env.LIVEKIT_API_SECRET || undefined,
+    },
+    stories: { ttlHours: env.STORY_TTL_HOURS },
+    push: { firebaseServiceAccount: env.FIREBASE_SERVICE_ACCOUNT || undefined },
   };
 }

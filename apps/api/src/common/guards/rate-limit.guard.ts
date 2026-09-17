@@ -62,7 +62,7 @@ export class RateLimitGuard implements CanActivate {
 
     if (current.hits > options.limit) {
       const retryAfter = Math.ceil((current.resetAt - now) / 1000);
-      response.setHeader('Retry-After', retryAfter);
+      response?.setHeader('Retry-After', retryAfter);
       this.setHeaders(response, options.limit, 0, current.resetAt);
 
       throw new AppException(
@@ -92,7 +92,11 @@ export class RateLimitGuard implements CanActivate {
     }
   }
 
-  private setHeaders(response: Response, limit: number, remaining: number, resetAt: number): void {
+  private setHeaders(response: Response | null, limit: number, remaining: number, resetAt: number): void {
+    if (!response) {
+      return;
+    }
+
     response.setHeader('X-RateLimit-Limit', limit);
     response.setHeader('X-RateLimit-Remaining', Math.max(0, remaining));
     response.setHeader('X-RateLimit-Reset', Math.ceil(resetAt / 1000));

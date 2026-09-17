@@ -23,6 +23,30 @@ export const ErrorCode = {
   WrongSocialLinkId: 'SERVER.WRONG_SOCIAL_LINK_ID',
   SocialLinkDeleted: 'SERVER.SOCIAL_LINK_DELETED',
 
+  AccountLocked: 'SERVER.ACCOUNT_LOCKED',
+  InvalidMfaCode: 'SERVER.INVALID_MFA_CODE',
+  MfaAlreadyEnabled: 'SERVER.MFA_ALREADY_ENABLED',
+  MfaNotEnabled: 'SERVER.MFA_NOT_ENABLED',
+  ReauthRequired: 'SERVER.REAUTH_REQUIRED',
+  /** Dos pestañas renovaron a la vez: basta con reintentar con el token guardado. */
+  RefreshRace: 'SERVER.REFRESH_RACE',
+  SessionRevoked: 'SERVER.SESSION_REVOKED',
+
+  Blocked: 'SERVER.BLOCKED',
+  PrivateContent: 'SERVER.PRIVATE_CONTENT',
+  CommentsDisabled: 'SERVER.COMMENTS_DISABLED',
+  NotAMember: 'SERVER.NOT_A_MEMBER',
+  LiveNotConfigured: 'SERVER.LIVE_NOT_CONFIGURED',
+  LiveAlreadyActive: 'SERVER.LIVE_ALREADY_ACTIVE',
+  StoryExpired: 'SERVER.STORY_EXPIRED',
+
+  InvalidClient: 'SERVER.INVALID_CLIENT',
+  InvalidGrant: 'SERVER.INVALID_GRANT',
+  InvalidScope: 'SERVER.INVALID_SCOPE',
+  InvalidRedirectUri: 'SERVER.INVALID_REDIRECT_URI',
+  InsufficientScope: 'SERVER.INSUFFICIENT_SCOPE',
+  QueryTooComplex: 'SERVER.QUERY_TOO_COMPLEX',
+
   NotFound: 'SERVER.NOT_FOUND',
   ValidationFailed: 'SERVER.VALIDATION_FAILED',
   Conflict: 'SERVER.CONFLICT',
@@ -66,6 +90,11 @@ export class AppException extends HttpException {
 
   static forbidden(message = 'Insufficient permissions'): AppException {
     return new AppException(ErrorCode.NotEnoughRights, HttpStatus.FORBIDDEN, message);
+  }
+
+  /** Prohibido con una clave propia, más precisa que «sin permisos». */
+  static forbiddenWith(code: ErrorCode, message: string): AppException {
+    return new AppException(code, HttpStatus.FORBIDDEN, message);
   }
 
   static notFound(resource: string): AppException {
