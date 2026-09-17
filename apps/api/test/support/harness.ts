@@ -140,7 +140,9 @@ export async function startHarness(): Promise<Harness> {
     upload,
     ws,
     close: async () => {
-      await Promise.all(clients.map((client) => client.dispose()));
+      for (const client of clients) {
+        await client.dispose();
+      }
       await app.close();
     },
   };
@@ -169,10 +171,10 @@ export function nextEvent<T>(
       { query, variables },
       {
         next: (result) => {
-          if (result.data && match(result.data as T)) {
+          if (result.data && match(result.data)) {
             clearTimeout(timer);
             unsubscribe();
-            resolve(result.data as T);
+            resolve(result.data);
           }
         },
         error: (error) => {

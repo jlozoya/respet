@@ -192,7 +192,7 @@ describe('publicaciones, reacciones y avisos', () => {
     expect(result.errors).toBeUndefined();
     postId = result.data!.createPost.id;
     expect(result.data!.createPost.media).toHaveLength(1);
-    expect(result.data!.createPost.media[0]!.url).toMatch(/\.webp$/);
+    expect(result.data!.createPost.media[0].url).toMatch(/\.webp$/);
     expect(result.data!.createPost.hashtags).toEqual(['respet']);
   });
 
@@ -228,7 +228,7 @@ describe('publicaciones, reacciones y avisos', () => {
 
     const received = await event.promise;
 
-    expect(received.notificationEvents.notification.actors[0]!.id).toBe(bruno.id);
+    expect(received.notificationEvents.notification.actors[0].id).toBe(bruno.id);
   });
 
   it('cuenta comentarios y respuestas y los enseña bajo la tarjeta', async () => {
@@ -251,7 +251,7 @@ describe('publicaciones, reacciones y avisos', () => {
     );
 
     expect(post.data!.post.commentCount).toBe(2);
-    expect(post.data!.post.commentPreview[0]!.replyCount).toBe(1);
+    expect(post.data!.post.commentPreview[0].replyCount).toBe(1);
   });
 
   it('respeta la privacidad: con el perfil privado sólo lo ven los seguidores', async () => {
@@ -277,7 +277,7 @@ describe('publicaciones, reacciones y avisos', () => {
 
     await h.gql(
       'mutation($id: ID!) { acceptFollowRequest(id: $id) { followerCount } }',
-      { id: requests.data!.myFollowRequests.data[0]!.id },
+      { id: requests.data!.myFollowRequests.data[0].id },
       ana.token,
     );
 
@@ -422,7 +422,7 @@ describe('API para terceros', () => {
 
     const authorized = await h.gql<{ authorizedApps: { id: string }[] }>('{ authorizedApps { id } }', {}, bruno.token);
 
-    await h.gql('mutation($id: ID!) { revokeAuthorizedApp(id: $id) }', { id: authorized.data!.authorizedApps[0]!.id }, bruno.token);
+    await h.gql('mutation($id: ID!) { revokeAuthorizedApp(id: $id) }', { id: authorized.data!.authorizedApps[0].id }, bruno.token);
 
     const revoked = await h.gql('{ me { id } }', {}, tokens.access_token);
 

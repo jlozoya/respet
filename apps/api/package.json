@@ -21,7 +21,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "migrate:mongo": "tsx scripts/migrate-mysql-to-mongo.ts",
     "clean": "rimraf dist",
-    "test:e2e": "vitest run -c vitest.e2e.config.ts"
+    "test:e2e": "vitest run -c vitest.e2e.config.ts",
+    "migrate:social": "tsx scripts/migrate-social.ts"
   },
   "dependencies": {
     "@apollo/server": "^5.5.1",

@@ -22,6 +22,8 @@ import { dirname, resolve } from 'node:path';
 import mongoose from 'mongoose';
 import sharp from 'sharp';
 
+import { migrateToSocial } from './social-migration.js';
+
 const envFile = resolve(import.meta.dirname, '..', '.env');
 
 if (existsSync(envFile)) {
@@ -408,33 +410,33 @@ async function main(): Promise<void> {
 
       console.log(`  ${comentarios.length} comentarios`);
 
-      // --- Votos ------------------------------------------------------------
-      // Mezclados a favor y en contra, para que los contadores no salgan todos
-      // a cero y se vea cómo queda la tarjeta con cifras de verdad.
-      const votos = [
-        { post: 0, quien: marta, value: 'up' },
-        { post: 0, quien: kike, value: 'up' },
-        { post: 1, quien: usuario, value: 'up' },
-        { post: 1, quien: kike, value: 'up' },
-        { post: 1, quien: admin, value: 'up' },
-        { post: 2, quien: usuario, value: 'up' },
-        { post: 3, quien: kike, value: 'up' },
-        { post: 5, quien: marta, value: 'down' },
-        { post: 6, quien: kike, value: 'down' },
-        { post: 6, quien: marta, value: 'up' },
+      // --- Reacciones -------------------------------------------------------
+      // Variadas, para que los contadores no salgan todos a cero y se vea cómo
+      // queda la tarjeta con varias reacciones distintas.
+      const reacciones = [
+        { post: 0, quien: marta, type: 'like' },
+        { post: 0, quien: kike, type: 'love' },
+        { post: 1, quien: usuario, type: 'love' },
+        { post: 1, quien: kike, type: 'like' },
+        { post: 1, quien: admin, type: 'wow' },
+        { post: 2, quien: usuario, type: 'like' },
+        { post: 3, quien: kike, type: 'care' },
+        { post: 5, quien: marta, type: 'haha' },
+        { post: 6, quien: kike, type: 'sad' },
+        { post: 6, quien: marta, type: 'like' },
       ];
 
-      for (const voto of votos) {
-        await db.collection('post_votes').insertOne({
-          postId: creadas[voto.post],
-          userId: voto.quien,
-          value: voto.value,
+      for (const reaccion of reacciones) {
+        await db.collection('post_reactions').insertOne({
+          postId: creadas[reaccion.post],
+          userId: reaccion.quien,
+          type: reaccion.type,
           createdAt: ahora,
           updatedAt: ahora,
         });
       }
 
-      console.log(`  ${votos.length} votos`);
+      console.log(`  ${reacciones.length} reacciones`);
     } else {
       console.log('  publicaciones de ejemplo: ya estaban');
     }
@@ -518,6 +520,11 @@ async function main(): Promise<void> {
     } else {
       console.log('  conversaciones: ya había, no se tocan');
     }
+
+    // Los documentos de arriba se escriben a mano; la migración les pone las
+    // cifras, claves y campos que dejaría la API, igual que a una base antigua.
+    console.log('\nNormalizando…');
+    await migrateToSocial(db, (line) => console.log(line));
 
     console.log(`\nListo. Todas las cuentas usan la contraseña: ${SEED_PASSWORD}`);
   } finally {
