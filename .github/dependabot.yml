@@ -1,0 +1,26 @@
+# Actualizaciones de dependencias.
+#
+# Una pull request por semana con lo que haya salido, agrupando lo menor y los
+# parches para no llenar la lista. Cada una pasa por el CI antes de combinarse.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      menores:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: docker
+    directories:
+      - /apps/api
+      - /apps/mobile
+    schedule:
+      interval: monthly

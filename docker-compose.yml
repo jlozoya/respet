@@ -44,5 +44,27 @@ services:
       retries: 20
       start_period: 10s
 
+  # Reparte los avisos en tiempo real entre varias instancias de la API. En
+  # desarrollo es opcional: sin `REDIS_URL` la API los guarda en memoria.
+  redis:
+    image: redis:8-alpine
+    container_name: respet-redis
+    restart: unless-stopped
+    ports:
+      - '6380:6379'
+
+  # Servidor de vídeo para los directos, en modo desarrollo: clave `devkey`,
+  # secreto `secret`, y todo el tráfico WebRTC por un único puerto UDP para no
+  # tener que abrir un rango entero en Docker.
+  livekit:
+    image: livekit/livekit-server:v1.9
+    container_name: respet-livekit
+    restart: unless-stopped
+    command: ['--dev', '--bind', '0.0.0.0', '--node-ip', '127.0.0.1']
+    ports:
+      - '7880:7880'
+      - '7881:7881'
+      - '7882:7882/udp'
+
 volumes:
   mongo-data:

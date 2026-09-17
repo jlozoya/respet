@@ -1,0 +1,20 @@
+# Configuración de LiveKit, el servidor de vídeo de los directos.
+#
+# Las claves no van aquí: las pone `LIVEKIT_KEYS` desde el `.env`, las mismas
+# que usa la API para firmar los pases de las salas.
+
+port: 7880
+log_level: info
+
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 50200
+  # Descubre la IP pública del servidor para anunciarla a los clientes.
+  use_external_ip: true
+
+room:
+  # Una sala vacía se cierra sola a los dos minutos; la API la crea al empezar
+  # el directo y la cierra al terminarlo.
+  empty_timeout: 120
+  max_participants: 5000

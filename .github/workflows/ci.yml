@@ -1,0 +1,113 @@
+# Integración continua.
+#
+# Se ejecuta en cada rama y en cada pull request. Tres trabajos en paralelo:
+#
+# - checks: tipos, lint y pruebas unitarias de los tres paquetes.
+# - e2e:    la API entera contra un Mongo de verdad, recorriendo sesiones,
+#           2FA, subidas, chat, historias y OAuth por GraphQL.
+# - build:  compila API y aplicación como se compilan para desplegar.
+#
+# `deploy.yml` sólo publica lo que ha pasado por aquí.
+
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+  checks:
+    name: Tipos, lint y pruebas unitarias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar los contratos compartidos
+        run: npm run build:shared
+
+      - name: Comprobar tipos
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Pruebas unitarias de la API
+        run: npm run test:api
+
+  e2e:
+    name: Pruebas de extremo a extremo
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar los contratos compartidos
+        run: npm run build:shared
+
+      - name: Ejecutar
+        run: npm run test:e2e
+        env:
+          E2E_DATABASE_URL: mongodb://127.0.0.1:27017/respet_e2e?directConnection=true
+
+      - name: El esquema versionado coincide con el código
+        # Al arrancar, la API reescribe `schema.gql` a partir de las clases. Si
+        # el del repositorio no coincide, alguien cambió el contrato público
+        # sin que se viera en la revisión.
+        run: git diff --exit-code -- apps/api/schema.gql
+
+  build:
+    name: Compilación
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar
+        run: |
+          npm run build:shared
+          npm run build:api
+          npm run build:mobile

@@ -1,4 +1,4 @@
-import type { Environment } from './environment.model';
+import { runtimeEnvironment, type Environment } from './environment.model';
 
 /**
  * Configuración de desarrollo.
@@ -6,15 +6,13 @@ import type { Environment } from './environment.model';
  * `environment.prod.ts` la sustituye al compilar para producción, según el
  * `fileReplacements` de `angular.json`.
  *
- * Ya no hay `OAUTH_CLIENT_ID` ni `OAUTH_CLIENT_SECRET`: el backend anterior
- * exigía un secreto de cliente que viajaba dentro del binario de la app, de
- * modo que cualquiera podía extraerlo. Con la autenticación por JWT el cliente
- * no necesita guardar ningún secreto.
+ * La aplicación no guarda ningún secreto: la autenticación va con tokens que
+ * emite la API al iniciar sesión.
  */
 export const environment: Environment = {
   production: false,
   mainUrl: '/',
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: 'http://localhost:3000',
   graphqlUrl: 'http://localhost:3000/graphql',
   googleMapsApiKey: '',
   googleClientId: '',
@@ -24,4 +22,5 @@ export const environment: Environment = {
   publicMail: 'jlozoya1995@gmail.com',
   defaultLanguage: 'es',
   supportedLanguages: ['es', 'en'],
+  ...runtimeEnvironment(),
 };

@@ -1,0 +1,123 @@
+# Despliegue de producción en un servidor con Docker.
+#
+# El flujo `deploy.yml` copia esta carpeta al servidor y ejecuta:
+#
+#   docker compose pull && docker compose up -d
+#
+# Todo va detrás de Caddy, que pide y renueva los certificados HTTPS solo:
+#
+#   https://$DOMAIN        la aplicación web
+#   https://$API_DOMAIN    la API (GraphQL, suscripciones, archivos, OAuth)
+#   https://$LIVE_DOMAIN   la señalización de LiveKit para los directos
+#
+# Las variables salen de `.env` junto a este archivo; `.env.example` las
+# describe todas.
+
+name: respet
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      DOMAIN: ${DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      LIVE_DOMAIN: ${LIVE_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+      - web
+
+  api:
+    image: ${API_IMAGE:-ghcr.io/jlozoya/respet-api:latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: mongodb://mongo:27017/respet?replicaSet=rs0
+      REDIS_URL: redis://redis:6379
+      APP_URL: https://${API_DOMAIN}
+      CLIENT_URL: https://${DOMAIN}
+      LIVEKIT_URL: wss://${LIVE_DOMAIN}
+      # La API habla con LiveKit por la red interna, sin salir a Internet.
+      LIVEKIT_API_URL: http://livekit:7880
+      STORAGE_ROOT: /data/uploads
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    image: ${WEB_IMAGE:-ghcr.io/jlozoya/respet-web:latest}
+    restart: unless-stopped
+    environment:
+      RESPET_API_URL: https://${API_DOMAIN}
+      RESPET_GRAPHQL_URL: https://${API_DOMAIN}/graphql
+      RESPET_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      RESPET_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+      RESPET_FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-}
+
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    command: ['--replSet', 'rs0', '--bind_ip_all']
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      # Inicia el conjunto de réplica la primera vez y, a partir de ahí, sólo
+      # comprueba que el nodo sea primario. Mongo sólo ofrece transacciones en
+      # «replica set», y el inventario de la tienda las necesita.
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { db.hello().isWritablePrimary || quit(1) } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }); quit(1) }"
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  livekit:
+    image: livekit/livekit-server:v1.9
+    restart: unless-stopped
+    command: ['--config', '/etc/livekit.yaml']
+    environment:
+      LIVEKIT_KEYS: '${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}'
+    ports:
+      # El vídeo va por UDP directamente al servidor, sin pasar por Caddy. Hay
+      # que abrir estos puertos en el cortafuegos.
+      - '7881:7881'
+      - '50000-50200:50000-50200/udp'
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+
+volumes:
+  caddy-data:
+  caddy-config:
+  uploads:
+  mongo-data:
+  redis-data:

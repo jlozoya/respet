@@ -1,0 +1,30 @@
+# Proxy inverso con HTTPS automático.
+#
+# Caddy pide los certificados a Let's Encrypt la primera vez que recibe tráfico
+# para cada dominio y los renueva solo. Los WebSocket —las suscripciones de
+# GraphQL y la señalización de LiveKit— pasan sin configuración extra.
+
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:80
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# Los vídeos suben dentro de las mutaciones: el tope general es el del
+	# vídeo más grande que admite la API, más margen para el formulario.
+	request_body {
+		max_size 120MB
+	}
+
+	reverse_proxy api:3000
+}
+
+{$LIVE_DOMAIN} {
+	reverse_proxy livekit:7880
+}

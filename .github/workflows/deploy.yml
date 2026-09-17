@@ -1,0 +1,140 @@
+# Publicación y despliegue.
+#
+# Cuando el CI termina bien sobre `master`, se construyen las imágenes de la API
+# y de la web, se publican en GitHub Container Registry y, si el servidor está
+# configurado, se despliegan con `docker compose`.
+#
+# Para activar el despliegue, en Settings → Environments → production:
+#
+#   Variables:  DEPLOY_HOST      IP o nombre del servidor
+#               DEPLOY_USER      usuario SSH con permiso para usar Docker
+#               DEPLOY_PATH      carpeta del despliegue, p. ej. /opt/respet
+#               API_DOMAIN       para comprobar que la API responde tras desplegar
+#   Secretos:   DEPLOY_SSH_KEY   clave privada SSH de ese usuario
+#               GHCR_READ_TOKEN  token con `read:packages`, si los paquetes son privados
+#
+# En el servidor tiene que existir `$DEPLOY_PATH/.env` (ver deploy/.env.example).
+# Sin DEPLOY_HOST el flujo publica las imágenes y se detiene ahí.
+
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    name: Imagen ${{ matrix.image }}
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: respet-api
+            dockerfile: apps/api/Dockerfile
+          - image: respet-web
+            dockerfile: apps/mobile/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+  deploy:
+    name: Desplegar
+    needs: images
+    runs-on: ubuntu-latest
+    environment: production
+    if: vars.DEPLOY_HOST != ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Etiqueta de la versión
+        id: version
+        run: echo "tag=sha-$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Copiar la configuración al servidor
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          username: ${{ vars.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: deploy/docker-compose.yml,deploy/Caddyfile,deploy/livekit.yaml
+          target: ${{ vars.DEPLOY_PATH }}
+          strip_components: 1
+
+      - name: Actualizar los contenedores
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          OWNER: ${{ github.repository_owner }}
+          TAG: ${{ steps.version.outputs.tag }}
+          GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          username: ${{ vars.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: OWNER,TAG,GHCR_READ_TOKEN,GHCR_USER,DEPLOY_PATH
+          script_stop: true
+          script: |
+            cd "$DEPLOY_PATH"
+            if [ -n "$GHCR_READ_TOKEN" ]; then
+              echo "$GHCR_READ_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            fi
+            export API_IMAGE="ghcr.io/$OWNER/respet-api:$TAG"
+            export WEB_IMAGE="ghcr.io/$OWNER/respet-web:$TAG"
+            docker compose pull api web
+            docker compose up -d --remove-orphans
+            docker image prune -f
+
+      - name: Comprobar que la API responde
+        if: vars.API_DOMAIN != ''
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl -fsS "https://${{ vars.API_DOMAIN }}/health" | grep -q '"status":"ok"'; then
+              echo "La API responde"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::La API no respondió tras el despliegue"
+          exit 1

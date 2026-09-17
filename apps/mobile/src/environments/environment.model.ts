@@ -9,16 +9,12 @@ export interface Environment {
   production: boolean;
   /** Ruta a la que se entra tras iniciar sesión. */
   mainUrl: string;
-  /**
-   * Raíz de las rutas que siguen siendo HTTP: las subidas de archivos y los
-   * enlaces que abre un navegador.
-   */
+  /** Raíz pública de la API: `/health`, `/uploads` y los extremos de OAuth. */
   apiUrl: string;
   /**
-   * Dirección del esquema, por donde pasa todo lo demás.
-   *
-   * Va aparte de `apiUrl` y no colgando de ella porque el esquema no lleva el
-   * prefijo `/api`: es una sola dirección, no un árbol de rutas.
+   * Dirección del esquema, por donde pasa toda la API: consultas, mutaciones
+   * y archivos. Las suscripciones usan la misma dirección con `ws://` o
+   * `wss://`.
    */
   graphqlUrl: string;
   googleMapsApiKey: string;
@@ -33,3 +29,26 @@ export interface Environment {
 }
 
 export type SupportedLanguage = 'es' | 'en';
+
+/**
+ * Lo que se puede cambiar sin volver a compilar.
+ *
+ * La imagen de Docker de la web escribe `env.js` al arrancar a partir de sus
+ * variables de entorno; así la misma imagen sirve para pruebas y para
+ * producción, cada una con sus direcciones.
+ */
+export type RuntimeEnvironment = Partial<
+  Pick<
+    Environment,
+    'apiUrl' | 'graphqlUrl' | 'googleMapsApiKey' | 'googleClientId' | 'facebookAppId' | 'publicMail'
+  >
+>;
+
+/** Lee `window.__RESPET_ENV__`, quitando lo que llegue vacío. */
+export function runtimeEnvironment(): RuntimeEnvironment {
+  const raw = (globalThis as { __RESPET_ENV__?: Record<string, unknown> }).__RESPET_ENV__ ?? {};
+
+  return Object.fromEntries(
+    Object.entries(raw).filter(([, value]) => typeof value === 'string' && value.length > 0),
+  ) as RuntimeEnvironment;
+}

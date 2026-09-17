@@ -1,10 +1,17 @@
-import type { Environment } from './environment.model';
+import { runtimeEnvironment, type Environment } from './environment.model';
 
+/**
+ * Configuración de producción.
+ *
+ * Los valores de aquí son los de partida; `env.js`, que escribe el contenedor
+ * de la web al arrancar, puede sustituir las direcciones y las claves públicas
+ * sin volver a compilar. En la app nativa no hay contenedor y valen éstos.
+ */
 export const environment: Environment = {
   production: true,
   mainUrl: '/',
-  apiUrl: 'https://lozoya.biz/respet_back/api',
-  graphqlUrl: 'https://lozoya.biz/respet_back/graphql',
+  apiUrl: 'https://api.respet.app',
+  graphqlUrl: 'https://api.respet.app/graphql',
   googleMapsApiKey: '',
   googleClientId: '',
   facebookAppId: '',
@@ -13,4 +20,5 @@ export const environment: Environment = {
   publicMail: 'jlozoya1995@gmail.com',
   defaultLanguage: 'es',
   supportedLanguages: ['es', 'en'],
+  ...runtimeEnvironment(),
 };
