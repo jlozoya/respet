@@ -12,6 +12,7 @@ import { escapeRegex } from '../../common/utils/regex.js';
 import { Location } from '../../database/schemas/content.schema.js';
 import { Product, Warehouse } from '../../database/schemas/store.schema.js';
 import { MediaService } from '../../media/media.service.js';
+import type { PendingUpload } from '../../media/upload.js';
 import type {
   CreateWarehouseDto,
   UpdateWarehouseDto,
@@ -95,11 +96,11 @@ export class WarehousesService {
     return this.findById(id);
   }
 
-  async setImage(id: string, file: Express.Multer.File): Promise<WarehouseDto> {
+  async setImage(id: string, file: PendingUpload): Promise<WarehouseDto> {
     const current = await this.findDocOrFail(id);
-    const created = await this.media.createFromUpload(file, 'warehouse', { alt: current.name });
+    const created = await this.media.storeUpload(file, { accept: ['image'], preset: 'warehouse', alt: current.name });
 
-    await this.warehouses.updateOne({ _id: id }, { $set: { mediaId: created.id } });
+    await this.warehouses.updateOne({ _id: id }, { $set: { mediaId: created._id } });
 
     // La anterior se borra después de apuntar la nueva, para que la bodega no
     // se quede sin imagen si algo falla por el camino.

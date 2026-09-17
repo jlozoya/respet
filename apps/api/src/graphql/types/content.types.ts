@@ -1,106 +1,13 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import type {
-  Analytics,
-  Bulletin,
-  Comment,
-  Post,
-  PostVoteResult,
-  SupportTicket,
-  UsersRegistrationPoint,
-} from '@respet/shared';
+import type { Analytics, Bulletin, SupportTicket, UsersRegistrationPoint } from '@respet/shared';
 
-import { FollowState, PostKind, VoteValue } from '../enums.js';
-import { LocationType, MediaType, Paginated } from './common.types.js';
-import { UserSummaryType } from './user.types.js';
+import { MediaType, Paginated } from './common.types.js';
 
-@ObjectType('Post', { description: 'Una publicación del muro.' })
-export class PostType implements Post {
-  @Field(() => ID)
-  id!: string;
-
-  @Field()
-  description!: string;
-
-  @Field(() => PostKind)
-  kind!: PostKind;
-
-  @Field(() => Int, {
-    description: '0 publica la ubicación exacta; más difumina el punto en el mapa.',
-  })
-  locationAccuracy!: number;
-
-  @Field(() => UserSummaryType)
-  author!: UserSummaryType;
-
-  @Field(() => LocationType, { nullable: true })
-  location!: LocationType | null;
-
-  @Field(() => [MediaType])
-  media!: MediaType[];
-
-  @Field(() => Int)
-  likeCount!: number;
-
-  @Field(() => Int)
-  dislikeCount!: number;
-
-  @Field(() => Int)
-  commentCount!: number;
-
-  @Field(() => VoteValue, {
-    nullable: true,
-    description: 'Voto de quien mira. Nulo si no ha votado, que no es votar en contra.',
-  })
-  myVote!: VoteValue | null;
-
-  @Field(() => FollowState, {
-    nullable: true,
-    description: 'En qué punto sigue quien mira al autor. Nulo sin sesión y en lo propio.',
-  })
-  authorFollowState!: FollowState | null;
-
-  @Field()
-  createdAt!: string;
-
-  @Field()
-  updatedAt!: string;
-}
-
-@ObjectType('PostVoteResult', { description: 'Recuento de votos después de cambiar el propio.' })
-export class PostVoteResultType implements PostVoteResult {
-  @Field(() => Int)
-  likeCount!: number;
-
-  @Field(() => Int)
-  dislikeCount!: number;
-
-  @Field(() => VoteValue, { nullable: true })
-  myVote!: VoteValue | null;
-}
-
-@ObjectType('Comment')
-export class CommentType implements Comment {
-  @Field(() => ID)
-  id!: string;
-
-  @Field(() => ID)
-  postId!: string;
-
-  @Field()
-  body!: string;
-
-  @Field(() => UserSummaryType)
-  author!: UserSummaryType;
-
-  @Field({ description: 'Los retirados no se borran: dejarían huecos en el hilo.' })
-  deleted!: boolean;
-
-  @Field()
-  createdAt!: string;
-
-  @Field()
-  updatedAt!: string;
-}
+/*
+  Las publicaciones y los comentarios viven ahora en `social.types.ts`, junto
+  a las reacciones y el buscador. Aquí queda lo institucional: avisos,
+  contacto y cifras.
+*/
 
 @ObjectType('Bulletin', { description: 'Aviso publicado por la administración.' })
 export class BulletinType implements Bulletin {
@@ -231,7 +138,5 @@ export class UsersRegistrationPointType implements UsersRegistrationPoint {
   users!: number;
 }
 
-export const PostPage = Paginated(PostType, 'Post');
-export const CommentPage = Paginated(CommentType, 'Comment');
 export const BulletinPage = Paginated(BulletinType, 'Bulletin');
 export const SupportTicketPage = Paginated(SupportTicketType, 'SupportTicket');

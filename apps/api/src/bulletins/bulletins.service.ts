@@ -10,6 +10,7 @@ import { paginate, toPage } from '../common/utils/pagination.js';
 import { escapeRegex } from '../common/utils/regex.js';
 import { Bulletin } from '../database/schemas/content.schema.js';
 import { MediaService } from '../media/media.service.js';
+import type { PendingUpload } from '../media/upload.js';
 import type {
   BulletinListQueryDto,
   CreateBulletinDto,
@@ -80,11 +81,11 @@ export class BulletinsService {
     return this.findById(id);
   }
 
-  async setImage(id: string, file: Express.Multer.File): Promise<BulletinDto> {
+  async setImage(id: string, file: PendingUpload): Promise<BulletinDto> {
     const current = await this.findDocOrFail(id);
-    const created = await this.media.createFromUpload(file, 'bulletin', { alt: current.title });
+    const created = await this.media.storeUpload(file, { accept: ['image'], preset: 'bulletin', alt: current.title });
 
-    await this.bulletins.updateOne({ _id: id }, { $set: { mediaId: created.id } });
+    await this.bulletins.updateOne({ _id: id }, { $set: { mediaId: created._id } });
 
     // La anterior se borra después de apuntar la nueva, para que el aviso no se
     // quede sin imagen si algo falla por el camino.

@@ -6,7 +6,6 @@ import type {
   FollowResult,
   Media,
   Paginated,
-  PublicProfile,
   User,
   UserContact,
   UserEmail as UserEmailDto,
@@ -15,34 +14,17 @@ import type {
   UserRole,
   UserSummary,
 } from '@respet/shared';
-import { FollowState } from '../database/schemas/enums.js';
-import { isValidObjectId } from '../database/mongoose.js';
-import type { Model } from '../database/mongoose.js';
 
 import { AuthService } from '../auth/auth.service.js';
-import { PasswordService } from '../auth/password.service.js';
-import { TokenService } from '../auth/token.service.js';
+import { SessionService } from '../auth/session/session.service.js';
 import { AppException, ErrorCode } from '../common/errors.js';
-import {
-  POPULATE_USER,
-  toLocation,
-  toMedia,
-  toPublicProfile,
-  toUser,
-  toUserSummary,
-} from '../common/mappers.js';
+import { POPULATE_USER, toLocation, toMedia, toPermissions, toUser, toUserSummary } from '../common/mappers.js';
 import { upsertLocation } from '../common/utils/location.js';
 import { paginate, toPage } from '../common/utils/pagination.js';
 import { escapeRegex } from '../common/utils/regex.js';
-import {
-  Comment,
-  Follow,
-  Location,
-  Media as MediaDoc,
-  Post,
-  PostReport,
-  PostVote,
-} from '../database/schemas/content.schema.js';
+import { isValidObjectId, type Model } from '../database/mongoose.js';
+import { Follow, Location, Post } from '../database/schemas/content.schema.js';
+import { FollowState, NotificationType, SessionEndReason } from '../database/schemas/enums.js';
 import {
   SocialLink,
   User as UserDoc,
@@ -51,6 +33,12 @@ import {
   UserPhone,
 } from '../database/schemas/user.schema.js';
 import { MediaService } from '../media/media.service.js';
+import { AccountCleanup } from './account-cleanup.service.js';
+import type { PendingUpload } from '../media/upload.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
+import { EventBusService } from '../realtime/event-bus.service.js';
+import { DomainEvent, Topic } from '../realtime/topics.js';
+import { RelationshipService } from '../social/relationship.service.js';
 import type {
   AddEmailsDto,
   AddPhonesDto,
@@ -74,56 +62,20 @@ export class UsersService {
     @InjectModel(SocialLink.name) private readonly socialLinks: Model<SocialLink>,
     @InjectModel(Follow.name) private readonly follows: Model<Follow>,
     @InjectModel(Post.name) private readonly posts: Model<Post>,
-    @InjectModel(PostVote.name) private readonly votes: Model<PostVote>,
-    @InjectModel(Comment.name) private readonly comments: Model<Comment>,
-    @InjectModel(PostReport.name) private readonly reports: Model<PostReport>,
-    @InjectModel(MediaDoc.name) private readonly mediaModel: Model<MediaDoc>,
     @InjectModel(Location.name) private readonly locations: Model<Location>,
     private readonly media: MediaService,
-    private readonly passwords: PasswordService,
-    private readonly tokens: TokenService,
     private readonly auth: AuthService,
+    private readonly sessions: SessionService,
+    private readonly relationships: RelationshipService,
+    private readonly notifications: NotificationsService,
+    private readonly bus: EventBusService,
+    private readonly cleanup: AccountCleanup,
   ) {}
 
   async findById(id: string, viewerId: string | null = null): Promise<User> {
     const doc = await this.findDocOrFail(id);
 
     return toUser(doc as never, await this.followInfo(id, viewerId));
-  }
-
-  /**
-   * Ficha pública, la que ve cualquiera.
-   *
-   * `findById` devuelve el usuario entero y está reservada a la administración;
-   * una red social necesita además esta versión reducida, sin datos de
-   * contacto, para que se pueda visitar un perfil sin ser administrador.
-   */
-  async publicProfile(id: string, viewerId: string | null = null): Promise<PublicProfile> {
-    if (!isValidObjectId(id)) {
-      throw AppException.notFound('User');
-    }
-
-    const doc = await this.users
-      .findById(id)
-      .select('name firstName lastName avatarId createdAt')
-      .populate('avatar')
-      .lean();
-
-    if (!doc) {
-      throw AppException.notFound('User');
-    }
-
-    const [info, postCount] = await Promise.all([
-      this.followInfo(id, viewerId),
-      this.posts.countDocuments({ userId: id }),
-    ]);
-
-    return toPublicProfile(doc as never, {
-      followerCount: info.followerCount,
-      followingCount: info.followingCount,
-      followState: info.followState,
-      postCount,
-    });
   }
 
   /**
@@ -145,17 +97,33 @@ export class UsersService {
 
     await this.assertExists(followeeId);
 
-    const pending = await this.isPrivate(followeeId);
+    if (await this.relationships.isBlockedBetween(followerId, followeeId)) {
+      throw AppException.forbiddenWith(ErrorCode.Blocked, 'You cannot follow this person');
+    }
 
-    await this.follows.updateOne(
+    const pending = await this.relationships.isPrivate(followeeId);
+
+    const result = await this.follows.updateOne(
       { followerId, followeeId },
       { $setOnInsert: { followerId, followeeId, pending } },
       { upsert: true },
     );
 
+    if (result.upsertedCount > 0) {
+      await this.notifications.notify({
+        recipientId: followeeId,
+        actorId: followerId,
+        type: pending ? NotificationType.FollowRequest : NotificationType.Follow,
+      });
+
+      if (!pending) {
+        await this.bus.publish(Topic.domain(DomainEvent.FollowCreated), { followerId, followeeId });
+      }
+    }
+
     return {
       followerCount: await this.countFollowers(followeeId),
-      followState: await this.followStateOf(followerId, followeeId),
+      followState: (await this.relationships.followState(followerId, followeeId)) ?? FollowState.None,
     };
   }
 
@@ -167,12 +135,28 @@ export class UsersService {
    */
   async unfollow(followerId: string, followeeId: string): Promise<FollowResult> {
     await this.assertExists(followeeId);
-    await this.follows.deleteOne({ followerId, followeeId });
+
+    const existing = await this.follows.findOneAndDelete({ followerId, followeeId }).lean();
+
+    if (existing) {
+      await this.notifications.retract({
+        recipientId: followeeId,
+        actorId: followerId,
+        type: existing.pending ? NotificationType.FollowRequest : NotificationType.Follow,
+      });
+    }
 
     return {
       followerCount: await this.countFollowers(followeeId),
       followState: FollowState.None,
     };
+  }
+
+  /** Quita a alguien de tus seguidores sin bloquearle, como en Instagram. */
+  async removeFollower(userId: string, followerId: string): Promise<FollowRequestResult> {
+    await this.follows.deleteOne({ followerId, followeeId: userId });
+
+    return { followerCount: await this.countFollowers(userId) };
   }
 
   /**
@@ -202,13 +186,7 @@ export class UsersService {
       const quien = porId.get(String(doc.followerId));
 
       return quien
-        ? [
-            {
-              id: String(doc._id),
-              requester: toUserSummary(quien as never),
-              createdAt: doc.createdAt.toISOString(),
-            },
-          ]
+        ? [{ id: String(doc._id), requester: toUserSummary(quien), createdAt: doc.createdAt.toISOString() }]
         : [];
     });
 
@@ -220,6 +198,12 @@ export class UsersService {
     const doc = await this.findPendingRequest(userId, requestId);
 
     await this.follows.updateOne({ _id: doc._id }, { $set: { pending: false } });
+
+    const requesterId = String(doc.followerId);
+
+    await this.notifications.retract({ recipientId: userId, actorId: requesterId, type: NotificationType.FollowRequest });
+    await this.notifications.notify({ recipientId: requesterId, actorId: userId, type: NotificationType.FollowAccepted });
+    await this.bus.publish(Topic.domain(DomainEvent.FollowCreated), { followerId: requesterId, followeeId: userId });
 
     return { followerCount: await this.countFollowers(userId) };
   }
@@ -235,6 +219,11 @@ export class UsersService {
     const doc = await this.findPendingRequest(userId, requestId);
 
     await this.follows.deleteOne({ _id: doc._id });
+    await this.notifications.retract({
+      recipientId: userId,
+      actorId: String(doc.followerId),
+      type: NotificationType.FollowRequest,
+    });
 
     return { followerCount: await this.countFollowers(userId) };
   }
@@ -245,17 +234,12 @@ export class UsersService {
    * Se filtra también por destinatario: sin eso, cualquiera con el
    * identificador de una solicitud podría responder a la de otro.
    */
-  private async findPendingRequest(
-    userId: string,
-    requestId: string,
-  ): Promise<{ _id: unknown }> {
+  private async findPendingRequest(userId: string, requestId: string): Promise<Follow & { _id: unknown }> {
     if (!isValidObjectId(requestId)) {
       throw AppException.notFound('FollowRequest');
     }
 
-    const doc = await this.follows
-      .findOne({ _id: requestId, followeeId: userId, pending: true })
-      .lean();
+    const doc = await this.follows.findOne({ _id: requestId, followeeId: userId, pending: true }).lean();
 
     if (!doc) {
       throw AppException.notFound('FollowRequest');
@@ -264,57 +248,46 @@ export class UsersService {
     return doc;
   }
 
-  /** Cierto si esta persona exige solicitud para que la sigan. */
-  private async isPrivate(userId: string): Promise<boolean> {
-    const doc = await this.permissions.findOne({ userId }).select('privateProfile').lean();
-
-    return doc?.privateProfile ?? false;
-  }
-
-  /** En qué punto está el seguimiento entre dos personas. */
-  private async followStateOf(followerId: string, followeeId: string): Promise<FollowState> {
-    const doc = await this.follows.findOne({ followerId, followeeId }).select('pending').lean();
-
-    if (!doc) {
-      return FollowState.None;
-    }
-
-    return doc.pending ? FollowState.Requested : FollowState.Following;
-  }
-
   /**
    * Quiénes siguen a esta persona, de lo más reciente a lo más antiguo.
    *
-   * Las solicitudes pendientes quedan fuera: aparecen en `followRequests`, y
-   * sólo para quien tiene que responderlas.
+   * Con el perfil privado, la lista es tan privada como lo publicado: sólo la
+   * ven sus seguidores.
    */
-  async followers(id: string, query: UserListQueryDto): Promise<Paginated<UserSummary>> {
-    return this.listFollows({ followeeId: id, pending: { $ne: true } }, 'followerId', query);
+  async followers(id: string, query: UserListQueryDto, viewerId: string | null): Promise<Paginated<UserSummary>> {
+    await this.relationships.assertCanViewContentOf(viewerId, id);
+
+    return this.listFollows({ followeeId: id, pending: { $ne: true } }, 'followerId', query, viewerId);
   }
 
   /** A quiénes sigue esta persona. */
-  async following(id: string, query: UserListQueryDto): Promise<Paginated<UserSummary>> {
-    return this.listFollows({ followerId: id, pending: { $ne: true } }, 'followeeId', query);
+  async following(id: string, query: UserListQueryDto, viewerId: string | null): Promise<Paginated<UserSummary>> {
+    await this.relationships.assertCanViewContentOf(viewerId, id);
+
+    return this.listFollows({ followerId: id, pending: { $ne: true } }, 'followeeId', query, viewerId);
   }
 
   /**
    * Las dos listas de seguimiento son la misma consulta con los extremos
    * cambiados: se filtra por un lado de la relación y se traen las personas del
-   * otro.
+   * otro. Quien tiene un bloqueo con quien mira no aparece.
    */
   private async listFollows(
     where: Filtro,
     campo: 'followerId' | 'followeeId',
     query: UserListQueryDto,
+    viewerId: string | null,
   ): Promise<Paginated<UserSummary>> {
     const id = String(Object.values(where)[0]);
     await this.assertExists(id);
 
+    const blocked = viewerId ? [...(await this.relationships.blockedIds(viewerId))] : [];
+    const filter = blocked.length > 0 ? { ...where, [campo]: { $nin: blocked } } : where;
     const { skip, take, page, perPage } = toPage(query);
 
     const [docs, total] = await Promise.all([
-      this.follows.find(where).sort({ createdAt: -1 }).skip(skip).limit(take).lean(),
-      this.follows.countDocuments(where),
+      this.follows.find(filter).sort({ createdAt: -1 }).skip(skip).limit(take).lean(),
+      this.follows.countDocuments(filter),
     ]);
 
     const ids = docs.map((doc) => doc[campo]);
@@ -323,9 +296,7 @@ export class UsersService {
     // Se reordenan como venían: `find` los devuelve en el orden de la
     // colección, no en el de la lista de identificadores.
     const porId = new Map(gente.map((persona) => [String(persona._id), persona]));
-    const ordenados = ids
-      .map((id) => porId.get(String(id)))
-      .filter((persona) => persona !== undefined);
+    const ordenados = ids.map((personId) => porId.get(String(personId))).filter((persona) => persona !== undefined);
 
     return paginate(ordenados.map((doc) => toUserSummary(doc as never)), total, page, perPage);
   }
@@ -335,23 +306,14 @@ export class UsersService {
     return this.follows.countDocuments({ followeeId: id, pending: { $ne: true } });
   }
 
-  /**
-   * Cifras de seguimiento y en qué punto está quien mira.
-   *
-   * Sin sesión no hay respuesta a lo último —`null`—, y en la ficha de uno
-   * mismo tampoco: un botón de «seguir» sobre el propio perfil no significa
-   * nada. Las dos cifras cuentan sólo lo aceptado; una solicitud pendiente no
-   * es un seguidor todavía.
-   */
   private async followInfo(
     id: string,
     viewerId: string | null,
   ): Promise<{ followerCount: number; followingCount: number; followState: FollowState | null }> {
-    const ajeno = viewerId !== null && viewerId !== id;
     const [followerCount, followingCount, followState] = await Promise.all([
       this.countFollowers(id),
       this.follows.countDocuments({ followerId: id, pending: { $ne: true } }),
-      ajeno ? this.followStateOf(viewerId, id) : Promise.resolve(null),
+      this.relationships.followState(viewerId, id),
     ]);
 
     return { followerCount, followingCount, followState };
@@ -368,13 +330,7 @@ export class UsersService {
     const where = this.buildSearchFilter(query);
 
     const [docs, total] = await Promise.all([
-      this.users
-        .find(where)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(take)
-        .populate(POPULATE_USER)
-        .lean(),
+      this.users.find(where).sort({ createdAt: -1 }).skip(skip).limit(take).populate(POPULATE_USER).lean(),
       this.users.countDocuments(where),
     ]);
 
@@ -382,6 +338,10 @@ export class UsersService {
   }
 
   async updateProfile(id: string, dto: UpdateProfileDto): Promise<User> {
+    if (dto.name !== undefined && (await this.users.exists({ name: dto.name, _id: { $ne: id } }))) {
+      throw AppException.conflict(ErrorCode.Conflict, 'That username is already taken');
+    }
+
     await this.users.updateOne(
       { _id: id },
       {
@@ -391,12 +351,14 @@ export class UsersService {
           ...(dto.lastName !== undefined ? { lastName: dto.lastName } : {}),
           ...(dto.gender !== undefined ? { gender: dto.gender } : {}),
           ...(dto.phone !== undefined ? { phone: dto.phone } : {}),
-          ...(dto.birthday !== undefined
-            ? { birthday: dto.birthday ? new Date(dto.birthday) : null }
-            : {}),
+          ...(dto.bio !== undefined ? { bio: dto.bio || null } : {}),
+          ...(dto.website !== undefined ? { website: dto.website || null } : {}),
+          ...(dto.birthday !== undefined ? { birthday: dto.birthday ? new Date(dto.birthday) : null } : {}),
         },
       },
     );
+
+    await this.bus.publish(Topic.domain(DomainEvent.UserUpdated), { userId: id });
 
     return this.findById(id);
   }
@@ -406,13 +368,11 @@ export class UsersService {
    *
    * El cambio no surte efecto hasta que se confirma desde el enlace que se
    * envía a la dirección nueva: sólo así se comprueba que existe y que es del
-   * usuario. Mientras tanto la cuenta conserva el correo anterior.
+   * usuario. Mientras tanto la cuenta conserva el correo anterior. Quien llama
+   * ya ha confirmado su identidad.
    */
   async requestEmailChange(id: string, dto: UpdateEmailDto): Promise<void> {
-    const user = await this.users
-      .findById(id)
-      .select('email name lang passwordHash')
-      .lean();
+    const user = await this.users.findById(id).select('email name lang').lean();
 
     if (!user) {
       throw AppException.notFound('User');
@@ -422,24 +382,8 @@ export class UsersService {
       return;
     }
 
-    if (user.passwordHash) {
-      if (!dto.password) {
-        throw AppException.badRequest(
-          ErrorCode.ValidationFailed,
-          'password is required to change the email address',
-        );
-      }
-
-      if (!(await this.passwords.verify(user.passwordHash, dto.password))) {
-        throw AppException.invalidCredentials();
-      }
-    }
-
     if (await this.users.exists({ email: dto.email })) {
-      throw AppException.conflict(
-        ErrorCode.UserAlreadyExists,
-        'That email address is already registered',
-      );
+      throw AppException.conflict(ErrorCode.UserAlreadyExists, 'That email address is already registered');
     }
 
     await this.auth.sendVerificationEmail(id, dto.email, user.name, user.lang);
@@ -483,65 +427,96 @@ export class UsersService {
     return this.findById(id);
   }
 
-  async updateAvatar(id: string, file: Express.Multer.File): Promise<Media> {
-    const current = await this.users.findById(id).select('avatarId name').lean();
+  async setVerified(id: string, verified: boolean): Promise<User> {
+    await this.assertExists(id);
+    await this.users.updateOne({ _id: id }, { $set: { verified } });
+
+    return this.findById(id);
+  }
+
+  /** Sube una foto de perfil o de portada y sustituye la anterior. */
+  async updateImage(id: string, kind: 'avatar' | 'cover', upload: PendingUpload): Promise<Media> {
+    const field = kind === 'avatar' ? 'avatarId' : 'coverId';
+    const current = await this.users.findById(id).select(`${field} name`).lean();
 
     if (!current) {
       throw AppException.notFound('User');
     }
 
-    const created = await this.media.createFromUpload(file, 'avatar', {
-      alt: `Avatar de ${current.name}`,
+    const stored = await this.media.storeUpload(upload, {
+      accept: ['image'],
+      preset: kind,
+      uploaderId: id,
+      alt: `${kind === 'avatar' ? 'Avatar' : 'Portada'} de ${current.name}`,
     });
 
-    await this.users.updateOne({ _id: id }, { $set: { avatarId: created.id } });
+    await this.users.updateOne({ _id: id }, { $set: { [field]: stored._id } });
 
     // El anterior se borra después de apuntar el nuevo, para que la cuenta no
-    // se quede sin avatar si algo falla por el camino.
-    if (current.avatarId) {
-      await this.media.remove(String(current.avatarId));
+    // se quede sin imagen si algo falla por el camino.
+    const previous = current[field];
+
+    if (previous) {
+      await this.media.remove(String(previous));
     }
 
-    const doc = await this.mediaModel.findById(created.id).lean();
+    await this.bus.publish(Topic.domain(DomainEvent.UserUpdated), { userId: id });
 
-    if (!doc) {
-      throw AppException.notFound('Media');
+    return toMedia(stored);
+  }
+
+  async removeImage(id: string, kind: 'avatar' | 'cover'): Promise<void> {
+    const field = kind === 'avatar' ? 'avatarId' : 'coverId';
+    const current = await this.users.findById(id).select(field).lean();
+    const previous = current?.[field];
+
+    if (!previous) {
+      return;
     }
 
-    return toMedia(doc);
+    await this.users.updateOne({ _id: id }, { $set: { [field]: null } });
+    await this.media.remove(String(previous));
   }
 
   async getPermissions(id: string): Promise<UserPermissionsDto> {
     // Con `upsert` y `new` siempre hay documento, pero el tipo admite nulo
     // porque la misma llamada sin `upsert` podría no encontrar nada.
-    const doc = await this.permissions.findOneAndUpdate(
-      { userId: id },
-      { $setOnInsert: { userId: id } },
-      { upsert: true, new: true },
-    );
+    const doc = await this.permissions
+      .findOneAndUpdate({ userId: id }, { $setOnInsert: { userId: id } }, { upsert: true, returnDocument: 'after' })
+      .lean();
 
-    if (!doc) {
+    const permissions = toPermissions(doc);
+
+    if (!permissions) {
       throw AppException.notFound('User');
     }
 
-    return {
-      showMainEmail: doc.showMainEmail,
-      showAlternativeEmails: doc.showAlternativeEmails,
-      showMainPhone: doc.showMainPhone,
-      showAlternativePhones: doc.showAlternativePhones,
-      showLocation: doc.showLocation,
-      receiveMailAds: doc.receiveMailAds,
-      messagePolicy: doc.messagePolicy,
-      privateProfile: doc.privateProfile,
-    };
+    return permissions;
   }
 
+  /**
+   * Cambia los ajustes de privacidad.
+   *
+   * Pasar el perfil a privado marca lo ya publicado para que el muro deje de
+   * enseñárselo a quien no sigue. Volverlo público acepta de golpe las
+   * solicitudes pendientes, como hace Instagram: ya no hay nada que decidir.
+   */
   async updatePermissions(id: string, dto: UpdatePermissionsDto): Promise<UserPermissionsDto> {
+    const before = await this.permissions.findOne({ userId: id }).select('privateProfile').lean();
+
     await this.permissions.updateOne(
       { userId: id },
       { $set: { ...dto }, $setOnInsert: { userId: id } },
       { upsert: true },
     );
+
+    if (dto.privateProfile !== undefined && dto.privateProfile !== (before?.privateProfile ?? false)) {
+      await this.posts.updateMany({ userId: id }, { $set: { authorPrivate: dto.privateProfile } });
+
+      if (!dto.privateProfile) {
+        await this.follows.updateMany({ followeeId: id, pending: true }, { $set: { pending: false } });
+      }
+    }
 
     return this.getPermissions(id);
   }
@@ -550,11 +525,7 @@ export class UsersService {
     // Uno a uno con `upsert`: el índice único sobre el par descarta los
     // repetidos sin que un duplicado tire toda la operación.
     for (const email of dto.emails) {
-      await this.emails.updateOne(
-        { userId: id, email },
-        { $setOnInsert: { userId: id, email } },
-        { upsert: true },
-      );
+      await this.emails.updateOne({ userId: id, email }, { $setOnInsert: { userId: id, email } }, { upsert: true });
     }
 
     return this.listEmails(id);
@@ -562,11 +533,7 @@ export class UsersService {
 
   async addPhones(id: string, dto: AddPhonesDto): Promise<UserPhoneDto[]> {
     for (const phone of dto.phones) {
-      await this.phones.updateOne(
-        { userId: id, phone },
-        { $setOnInsert: { userId: id, phone } },
-        { upsert: true },
-      );
+      await this.phones.updateOne({ userId: id, phone }, { $setOnInsert: { userId: id, phone } }, { upsert: true });
     }
 
     return this.listPhones(id);
@@ -634,16 +601,14 @@ export class UsersService {
    * pantallas recibían el objeto completo y decidían en el cliente qué
    * ocultar, lo que sólo escondía los datos a la vista.
    */
-  async getContact(id: string): Promise<UserContact> {
+  async getContact(id: string, viewerId: string | null): Promise<UserContact> {
     if (!isValidObjectId(id)) {
       throw AppException.notFound('User');
     }
 
-    const user = await this.users
-      .findById(id)
-      .select('name email phone locationId')
-      .populate('location')
-      .lean();
+    await this.relationships.assertCanViewContentOf(viewerId, id);
+
+    const user = await this.users.findById(id).select('name email phone locationId').populate('location').lean();
 
     if (!user) {
       throw AppException.notFound('User');
@@ -663,61 +628,15 @@ export class UsersService {
       emails: permisos?.showAlternativeEmails ? emails : [],
       phone: permisos?.showMainPhone ? user.phone : null,
       phones: permisos?.showAlternativePhones ? phones : [],
-      location: permisos?.showLocation
-        ? toLocation((user as { location?: never }).location ?? null)
-        : null,
+      location: permisos?.showLocation ? toLocation((user as { location?: never }).location ?? null) : null,
     };
   }
 
-  /**
-   * Borra una cuenta y todo lo que colgaba de ella.
-   *
-   * Antes lo hacían las claves foráneas en cascada. Aquí no hay quien lo haga,
-   * así que se enumera: sus publicaciones —con los votos, comentarios y
-   * denuncias que colgaban de ellas—, lo que haya escrito o votado en las
-   * ajenas, los seguimientos en ambos sentidos, sus datos de contacto y sus
-   * credenciales. Olvidar una de estas colecciones no da error: deja basura
-   * apuntando a una cuenta que ya no existe.
-   */
+  /** Borra una cuenta y todo lo que colgaba de ella. Quien llama ya confirmó la identidad. */
   async remove(id: string): Promise<void> {
     await this.assertExists(id);
-
-    const posts = await this.posts.find({ userId: id }).select('_id').lean();
-    const postIds = posts.map((post) => post._id);
-
-    const [avatar, archivos] = await Promise.all([
-      this.users.findById(id).select('avatarId').lean(),
-      this.mediaModel.find({ postId: { $in: postIds } }).select('_id').lean(),
-    ]);
-
-    const mediaIds = [
-      ...(avatar?.avatarId ? [String(avatar.avatarId)] : []),
-      ...archivos.map((doc) => String(doc._id)),
-    ];
-
-    await this.tokens.revokeAllForUser(id);
-
-    await Promise.all([
-      // Lo que colgaba de sus publicaciones.
-      this.votes.deleteMany({ postId: { $in: postIds } }),
-      this.comments.deleteMany({ postId: { $in: postIds } }),
-      this.reports.deleteMany({ postId: { $in: postIds } }),
-      // Lo que dejó en las publicaciones de otros.
-      this.votes.deleteMany({ userId: id }),
-      this.comments.deleteMany({ userId: id }),
-      this.reports.deleteMany({ reporterId: id }),
-      // Los seguimientos van en los dos sentidos.
-      this.follows.deleteMany({ $or: [{ followerId: id }, { followeeId: id }] }),
-      // Y sus cosas.
-      this.posts.deleteMany({ userId: id }),
-      this.emails.deleteMany({ userId: id }),
-      this.phones.deleteMany({ userId: id }),
-      this.socialLinks.deleteMany({ userId: id }),
-      this.permissions.deleteMany({ userId: id }),
-    ]);
-
-    await this.users.deleteOne({ _id: id });
-    await this.media.removeMany(mediaIds);
+    await this.sessions.revokeAllForUser(id, SessionEndReason.AccountDeleted);
+    await this.cleanup.purge(id);
   }
 
   private async findDocOrFail(id: string): Promise<Record<string, unknown>> {

@@ -4,6 +4,7 @@ import type { Bulletin, Paginated } from '@respet/shared';
 import { Public, Roles } from '../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
 import { BulletinPage, BulletinType } from '../graphql/types/content.types.js';
+import { GraphQLUpload, type PendingUpload } from '../media/upload.js';
 import { BulletinsService } from './bulletins.service.js';
 import { BulletinListQueryDto, CreateBulletinDto, UpdateBulletinDto } from './dto/bulletin.dto.js';
 
@@ -44,6 +45,15 @@ export class BulletinsResolver {
     @Args('input') input: UpdateBulletinDto,
   ): Promise<Bulletin> {
     return this.bulletins.update(id, input);
+  }
+
+  @Roles('admin')
+  @Mutation(() => BulletinType, { description: 'Cambia la imagen del aviso, subida en la propia operación.' })
+  async setBulletinImage(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,
+  ): Promise<Bulletin> {
+    return this.bulletins.setImage(id, file);
   }
 
   @Roles('admin')

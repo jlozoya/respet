@@ -1,56 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Media, Paginated, Post as PostDto, PostVoteResult, VoteValue } from '@respet/shared';
-import { FollowState } from '../database/schemas/enums.js';
-import { ObjectId, isValidObjectId } from '../database/mongoose.js';
-import type { Model, Types } from '../database/mongoose.js';
+import type {
+  Media,
+  Paginated,
+  Post as PostDto,
+  PostReactor,
+  ReactionResult,
+} from '@respet/shared';
 
 import type { AuthenticatedUser } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';
-import { POPULATE_POST, toMedia, toPost, type PostVotes } from '../common/mappers.js';
-import { boundingBox, distanceKm, fuzzyPoint } from '../common/utils/geo.js';
+import { POPULATE_POST, toMedia, toReactionSummary, toUserSummary } from '../common/mappers.js';
+import { boundingBox, distanceKm } from '../common/utils/geo.js';
 import { upsertLocation } from '../common/utils/location.js';
 import { paginate, toPage } from '../common/utils/pagination.js';
-import { escapeRegex } from '../common/utils/regex.js';
+import { isValidObjectId, ObjectId, type Model, type Types } from '../database/mongoose.js';
 import {
   Comment,
-  Follow,
+  CommentLike,
+  Hashtag,
   Location,
   Media as MediaDoc,
   Post,
-  PostReport,
-  PostVote,
+  PostReaction,
+  SavedPost,
 } from '../database/schemas/content.schema.js';
+import {
+  Audience,
+  NotificationType,
+  ReactionType,
+  ReportTarget,
+} from '../database/schemas/enums.js';
 import { MediaService } from '../media/media.service.js';
+import type { PendingUpload } from '../media/upload.js';
+import { ModerationService } from '../moderation/moderation.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
+import { EventBusService } from '../realtime/event-bus.service.js';
+import { DomainEvent, Topic } from '../realtime/topics.js';
+import { PostViewService, type LeanPost } from '../social/post-view.service.js';
+import { RelationshipService, type ViewerContext } from '../social/relationship.service.js';
+import { extractHashtags, extractMentions, normalizeHashtag } from '../social/text.js';
 import type {
   CreatePostDto,
   PostListQueryDto,
+  ReactorListQueryDto,
   ReportPostDto,
   UpdatePostDto,
 } from './dto/post.dto.js';
 
-/**
- * Publicación leída con `.lean()`.
- *
- * De la forma completa —con los virtuales poblados— se ocupa el mapeador; aquí
- * basta con el identificador y con el de su autor, que es lo que hace falta
- * para decir si quien mira ya lo sigue.
- */
-interface LeanPost {
-  _id: unknown;
-  /*
-    El del autor va tipado, y no como `unknown` igual que el suyo: de éste hay
-    que sacar el texto para comparar seguimientos, y de un `unknown` sólo se
-    saca «[object Object]».
-  */
-  author?: { _id: Types.ObjectId } | null;
-}
-
-/** Filtro de búsqueda tal y como lo entiende `find`. */
-type PostFilter = Record<string, unknown>;
-
-/** Imágenes por publicación. */
-const MAX_MEDIA_PER_POST = 6;
+/** Fotos y vídeos por publicación, como en Instagram. */
+const MAX_MEDIA_PER_POST = 10;
 
 /**
  * Publicaciones que se traen como mucho al buscar por cercanía.
@@ -60,46 +59,96 @@ const MAX_MEDIA_PER_POST = 6;
  */
 const NEARBY_SCAN_LIMIT = 500;
 
+/** Por debajo de tantos seguidos, el muro de portada se completa con lo destacado. */
+const HOME_DISCOVERY_THRESHOLD = 30;
+
+type PostFilter = Record<string, unknown>;
+
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Post.name) private readonly posts: Model<Post>,
-    @InjectModel(PostVote.name) private readonly votes: Model<PostVote>,
+    @InjectModel(PostReaction.name) private readonly reactions: Model<PostReaction>,
     @InjectModel(Comment.name) private readonly comments: Model<Comment>,
-    @InjectModel(PostReport.name) private readonly reports: Model<PostReport>,
+    @InjectModel(CommentLike.name) private readonly commentLikes: Model<CommentLike>,
+    @InjectModel(SavedPost.name) private readonly saved: Model<SavedPost>,
+    @InjectModel(Hashtag.name) private readonly hashtags: Model<Hashtag>,
     @InjectModel(MediaDoc.name) private readonly mediaModel: Model<MediaDoc>,
     @InjectModel(Location.name) private readonly locations: Model<Location>,
-    @InjectModel(Follow.name) private readonly follows: Model<Follow>,
     private readonly media: MediaService,
+    private readonly views: PostViewService,
+    private readonly relationships: RelationshipService,
+    private readonly notifications: NotificationsService,
+    private readonly moderation: ModerationService,
+    private readonly bus: EventBusService,
   ) {}
 
-  async list(query: PostListQueryDto, viewerId: string | null = null): Promise<Paginated<PostDto>> {
-    const geo = this.geoFilterOf(query);
+  /**
+   * El muro, en cualquiera de sus formas.
+   *
+   * Con `lat` y `lng` se ordena por cercanía; si no, por fecha. Cada resultado
+   * pasa por las reglas de visibilidad: audiencia, perfil privado y bloqueos.
+   */
+  async list(query: PostListQueryDto, viewerId: string | null): Promise<Paginated<PostDto>> {
+    const context = await this.relationships.viewerContext(viewerId);
 
-    return geo
-      ? this.listNearby(query, geo, viewerId)
-      : this.listChronological(query, viewerId);
-  }
+    if (query.userId) {
+      await this.relationships.assertCanViewContentOf(viewerId, query.userId);
+    }
 
-  private async listChronological(
-    query: PostListQueryDto,
-    viewerId: string | null,
-  ): Promise<Paginated<PostDto>> {
+    const filter = this.buildFilter(query, context);
+
+    if (query.lat !== undefined && query.lng !== undefined) {
+      return this.listNearby(query, filter, context);
+    }
+
     const { skip, take, page, perPage } = toPage(query);
-    const where = await this.buildFilter(query, null, viewerId);
 
     const [docs, total] = await Promise.all([
-      this.posts
-        .find(where)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(take)
-        .populate(POPULATE_POST)
-        .lean(),
-      this.posts.countDocuments(where),
+      this.posts.find(filter).sort({ createdAt: -1 }).skip(skip).limit(take).populate(POPULATE_POST).lean(),
+      this.posts.countDocuments(filter),
     ]);
 
-    return paginate(await this.decorate(docs, viewerId), total, page, perPage);
+    return paginate(await this.views.present(docs as unknown as LeanPost[], viewerId, context), total, page, perPage);
+  }
+
+  /**
+   * Explorar: lo más comentado y con más reacciones del último mes, con foto
+   * o vídeo, de quien no sigues todavía. La cuadrícula de Instagram.
+   */
+  async explore(viewerId: string | null, page: number, perPage: number): Promise<Paginated<PostDto>> {
+    const context = await this.relationships.viewerContext(viewerId);
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const pagination = toPage({ page, perPage });
+
+    const filter: PostFilter = {
+      $and: [
+        this.relationships.visiblePostsFilter(context),
+        { mediaCount: { $gt: 0 }, createdAt: { $gte: since } },
+        ...(viewerId ? [{ userId: { $ne: new ObjectId(viewerId) } }] : []),
+      ],
+    };
+
+    const [docs, total] = await Promise.all([
+      this.posts.aggregate<{ _id: Types.ObjectId }>([
+        { $match: filter },
+        { $addFields: { score: { $add: ['$reactionCount', { $multiply: ['$commentCount', 2] }, '$shareCount'] } } },
+        { $sort: { score: -1, createdAt: -1 } },
+        { $skip: pagination.skip },
+        { $limit: pagination.take },
+        { $project: { _id: 1 } },
+      ]),
+      this.posts.countDocuments(filter),
+    ]);
+
+    const ids = docs.map((doc) => doc._id);
+    const full = await this.posts.find({ _id: { $in: ids } }).populate(POPULATE_POST).lean();
+    const order = new Map(ids.map((id, index) => [String(id), index]));
+    const sorted = (full as unknown as LeanPost[]).sort(
+      (a, b) => (order.get(String(a._id)) ?? 0) - (order.get(String(b._id)) ?? 0),
+    );
+
+    return paginate(await this.views.present(sorted, viewerId, context), total, pagination.page, pagination.perPage);
   }
 
   /**
@@ -113,20 +162,29 @@ export class PostsService {
    */
   private async listNearby(
     query: PostListQueryDto,
-    geo: { lat: number; lng: number; radiusKm: number },
-    viewerId: string | null,
+    filter: PostFilter,
+    context: ViewerContext,
   ): Promise<Paginated<PostDto>> {
     const { page, perPage } = toPage(query);
-    const center = { lat: geo.lat, lng: geo.lng };
+    const center = { lat: query.lat as number, lng: query.lng as number };
+    const radiusKm = query.radiusKm ?? 50;
+
+    // El difuminado desplaza el punto como mucho 25 km, así que la caja se
+    // amplía para no perder publicaciones por el camino.
+    const box = boundingBox(center, radiusKm + 25);
+    const nearby = await this.locations
+      .find({ lat: { $gte: box.minLat, $lte: box.maxLat }, lng: { $gte: box.minLng, $lte: box.maxLng } })
+      .select('_id')
+      .lean();
 
     const docs = await this.posts
-      .find(await this.buildFilter(query, geo, viewerId))
+      .find({ $and: [filter, { locationId: { $in: nearby.map((doc) => doc._id) } }] })
       .sort({ createdAt: -1 })
       .limit(NEARBY_SCAN_LIMIT)
       .populate(POPULATE_POST)
       .lean();
 
-    const near = (await this.decorate(docs, viewerId))
+    const near = (await this.views.present(docs as unknown as LeanPost[], context.viewerId, context))
       .map((post) => ({
         post,
         distance:
@@ -134,7 +192,7 @@ export class PostsService {
             ? distanceKm(center, { lat: post.location.lat, lng: post.location.lng })
             : Number.POSITIVE_INFINITY,
       }))
-      .filter((entry) => entry.distance <= geo.radiusKm)
+      .filter((entry) => entry.distance <= radiusKm)
       .sort((a, b) => a.distance - b.distance)
       .map((entry) => entry.post);
 
@@ -143,44 +201,162 @@ export class PostsService {
     return paginate(near.slice(start, start + perPage), near.length, page, perPage);
   }
 
-  async findById(id: string, viewerId: string | null = null): Promise<PostDto> {
-    const doc = await this.findDocOrFail(id);
-    const [decorado] = await this.decorate([doc], viewerId);
+  async findById(id: string, viewerId: string | null): Promise<PostDto> {
+    const doc = await this.findVisibleDoc(id, viewerId);
+    const [post] = await this.views.present([doc], viewerId);
 
-    return decorado;
+    return post;
   }
 
-  async create(userId: string, dto: CreatePostDto): Promise<PostDto> {
+  async savedPosts(userId: string, page: number, perPage: number): Promise<Paginated<PostDto>> {
+    const pagination = toPage({ page, perPage });
+    const context = await this.relationships.viewerContext(userId);
+
+    const [rows, total] = await Promise.all([
+      this.saved.find({ userId }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.take).lean(),
+      this.saved.countDocuments({ userId }),
+    ]);
+
+    const docs = await this.posts
+      .find({ $and: [{ _id: { $in: rows.map((row) => row.postId) } }, this.relationships.visiblePostsFilter(context)] })
+      .populate(POPULATE_POST)
+      .lean();
+    const order = new Map(rows.map((row, index) => [String(row.postId), index]));
+    const sorted = (docs as unknown as LeanPost[]).sort(
+      (a, b) => (order.get(String(a._id)) ?? 0) - (order.get(String(b._id)) ?? 0),
+    );
+
+    return paginate(await this.views.present(sorted, userId, context), total, pagination.page, pagination.perPage);
+  }
+
+  /**
+   * Publica.
+   *
+   * Las fotos y vídeos llegan en la misma operación. Se guardan antes que la
+   * publicación y, si alguno no vale, se borran los que ya estaban: nunca
+   * queda una publicación a medias ni archivos sueltos.
+   */
+  async create(author: AuthenticatedUser, dto: CreatePostDto, files: PendingUpload[] = []): Promise<PostDto> {
+    const description = (dto.description ?? '').trim();
+
+    if (files.length > MAX_MEDIA_PER_POST) {
+      throw AppException.badRequest(ErrorCode.ValidationFailed, `A post cannot have more than ${MAX_MEDIA_PER_POST} files`);
+    }
+
+    if (!description && files.length === 0 && !dto.sharedPostId) {
+      throw AppException.badRequest(ErrorCode.ValidationFailed, 'The post is empty');
+    }
+
+    if (dto.sharedPostId) {
+      // Sólo se comparte lo que uno puede ver. Y lo compartido apunta siempre
+      // al original, como en Facebook: compartir algo compartido no anida.
+      const shared = await this.findVisibleDoc(dto.sharedPostId, author.id);
+
+      if (shared.audience !== Audience.Public || shared.authorPrivate) {
+        throw AppException.forbiddenWith(ErrorCode.PrivateContent, 'Only public posts can be shared');
+      }
+
+      dto.sharedPostId = shared.sharedPostId ? String(shared.sharedPostId) : dto.sharedPostId;
+    }
+
+    const stored: Types.ObjectId[] = [];
+
+    try {
+      for (const [position, file] of files.entries()) {
+        const media = await this.media.storeUpload(file, {
+          accept: ['image', 'video'],
+          preset: 'post',
+          uploaderId: author.id,
+          position,
+          alt: description.slice(0, 120) || 'post',
+          maxDurationMs: 10 * 60 * 1000,
+        });
+        stored.push(media._id);
+      }
+    } catch (error) {
+      await this.media.removeMany(stored);
+      throw error;
+    }
+
     const locationId = await upsertLocation(this.locations, null, dto.location);
+    const hashtags = extractHashtags(description);
+    const mentionIds = await this.relationships.resolveUsernames(extractMentions(description), author.id);
 
     const created = await this.posts.create({
-      userId,
-      description: dto.description,
-      kind: dto.kind,
+      userId: author.id,
+      description,
+      kind: dto.kind ?? 'general',
+      audience: dto.audience ?? Audience.Public,
+      authorPrivate: await this.relationships.isPrivate(author.id),
       locationId: locationId ?? null,
       locationAccuracy: dto.locationAccuracy ?? 0,
+      hashtags,
+      mentionIds,
+      sharedPostId: dto.sharedPostId ?? null,
+      commentsDisabled: dto.commentsDisabled ?? false,
+      mediaCount: stored.length,
     });
 
-    return this.findById(String(created._id), userId);
+    await this.media.attachToPost(stored, created._id);
+    await this.trackHashtags(hashtags, []);
+
+    const postId = String(created._id);
+
+    if (dto.sharedPostId) {
+      const original = await this.posts
+        .findByIdAndUpdate(dto.sharedPostId, { $inc: { shareCount: 1 } })
+        .select('userId')
+        .lean();
+
+      if (original) {
+        await this.notifications.notify({
+          recipientId: original.userId,
+          actorId: author.id,
+          type: NotificationType.PostShared,
+          postId: dto.sharedPostId,
+        });
+      }
+    }
+
+    await this.notifyMentions(mentionIds, author.id, postId, description);
+    await this.bus.publish(Topic.domain(DomainEvent.PostCreated), { postId, userId: author.id });
+
+    return this.findById(postId, author.id);
   }
 
   async update(id: string, dto: UpdatePostDto, actor: AuthenticatedUser): Promise<PostDto> {
     const post = await this.assertCanEdit(id, actor);
-    const locationId = await upsertLocation(this.locations, post.locationId, dto.location);
+    const locationId = await upsertLocation(this.locations, post.locationId ? String(post.locationId) : null, dto.location);
 
-    await this.posts.updateOne(
-      { _id: id },
-      {
-        $set: {
-          ...(dto.description !== undefined ? { description: dto.description } : {}),
-          ...(dto.kind !== undefined ? { kind: dto.kind } : {}),
-          ...(dto.locationAccuracy !== undefined
-            ? { locationAccuracy: dto.locationAccuracy }
-            : {}),
-          ...(locationId !== undefined ? { locationId } : {}),
-        },
-      },
-    );
+    const changes: Record<string, unknown> = {
+      ...(dto.kind !== undefined ? { kind: dto.kind } : {}),
+      ...(dto.audience !== undefined ? { audience: dto.audience } : {}),
+      ...(dto.commentsDisabled !== undefined ? { commentsDisabled: dto.commentsDisabled } : {}),
+      ...(dto.locationAccuracy !== undefined ? { locationAccuracy: dto.locationAccuracy } : {}),
+      ...(locationId !== undefined ? { locationId } : {}),
+    };
+
+    if (dto.description !== undefined && dto.description.trim() !== post.description) {
+      const description = dto.description.trim();
+      const hashtags = extractHashtags(description);
+      const mentionIds = await this.relationships.resolveUsernames(extractMentions(description), post.userId.toString());
+      const previousMentions = new Set(post.mentionIds.map(String));
+
+      Object.assign(changes, { description, hashtags, mentionIds, editedAt: new Date() });
+
+      await this.trackHashtags(
+        hashtags.filter((tag) => !post.hashtags.includes(tag)),
+        post.hashtags.filter((tag) => !hashtags.includes(tag)),
+      );
+      await this.notifyMentions(
+        mentionIds.filter((mention) => !previousMentions.has(String(mention))),
+        actor.id,
+        id,
+        description,
+      );
+    }
+
+    await this.posts.updateOne({ _id: id }, { $set: changes });
 
     return this.findById(id, actor.id);
   }
@@ -188,276 +364,217 @@ export class PostsService {
   /**
    * Borra la publicación y todo lo que colgaba de ella.
    *
-   * En SQL lo hacían las claves foráneas en cascada; aquí no hay quien lo haga
-   * por nosotros, así que se limpia a mano: votos, comentarios, denuncias y
-   * archivos. Dejarlos convertiría la base en un cementerio de referencias a
-   * documentos que ya no existen.
+   * No hay claves foráneas en cascada que lo hagan solo: reacciones,
+   * comentarios con sus «me gusta», guardados, avisos y archivos se limpian a
+   * mano. Las publicaciones que la compartían se quedan, marcando que lo
+   * compartido ya no está.
    */
   async remove(id: string, actor: AuthenticatedUser): Promise<void> {
     const post = await this.assertCanEdit(id, actor);
+    const mediaIds = (await this.mediaModel.find({ postId: id }).select('_id').lean()).map((doc) => doc._id);
+    const commentIds = (await this.comments.find({ postId: id }).select('_id').lean()).map((doc) => doc._id);
 
     await Promise.all([
       this.posts.deleteOne({ _id: id }),
-      this.votes.deleteMany({ postId: id }),
+      this.reactions.deleteMany({ postId: id }),
       this.comments.deleteMany({ postId: id }),
-      this.reports.deleteMany({ postId: id }),
+      this.commentLikes.deleteMany({ commentId: { $in: commentIds } }),
+      this.saved.deleteMany({ postId: id }),
+      this.notifications.removeFor({ postId: id }),
+      post.sharedPostId
+        ? this.posts.updateOne({ _id: post.sharedPostId, shareCount: { $gt: 0 } }, { $inc: { shareCount: -1 } })
+        : Promise.resolve(),
     ]);
 
-    await this.media.removeMany(post.mediaIds);
+    await this.trackHashtags([], post.hashtags);
+    await this.media.removeMany(mediaIds);
+    await this.bus.publish(Topic.domain(DomainEvent.PostDeleted), { postId: id, userId: String(post.userId) });
   }
 
-  async addMedia(id: string, file: Express.Multer.File, actor: AuthenticatedUser): Promise<Media> {
-    const post = await this.assertCanEdit(id, actor);
+  async addMedia(id: string, file: PendingUpload, actor: AuthenticatedUser): Promise<Media> {
+    await this.assertCanEdit(id, actor);
 
-    if (post.mediaIds.length >= MAX_MEDIA_PER_POST) {
-      throw AppException.badRequest(
-        ErrorCode.ValidationFailed,
-        `A post cannot have more than ${MAX_MEDIA_PER_POST} images`,
-      );
+    const count = await this.mediaModel.countDocuments({ postId: id });
+
+    if (count >= MAX_MEDIA_PER_POST) {
+      throw AppException.badRequest(ErrorCode.ValidationFailed, `A post cannot have more than ${MAX_MEDIA_PER_POST} files`);
     }
 
-    const created = await this.media.createFromUpload(file, 'post', {
+    const stored = await this.media.storeUpload(file, {
+      accept: ['image', 'video'],
+      preset: 'post',
       postId: id,
-      position: post.mediaIds.length,
-      alt: post.description.slice(0, 120),
+      uploaderId: actor.id,
+      position: count,
     });
 
-    const doc = await this.mediaModel.findById(created.id).lean();
+    await this.posts.updateOne({ _id: id }, { $inc: { mediaCount: 1 } });
 
-    if (!doc) {
-      throw AppException.notFound('Media');
-    }
-
-    return toMedia(doc);
+    return toMedia(stored);
   }
 
   async removeMedia(id: string, mediaId: string, actor: AuthenticatedUser): Promise<void> {
-    const post = await this.assertCanEdit(id, actor);
+    await this.assertCanEdit(id, actor);
 
-    if (!post.mediaIds.includes(mediaId)) {
+    if (!isValidObjectId(mediaId) || !(await this.mediaModel.exists({ _id: mediaId, postId: id }))) {
       throw AppException.notFound('Media');
     }
 
     await this.media.remove(mediaId);
+    await this.posts.updateOne({ _id: id, mediaCount: { $gt: 0 } }, { $inc: { mediaCount: -1 } });
   }
 
   /**
-   * Registra la denuncia de una publicación.
+   * Reacciona a una publicación.
    *
-   * Denunciar dos veces la misma actualiza el motivo en lugar de acumular
-   * documentos: el peso de una denuncia no debe depender de cuántas veces pulse
-   * el botón la misma persona.
+   * Una reacción por persona: elegir otra la sustituye. Las cifras se guardan
+   * en la propia publicación y se ajustan con `$inc`, de modo que dos
+   * reacciones simultáneas no se pisan.
    */
-  async report(id: string, dto: ReportPostDto, reporterId: string): Promise<void> {
-    const post = await this.posts.findById(id).select('userId').lean();
+  async react(postId: string, userId: string, type: ReactionType): Promise<ReactionResult> {
+    const post = await this.findVisibleDoc(postId, userId);
 
-    if (!post) {
-      throw AppException.notFound('Post');
-    }
-
-    if (String(post.userId) === reporterId) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'You cannot report your own post');
-    }
-
-    await this.reports.updateOne(
-      { postId: id, reporterId },
-      { $set: { reason: dto.reason, status: 'pending' } },
-      { upsert: true },
-    );
-  }
-
-  /**
-   * Vota una publicación, a favor o en contra.
-   *
-   * Es un solo documento por persona y publicación, así que votar lo contrario
-   * cambia el sentido en lugar de acumular: nadie aparece a la vez a favor y en
-   * contra de lo mismo. Se devuelven las cuentas ya hechas para que la
-   * aplicación no tenga que adivinarlas, que es como se desincronizan.
-   */
-  async vote(postId: string, userId: string, value: VoteValue): Promise<PostVoteResult> {
-    await this.assertExists(postId);
-
-    await this.votes.updateOne({ postId, userId }, { $set: { value } }, { upsert: true });
-
-    return this.voteResult(postId, userId);
-  }
-
-  /** Retira el voto propio, sea el que sea. */
-  async unvote(postId: string, userId: string): Promise<PostVoteResult> {
-    await this.assertExists(postId);
-    await this.votes.deleteOne({ postId, userId });
-
-    return this.voteResult(postId, userId);
-  }
-
-  private async voteResult(postId: string, userId: string): Promise<PostVoteResult> {
-    const resumen = (await this.voteSummaries(userId, [postId])).get(postId);
-
-    return {
-      likeCount: resumen?.likeCount ?? 0,
-      dislikeCount: resumen?.dislikeCount ?? 0,
-      myVote: resumen?.myVote ?? null,
-    };
-  }
-
-  /**
-   * Añade a cada publicación sus votos y su número de comentarios.
-   *
-   * Consultas agrupadas para todo el listado —cifras de voto, voto propio,
-   * comentarios y a qué autores sigue quien mira—, en lugar de una por tarjeta.
-   */
-  private async decorate(docs: LeanPost[], viewerId: string | null): Promise<PostDto[]> {
-    const ids = docs.map((doc) => String(doc._id));
-    const [votos, comentarios, seguidos] = await Promise.all([
-      this.voteSummaries(viewerId, ids),
-      this.commentCounts(ids),
-      this.followedAuthors(viewerId, docs),
-    ]);
-
-    return docs.map((doc) => {
-      const id = String(doc._id);
-      const autor = String(doc.author?._id ?? '');
-      // Nada que ofrecer sin sesión ni en lo propio: en los dos casos va nulo y
-      // la tarjeta no enseña el botón de seguir.
-      const seguimiento =
-        seguidos && autor && autor !== viewerId
-          ? (seguidos.get(autor) ?? FollowState.None)
-          : null;
-
-      return this.blurLocation(
-        toPost(doc as never, votos.get(id), comentarios.get(id) ?? 0, seguimiento),
-      );
-    });
-  }
-
-  /**
-   * De los autores del listado, en qué punto los sigue quien mira.
-   *
-   * Una sola consulta para toda la página, acotada a los autores que salen en
-   * ella: quien tiene miles de seguidos no paga por traerlos todos. Sin sesión
-   * no hay a quién referirlo y devuelve `null`, que es distinto de un mapa
-   * vacío —«no sigues a ninguno»—. Los autores que no aparecen en el mapa no
-   * se siguen: el estado se completa al leerlo.
-   */
-  private async followedAuthors(
-    viewerId: string | null,
-    docs: LeanPost[],
-  ): Promise<Map<string, FollowState> | null> {
-    if (!viewerId) {
-      return null;
-    }
-
-    const autores = [
-      ...new Set(
-        docs.map((doc) => String(doc.author?._id ?? '')).filter((id) => id && id !== viewerId),
-      ),
-    ];
-
-    if (autores.length === 0) {
-      return new Map();
-    }
-
-    const follows = await this.follows
-      .find({ followerId: viewerId, followeeId: { $in: autores } })
-      .select('followeeId pending')
+    const previous = await this.reactions
+      .findOneAndUpdate({ postId, userId }, { $set: { type } }, { upsert: true, returnDocument: 'before' })
       .lean();
 
-    return new Map(
-      follows.map((doc) => [
-        String(doc.followeeId),
-        doc.pending ? FollowState.Requested : FollowState.Following,
-      ]),
+    if (!previous) {
+      await this.posts.updateOne({ _id: postId }, { $inc: { reactionCount: 1, [`reactions.${type}`]: 1 } });
+      await this.notifications.notify({
+        recipientId: post.userId,
+        actorId: userId,
+        type: NotificationType.Reaction,
+        postId,
+        preview: type,
+      });
+      await this.bus.publish(Topic.domain(DomainEvent.ReactionAdded), { postId, userId, type });
+    } else if (previous.type !== type) {
+      await this.posts.updateOne(
+        { _id: postId },
+        { $inc: { [`reactions.${previous.type}`]: -1, [`reactions.${type}`]: 1 } },
+      );
+    }
+
+    return this.reactionResult(postId, type);
+  }
+
+  async unreact(postId: string, userId: string): Promise<ReactionResult> {
+    const post = await this.findVisibleDoc(postId, userId);
+    const previous = await this.reactions.findOneAndDelete({ postId, userId }).lean();
+
+    if (previous) {
+      await this.posts.updateOne(
+        { _id: postId },
+        { $inc: { reactionCount: -1, [`reactions.${previous.type}`]: -1 } },
+      );
+      await this.notifications.retract({
+        recipientId: post.userId,
+        actorId: userId,
+        type: NotificationType.Reaction,
+        postId,
+      });
+    }
+
+    return this.reactionResult(postId, null);
+  }
+
+  /** Quién reaccionó, con qué, y si quien mira ya le sigue. */
+  async reactors(postId: string, query: ReactorListQueryDto, viewerId: string | null): Promise<Paginated<PostReactor>> {
+    await this.findVisibleDoc(postId, viewerId);
+
+    const { skip, take, page, perPage } = toPage(query);
+    const blocked = viewerId ? [...(await this.relationships.blockedIds(viewerId))] : [];
+    const filter = {
+      postId,
+      ...(query.type ? { type: query.type } : {}),
+      ...(blocked.length > 0 ? { userId: { $nin: blocked } } : {}),
+    };
+
+    const [docs, total] = await Promise.all([
+      this.reactions
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(take)
+        .populate({ path: 'user', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+        .lean(),
+      this.reactions.countDocuments(filter),
+    ]);
+
+    const states = await this.relationships.followStates(
+      viewerId,
+      docs.map((doc) => String(doc.userId)),
+    );
+
+    return paginate(
+      docs
+        .filter((doc) => (doc as { user?: unknown }).user)
+        .map((doc) => ({
+          user: toUserSummary((doc as unknown as { user: never }).user),
+          type: doc.type,
+          followState: states.get(String(doc.userId)) ?? null,
+        })),
+      total,
+      page,
+      perPage,
     );
   }
 
-  private async commentCounts(postIds: string[]): Promise<Map<string, number>> {
-    const cuentas = new Map<string, number>();
+  async save(postId: string, userId: string): Promise<boolean> {
+    await this.findVisibleDoc(postId, userId);
+    await this.saved.updateOne({ userId, postId }, { $setOnInsert: { userId, postId } }, { upsert: true });
 
-    if (postIds.length === 0) {
-      return cuentas;
-    }
-
-    const filas = await this.comments.aggregate<{ _id: Types.ObjectId; total: number }>([
-      { $match: { postId: { $in: postIds.map((id) => new ObjectId(id)) } } },
-      { $group: { _id: '$postId', total: { $sum: 1 } } },
-    ]);
-
-    for (const fila of filas) {
-      cuentas.set(String(fila._id), fila.total);
-    }
-
-    return cuentas;
+    return true;
   }
 
-  private async voteSummaries(
-    viewerId: string | null,
-    postIds: string[],
-  ): Promise<Map<string, PostVotes>> {
-    const resumen = new Map<string, PostVotes>();
+  async unsave(postId: string, userId: string): Promise<boolean> {
+    await this.saved.deleteOne({ userId, postId });
 
-    if (postIds.length === 0) {
-      return resumen;
-    }
-
-    for (const id of postIds) {
-      resumen.set(id, { likeCount: 0, dislikeCount: 0, myVote: null });
-    }
-
-    const objectIds = postIds.map((id) => new ObjectId(id));
-
-    const [cuentas, propios] = await Promise.all([
-      this.votes.aggregate<{ _id: { postId: Types.ObjectId; value: VoteValue }; total: number }>([
-        { $match: { postId: { $in: objectIds } } },
-        { $group: { _id: { postId: '$postId', value: '$value' }, total: { $sum: 1 } } },
-      ]),
-      viewerId === null
-        ? Promise.resolve([])
-        : this.votes.find({ userId: viewerId, postId: { $in: objectIds } }).lean(),
-    ]);
-
-    for (const fila of cuentas) {
-      const actual = resumen.get(String(fila._id.postId));
-
-      if (!actual) {
-        continue;
-      }
-
-      if (fila._id.value === 'up') {
-        actual.likeCount = fila.total;
-      } else {
-        actual.dislikeCount = fila.total;
-      }
-    }
-
-    for (const fila of propios) {
-      const actual = resumen.get(String(fila.postId));
-
-      if (actual) {
-        actual.myVote = fila.value;
-      }
-    }
-
-    return resumen;
+    return false;
   }
 
-  private async findDocOrFail(id: string): Promise<LeanPost> {
+  async report(id: string, dto: ReportPostDto, reporterId: string): Promise<void> {
+    await this.moderation.report(reporterId, ReportTarget.Post, id, dto.reason);
+  }
+
+  /** La publicación, si existe y quien mira puede verla. Si no, «no encontrada». */
+  async findVisibleDoc(id: string, viewerId: string | null): Promise<LeanPost> {
     if (!isValidObjectId(id)) {
       throw AppException.notFound('Post');
     }
 
-    const doc = await this.posts.findById(id).populate(POPULATE_POST).lean();
+    const doc = (await this.posts.findById(id).populate(POPULATE_POST).lean()) as unknown as
+      | (LeanPost & { sharedPostId: Types.ObjectId | null })
+      | null;
 
     if (!doc) {
+      throw AppException.notFound('Post');
+    }
+
+    const context = await this.relationships.viewerContext(viewerId);
+    const visible = this.relationships.canSee(context, {
+      ownerId: String(doc.userId),
+      audience: doc.audience,
+      ownerPrivate: doc.authorPrivate === true,
+    });
+
+    if (!visible) {
+      // «No encontrada» y no «prohibida»: confirmar que existe ya diría más de
+      // la cuenta a quien no puede verla.
       throw AppException.notFound('Post');
     }
 
     return doc;
   }
 
-  private async assertExists(postId: string): Promise<void> {
-    if (!isValidObjectId(postId) || !(await this.posts.exists({ _id: postId }))) {
-      throw AppException.notFound('Post');
-    }
+  private async reactionResult(postId: string, myReaction: ReactionType | null): Promise<ReactionResult> {
+    const post = await this.posts.findById(postId).select('reactions reactionCount').lean();
+
+    return {
+      reactionCount: Math.max(0, post?.reactionCount ?? 0),
+      reactionSummary: toReactionSummary(post?.reactions),
+      myReaction,
+    };
   }
 
   /**
@@ -469,12 +586,12 @@ export class PostsService {
   private async assertCanEdit(
     id: string,
     actor: AuthenticatedUser,
-  ): Promise<{ locationId: string | null; description: string; mediaIds: string[] }> {
+  ): Promise<Post & { _id: Types.ObjectId }> {
     if (!isValidObjectId(id)) {
       throw AppException.notFound('Post');
     }
 
-    const post = await this.posts.findById(id).select('userId locationId description').lean();
+    const post = await this.posts.findById(id).lean();
 
     if (!post) {
       throw AppException.notFound('Post');
@@ -484,99 +601,82 @@ export class PostsService {
       throw AppException.forbidden('You can only modify your own posts');
     }
 
-    const media = await this.mediaModel
-      .find({ postId: id })
-      .sort({ position: 1 })
-      .select('_id')
-      .lean();
-
-    return {
-      locationId: post.locationId ? String(post.locationId) : null,
-      description: post.description,
-      mediaIds: media.map((doc) => String(doc._id)),
-    };
+    return post;
   }
 
-  /**
-   * Sustituye la ubicación exacta por un punto aproximado cuando el autor lo
-   * pidió, de modo que la coordenada real no sale nunca del servidor.
-   */
-  private blurLocation(post: PostDto): PostDto {
-    if (post.locationAccuracy <= 0 || post.location?.lat == null || post.location.lng == null) {
-      return post;
-    }
-
-    const blurred = fuzzyPoint(
-      { lat: post.location.lat, lng: post.location.lng },
-      post.locationAccuracy,
-      post.id,
-    );
-
-    return { ...post, location: { ...post.location, lat: blurred.lat, lng: blurred.lng } };
-  }
-
-  private geoFilterOf(
-    query: PostListQueryDto,
-  ): { lat: number; lng: number; radiusKm: number } | null {
-    if (query.lat === undefined || query.lng === undefined) {
-      return null;
-    }
-
-    return { lat: query.lat, lng: query.lng, radiusKm: query.radiusKm ?? 50 };
-  }
-
-  private async buildFilter(
-    query: PostListQueryDto,
-    geo: { lat: number; lng: number; radiusKm: number } | null,
-    viewerId: string | null = null,
-  ): Promise<PostFilter> {
-    const filtros: PostFilter[] = [];
+  private buildFilter(query: PostListQueryDto, context: ViewerContext): PostFilter {
+    const filtros: PostFilter[] = [this.relationships.visiblePostsFilter(context)];
 
     if (query.kind) {
       filtros.push({ kind: query.kind });
     }
 
     if (query.userId) {
-      filtros.push({ userId: query.userId });
+      filtros.push({ userId: new ObjectId(query.userId) });
+    }
+
+    if (query.hashtag) {
+      filtros.push({ hashtags: normalizeHashtag(query.hashtag) });
+    }
+
+    if (query.withMediaOnly) {
+      filtros.push({ mediaCount: { $gt: 0 } });
     }
 
     if (query.search?.trim()) {
-      // Sin índice de texto: se busca por expresión regular escapada, que para
-      // este volumen basta y no obliga a mantener un índice aparte.
-      filtros.push({ description: { $regex: escapeRegex(query.search.trim()), $options: 'i' } });
+      filtros.push({ $text: { $search: query.search.trim() } });
     }
 
-    // El muro de seguidos incluye lo propio: un muro donde no aparece lo que
-    // uno acaba de publicar se lee como si no se hubiera publicado.
-    if (query.feed === 'following' && viewerId !== null) {
-      const seguidos = await this.followingIds(viewerId);
+    const feed = query.userId || query.hashtag ? 'discover' : (query.feed ?? 'discover');
 
-      filtros.push({ userId: { $in: [...seguidos, new ObjectId(viewerId)] } });
+    if (context.viewerId && (feed === 'following' || feed === 'home')) {
+      const authors = [...context.followingIds, context.viewerId].map((id) => new ObjectId(id));
+
+      // Quien sigue a poca gente vería un muro casi vacío: se le añade lo
+      // público reciente, que es lo que hace Facebook con las «sugerencias».
+      if (feed === 'home' && context.followingIds.size < HOME_DISCOVERY_THRESHOLD) {
+        filtros.push({
+          $or: [
+            { userId: { $in: authors } },
+            { createdAt: { $gte: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) } },
+          ],
+        });
+      } else {
+        filtros.push({ userId: { $in: authors } });
+      }
     }
 
-    if (geo) {
-      // El difuminado desplaza el punto como mucho `locationAccuracy` km, así
-      // que la caja se amplía para no perder publicaciones por el camino.
-      const box = boundingBox(geo, geo.radiusKm + 25);
-      const cercanas = await this.locations
-        .find({
-          lat: { $gte: box.minLat, $lte: box.maxLat },
-          lng: { $gte: box.minLng, $lte: box.maxLng },
-        })
-        .select('_id')
-        .lean();
-
-      filtros.push({ locationId: { $in: cercanas.map((doc) => doc._id) } });
-    }
-
-    return filtros.length > 0 ? { $and: filtros } : {};
+    return filtros.length === 1 ? (filtros[0]) : { $and: filtros };
   }
 
-  /** A quiénes sigue esta persona, como identificadores sueltos. */
-  private async followingIds(viewerId: string): Promise<Types.ObjectId[]> {
-    const follows = await this.follows.find({ followerId: viewerId }).select('followeeId').lean();
+  private async notifyMentions(
+    mentionIds: Types.ObjectId[],
+    actorId: string,
+    postId: string,
+    text: string,
+  ): Promise<void> {
+    await Promise.all(
+      mentionIds.map((recipientId) =>
+        this.notifications.notify({
+          recipientId,
+          actorId,
+          type: NotificationType.Mention,
+          postId,
+          preview: text.slice(0, 120),
+        }),
+      ),
+    );
+  }
 
-    return follows.map((doc) => doc.followeeId);
+  /** Lleva la cuenta de cuántas publicaciones usan cada etiqueta. */
+  private async trackHashtags(added: string[], removed: string[]): Promise<void> {
+    const now = new Date();
+
+    await Promise.all([
+      ...added.map((tag) =>
+        this.hashtags.updateOne({ tag }, { $inc: { postCount: 1 }, $set: { lastUsedAt: now } }, { upsert: true }),
+      ),
+      ...removed.map((tag) => this.hashtags.updateOne({ tag, postCount: { $gt: 0 } }, { $inc: { postCount: -1 } })),
+    ]);
   }
 }
-

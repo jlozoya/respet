@@ -11,6 +11,7 @@ import { escapeRegex } from '../../common/utils/regex.js';
 import { Media as MediaDoc } from '../../database/schemas/content.schema.js';
 import { OrderItem, Product } from '../../database/schemas/store.schema.js';
 import { MediaService } from '../../media/media.service.js';
+import type { PendingUpload } from '../../media/upload.js';
 import type { CreateProductDto, ProductListQueryDto, UpdateProductDto } from './dto/product.dto.js';
 
 const MAX_MEDIA_PER_PRODUCT = 8;
@@ -108,7 +109,7 @@ export class ProductsService {
     return this.findById(id);
   }
 
-  async addMedia(id: string, file: Express.Multer.File): Promise<Media> {
+  async addMedia(id: string, file: PendingUpload): Promise<Media> {
     const product = await this.products.findById(id).select('name').lean();
 
     if (!product) {
@@ -124,19 +125,15 @@ export class ProductsService {
       );
     }
 
-    const created = await this.media.createFromUpload(file, 'product', {
+    const created = await this.media.storeUpload(file, {
+      accept: ['image'],
+      preset: 'product',
       productId: id,
       position: imagenes,
       alt: product.name,
     });
 
-    const doc = await this.mediaModel.findById(created.id).lean();
-
-    if (!doc) {
-      throw AppException.notFound('Media');
-    }
-
-    return toMedia(doc);
+    return toMedia(created);
   }
 
   async removeMedia(id: string, mediaId: string): Promise<void> {

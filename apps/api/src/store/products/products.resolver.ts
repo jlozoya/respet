@@ -1,8 +1,10 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Paginated, Product } from '@respet/shared';
+import type { Media, Paginated, Product } from '@respet/shared';
 
 import { Public, Roles } from '../../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
+import { MediaType } from '../../graphql/types/common.types.js';
+import { GraphQLUpload, type PendingUpload } from '../../media/upload.js';
 import { ProductPage, ProductType } from '../../graphql/types/store.types.js';
 import { CreateProductDto, ProductListQueryDto, UpdateProductDto } from './dto/product.dto.js';
 import { ProductsService } from './products.service.js';
@@ -39,6 +41,15 @@ export class ProductsResolver {
     @Args('input') input: UpdateProductDto,
   ): Promise<Product> {
     return this.products.update(id, input);
+  }
+
+  @Roles('supervisor')
+  @Mutation(() => MediaType, { description: 'Añade una foto al producto, subida en la propia operación.' })
+  async addProductMedia(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,
+  ): Promise<Media> {
+    return this.products.addMedia(id, file);
   }
 
   @Roles('supervisor')

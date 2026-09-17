@@ -1,42 +1,49 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Comment, Paginated } from '@respet/shared';
+import type { Comment, CommentLikeResult, Paginated } from '@respet/shared';
 
-import { CurrentUser, Public, type AuthenticatedUser } from '../common/decorators/index.js';
+import {
+  CurrentUser,
+  OptionalUser,
+  Public,
+  RateLimit,
+  Scopes,
+  type AuthenticatedUser,
+} from '../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe.js';
-import { CommentPage, CommentType } from '../graphql/types/content.types.js';
+import { CommentLikeResultType, CommentPage, CommentType } from '../graphql/types/social.types.js';
 import { CommentsService } from './comments.service.js';
 import { CommentListQueryDto, CreateCommentDto, UpdateCommentDto } from './dto/comment.dto.js';
 
-/**
- * Comentarios de una publicación.
- *
- * Con REST el hilo colgaba de su publicación (`/posts/:id/comments`) y el
- * comentario suelto vivía en otra ruta. Aquí las dos cosas son operaciones con
- * nombre propio, y el `postId` es un argumento más.
- */
 @Resolver(() => CommentType)
 export class CommentsResolver {
   constructor(private readonly comments: CommentsService) {}
 
   @Public()
-  @Query(() => CommentPage, { name: 'comments', description: 'Hilo de una publicación.' })
+  @Scopes('user_posts')
+  @Query(() => CommentPage, {
+    name: 'comments',
+    description: 'Comentarios de primer nivel de una publicación, o las respuestas de uno con `parentId`.',
+  })
   async list(
     @Args('postId', { type: () => ID }, ParseObjectIdPipe) postId: string,
-    @Args('query', { type: () => CommentListQueryDto, nullable: true })
-    query: CommentListQueryDto = {},
+    @OptionalUser() viewer: AuthenticatedUser | null,
+    @Args('query', { type: () => CommentListQueryDto, nullable: true }) query: CommentListQueryDto = {},
   ): Promise<Paginated<Comment>> {
-    return this.comments.list(postId, query);
+    return this.comments.list(postId, query, viewer?.id ?? null);
   }
 
+  @Scopes('publish_posts')
+  @RateLimit({ limit: 200, windowSeconds: 3600 })
   @Mutation(() => CommentType)
   async createComment(
     @Args('postId', { type: () => ID }, ParseObjectIdPipe) postId: string,
     @Args('input') input: CreateCommentDto,
-    @CurrentUser('id') userId: string,
+    @CurrentUser() actor: AuthenticatedUser,
   ): Promise<Comment> {
-    return this.comments.create(postId, userId, input);
+    return this.comments.create(postId, actor, input);
   }
 
+  @Scopes('publish_posts')
   @Mutation(() => CommentType)
   async updateComment(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
@@ -46,7 +53,8 @@ export class CommentsResolver {
     return this.comments.update(id, input, actor);
   }
 
-  @Mutation(() => Boolean, { description: 'Retira un comentario propio.' })
+  @Scopes('publish_posts')
+  @Mutation(() => Boolean, { description: 'Retira un comentario propio, o uno ajeno en una publicación propia.' })
   async deleteComment(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser() actor: AuthenticatedUser,
@@ -54,5 +62,22 @@ export class CommentsResolver {
     await this.comments.remove(id, actor);
 
     return true;
+  }
+
+  @RateLimit({ limit: 600, windowSeconds: 3600 })
+  @Mutation(() => CommentLikeResultType)
+  async likeComment(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<CommentLikeResult> {
+    return this.comments.like(id, userId);
+  }
+
+  @Mutation(() => CommentLikeResultType)
+  async unlikeComment(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<CommentLikeResult> {
+    return this.comments.unlike(id, userId);
   }
 }

@@ -6,10 +6,8 @@ import { PaymentsController } from './payments/payments.controller.js';
 import { PaymentsResolver } from './payments/payments.resolver.js';
 import { PaymentsService } from './payments/payments.service.js';
 import { PayPalClient } from './payments/paypal.client.js';
-import { ProductsController } from './products/products.controller.js';
 import { ProductsResolver } from './products/products.resolver.js';
 import { ProductsService } from './products/products.service.js';
-import { WarehousesController } from './warehouses/warehouses.controller.js';
 import { WarehousesResolver } from './warehouses/warehouses.resolver.js';
 import { WarehousesService } from './warehouses/warehouses.service.js';
 
@@ -22,7 +20,7 @@ import { WarehousesService } from './warehouses/warehouses.service.js';
  * y el aviso de PayPal.
  */
 @Module({
-  controllers: [WarehousesController, ProductsController, PaymentsController],
+  controllers: [PaymentsController],
   providers: [
     WarehousesResolver,
     WarehousesService,

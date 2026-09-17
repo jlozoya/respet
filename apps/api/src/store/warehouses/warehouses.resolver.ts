@@ -4,6 +4,7 @@ import type { Paginated, Warehouse } from '@respet/shared';
 import { Public, Roles } from '../../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';
 import { WarehousePage, WarehouseType } from '../../graphql/types/store.types.js';
+import { GraphQLUpload, type PendingUpload } from '../../media/upload.js';
 import {
   CreateWarehouseDto,
   UpdateWarehouseDto,
@@ -45,6 +46,15 @@ export class WarehousesResolver {
     @Args('input') input: UpdateWarehouseDto,
   ): Promise<Warehouse> {
     return this.warehouses.update(id, input);
+  }
+
+  @Roles('supervisor')
+  @Mutation(() => WarehouseType, { description: 'Cambia la imagen de la bodega, subida en la propia operación.' })
+  async setWarehouseImage(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+    @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,
+  ): Promise<Warehouse> {
+    return this.warehouses.setImage(id, file);
   }
 
   @Roles('admin')

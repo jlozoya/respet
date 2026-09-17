@@ -20,12 +20,15 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Length,
   Matches,
   MaxLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
+import { USERNAME } from '../../auth/dto/auth.dto.js';
 import { LocationDto } from '../../common/dto/location.dto.js';
 import { SearchQueryDto } from '../../common/dto/pagination.dto.js';
 import { Gender, MessagePolicy, UserRole } from '../../graphql/enums.js';
@@ -33,9 +36,6 @@ import { normalizeEmail, normalizeEmailEach, trim, trimEach } from '../../common
 
 /** Formato laxo a propósito: los teléfonos internacionales varían mucho. */
 const PHONE_PATTERN = /^\+?[\d\s().-]{6,20}$/;
-
-/** Nombre de usuario apto para una dirección web. */
-const USERNAME = /^[a-z0-9](?:[a-z0-9_-]{1,28}[a-z0-9])?$/;
 
 @InputType('UpdateProfileInput')
 export class UpdateProfileDto implements UpdateProfileRequest {
@@ -81,6 +81,21 @@ export class UpdateProfileDto implements UpdateProfileRequest {
   @IsOptional()
   @IsDateString({ strict: true })
   birthday?: string | null;
+
+  @Field(() => String, { nullable: true, description: 'Presentación breve, hasta 280 caracteres.' })
+  @IsOptional()
+  @Transform(trim)
+  @IsString()
+  @MaxLength(280)
+  bio?: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @Transform(trim)
+  @ValidateIf((_object, value) => value !== null && value !== '')
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: 'website must be a valid URL' })
+  @MaxLength(200)
+  website?: string | null;
 }
 
 @InputType('UpdateEmailInput')
@@ -159,6 +174,21 @@ export class UpdatePermissionsDto implements UpdatePermissionsRequest {
   @IsOptional()
   @IsBoolean()
   privateProfile?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  showOnlineStatus?: boolean;
+
+  @Field(() => MessagePolicy, { nullable: true })
+  @IsOptional()
+  @IsEnum(MessagePolicy)
+  storyReplyPolicy?: MessagePolicy;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  loginAlerts?: boolean;
 }
 
 @InputType('AddEmailsInput')
