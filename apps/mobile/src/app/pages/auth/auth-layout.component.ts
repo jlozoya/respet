@@ -145,7 +145,6 @@ import { BrandingService } from '../../core/branding/branding.service';
   `,
 })
 export class AuthLayoutComponent {
-  /** El nombre de la instalación, para el aviso de copyright. */
   private readonly branding = inject(BrandingService);
 
   /** El nombre y el lema de la instalación, que se configuran al desplegar. */
