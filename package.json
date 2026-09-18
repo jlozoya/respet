@@ -43,15 +43,19 @@
     "migrate:social": "cd apps/api && npm run migrate:social"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
+    "concurrently": "^10.0.5",
     "rimraf": "^6.0.1",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "tsup": {
+      "esbuild": "^0.28.2"
+    }
   },
   "allowScripts": {
     "argon2@0.45.1": true,
     "@swc/core@1.16.2": true,
     "esbuild@0.28.2": true,
-    "esbuild@0.27.7": true,
     "lmdb@3.5.6": true,
     "msgpackr-extract@3.0.4": true,
     "@parcel/watcher@2.6.0": true,
