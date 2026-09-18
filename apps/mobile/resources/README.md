@@ -1,8 +1,6 @@
-These are Cordova resources. You can replace icon.png and splash.png and run
-`ionic cordova resources` to generate custom icons and splash screens for your
-app. See `ionic cordova resources --help` for details.
+`icon.svg` is the source of truth for the default Social Network icon. Run
+`npm run icons` from `apps/mobile` to regenerate the web favicon, legacy app
+assets, and all Android/iOS icon sizes.
 
-Cordova reference documentation:
-
-- Icons: https://cordova.apache.org/docs/en/latest/config_ref/images.html
-- Splash Screens: https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/
+`splash.png` and the platform-specific splash images remain legacy Cordova
+resources; Capacitor currently hides the native splash immediately.

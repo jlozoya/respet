@@ -16,6 +16,7 @@
     "lint:fix": "ng lint --fix",
     "lint:styles": "stylelint \"src/**/*.scss\" --max-warnings 0",
     "lint:styles:fix": "stylelint \"src/**/*.scss\" --fix",
+    "icons": "node scripts/generate-icons.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "sync": "npm run build:prod && cap sync",
     "clean": "rimraf www .angular dist"

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Social Network">
+  <defs>
+    <linearGradient id="brand" x1="120" y1="80" x2="904" y2="944" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7931e" />
+      <stop offset="0.48" stop-color="#f05a22" />
+      <stop offset="1" stop-color="#e1306c" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(234 180) rotate(46) scale(760)">
+      <stop stop-color="#fff" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#brand)" />
+  <rect width="1024" height="1024" fill="url(#glow)" />
+
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M704 306C633 220 382 220 307 329C233 438 339 500 510 520C681 540 789 602 713 715C637 828 376 819 288 713"
+      stroke-opacity="0.16"
+      stroke-width="174"
+    />
+    <path
+      d="M704 306C633 220 382 220 307 329C233 438 339 500 510 520C681 540 789 602 713 715C637 828 376 819 288 713"
+      stroke-width="112"
+    />
+  </g>
+</svg>
