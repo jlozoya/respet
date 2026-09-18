@@ -38,6 +38,12 @@ coverage/
 playwright-report/
 test-results/
 
+# Claude Code: se versiona cómo arrancar la API y la aplicación para verlas
+# en el navegador; los permisos y ajustes de cada cual se quedan en su máquina.
+.claude/*
+!.claude/launch.json
+!.claude/settings.json
+
 # Editores y sistema operativo
 .idea/
 .vscode/*
