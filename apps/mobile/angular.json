@@ -117,7 +117,6 @@
             "tsConfig": "tsconfig.spec.json",
             "buildTarget": "mobile:build:development",
             "runner": "vitest",
-            "browsers": [],
             "setupFiles": [
               "src/test-setup.ts"
             ]

@@ -75,8 +75,10 @@ async function normalizeUsers(db: Db, log: (message: string) => void): Promise<v
   // renombrar a alguien sin avisarle sería peor que la inconsistencia.
   let renamed = 0;
 
-  for await (const user of users.find({ name: /[A-ZÁÉÍÓÚÜÑ]/ }).project({ name: 1 })) {
-    const lowered = String(user['name']).toLowerCase();
+  const named = users.find({ name: /[A-ZÁÉÍÓÚÜÑ]/ }).project<{ _id: ObjectId; name: string }>({ name: 1 });
+
+  for await (const user of named) {
+    const lowered = user.name.toLowerCase();
     const taken = await users.findOne({ _id: { $ne: user._id }, name: lowered }, { projection: { _id: 1 } });
 
     if (!taken) {
