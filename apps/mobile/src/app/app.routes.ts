@@ -53,12 +53,14 @@ export const routes: Routes = [
   {
     path: 'follow-requests',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/follow-requests/follow-requests.page').then((m) => m.FollowRequestsPage),
+    loadComponent: () =>
+      import('./pages/follow-requests/follow-requests.page').then((m) => m.FollowRequestsPage),
   },
   {
     path: 'notifications',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage),
+    loadComponent: () =>
+      import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage),
   },
   {
     path: 'messages',
@@ -75,7 +77,8 @@ export const routes: Routes = [
   {
     path: 'stories/archive',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/stories/story-archive.page').then((m) => m.StoryArchivePage),
+    loadComponent: () =>
+      import('./pages/stories/story-archive.page').then((m) => m.StoryArchivePage),
   },
   {
     path: 'live',
@@ -107,37 +110,44 @@ export const routes: Routes = [
   {
     path: 'settings/profile',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/profile-settings.page').then((m) => m.ProfileSettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/profile-settings.page').then((m) => m.ProfileSettingsPage),
   },
   {
     path: 'settings/account',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/account-settings.page').then((m) => m.AccountSettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/account-settings.page').then((m) => m.AccountSettingsPage),
   },
   {
     path: 'settings/privacy',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/privacy-settings.page').then((m) => m.PrivacySettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/privacy-settings.page').then((m) => m.PrivacySettingsPage),
   },
   {
     path: 'settings/security',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/security-settings.page').then((m) => m.SecuritySettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/security-settings.page').then((m) => m.SecuritySettingsPage),
   },
   {
     path: 'settings/apps',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/apps-settings.page').then((m) => m.AppsSettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/apps-settings.page').then((m) => m.AppsSettingsPage),
   },
   {
     path: 'settings/blocked',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/blocked-settings.page').then((m) => m.BlockedSettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/blocked-settings.page').then((m) => m.BlockedSettingsPage),
   },
   {
     path: 'settings/preferences',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/settings/preferences-settings.page').then((m) => m.PreferencesSettingsPage),
+    loadComponent: () =>
+      import('./pages/settings/preferences-settings.page').then((m) => m.PreferencesSettingsPage),
   },
   { path: 'account', redirectTo: 'settings', pathMatch: 'full' },
   { path: 'account/:section', redirectTo: 'settings' },
@@ -151,7 +161,8 @@ export const routes: Routes = [
   {
     path: 'developers/:id',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/developers/developer-app.page').then((m) => m.DeveloperAppPage),
+    loadComponent: () =>
+      import('./pages/developers/developer-app.page').then((m) => m.DeveloperAppPage),
   },
   {
     path: 'oauth/authorize',
@@ -173,11 +184,13 @@ export const routes: Routes = [
   {
     path: 'forgot-password',
     canActivate: [guestGuard],
-    loadComponent: () => import('./pages/auth/forgot-password.page').then((m) => m.ForgotPasswordPage),
+    loadComponent: () =>
+      import('./pages/auth/forgot-password.page').then((m) => m.ForgotPasswordPage),
   },
   {
     path: 'reset-password',
-    loadComponent: () => import('./pages/auth/reset-password.page').then((m) => m.ResetPasswordPage),
+    loadComponent: () =>
+      import('./pages/auth/reset-password.page').then((m) => m.ResetPasswordPage),
   },
   {
     path: 'verify-email',
@@ -220,7 +233,8 @@ export const routes: Routes = [
   {
     path: 'analytics',
     canActivate: [roleGuard('admin')],
-    loadComponent: () => import('./pages/admin/analytics/analytics.page').then((m) => m.AnalyticsPage),
+    loadComponent: () =>
+      import('./pages/admin/analytics/analytics.page').then((m) => m.AnalyticsPage),
   },
   {
     path: 'users',
@@ -230,7 +244,8 @@ export const routes: Routes = [
   {
     path: 'users/:id',
     canActivate: [roleGuard('admin')],
-    loadComponent: () => import('./pages/admin/user-detail/user-detail.page').then((m) => m.UserDetailPage),
+    loadComponent: () =>
+      import('./pages/admin/user-detail/user-detail.page').then((m) => m.UserDetailPage),
   },
   {
     path: 'bulletins',
@@ -254,7 +269,9 @@ export const routes: Routes = [
   {
     path: 'terms-and-conditions/:segment',
     loadComponent: () =>
-      import('./pages/terms-and-conditions/terms-and-conditions.page').then((m) => m.TermsAndConditionsPage),
+      import('./pages/terms-and-conditions/terms-and-conditions.page').then(
+        (m) => m.TermsAndConditionsPage,
+      ),
   },
   {
     path: 'error',

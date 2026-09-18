@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -30,7 +39,10 @@ import { AvatarComponent } from '../../shared/components/avatar.component';
 import { FollowButtonComponent } from '../../shared/components/follow-button.component';
 import { PageHeaderComponent } from '../../shared/components/page-header.component';
 import { RichTextComponent } from '../../shared/components/rich-text.component';
-import { UserListModalComponent, type UserListPage } from '../../shared/components/user-list-modal.component';
+import {
+  UserListModalComponent,
+  type UserListPage,
+} from '../../shared/components/user-list-modal.component';
 import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
 import { FullNamePipe, fullName } from '../../shared/pipes/full-name.pipe';
 import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
@@ -149,9 +161,14 @@ export class ProfilePage {
     await (event.target as HTMLIonRefresherElement).complete();
   }
 
-  onFollowChanged(result: { followerCount: number; followState: PublicProfile['followState'] }): void {
+  onFollowChanged(result: {
+    followerCount: number;
+    followState: PublicProfile['followState'];
+  }): void {
     this.profile.update((current) =>
-      current ? { ...current, followerCount: result.followerCount, followState: result.followState } : current,
+      current
+        ? { ...current, followerCount: result.followerCount, followState: result.followState }
+        : current,
     );
 
     // Seguir a una cuenta privada aceptada, o dejar de seguirla, cambia lo que se ve.
@@ -182,7 +199,9 @@ export class ProfilePage {
     const profile = this.profile();
 
     if (profile && highlight.stories.length) {
-      await this.viewer.open([{ user: profile, stories: highlight.stories, title: highlight.title }]);
+      await this.viewer.open([
+        { user: profile, stories: highlight.stories, title: highlight.title },
+      ]);
     }
   }
 
@@ -191,9 +210,20 @@ export class ProfilePage {
     const t = (key: string) => this.translate.instant(key) as string;
     const sheet = await this.actionSheetCtrl.create({
       buttons: [
-        ...(profile?.hasActiveStory ? [{ text: t('PROFILE.VIEW_STORY'), icon: 'book-outline', data: 'story' }] : []),
+        ...(profile?.hasActiveStory
+          ? [{ text: t('PROFILE.VIEW_STORY'), icon: 'book-outline', data: 'story' }]
+          : []),
         { text: t('PROFILE.CHANGE_AVATAR'), icon: 'camera-outline', data: 'change' },
-        ...(profile?.avatar ? [{ text: t('PROFILE.REMOVE_AVATAR'), icon: 'trash-outline', role: 'destructive', data: 'remove' }] : []),
+        ...(profile?.avatar
+          ? [
+              {
+                text: t('PROFILE.REMOVE_AVATAR'),
+                icon: 'trash-outline',
+                role: 'destructive',
+                data: 'remove',
+              },
+            ]
+          : []),
         { text: t('CANCEL'), role: 'cancel' },
       ],
     });
@@ -214,7 +244,11 @@ export class ProfilePage {
   }
 
   async changeImage(kind: 'avatar' | 'cover'): Promise<void> {
-    const file = await this.images.pick(kind === 'avatar' ? { aspectRatio: 1, targetWidth: 720 } : { aspectRatio: 16 / 6, targetWidth: 1640 });
+    const file = await this.images.pick(
+      kind === 'avatar'
+        ? { aspectRatio: 1, targetWidth: 720 }
+        : { aspectRatio: 16 / 6, targetWidth: 1640 },
+    );
 
     if (!file) {
       return;
@@ -276,7 +310,11 @@ export class ProfilePage {
 
     const modal = await this.modalCtrl.create({
       component: UserListModalComponent,
-      componentProps: { title: kind === 'followers' ? 'PROFILE.FOLLOWERS' : 'PROFILE.FOLLOWING', load, showFollow: false },
+      componentProps: {
+        title: kind === 'followers' ? 'PROFILE.FOLLOWERS' : 'PROFILE.FOLLOWING',
+        load,
+        showFollow: false,
+      },
       cssClass: 'rs-dialog',
     });
 
@@ -290,7 +328,8 @@ export class ProfilePage {
       return;
     }
 
-    const t = (key: string, params?: Record<string, unknown>) => this.translate.instant(key, params) as string;
+    const t = (key: string, params?: Record<string, unknown>) =>
+      this.translate.instant(key, params) as string;
     const name = profile.firstName || profile.name;
     const sheet = await this.actionSheetCtrl.create({
       buttons: [
@@ -302,8 +341,17 @@ export class ProfilePage {
             ]
           : [
               profile.blockedByViewer
-                ? { text: t('PROFILE.UNBLOCK_NAME', { name }), icon: 'ban-outline', data: 'unblock' }
-                : { text: t('PROFILE.BLOCK_NAME', { name }), icon: 'ban-outline', role: 'destructive', data: 'block' },
+                ? {
+                    text: t('PROFILE.UNBLOCK_NAME', { name }),
+                    icon: 'ban-outline',
+                    data: 'unblock',
+                  }
+                : {
+                    text: t('PROFILE.BLOCK_NAME', { name }),
+                    icon: 'ban-outline',
+                    role: 'destructive',
+                    data: 'block',
+                  },
               { text: t('REPORT'), icon: 'flag-outline', data: 'report' },
             ]),
         { text: t('CANCEL'), role: 'cancel' },
@@ -315,7 +363,11 @@ export class ProfilePage {
 
     switch (data) {
       case 'share':
-        await this.shareService.share({ title: fullName(profile), text: profile.bio ?? '', path: `/profile/${profile.name}` });
+        await this.shareService.share({
+          title: fullName(profile),
+          text: profile.bio ?? '',
+          path: `/profile/${profile.name}`,
+        });
         break;
       case 'archive':
         await this.router.navigateByUrl('/stories/archive');
@@ -324,7 +376,14 @@ export class ProfilePage {
         await this.router.navigateByUrl('/settings');
         break;
       case 'block':
-        if (await this.feedback.confirm({ header: 'PROFILE.BLOCK', message: 'PROFILE.BLOCK_MESSAGE', confirmText: 'PROFILE.BLOCK', danger: true })) {
+        if (
+          await this.feedback.confirm({
+            header: 'PROFILE.BLOCK',
+            message: 'PROFILE.BLOCK_MESSAGE',
+            confirmText: 'PROFILE.BLOCK',
+            danger: true,
+          })
+        ) {
           await this.guard(async () => {
             await this.social.block(profile.id);
             await this.feedback.toast('PROFILE.BLOCKED', { color: 'success' });

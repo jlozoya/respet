@@ -1,7 +1,13 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
 
-import { firstErrorKey, matchFields, passwordValidator, phoneValidator, usernameValidator } from './form-validators';
+import {
+  firstErrorKey,
+  matchFields,
+  passwordValidator,
+  phoneValidator,
+  usernameValidator,
+} from './form-validators';
 
 describe('passwordValidator', () => {
   const validate = passwordValidator();

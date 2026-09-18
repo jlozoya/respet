@@ -39,7 +39,9 @@ export interface GraphqlResult<T> {
 }
 
 export async function startHarness(): Promise<Harness> {
-  const databaseUrl = process.env['E2E_DATABASE_URL'] ?? 'mongodb://127.0.0.1:27019/social_network_e2e?directConnection=true';
+  const databaseUrl =
+    process.env['E2E_DATABASE_URL'] ??
+    'mongodb://127.0.0.1:27019/social_network_e2e?directConnection=true';
 
   process.env['NODE_ENV'] = 'test';
   process.env['DATABASE_URL'] = databaseUrl;
@@ -60,7 +62,10 @@ export async function startHarness(): Promise<Harness> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: ['error'] });
 
   app.set('trust proxy', 1);
-  app.use('/graphql', graphqlUploadExpress({ maxFileSize: app.get(MediaService).maxUploadBytes, maxFiles: 10 }));
+  app.use(
+    '/graphql',
+    graphqlUploadExpress({ maxFileSize: app.get(MediaService).maxUploadBytes, maxFiles: 10 }),
+  );
   app.useGlobalPipes(
     new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
   );
@@ -107,7 +112,11 @@ export async function startHarness(): Promise<Harness> {
     form.append('map', JSON.stringify(map));
 
     entries.forEach(([, file], index) => {
-      form.append(String(index), new Blob([new Uint8Array(file.data)], { type: file.type }), file.name);
+      form.append(
+        String(index),
+        new Blob([new Uint8Array(file.data)], { type: file.type }),
+        file.name,
+      );
     });
 
     const response = await fetch(`${url}/graphql`, {
@@ -197,7 +206,9 @@ export function nextEvent<T>(
 export async function tinyPng(): Promise<Buffer> {
   const sharp = (await import('sharp')).default;
 
-  return sharp({ create: { width: 4, height: 4, channels: 3, background: { r: 255, g: 107, b: 53 } } })
+  return sharp({
+    create: { width: 4, height: 4, channels: 3, background: { r: 255, g: 107, b: 53 } },
+  })
     .png()
     .toBuffer();
 }

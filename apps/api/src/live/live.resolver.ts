@@ -1,4 +1,14 @@
-import { Args, Field, ID, InputType, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  InputType,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import type { LiveComment, LiveConnection, LiveEvent, LiveStream } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
@@ -53,7 +63,10 @@ export class LiveResolver {
   ) {}
 
   @Public()
-  @Query(() => Boolean, { name: 'liveStreamingEnabled', description: 'Si el servidor tiene configurados los directos.' })
+  @Query(() => Boolean, {
+    name: 'liveStreamingEnabled',
+    description: 'Si el servidor tiene configurados los directos.',
+  })
   liveStreamingEnabled(): boolean {
     return this.live.enabled;
   }
@@ -87,7 +100,9 @@ export class LiveResolver {
   }
 
   @RateLimit({ limit: 10, windowSeconds: 3600 })
-  @Mutation(() => LiveConnectionType, { description: 'Empieza un directo. Devuelve el pase para emitir.' })
+  @Mutation(() => LiveConnectionType, {
+    description: 'Empieza un directo. Devuelve el pase para emitir.',
+  })
   async startLiveStream(
     @CurrentUser() actor: AuthenticatedUser,
     @Args('input', { type: () => StartLiveDto, nullable: true }) input: StartLiveDto = {},
@@ -105,7 +120,9 @@ export class LiveResolver {
     return this.live.join(id, actor);
   }
 
-  @Mutation(() => LiveStreamType, { description: 'Señal de vida de quien emite, cada pocos segundos.' })
+  @Mutation(() => LiveStreamType, {
+    description: 'Señal de vida de quien emite, cada pocos segundos.',
+  })
   async liveStreamHeartbeat(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -157,7 +174,10 @@ export class LiveResolver {
    * Los comentarios de personas con las que hay un bloqueo no se entregan.
    */
   @Scopes('live_videos')
-  @Subscription(() => LiveEventObject, { name: 'liveStreamEvents', resolve: (event: LiveEvent) => event })
+  @Subscription(() => LiveEventObject, {
+    name: 'liveStreamEvents',
+    resolve: (event: LiveEvent) => event,
+  })
   async liveStreamEvents(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -166,6 +186,9 @@ export class LiveResolver {
 
     const blocked = await this.relationships.blockedIds(userId);
 
-    return this.bus.subscribe<LiveEvent>(Topic.live(id), (event) => !event.user || !blocked.has(event.user.id));
+    return this.bus.subscribe<LiveEvent>(
+      Topic.live(id),
+      (event) => !event.user || !blocked.has(event.user.id),
+    );
   }
 }

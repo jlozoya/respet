@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -53,9 +61,13 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
               <app-avatar [user]="person" [size]="80" />
               <div class="text">
                 <h1>{{ person | fullName }}</h1>
-                <a class="rs-muted" [routerLink]="['/profile', person.name]">&#64;{{ person.name }}</a>
+                <a class="rs-muted" [routerLink]="['/profile', person.name]"
+                  >&#64;{{ person.name }}</a
+                >
                 <span class="rs-small rs-muted">{{ person.email }}</span>
-                <span class="rs-small rs-muted">{{ 'USERS_ADMIN.JOINED' | translate: { time: (person.createdAt | relativeTime) } }}</span>
+                <span class="rs-small rs-muted">{{
+                  'USERS_ADMIN.JOINED' | translate: { time: (person.createdAt | relativeTime) }
+                }}</span>
               </div>
               <ion-button size="small" class="rs-soft" (click)="changeAvatar()" [disabled]="busy()">
                 <ion-icon slot="start" name="camera-outline" /> {{ 'CHANGE_AVATAR' | translate }}
@@ -67,9 +79,17 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
                 <span class="label">{{ 'ROLE' | translate }}</span>
                 <span class="hint">{{ 'USERS_ADMIN.ROLE_HINT' | translate }}</span>
               </span>
-              <ion-select interface="popover" [value]="person.role" [disabled]="isSelf(person)" (ionChange)="setRole($event.detail.value)" [attr.aria-label]="'ROLE' | translate">
+              <ion-select
+                interface="popover"
+                [value]="person.role"
+                [disabled]="isSelf(person)"
+                (ionChange)="setRole($event.detail.value)"
+                [attr.aria-label]="'ROLE' | translate"
+              >
                 @for (role of roles; track role.value) {
-                  <ion-select-option [value]="role.value">{{ role.label | translate }}</ion-select-option>
+                  <ion-select-option [value]="role.value">{{
+                    role.label | translate
+                  }}</ion-select-option>
                 }
               </ion-select>
             </div>
@@ -79,12 +99,20 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
                 <span class="label">{{ 'USERS_ADMIN.VERIFIED' | translate }}</span>
                 <span class="hint">{{ 'USERS_ADMIN.VERIFIED_HINT' | translate }}</span>
               </span>
-              <ion-toggle [checked]="person.verified" (ionChange)="setVerified($event.detail.checked)" [attr.aria-label]="'USERS_ADMIN.VERIFIED' | translate" />
+              <ion-toggle
+                [checked]="person.verified"
+                (ionChange)="setVerified($event.detail.checked)"
+                [attr.aria-label]="'USERS_ADMIN.VERIFIED' | translate"
+              />
             </div>
 
             <div class="stats">
-              <span><b>{{ person.followerCount }}</b> {{ 'PROFILE.FOLLOWERS' | translate }}</span>
-              <span><b>{{ person.followingCount }}</b> {{ 'PROFILE.FOLLOWING' | translate }}</span>
+              <span
+                ><b>{{ person.followerCount }}</b> {{ 'PROFILE.FOLLOWERS' | translate }}</span
+              >
+              <span
+                ><b>{{ person.followingCount }}</b> {{ 'PROFILE.FOLLOWING' | translate }}</span
+              >
               <span>{{ person.provider }}</span>
               @if (person.mfaEnabled) {
                 <span class="mfa"><ion-icon name="shield-checkmark" /> 2FA</span>
@@ -93,7 +121,9 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
 
             @if (!isSelf(person)) {
               <div class="actions">
-                <ion-button size="small" color="danger" fill="outline" (click)="remove(person)">{{ 'DELETE' | translate }}</ion-button>
+                <ion-button size="small" color="danger" fill="outline" (click)="remove(person)">{{
+                  'DELETE' | translate
+                }}</ion-button>
               </div>
             }
           </section>

@@ -54,7 +54,10 @@ export class SendMessageDto implements SendMessageRequest {
   @IsMongoId()
   sharedPostId?: string;
 
-  @Field(() => Int, { nullable: true, description: 'Duración de una nota de voz, en milisegundos.' })
+  @Field(() => Int, {
+    nullable: true,
+    description: 'Duración de una nota de voz, en milisegundos.',
+  })
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -64,12 +67,18 @@ export class SendMessageDto implements SendMessageRequest {
 
 @InputType('MessageListQueryInput')
 export class MessageListQueryDto implements MessageListQuery {
-  @Field(() => ID, { nullable: true, description: 'Mensajes anteriores a este, para seguir hacia atrás.' })
+  @Field(() => ID, {
+    nullable: true,
+    description: 'Mensajes anteriores a este, para seguir hacia atrás.',
+  })
   @IsOptional()
   @IsMongoId()
   before?: string;
 
-  @Field(() => ID, { nullable: true, description: 'Mensajes posteriores a este, para ponerse al día.' })
+  @Field(() => ID, {
+    nullable: true,
+    description: 'Mensajes posteriores a este, para ponerse al día.',
+  })
   @IsOptional()
   @IsMongoId()
   after?: string;
@@ -105,7 +114,10 @@ export class ConversationListQueryDto implements ConversationListQuery {
   @IsBoolean()
   archived?: boolean;
 
-  @Field(() => String, { nullable: true, description: 'Filtra por nombre del grupo o de la otra persona.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Filtra por nombre del grupo o de la otra persona.',
+  })
   @IsOptional()
   @Transform(trim)
   @IsString()

@@ -75,7 +75,9 @@ export class RelationshipService {
       .lean();
 
     return new Set(
-      docs.map((doc) => (String(doc.blockerId) === userId ? String(doc.blockedId) : String(doc.blockerId))),
+      docs.map((doc) =>
+        String(doc.blockerId) === userId ? String(doc.blockedId) : String(doc.blockerId),
+      ),
     );
   }
 
@@ -103,7 +105,10 @@ export class RelationshipService {
       return null;
     }
 
-    const follow = await this.follows.findOne({ followerId: viewerId, followeeId: targetId }).select('pending').lean();
+    const follow = await this.follows
+      .findOne({ followerId: viewerId, followeeId: targetId })
+      .select('pending')
+      .lean();
 
     if (!follow) {
       return FollowState.None;
@@ -113,14 +118,19 @@ export class RelationshipService {
   }
 
   /** En qué punto sigue quien mira a cada una de estas personas. */
-  async followStates(viewerId: string | null, targetIds: string[]): Promise<Map<string, FollowState>> {
+  async followStates(
+    viewerId: string | null,
+    targetIds: string[],
+  ): Promise<Map<string, FollowState>> {
     const states = new Map<string, FollowState>();
 
     if (!viewerId) {
       return states;
     }
 
-    const ids = [...new Set(targetIds.filter((id) => id && id !== viewerId && isValidObjectId(id)))];
+    const ids = [
+      ...new Set(targetIds.filter((id) => id && id !== viewerId && isValidObjectId(id))),
+    ];
 
     for (const id of ids) {
       states.set(id, FollowState.None);
@@ -136,7 +146,10 @@ export class RelationshipService {
       .lean();
 
     for (const doc of docs) {
-      states.set(String(doc.followeeId), doc.pending ? FollowState.Requested : FollowState.Following);
+      states.set(
+        String(doc.followeeId),
+        doc.pending ? FollowState.Requested : FollowState.Following,
+      );
     }
 
     return states;
@@ -217,7 +230,10 @@ export class RelationshipService {
     ];
 
     if (following.length > 0) {
-      visible.push({ [ownerField]: { $in: following }, audience: { $in: [Audience.Public, Audience.Followers] } });
+      visible.push({
+        [ownerField]: { $in: following },
+        audience: { $in: [Audience.Public, Audience.Followers] },
+      });
     }
 
     if (context.viewerId) {
@@ -240,7 +256,11 @@ export class RelationshipService {
    * a quien escribe —no al revés—: la idea es que no lleguen mensajes de
    * desconocidos, y seguir a alguien no es autorizarle a escribirte.
    */
-  async canMessage(writerId: string, targetId: string, policyField: 'messagePolicy' | 'storyReplyPolicy' = 'messagePolicy'): Promise<boolean> {
+  async canMessage(
+    writerId: string,
+    targetId: string,
+    policyField: 'messagePolicy' | 'storyReplyPolicy' = 'messagePolicy',
+  ): Promise<boolean> {
     if (writerId === targetId) {
       return false;
     }
@@ -289,7 +309,10 @@ export class RelationshipService {
     }
 
     const [users, blocked] = await Promise.all([
-      this.users.find({ name: { $in: names } }).select('_id').lean(),
+      this.users
+        .find({ name: { $in: names } })
+        .select('_id')
+        .lean(),
       this.blockedIds(authorId),
     ]);
 

@@ -75,7 +75,12 @@ export class CryptoService {
     const ciphertext = Buffer.concat([cipher.update(plain, 'utf8'), cipher.final()]);
     const tag = cipher.getAuthTag();
 
-    return [CIPHER_VERSION, iv.toString('base64'), tag.toString('base64'), ciphertext.toString('base64')].join(':');
+    return [
+      CIPHER_VERSION,
+      iv.toString('base64'),
+      tag.toString('base64'),
+      ciphertext.toString('base64'),
+    ].join(':');
   }
 
   decrypt(payload: string): string {

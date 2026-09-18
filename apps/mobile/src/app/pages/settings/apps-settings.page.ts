@@ -19,7 +19,16 @@ import { SettingsLayoutComponent } from './settings-layout.component';
 @Component({
   selector: 'app-apps-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonButton, IonIcon, IonSpinner, AvatarComponent, RelativeTimePipe, SettingsLayoutComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    RelativeTimePipe,
+    SettingsLayoutComponent,
+  ],
   template: `
     <app-settings-layout title="SETTINGS.APPS" subtitle="SETTINGS.APPS_HINT">
       <section class="rs-card block">
@@ -36,11 +45,18 @@ import { SettingsLayoutComponent } from './settings-layout.component';
               </span>
               <span class="scopes">
                 @for (scope of app.scopes; track scope.scope) {
-                  <span class="scope" [class.sensitive]="scope.sensitive" [title]="scope.description">{{ scope.title }}</span>
+                  <span
+                    class="scope"
+                    [class.sensitive]="scope.sensitive"
+                    [title]="scope.description"
+                    >{{ scope.title }}</span
+                  >
                 }
               </span>
             </span>
-            <ion-button size="small" color="danger" fill="outline" (click)="revoke(app)">{{ 'APPS.REMOVE' | translate }}</ion-button>
+            <ion-button size="small" color="danger" fill="outline" (click)="revoke(app)">{{
+              'APPS.REMOVE' | translate
+            }}</ion-button>
           </div>
         } @empty {
           @if (loading()) {
@@ -55,7 +71,8 @@ import { SettingsLayoutComponent } from './settings-layout.component';
       </section>
 
       <p class="rs-small rs-muted note">
-        {{ 'APPS.BUILD_YOUR_OWN' | translate }} <a class="rs-link" routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a>
+        {{ 'APPS.BUILD_YOUR_OWN' | translate }}
+        <a class="rs-link" routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a>
       </p>
     </app-settings-layout>
   `,

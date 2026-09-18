@@ -33,7 +33,10 @@ const MAX_PAGE_ESTIMATE = 100;
  * Por encima de cualquiera de los dos, la consulta se rechaza sin tocar la
  * base.
  */
-export function queryLimitsPlugin(options: { maxDepth: number; maxComplexity: number }): ApolloServerPlugin {
+export function queryLimitsPlugin(options: {
+  maxDepth: number;
+  maxComplexity: number;
+}): ApolloServerPlugin {
   return {
     requestDidStart() {
       return Promise.resolve({
@@ -41,9 +44,12 @@ export function queryLimitsPlugin(options: { maxDepth: number; maxComplexity: nu
           const depth = maxDepthOf(document, request.operationName ?? undefined);
 
           if (depth > options.maxDepth) {
-            throw new GraphQLError(`Query depth ${depth} exceeds the limit of ${options.maxDepth}`, {
-              extensions: { code: ErrorCode.QueryTooComplex, statusCode: 400 },
-            });
+            throw new GraphQLError(
+              `Query depth ${depth} exceeds the limit of ${options.maxDepth}`,
+              {
+                extensions: { code: ErrorCode.QueryTooComplex, statusCode: 400 },
+              },
+            );
           }
 
           const complexity = getComplexity({
@@ -51,7 +57,11 @@ export function queryLimitsPlugin(options: { maxDepth: number; maxComplexity: nu
             query: document,
             operationName: request.operationName ?? undefined,
             variables: request.variables ?? {},
-            estimators: [paginationEstimator, fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
+            estimators: [
+              paginationEstimator,
+              fieldExtensionsEstimator(),
+              simpleEstimator({ defaultComplexity: 1 }),
+            ],
           });
 
           if (complexity > options.maxComplexity) {
@@ -76,9 +86,13 @@ export function queryLimitsPlugin(options: { maxDepth: number; maxComplexity: nu
  */
 const paginationEstimator: ComplexityEstimator = ({ args, childComplexity }) => {
   const query = (args['query'] ?? args['input'] ?? {}) as Record<string, unknown>;
-  const size = [args['perPage'], args['limit'], args['first'], query['perPage'], query['limit']].find(
-    (value): value is number => typeof value === 'number',
-  );
+  const size = [
+    args['perPage'],
+    args['limit'],
+    args['first'],
+    query['perPage'],
+    query['limit'],
+  ].find((value): value is number => typeof value === 'number');
 
   if (size === undefined) {
     return undefined;

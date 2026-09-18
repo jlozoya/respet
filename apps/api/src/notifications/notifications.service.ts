@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Branding, Notification as NotificationDto, NotificationPage } from '@social-network/shared';
+import type {
+  Branding,
+  Notification as NotificationDto,
+  NotificationPage,
+} from '@social-network/shared';
 
 import { toId, toIso, toMediaOrNull, toUserSummary, type MediaDoc } from '../common/mappers.js';
 import { isValidObjectId, ObjectId, type Model, type Types } from '../database/mongoose.js';
@@ -84,7 +88,10 @@ export class NotificationsService {
 
       if (existing) {
         const alreadyThere = existing.actorIds.some((id) => String(id) === actorId);
-        const actorIds = [actor, ...existing.actorIds.filter((id) => String(id) !== actorId)].slice(0, MAX_ACTORS);
+        const actorIds = [actor, ...existing.actorIds.filter((id) => String(id) !== actorId)].slice(
+          0,
+          MAX_ACTORS,
+        );
 
         doc = await this.notifications
           .findOneAndUpdate(
@@ -119,7 +126,9 @@ export class NotificationsService {
         await this.sendPush(recipientId, actorId, input);
       }
     } catch (error) {
-      this.logger.warn(`No se pudo crear el aviso ${input.type} para ${recipientId}: ${String(error)}`);
+      this.logger.warn(
+        `No se pudo crear el aviso ${input.type} para ${recipientId}: ${String(error)}`,
+      );
     }
   }
 
@@ -151,8 +160,15 @@ export class NotificationsService {
   }
 
   /** Borra los avisos que apuntan a algo que ya no existe. */
-  async removeFor(target: { postId?: string; commentId?: string; storyId?: string; liveStreamId?: string }): Promise<void> {
-    const filter = Object.fromEntries(Object.entries(target).filter(([, value]) => value !== undefined));
+  async removeFor(target: {
+    postId?: string;
+    commentId?: string;
+    storyId?: string;
+    liveStreamId?: string;
+  }): Promise<void> {
+    const filter = Object.fromEntries(
+      Object.entries(target).filter(([, value]) => value !== undefined),
+    );
 
     if (Object.keys(filter).length > 0) {
       await this.notifications.deleteMany(filter);
@@ -170,7 +186,11 @@ export class NotificationsService {
       })
       .sort({ activityAt: -1 })
       .limit(take + 1)
-      .populate({ path: 'actors', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+      .populate({
+        path: 'actors',
+        select: 'name firstName lastName avatarId verified',
+        populate: { path: 'avatar' },
+      })
       .lean();
 
     const page = docs.slice(0, take) as LeanNotification[];
@@ -199,7 +219,10 @@ export class NotificationsService {
   }
 
   async markAllRead(userId: string): Promise<number> {
-    await this.notifications.updateMany({ recipientId: userId, readAt: null }, { $set: { readAt: new Date() } });
+    await this.notifications.updateMany(
+      { recipientId: userId, readAt: null },
+      { $set: { readAt: new Date() } },
+    );
 
     return this.broadcastUnread(userId);
   }
@@ -219,7 +242,11 @@ export class NotificationsService {
   private async announce(recipientId: string, doc: LeanNotification): Promise<void> {
     const populated = await this.notifications
       .findById(doc._id)
-      .populate({ path: 'actors', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+      .populate({
+        path: 'actors',
+        select: 'name firstName lastName avatarId verified',
+        populate: { path: 'avatar' },
+      })
       .lean();
 
     if (!populated) {
@@ -240,17 +267,19 @@ export class NotificationsService {
   }
 
   /** La primera foto de cada publicación citada, para la miniatura del aviso. */
-  private async thumbnailsFor(docs: LeanNotification[]): Promise<Map<string, MediaDoc & { _id: Types.ObjectId }>> {
-    const postIds = [...new Set(docs.map((doc) => toId(doc.postId)).filter((id): id is string => id !== null))];
+  private async thumbnailsFor(
+    docs: LeanNotification[],
+  ): Promise<Map<string, MediaDoc & { _id: Types.ObjectId }>> {
+    const postIds = [
+      ...new Set(docs.map((doc) => toId(doc.postId)).filter((id): id is string => id !== null)),
+    ];
     const map = new Map<string, MediaDoc & { _id: Types.ObjectId }>();
 
     if (postIds.length === 0) {
       return map;
     }
 
-    const media = await this.media
-      .find({ postId: { $in: postIds }, position: 0 })
-      .lean();
+    const media = await this.media.find({ postId: { $in: postIds }, position: 0 }).lean();
 
     for (const item of media) {
       if (item.postId) {
@@ -261,7 +290,10 @@ export class NotificationsService {
     return map;
   }
 
-  private toDto(doc: LeanNotification, thumbnails: Map<string, MediaDoc & { _id: Types.ObjectId }>): NotificationDto {
+  private toDto(
+    doc: LeanNotification,
+    thumbnails: Map<string, MediaDoc & { _id: Types.ObjectId }>,
+  ): NotificationDto {
     const actors = ((doc.actors ?? []) as Parameters<typeof toUserSummary>[0][])
       // Los virtuales pueblan en cualquier orden: se recoloca como se guardó.
       .sort(
@@ -341,10 +373,7 @@ export class NotificationsService {
  */
 function groupKeyOf(input: NotifyInput): string {
   const target =
-    toId(input.commentId) ??
-    toId(input.postId) ??
-    toId(input.storyId) ??
-    toId(input.liveStreamId);
+    toId(input.commentId) ?? toId(input.postId) ?? toId(input.storyId) ?? toId(input.liveStreamId);
 
   switch (input.type) {
     case NotificationType.Reaction:

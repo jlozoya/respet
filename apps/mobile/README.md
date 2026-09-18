@@ -61,7 +61,7 @@ actualiza sola:
 
 ```html
 @if (auth.isAuthenticated()) {
-  <p>Hola, {{ auth.user()!.firstName }}</p>
+<p>Hola, {{ auth.user()!.firstName }}</p>
 }
 ```
 
@@ -128,14 +128,14 @@ millar largo de SVG de la biblioteca.
 
 ## Órdenes
 
-| Orden | Qué hace |
-| --- | --- |
-| `npm start` | Servidor de desarrollo en <http://localhost:8100> |
-| `npm run build:prod` | Compilación de producción en `www/` |
-| `npm run lint` | ESLint sobre TypeScript y plantillas |
-| `npm test` | Pruebas unitarias con Vitest |
-| `npm run e2e` | Pruebas de extremo a extremo con Playwright |
-| `npm run sync` | Compila y sincroniza con Android e iOS |
+| Orden                | Qué hace                                          |
+| -------------------- | ------------------------------------------------- |
+| `npm start`          | Servidor de desarrollo en <http://localhost:8100> |
+| `npm run build:prod` | Compilación de producción en `www/`               |
+| `npm run lint`       | ESLint sobre TypeScript y plantillas              |
+| `npm test`           | Pruebas unitarias con Vitest                      |
+| `npm run e2e`        | Pruebas de extremo a extremo con Playwright       |
+| `npm run sync`       | Compila y sincroniza con Android e iOS            |
 
 ## Configuración
 

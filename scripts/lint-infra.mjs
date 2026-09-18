@@ -58,7 +58,8 @@ const results = [
     ['hadolint', '--config', '/repo/.hadolint.yaml', ...dockerfiles],
     `Dockerfile (hadolint): ${dockerfiles.join(', ')}`,
   ),
-  scripts.length === 0 || docker(SHELLCHECK, scripts, `Guiones (shellcheck): ${scripts.join(', ')}`),
+  scripts.length === 0 ||
+    docker(SHELLCHECK, scripts, `Guiones (shellcheck): ${scripts.join(', ')}`),
 ];
 
 if (results.some((ok) => !ok)) {

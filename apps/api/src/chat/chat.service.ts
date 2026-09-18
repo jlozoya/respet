@@ -37,7 +37,11 @@ import {
   type LeanMember,
   type LeanMessage,
 } from './chat-presenter.service.js';
-import { MAX_GROUP_MEMBERS, type ConversationListQueryDto, type SendMessageDto } from './dto/chat.dto.js';
+import {
+  MAX_GROUP_MEMBERS,
+  type ConversationListQueryDto,
+  type SendMessageDto,
+} from './dto/chat.dto.js';
 
 const DEFAULT_PAGE_SIZE = 30;
 const MAX_PAGE_SIZE = 100;
@@ -88,7 +92,10 @@ export class ChatService {
   // --- Conversaciones ---------------------------------------------------------
 
   /** La bandeja: fijadas primero, luego de la más reciente a la más antigua. */
-  async listConversations(userId: string, query: ConversationListQueryDto = {}): Promise<ConversationDto[]> {
+  async listConversations(
+    userId: string,
+    query: ConversationListQueryDto = {},
+  ): Promise<ConversationDto[]> {
     const memberships = await this.members
       .find({ userId, archived: query.archived === true, leftAt: null })
       .select('conversationId')
@@ -108,30 +115,37 @@ export class ChatService {
     const blocked = await this.relationships.blockedIds(userId);
     const search = query.search ? new RegExp(escapeRegex(query.search), 'i') : null;
 
-    return docs
-      // Una conversación de dos que aún no tiene mensajes sólo la ve quien la abrió.
-      .filter((doc) => doc.lastMessageAt !== null || String(doc.createdById) === userId)
-      .map((doc) => {
-        const members = allMembers.get(String(doc._id)) ?? [];
+    return (
+      docs
+        // Una conversación de dos que aún no tiene mensajes sólo la ve quien la abrió.
+        .filter((doc) => doc.lastMessageAt !== null || String(doc.createdById) === userId)
+        .map((doc) => {
+          const members = allMembers.get(String(doc._id)) ?? [];
 
-        return this.presenter.conversation(doc, members, userId, {
-          blocked: this.peerBlocked(doc, members, userId, blocked),
-        });
-      })
-      .filter((conversation) => {
-        if (!search) {
-          return true;
-        }
+          return this.presenter.conversation(doc, members, userId, {
+            blocked: this.peerBlocked(doc, members, userId, blocked),
+          });
+        })
+        .filter((conversation) => {
+          if (!search) {
+            return true;
+          }
 
-        const names = [conversation.title ?? '', ...conversation.members.map((m) => `${m.user.firstName} ${m.user.lastName} ${m.user.name}`)];
+          const names = [
+            conversation.title ?? '',
+            ...conversation.members.map(
+              (m) => `${m.user.firstName} ${m.user.lastName} ${m.user.name}`,
+            ),
+          ];
 
-        return names.some((name) => search.test(name));
-      })
-      .sort(
-        (a, b) =>
-          Number(b.pinned) - Number(a.pinned) ||
-          (b.lastMessageAt ?? b.createdAt).localeCompare(a.lastMessageAt ?? a.createdAt),
-      );
+          return names.some((name) => search.test(name));
+        })
+        .sort(
+          (a, b) =>
+            Number(b.pinned) - Number(a.pinned) ||
+            (b.lastMessageAt ?? b.createdAt).localeCompare(a.lastMessageAt ?? a.createdAt),
+        )
+    );
   }
 
   async findConversation(conversationId: string, userId: string): Promise<ConversationDto> {
@@ -158,7 +172,10 @@ export class ChatService {
    */
   async startDirect(userId: string, peerId: string): Promise<ConversationDto> {
     if (userId === peerId) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'You cannot start a conversation with yourself');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'You cannot start a conversation with yourself',
+      );
     }
 
     if (!isValidObjectId(peerId) || !(await this.users.exists({ _id: peerId }))) {
@@ -207,11 +224,18 @@ export class ChatService {
     return this.describe(String(conversationId), userId);
   }
 
-  async createGroup(creatorId: string, title: string, memberIds: string[]): Promise<ConversationDto> {
+  async createGroup(
+    creatorId: string,
+    title: string,
+    memberIds: string[],
+  ): Promise<ConversationDto> {
     const others = [...new Set(memberIds.filter((id) => id !== creatorId))];
 
     if (others.length === 0) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'A group needs at least one other person');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'A group needs at least one other person',
+      );
     }
 
     await this.assertCanAdd(creatorId, others);
@@ -224,22 +248,39 @@ export class ChatService {
 
     await this.members.insertMany([
       { conversationId: conversation._id, userId: creatorId, role: ConversationRole.Owner },
-      ...others.map((id) => ({ conversationId: conversation._id, userId: id, role: ConversationRole.Member })),
+      ...others.map((id) => ({
+        conversationId: conversation._id,
+        userId: id,
+        role: ConversationRole.Member,
+      })),
     ]);
 
-    await this.systemMessage(String(conversation._id), creatorId, SystemMessageAction.Created, [], title);
+    await this.systemMessage(
+      String(conversation._id),
+      creatorId,
+      SystemMessageAction.Created,
+      [],
+      title,
+    );
 
     return this.describe(String(conversation._id), creatorId);
   }
 
-  async addMembers(conversationId: string, actorId: string, userIds: string[]): Promise<ConversationDto> {
+  async addMembers(
+    conversationId: string,
+    actorId: string,
+    userIds: string[],
+  ): Promise<ConversationDto> {
     const conversation = await this.assertGroupAdmin(conversationId, actorId);
     const candidates = [...new Set(userIds.filter((id) => id !== actorId && isValidObjectId(id)))];
 
     const active = await this.members.countDocuments({ conversationId, leftAt: null });
 
     if (active + candidates.length > MAX_GROUP_MEMBERS + 1) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `A group cannot have more than ${MAX_GROUP_MEMBERS + 1} people`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `A group cannot have more than ${MAX_GROUP_MEMBERS + 1} people`,
+      );
     }
 
     await this.assertCanAdd(actorId, candidates);
@@ -262,13 +303,22 @@ export class ChatService {
     }
 
     if (added.length > 0) {
-      await this.systemMessage(String(conversation._id), actorId, SystemMessageAction.MembersAdded, added);
+      await this.systemMessage(
+        String(conversation._id),
+        actorId,
+        SystemMessageAction.MembersAdded,
+        added,
+      );
     }
 
     return this.describe(conversationId, actorId);
   }
 
-  async removeMember(conversationId: string, actorId: string, userId: string): Promise<ConversationDto> {
+  async removeMember(
+    conversationId: string,
+    actorId: string,
+    userId: string,
+  ): Promise<ConversationDto> {
     await this.assertGroupAdmin(conversationId, actorId);
 
     const target = await this.members.findOne({ conversationId, userId, leftAt: null }).lean();
@@ -316,8 +366,14 @@ export class ChatService {
 
     if (membership.role === ConversationRole.Owner) {
       const heir =
-        (await this.members.findOne({ conversationId, leftAt: null, role: ConversationRole.Admin }).sort({ createdAt: 1 }).lean()) ??
-        (await this.members.findOne({ conversationId, leftAt: null }).sort({ createdAt: 1 }).lean());
+        (await this.members
+          .findOne({ conversationId, leftAt: null, role: ConversationRole.Admin })
+          .sort({ createdAt: 1 })
+          .lean()) ??
+        (await this.members
+          .findOne({ conversationId, leftAt: null })
+          .sort({ createdAt: 1 })
+          .lean());
 
       if (heir) {
         await this.members.updateOne({ _id: heir._id }, { $set: { role: ConversationRole.Owner } });
@@ -327,7 +383,11 @@ export class ChatService {
     await this.systemMessage(conversationId, userId, SystemMessageAction.MemberLeft, []);
   }
 
-  async renameGroup(conversationId: string, actorId: string, title: string): Promise<ConversationDto> {
+  async renameGroup(
+    conversationId: string,
+    actorId: string,
+    title: string,
+  ): Promise<ConversationDto> {
     await this.assertGroupAdmin(conversationId, actorId);
     await this.conversations.updateOne({ _id: conversationId }, { $set: { title } });
     await this.systemMessage(conversationId, actorId, SystemMessageAction.Renamed, [], title);
@@ -335,9 +395,17 @@ export class ChatService {
     return this.describe(conversationId, actorId);
   }
 
-  async setGroupPhoto(conversationId: string, actorId: string, upload: PendingUpload): Promise<ConversationDto> {
+  async setGroupPhoto(
+    conversationId: string,
+    actorId: string,
+    upload: PendingUpload,
+  ): Promise<ConversationDto> {
     const conversation = await this.assertGroupAdmin(conversationId, actorId);
-    const stored = await this.media.storeUpload(upload, { accept: ['image'], preset: 'avatar', uploaderId: actorId });
+    const stored = await this.media.storeUpload(upload, {
+      accept: ['image'],
+      preset: 'avatar',
+      uploaderId: actorId,
+    });
 
     await this.conversations.updateOne({ _id: conversationId }, { $set: { photoId: stored._id } });
 
@@ -350,7 +418,12 @@ export class ChatService {
     return this.describe(conversationId, actorId);
   }
 
-  async setAdmin(conversationId: string, actorId: string, userId: string, admin: boolean): Promise<ConversationDto> {
+  async setAdmin(
+    conversationId: string,
+    actorId: string,
+    userId: string,
+    admin: boolean,
+  ): Promise<ConversationDto> {
     await this.assertGroupAdmin(conversationId, actorId);
 
     const updated = await this.members.updateOne(
@@ -383,7 +456,10 @@ export class ChatService {
 
   async setPinned(conversationId: string, userId: string, pinned: boolean): Promise<void> {
     await this.assertMember(conversationId, userId, { allowLeft: true });
-    await this.members.updateOne({ conversationId, userId }, { $set: { pinnedAt: pinned ? new Date() : null } });
+    await this.members.updateOne(
+      { conversationId, userId },
+      { $set: { pinnedAt: pinned ? new Date() : null } },
+    );
   }
 
   /** Vacía el hilo sólo para quien lo pide: lo anterior deja de verse, para los demás sigue ahí. */
@@ -450,7 +526,8 @@ export class ChatService {
     const page = hasMore ? docs.slice(0, take) : docs;
     // El hilo se pinta de arriba abajo, así que se devuelve en orden natural.
     const ordered = forward ? page : [...page].reverse();
-    const members = (await this.loadMembers([new ObjectId(conversationId)])).get(conversationId) ?? [];
+    const members =
+      (await this.loadMembers([new ObjectId(conversationId)])).get(conversationId) ?? [];
 
     return {
       data: await this.presenter.messages(ordered, members, userId),
@@ -459,7 +536,11 @@ export class ChatService {
   }
 
   /** Busca en el texto de una conversación. */
-  async searchMessages(conversationId: string, userId: string, term: string): Promise<MessageDto[]> {
+  async searchMessages(
+    conversationId: string,
+    userId: string,
+    term: string,
+  ): Promise<MessageDto[]> {
     await this.assertMember(conversationId, userId, { allowLeft: true });
 
     const docs = (await this.messages
@@ -474,7 +555,8 @@ export class ChatService {
       .populate(POPULATE_MESSAGE)
       .lean()) as unknown as LeanMessage[];
 
-    const members = (await this.loadMembers([new ObjectId(conversationId)])).get(conversationId) ?? [];
+    const members =
+      (await this.loadMembers([new ObjectId(conversationId)])).get(conversationId) ?? [];
 
     return this.presenter.messages(docs, members, userId);
   }
@@ -500,7 +582,10 @@ export class ChatService {
     }
 
     if (input.clientId) {
-      const duplicate = await this.messages.findOne({ senderId, clientId: input.clientId }).select('_id').lean();
+      const duplicate = await this.messages
+        .findOne({ senderId, clientId: input.clientId })
+        .select('_id')
+        .lean();
 
       if (duplicate) {
         return this.findMessage(String(duplicate._id), senderId);
@@ -516,18 +601,30 @@ export class ChatService {
     }
 
     if (files.length > MAX_ATTACHMENTS) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `A message cannot have more than ${MAX_ATTACHMENTS} files`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `A message cannot have more than ${MAX_ATTACHMENTS} files`,
+      );
     }
 
-    if (input.replyToId && !(await this.messages.exists({ _id: input.replyToId, conversationId }))) {
+    if (
+      input.replyToId &&
+      !(await this.messages.exists({ _id: input.replyToId, conversationId }))
+    ) {
       throw AppException.notFound('Message');
     }
 
     if (input.sharedPostId) {
-      const post = await this.posts.findById(input.sharedPostId).select('audience authorPrivate userId').lean();
+      const post = await this.posts
+        .findById(input.sharedPostId)
+        .select('audience authorPrivate userId')
+        .lean();
 
       if (!post || post.audience !== Audience.Public || post.authorPrivate) {
-        throw AppException.forbiddenWith(ErrorCode.PrivateContent, 'Only public posts can be shared');
+        throw AppException.forbiddenWith(
+          ErrorCode.PrivateContent,
+          'Only public posts can be shared',
+        );
       }
     }
 
@@ -548,7 +645,14 @@ export class ChatService {
         sharedPostId: input.sharedPostId ?? null,
       });
 
-      await this.afterMessage(conversationId, senderId, created._id, previewOf(kind, body), now, membership._id);
+      await this.afterMessage(
+        conversationId,
+        senderId,
+        created._id,
+        previewOf(kind, body),
+        now,
+        membership._id,
+      );
 
       const message = await this.findMessage(String(created._id), senderId);
 
@@ -561,7 +665,10 @@ export class ChatService {
       // El índice único de `clientId` puede saltar si dos reintentos llegan a
       // la vez: se devuelve el que ganó.
       if (input.clientId && isDuplicateKey(error)) {
-        const winner = await this.messages.findOne({ senderId, clientId: input.clientId }).select('_id').lean();
+        const winner = await this.messages
+          .findOne({ senderId, clientId: input.clientId })
+          .select('_id')
+          .lean();
 
         if (winner) {
           return this.findMessage(String(winner._id), senderId);
@@ -578,7 +685,12 @@ export class ChatService {
    * Abre —o reutiliza— la conversación con quien la publicó y deja el mensaje
    * con la referencia a la historia, como hace Instagram.
    */
-  async sendStoryReply(senderId: string, authorId: string, storyId: Types.ObjectId, body: string): Promise<MessageDto> {
+  async sendStoryReply(
+    senderId: string,
+    authorId: string,
+    storyId: Types.ObjectId,
+    body: string,
+  ): Promise<MessageDto> {
     const directKey = [senderId, authorId].sort().join(':');
     let conversation = await this.conversations.findOne({ directKey }).select('_id').lean();
 
@@ -599,7 +711,14 @@ export class ChatService {
       storyId,
     });
 
-    await this.afterMessage(conversationId, senderId, created._id, previewOf(MessageKind.StoryReply, body), now, membership._id);
+    await this.afterMessage(
+      conversationId,
+      senderId,
+      created._id,
+      previewOf(MessageKind.StoryReply, body),
+      now,
+      membership._id,
+    );
 
     const message = await this.findMessage(String(created._id), senderId);
 
@@ -624,7 +743,10 @@ export class ChatService {
       throw AppException.badRequest(ErrorCode.ValidationFailed, 'The message is empty');
     }
 
-    await this.messages.updateOne({ _id: messageId }, { $set: { body: text || null, editedAt: new Date() } });
+    await this.messages.updateOne(
+      { _id: messageId },
+      { $set: { body: text || null, editedAt: new Date() } },
+    );
 
     const updated = await this.findMessage(messageId, userId);
 
@@ -658,12 +780,23 @@ export class ChatService {
 
     await this.messages.updateOne(
       { _id: messageId },
-      { $set: { deletedAt: new Date(), body: null, attachmentIds: [], sharedPostId: null, reactions: [] } },
+      {
+        $set: {
+          deletedAt: new Date(),
+          body: null,
+          attachmentIds: [],
+          sharedPostId: null,
+          reactions: [],
+        },
+      },
     );
     await this.media.removeMany(message.attachmentIds);
 
     const conversationId = String(message.conversationId);
-    const conversation = await this.conversations.findById(conversationId).select('lastMessageId').lean();
+    const conversation = await this.conversations
+      .findById(conversationId)
+      .select('lastMessageId')
+      .lean();
 
     if (conversation?.lastMessageId && String(conversation.lastMessageId) === messageId) {
       await this.conversations.updateOne({ _id: conversationId }, { $set: { lastPreview: '' } });
@@ -698,7 +831,10 @@ export class ChatService {
     }
 
     await this.assertMember(String(message.conversationId), userId, { allowLeft: true });
-    await this.messages.updateOne({ _id: messageId }, { $addToSet: { hiddenFor: new ObjectId(userId) } });
+    await this.messages.updateOne(
+      { _id: messageId },
+      { $addToSet: { hiddenFor: new ObjectId(userId) } },
+    );
   }
 
   /**
@@ -710,7 +846,10 @@ export class ChatService {
       throw AppException.notFound('Message');
     }
 
-    const message = await this.messages.findById(messageId).select('conversationId reactions deletedAt kind').lean();
+    const message = await this.messages
+      .findById(messageId)
+      .select('conversationId reactions deletedAt kind')
+      .lean();
 
     if (!message || message.deletedAt || message.kind === MessageKind.System) {
       throw AppException.notFound('Message');
@@ -722,7 +861,10 @@ export class ChatService {
 
     const current = message.reactions.find((reaction) => String(reaction.userId) === userId);
 
-    await this.messages.updateOne({ _id: messageId }, { $pull: { reactions: { userId: new ObjectId(userId) } } });
+    await this.messages.updateOne(
+      { _id: messageId },
+      { $pull: { reactions: { userId: new ObjectId(userId) } } },
+    );
 
     if (current?.emoji !== emoji) {
       await this.messages.updateOne(
@@ -752,7 +894,11 @@ export class ChatService {
     await this.assertMember(conversationId, userId, { allowLeft: true });
 
     const now = new Date();
-    const last = await this.messages.findOne({ conversationId }).sort({ _id: -1 }).select('_id').lean();
+    const last = await this.messages
+      .findOne({ conversationId })
+      .sort({ _id: -1 })
+      .select('_id')
+      .lean();
 
     await this.members.updateOne(
       { conversationId, userId },
@@ -793,7 +939,11 @@ export class ChatService {
     const now = new Date();
 
     const updated = await this.members.updateOne(
-      { conversationId, userId, $or: [{ lastDeliveredAt: null }, { lastDeliveredAt: { $lt: now } }] },
+      {
+        conversationId,
+        userId,
+        $or: [{ lastDeliveredAt: null }, { lastDeliveredAt: { $lt: now } }],
+      },
       { $set: { lastDeliveredAt: now } },
     );
 
@@ -916,7 +1066,10 @@ export class ChatService {
     }
 
     if (membership.leftAt && !options.allowLeft) {
-      throw AppException.forbiddenWith(ErrorCode.NotAMember, 'You are no longer part of this conversation');
+      throw AppException.forbiddenWith(
+        ErrorCode.NotAMember,
+        'You are no longer part of this conversation',
+      );
     }
 
     return membership;
@@ -941,7 +1094,10 @@ export class ChatService {
   }
 
   /** En una conversación de dos, un bloqueo la deja en sólo lectura. */
-  private async assertCanWriteTo(conversation: Conversation & { _id: Types.ObjectId }, senderId: string): Promise<void> {
+  private async assertCanWriteTo(
+    conversation: Conversation & { _id: Types.ObjectId },
+    senderId: string,
+  ): Promise<void> {
     if (conversation.type !== ConversationType.Direct) {
       return;
     }
@@ -980,7 +1136,7 @@ export class ChatService {
     files: PendingUpload[],
     uploaderId: string,
     durationHintMs: number | undefined,
-  ): Promise<(Awaited<ReturnType<MediaService['storeUpload']>>)[]> {
+  ): Promise<Awaited<ReturnType<MediaService['storeUpload']>>[]> {
     const stored: Awaited<ReturnType<MediaService['storeUpload']>>[] = [];
 
     try {
@@ -1021,7 +1177,9 @@ export class ChatService {
       return MessageKind.File;
     }
 
-    return attachments.every((item) => item.type === MediaType.Video) ? MessageKind.Video : MessageKind.Image;
+    return attachments.every((item) => item.type === MediaType.Video)
+      ? MessageKind.Video
+      : MessageKind.Image;
   }
 
   /** Lo que se actualiza en la conversación y en los contadores con cada mensaje nuevo. */
@@ -1054,12 +1212,23 @@ export class ChatService {
       // Quien escribe ha leído, como poco, hasta su propio mensaje.
       this.members.updateOne(
         { _id: senderMembershipId },
-        { $set: { lastReadAt: at, lastDeliveredAt: at, lastReadMessageId: messageId, unreadCount: 0 } },
+        {
+          $set: {
+            lastReadAt: at,
+            lastDeliveredAt: at,
+            lastReadMessageId: messageId,
+            unreadCount: 0,
+          },
+        },
       ),
     ]);
   }
 
-  private async announceMessage(conversationId: string, senderId: string, message: MessageDto): Promise<void> {
+  private async announceMessage(
+    conversationId: string,
+    senderId: string,
+    message: MessageDto,
+  ): Promise<void> {
     const conversation = await this.describe(conversationId, senderId);
 
     await this.emitToMembers(conversationId, (memberId) => ({
@@ -1127,7 +1296,10 @@ export class ChatService {
     targetIds: string[],
     value: string | null = null,
   ): Promise<void> {
-    const membership = await this.members.findOne({ conversationId, userId: actorId }).select('_id').lean();
+    const membership = await this.members
+      .findOne({ conversationId, userId: actorId })
+      .select('_id')
+      .lean();
     const now = new Date();
 
     const created = await this.messages.create({
@@ -1139,7 +1311,14 @@ export class ChatService {
 
     await this.conversations.updateOne(
       { _id: conversationId },
-      { $set: { lastMessageId: created._id, lastMessageAt: now, lastSenderId: actorId, lastPreview: '' } },
+      {
+        $set: {
+          lastMessageId: created._id,
+          lastMessageAt: now,
+          lastSenderId: actorId,
+          lastPreview: '',
+        },
+      },
     );
 
     if (membership) {
@@ -1167,7 +1346,10 @@ export class ChatService {
 
   /** Manda a cada participante la conversación tal y como la ve él. */
   private async broadcastConversation(conversationId: string): Promise<void> {
-    const members = await this.members.find({ conversationId, leftAt: null }).select('userId').lean();
+    const members = await this.members
+      .find({ conversationId, leftAt: null })
+      .select('userId')
+      .lean();
 
     await Promise.all(
       members.map(async (member) => {
@@ -1194,7 +1376,11 @@ export class ChatService {
     exceptUserId?: string,
   ): Promise<void> {
     const members = await this.members
-      .find({ conversationId, leftAt: null, ...(exceptUserId ? { userId: { $ne: exceptUserId } } : {}) })
+      .find({
+        conversationId,
+        leftAt: null,
+        ...(exceptUserId ? { userId: { $ne: exceptUserId } } : {}),
+      })
       .select('userId')
       .lean();
 
@@ -1211,12 +1397,18 @@ export class ChatService {
   private async emitToUsers(userIds: string[], event: ChatEvent): Promise<void> {
     await Promise.all(
       userIds.map((userId) =>
-        this.bus.publish(Topic.user(userId), { channel: 'chat', event } satisfies UserChannelMessage),
+        this.bus.publish(Topic.user(userId), {
+          channel: 'chat',
+          event,
+        } satisfies UserChannelMessage),
       ),
     );
   }
 
-  private async ownMessage(messageId: string, userId: string): Promise<Message & { _id: Types.ObjectId }> {
+  private async ownMessage(
+    messageId: string,
+    userId: string,
+  ): Promise<Message & { _id: Types.ObjectId }> {
     if (!isValidObjectId(messageId)) {
       throw AppException.notFound('Message');
     }
@@ -1235,9 +1427,10 @@ export class ChatService {
   }
 
   private async findMessage(messageId: string, viewerId: string): Promise<MessageDto> {
-    const doc = (await this.messages.findById(messageId).populate(POPULATE_MESSAGE).lean()) as unknown as
-      | LeanMessage
-      | null;
+    const doc = (await this.messages
+      .findById(messageId)
+      .populate(POPULATE_MESSAGE)
+      .lean()) as unknown as LeanMessage | null;
 
     if (!doc) {
       throw AppException.notFound('Message');
@@ -1272,5 +1465,7 @@ function previewOf(kind: MessageKind, body: string | null): string {
 }
 
 function isDuplicateKey(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && (error as { code?: unknown }).code === 11000;
+  return (
+    typeof error === 'object' && error !== null && (error as { code?: unknown }).code === 11000
+  );
 }

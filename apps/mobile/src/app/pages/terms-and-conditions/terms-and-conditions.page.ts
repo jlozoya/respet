@@ -15,14 +15,7 @@ type Section = (typeof SECTIONS)[number];
   selector: 'app-terms-and-conditions',
   templateUrl: 'terms-and-conditions.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslatePipe,
-    PageHeaderComponent,
-    IonContent,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-  ],
+  imports: [TranslatePipe, PageHeaderComponent, IonContent, IonSegment, IonSegmentButton, IonLabel],
 })
 export class TermsAndConditionsPage {
   readonly segment = input<string>('terms');

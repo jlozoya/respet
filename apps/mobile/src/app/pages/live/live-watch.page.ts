@@ -22,7 +22,10 @@ import type { LiveComment, LiveStream } from '@social-network/shared';
 import type { RemoteTrack, Room } from 'livekit-client';
 import type { Subscription } from 'rxjs';
 
-import { LiveOverlayComponent, type FloatingReaction } from '../../components/live/live-overlay.component';
+import {
+  LiveOverlayComponent,
+  type FloatingReaction,
+} from '../../components/live/live-overlay.component';
 import { LiveService } from '../../core/api/live.service';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { ReportService } from '../../core/ui/report.service';
@@ -43,7 +46,18 @@ type Phase = 'loading' | 'connecting' | 'watching' | 'ended' | 'failed';
 @Component({
   selector: 'app-live-watch',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonButton, IonIcon, IonSpinner, AvatarComponent, LiveOverlayComponent, CompactNumberPipe, FullNamePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    LiveOverlayComponent,
+    CompactNumberPipe,
+    FullNamePipe,
+  ],
   template: `
     <ion-content [fullscreen]="true" [scrollY]="false" class="studio">
       <div class="stage">
@@ -51,7 +65,14 @@ type Phase = 'loading' | 'connecting' | 'watching' | 'ended' | 'failed';
         <audio #audio autoplay></audio>
 
         <header class="top">
-          <button type="button" class="icon" (click)="leave()" [attr.aria-label]="'CLOSE' | translate"><ion-icon name="close" /></button>
+          <button
+            type="button"
+            class="icon"
+            (click)="leave()"
+            [attr.aria-label]="'CLOSE' | translate"
+          >
+            <ion-icon name="close" />
+          </button>
           @if (stream(); as current) {
             <a class="host" [routerLink]="['/profile', current.host.name]">
               <app-avatar [user]="current.host" [size]="36" ring="live" />
@@ -63,7 +84,14 @@ type Phase = 'loading' | 'connecting' | 'watching' | 'ended' | 'failed';
             }
           }
           <span class="spacer"></span>
-          <button type="button" class="icon" (click)="report()" [attr.aria-label]="'REPORT' | translate"><ion-icon name="flag-outline" /></button>
+          <button
+            type="button"
+            class="icon"
+            (click)="report()"
+            [attr.aria-label]="'REPORT' | translate"
+          >
+            <ion-icon name="flag-outline" />
+          </button>
         </header>
 
         @switch (phase()) {
@@ -71,7 +99,10 @@ type Phase = 'loading' | 'connecting' | 'watching' | 'ended' | 'failed';
             <div class="center"><ion-spinner name="crescent" /></div>
           }
           @case ('connecting') {
-            <div class="center"><ion-spinner name="crescent" /><p>{{ 'LIVE.CONNECTING' | translate }}</p></div>
+            <div class="center">
+              <ion-spinner name="crescent" />
+              <p>{{ 'LIVE.CONNECTING' | translate }}</p>
+            </div>
           }
           @case ('watching') {
             @if (stream()?.title) {
@@ -82,7 +113,12 @@ type Phase = 'loading' | 'connecting' | 'watching' | 'ended' | 'failed';
                 <ion-icon slot="start" name="volume-high" /> {{ 'LIVE.TAP_FOR_SOUND' | translate }}
               </ion-button>
             }
-            <app-live-overlay [comments]="comments()" [reactions]="reactions()" (comment)="comment($event)" (react)="react($event)" />
+            <app-live-overlay
+              [comments]="comments()"
+              [reactions]="reactions()"
+              (comment)="comment($event)"
+              (react)="react($event)"
+            />
           }
           @case ('ended') {
             <div class="center panel">
@@ -190,7 +226,10 @@ export class LiveWatchPage implements OnDestroy {
 
       this.phase.set('connecting');
 
-      const [{ Room, RoomEvent, Track }, connection] = await Promise.all([import('livekit-client'), this.live.join(id)]);
+      const [{ Room, RoomEvent, Track }, connection] = await Promise.all([
+        import('livekit-client'),
+        this.live.join(id),
+      ]);
 
       this.room = new Room({ adaptiveStream: true, dynacast: true });
       this.room.on(RoomEvent.TrackSubscribed, (track: RemoteTrack) => {
@@ -264,8 +303,14 @@ export class LiveWatchPage implements OnDestroy {
 
   private float(emoji: string): void {
     const id = ++this.reactionId;
-    this.reactions.update((items) => [...items.slice(-30), { id, emoji, left: 10 + Math.random() * 70 }]);
-    setTimeout(() => this.reactions.update((items) => items.filter((item) => item.id !== id)), 2700);
+    this.reactions.update((items) => [
+      ...items.slice(-30),
+      { id, emoji, left: 10 + Math.random() * 70 },
+    ]);
+    setTimeout(
+      () => this.reactions.update((items) => items.filter((item) => item.id !== id)),
+      2700,
+    );
   }
 
   private disconnect(): void {

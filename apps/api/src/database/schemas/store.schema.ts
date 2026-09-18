@@ -196,7 +196,12 @@ export class Payment {
   @Prop({ type: String, enum: Object.values(PaymentProvider), default: PaymentProvider.PayPal })
   provider!: PaymentProvider;
 
-  @Prop({ type: String, enum: Object.values(PaymentStatus), default: PaymentStatus.Pending, index: true })
+  @Prop({
+    type: String,
+    enum: Object.values(PaymentStatus),
+    default: PaymentStatus.Pending,
+    index: true,
+  })
   status!: PaymentStatus;
 
   /** En céntimos. */

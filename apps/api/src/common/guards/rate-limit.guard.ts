@@ -92,7 +92,12 @@ export class RateLimitGuard implements CanActivate {
     }
   }
 
-  private setHeaders(response: Response | null, limit: number, remaining: number, resetAt: number): void {
+  private setHeaders(
+    response: Response | null,
+    limit: number,
+    remaining: number,
+    resetAt: number,
+  ): void {
     if (!response) {
       return;
     }

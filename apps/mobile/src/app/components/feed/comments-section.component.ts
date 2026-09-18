@@ -42,7 +42,10 @@ interface ReplyState {
   template: `
     @if (hasMore() && !loading()) {
       <button type="button" class="rs-text-btn load-more" (click)="loadMore()">
-        {{ (loaded() ? 'COMMENTS_SECTION.VIEW_MORE' : 'COMMENTS_SECTION.VIEW_ALL') | translate: { count: post().commentCount } }}
+        {{
+          (loaded() ? 'COMMENTS_SECTION.VIEW_MORE' : 'COMMENTS_SECTION.VIEW_ALL')
+            | translate: { count: post().commentCount }
+        }}
       </button>
     }
     @if (loading()) {
@@ -82,8 +85,13 @@ interface ReplyState {
         <div class="field">
           @if (replyingTo(); as target) {
             <span class="replying rs-small">
-              {{ 'COMMENTS_SECTION.REPLYING_TO' | translate: { name: target.author.firstName || target.author.name } }}
-              <button type="button" class="rs-text-btn" (click)="replyingTo.set(null)">{{ 'CANCEL' | translate }}</button>
+              {{
+                'COMMENTS_SECTION.REPLYING_TO'
+                  | translate: { name: target.author.firstName || target.author.name }
+              }}
+              <button type="button" class="rs-text-btn" (click)="replyingTo.set(null)">
+                {{ 'CANCEL' | translate }}
+              </button>
             </span>
           }
           <span class="input-row">
@@ -97,7 +105,12 @@ interface ReplyState {
               [placeholder]="'COMMENTS_SECTION.PLACEHOLDER' | translate"
               [attr.aria-label]="'COMMENTS_SECTION.PLACEHOLDER' | translate"
             ></textarea>
-            <button type="submit" class="send" [disabled]="!draft().trim() || sending()" [attr.aria-label]="'SEND' | translate">
+            <button
+              type="submit"
+              class="send"
+              [disabled]="!draft().trim() || sending()"
+              [attr.aria-label]="'SEND' | translate"
+            >
               <ion-icon name="send" />
             </button>
           </span>
@@ -202,7 +215,9 @@ export class CommentsSectionComponent implements OnInit {
   private readonly input = viewChild<ElementRef<HTMLTextAreaElement>>('input');
 
   readonly hasMore = computed(() =>
-    this.loaded() ? this.page() < this.lastPage() : this.post().commentCount > this.comments().length,
+    this.loaded()
+      ? this.page() < this.lastPage()
+      : this.post().commentCount > this.comments().length,
   );
 
   ngOnInit(): void {
@@ -251,20 +266,34 @@ export class CommentsSectionComponent implements OnInit {
   }
 
   async openReplies(comment: Comment): Promise<void> {
-    this.replies.update((current) => ({ ...current, [comment.id]: { items: current[comment.id]?.items ?? [], loading: true } }));
+    this.replies.update((current) => ({
+      ...current,
+      [comment.id]: { items: current[comment.id]?.items ?? [], loading: true },
+    }));
 
     try {
-      const result = await this.posts.comments(this.post().id, { parentId: comment.id, perPage: 50 });
-      this.replies.update((current) => ({ ...current, [comment.id]: { items: result.data, loading: false } }));
+      const result = await this.posts.comments(this.post().id, {
+        parentId: comment.id,
+        perPage: 50,
+      });
+      this.replies.update((current) => ({
+        ...current,
+        [comment.id]: { items: result.data, loading: false },
+      }));
     } catch (error) {
-      this.replies.update((current) => ({ ...current, [comment.id]: { items: [], loading: false } }));
+      this.replies.update((current) => ({
+        ...current,
+        [comment.id]: { items: [], loading: false },
+      }));
       await this.feedback.error(error);
     }
   }
 
   startReply(comment: Comment): void {
     // Responder a una respuesta cuelga del mismo comentario raíz, como en Facebook.
-    const root = comment.parentId ? (this.comments().find((item) => item.id === comment.parentId) ?? comment) : comment;
+    const root = comment.parentId
+      ? (this.comments().find((item) => item.id === comment.parentId) ?? comment)
+      : comment;
     this.replyingTo.set(root);
 
     if (comment.parentId && !this.draft().includes(`@${comment.author.name}`)) {
@@ -295,11 +324,17 @@ export class CommentsSectionComponent implements OnInit {
   }
 
   replace(updated: Comment): void {
-    const swap = (items: Comment[]) => items.map((item) => (item.id === updated.id ? updated : item));
+    const swap = (items: Comment[]) =>
+      items.map((item) => (item.id === updated.id ? updated : item));
 
     this.comments.update(swap);
     this.replies.update((current) =>
-      Object.fromEntries(Object.entries(current).map(([key, state]) => [key, { ...state, items: swap(state.items) }])),
+      Object.fromEntries(
+        Object.entries(current).map(([key, state]) => [
+          key,
+          { ...state, items: swap(state.items) },
+        ]),
+      ),
     );
   }
 
@@ -318,7 +353,10 @@ export class CommentsSectionComponent implements OnInit {
     const parent = this.replyingTo();
 
     try {
-      const created = await this.posts.createComment(this.post().id, { body, parentId: parent?.id });
+      const created = await this.posts.createComment(this.post().id, {
+        body,
+        parentId: parent?.id,
+      });
 
       if (parent) {
         this.replies.update((current) => ({
@@ -326,7 +364,9 @@ export class CommentsSectionComponent implements OnInit {
           [parent.id]: { items: [...(current[parent.id]?.items ?? []), created], loading: false },
         }));
         this.comments.update((items) =>
-          items.map((item) => (item.id === parent.id ? { ...item, replyCount: item.replyCount + 1 } : item)),
+          items.map((item) =>
+            item.id === parent.id ? { ...item, replyCount: item.replyCount + 1 } : item,
+          ),
         );
       } else {
         this.comments.update((items) => [...items, created]);

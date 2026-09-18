@@ -12,7 +12,9 @@
           (error)="onImageError($event)"
         />
         <ion-card-content>
-          <p class="date"><small>{{ bulletin.date | date: 'mediumDate' }}</small></p>
+          <p class="date">
+            <small>{{ bulletin.date | date: 'mediumDate' }}</small>
+          </p>
           <h2>{{ bulletin.title }}</h2>
           <p>{{ bulletin.description }}</p>
         </ion-card-content>

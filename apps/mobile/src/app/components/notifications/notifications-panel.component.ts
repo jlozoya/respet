@@ -1,4 +1,14 @@
-import { DestroyRef, ChangeDetectionStrategy, Component, type OnInit, computed, inject, input, output, signal } from '@angular/core';
+import {
+  DestroyRef,
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -34,10 +44,20 @@ const RECENT_MS = 24 * 60 * 60 * 1000;
     </div>
 
     <div class="rs-chips filters">
-      <button type="button" class="rs-chip" [class.active]="filter() === 'all'" (click)="filter.set('all')">
+      <button
+        type="button"
+        class="rs-chip"
+        [class.active]="filter() === 'all'"
+        (click)="filter.set('all')"
+      >
         {{ 'NOTIFICATIONS.ALL' | translate }}
       </button>
-      <button type="button" class="rs-chip" [class.active]="filter() === 'unread'" (click)="filter.set('unread')">
+      <button
+        type="button"
+        class="rs-chip"
+        [class.active]="filter() === 'unread'"
+        (click)="filter.set('unread')"
+      >
         {{ 'NOTIFICATIONS.UNREAD' | translate }}
       </button>
     </div>
@@ -45,14 +65,22 @@ const RECENT_MS = 24 * 60 * 60 * 1000;
     @if (recent().length) {
       <h3 class="section">{{ 'NOTIFICATIONS.NEW' | translate }}</h3>
       @for (item of recent(); track item.id) {
-        <app-notification-item [notification]="item" [compact]="compact()" (selected)="open($event)" />
+        <app-notification-item
+          [notification]="item"
+          [compact]="compact()"
+          (selected)="open($event)"
+        />
       }
     }
 
     @if (earlier().length) {
       <h3 class="section">{{ 'NOTIFICATIONS.EARLIER' | translate }}</h3>
       @for (item of earlier(); track item.id) {
-        <app-notification-item [notification]="item" [compact]="compact()" (selected)="open($event)" />
+        <app-notification-item
+          [notification]="item"
+          [compact]="compact()"
+          (selected)="open($event)"
+        />
       }
     }
 
@@ -127,8 +155,12 @@ export class NotificationsPanelComponent implements OnInit {
   readonly visible = computed(() =>
     this.filter() === 'unread' ? this.items().filter((item) => !item.read) : this.items(),
   );
-  readonly recent = computed(() => this.visible().filter((item) => Date.now() - Date.parse(item.updatedAt) < RECENT_MS));
-  readonly earlier = computed(() => this.visible().filter((item) => Date.now() - Date.parse(item.updatedAt) >= RECENT_MS));
+  readonly recent = computed(() =>
+    this.visible().filter((item) => Date.now() - Date.parse(item.updatedAt) < RECENT_MS),
+  );
+  readonly earlier = computed(() =>
+    this.visible().filter((item) => Date.now() - Date.parse(item.updatedAt) >= RECENT_MS),
+  );
   readonly hasUnread = computed(() => this.notifications.unreadCount() > 0);
 
   constructor() {
@@ -142,7 +174,10 @@ export class NotificationsPanelComponent implements OnInit {
       const incoming = event.notification;
 
       if (incoming) {
-        this.items.update((items) => [incoming, ...items.filter((item) => item.id !== incoming.id)]);
+        this.items.update((items) => [
+          incoming,
+          ...items.filter((item) => item.id !== incoming.id),
+        ]);
       }
     });
   }
@@ -161,7 +196,9 @@ export class NotificationsPanelComponent implements OnInit {
 
   async open(item: Notification): Promise<void> {
     if (!item.read) {
-      this.items.update((items) => items.map((entry) => (entry.id === item.id ? { ...entry, read: true } : entry)));
+      this.items.update((items) =>
+        items.map((entry) => (entry.id === item.id ? { ...entry, read: true } : entry)),
+      );
       void this.notifications.markRead([item.id]).catch(() => undefined);
     }
 

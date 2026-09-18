@@ -33,7 +33,11 @@ export class ReauthService {
     private readonly throttle: LoginThrottleService,
   ) {}
 
-  async assert(actor: AuthenticatedUser, input: ReauthRequest | undefined, client: ClientInfo): Promise<void> {
+  async assert(
+    actor: AuthenticatedUser,
+    input: ReauthRequest | undefined,
+    client: ClientInfo,
+  ): Promise<void> {
     const user = await this.users.findById(actor.id).select('passwordHash mfaEnabled').lean();
 
     if (!user) {

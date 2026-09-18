@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular/alert-controller';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -94,7 +103,10 @@ export class DeveloperAppPage {
 
       const [usage, deliveries] = await Promise.all([
         this.developers.usage(id).catch(() => []),
-        this.developers.deliveries(id, 1, 10).then((page) => page.data).catch(() => []),
+        this.developers
+          .deliveries(id, 1, 10)
+          .then((page) => page.data)
+          .catch(() => []),
       ]);
 
       this.usage.set(usage);
@@ -158,7 +170,11 @@ export class DeveloperAppPage {
       return;
     }
 
-    await this.guard(async () => this.apply(await this.developers.setStatus(app.id, app.status === 'live' ? 'development' : 'live')));
+    await this.guard(async () =>
+      this.apply(
+        await this.developers.setStatus(app.id, app.status === 'live' ? 'development' : 'live'),
+      ),
+    );
   }
 
   async rotateSecret(): Promise<void> {

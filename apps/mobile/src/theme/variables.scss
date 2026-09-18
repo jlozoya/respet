@@ -94,8 +94,9 @@
 
   // --- Tipografía y forma --------------------------------------------------
 
-  --ion-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji';
+  --ion-font-family:
+    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
   --rs-radius-xs: 6px;
   --rs-radius-sm: 8px;
   --rs-radius-md: 12px;
@@ -110,7 +111,14 @@
   --rs-tabbar-height: 52px;
 
   /** El anillo de las historias sin ver. */
-  --rs-story-ring: linear-gradient(45deg, #fcaf45 0%, #f77737 25%, #f05a22 45%, #e1306c 70%, #8a3ab9 100%);
+  --rs-story-ring: linear-gradient(
+    45deg,
+    #fcaf45 0%,
+    #f77737 25%,
+    #f05a22 45%,
+    #e1306c 70%,
+    #8a3ab9 100%
+  );
 
   /** El degradado de la marca, para el logotipo y los botones destacados. */
   --rs-brand-gradient: linear-gradient(90deg, #f7931e 0%, #f05a22 45%, #e1306c 100%);

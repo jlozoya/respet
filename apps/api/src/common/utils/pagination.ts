@@ -9,7 +9,12 @@ export interface PageArgs {
 }
 
 /** Traduce `page`/`perPage` a los `skip`/`limit` de Mongo. */
-export function toPage(args: PageArgs): { skip: number; take: number; page: number; perPage: number } {
+export function toPage(args: PageArgs): {
+  skip: number;
+  take: number;
+  page: number;
+  perPage: number;
+} {
   const page = Math.max(1, Math.trunc(args.page ?? 1));
   const perPage = Math.min(MAX_PER_PAGE, Math.max(1, Math.trunc(args.perPage ?? DEFAULT_PER_PAGE)));
 

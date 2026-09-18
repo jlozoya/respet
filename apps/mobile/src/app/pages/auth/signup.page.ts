@@ -43,24 +43,58 @@ import { AuthLayoutComponent } from './auth-layout.component';
 
         <div class="pair">
           <div>
-            <ion-input fill="outline" formControlName="firstName" autocomplete="given-name" [placeholder]="'FIRST_NAME' | translate" [attr.aria-label]="'FIRST_NAME' | translate" />
+            <ion-input
+              fill="outline"
+              formControlName="firstName"
+              autocomplete="given-name"
+              [placeholder]="'FIRST_NAME' | translate"
+              [attr.aria-label]="'FIRST_NAME' | translate"
+            />
             <app-control-messages [control]="form.controls.firstName" />
           </div>
           <div>
-            <ion-input fill="outline" formControlName="lastName" autocomplete="family-name" [placeholder]="'LAST_NAME' | translate" [attr.aria-label]="'LAST_NAME' | translate" />
+            <ion-input
+              fill="outline"
+              formControlName="lastName"
+              autocomplete="family-name"
+              [placeholder]="'LAST_NAME' | translate"
+              [attr.aria-label]="'LAST_NAME' | translate"
+            />
             <app-control-messages [control]="form.controls.lastName" />
           </div>
         </div>
 
-        <ion-input fill="outline" formControlName="name" autocomplete="username" autocapitalize="off" [placeholder]="'SIGNUP_PAGE.USERNAME' | translate" [attr.aria-label]="'SIGNUP_PAGE.USERNAME' | translate">
+        <ion-input
+          fill="outline"
+          formControlName="name"
+          autocomplete="username"
+          autocapitalize="off"
+          [placeholder]="'SIGNUP_PAGE.USERNAME' | translate"
+          [attr.aria-label]="'SIGNUP_PAGE.USERNAME' | translate"
+        >
           <span slot="start" class="at">&#64;</span>
         </ion-input>
         <app-control-messages [control]="form.controls.name" />
 
-        <ion-input fill="outline" formControlName="email" type="email" inputmode="email" autocomplete="email" [placeholder]="'EMAIL' | translate" [attr.aria-label]="'EMAIL' | translate" />
+        <ion-input
+          fill="outline"
+          formControlName="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          [placeholder]="'EMAIL' | translate"
+          [attr.aria-label]="'EMAIL' | translate"
+        />
         <app-control-messages [control]="form.controls.email" />
 
-        <ion-input fill="outline" formControlName="password" type="password" autocomplete="new-password" [placeholder]="'NEW_PASSWORD' | translate" [attr.aria-label]="'NEW_PASSWORD' | translate">
+        <ion-input
+          fill="outline"
+          formControlName="password"
+          type="password"
+          autocomplete="new-password"
+          [placeholder]="'NEW_PASSWORD' | translate"
+          [attr.aria-label]="'NEW_PASSWORD' | translate"
+        >
           <ion-input-password-toggle slot="end" />
         </ion-input>
         <app-control-messages [control]="form.controls.password" />
@@ -71,7 +105,12 @@ import { AuthLayoutComponent } from './auth-layout.component';
         <span class="label rs-small rs-muted">{{ 'GENDER' | translate }}</span>
         <div class="genders">
           @for (option of genders; track option.value) {
-            <button type="button" class="gender" [class.active]="form.controls.gender.value === option.value" (click)="form.controls.gender.setValue(option.value)">
+            <button
+              type="button"
+              class="gender"
+              [class.active]="form.controls.gender.value === option.value"
+              (click)="form.controls.gender.setValue(option.value)"
+            >
               {{ option.label | translate }}
             </button>
           }
@@ -79,7 +118,8 @@ import { AuthLayoutComponent } from './auth-layout.component';
 
         <p class="legal rs-small rs-muted">
           {{ 'BY_CLICKING_TO_REGISTER' | translate }}
-          <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a> ·
+          <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a>
+          ·
           <a routerLink="/politics/privacy">{{ 'PRIVACY_POLICY' | translate }}</a>
         </p>
 
@@ -91,7 +131,9 @@ import { AuthLayoutComponent } from './auth-layout.component';
           }
         </ion-button>
 
-        <a class="rs-link have-account" routerLink="/login">{{ 'SIGNUP_PAGE.HAVE_ACCOUNT' | translate }}</a>
+        <a class="rs-link have-account" routerLink="/login">{{
+          'SIGNUP_PAGE.HAVE_ACCOUNT' | translate
+        }}</a>
       </form>
     </app-auth-layout>
   `,

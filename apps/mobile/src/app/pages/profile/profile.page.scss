@@ -10,7 +10,8 @@
 
 .cover {
   aspect-ratio: 16 / 6;
-  background: linear-gradient(135deg, #f7931e33 0%, #f05a2240 45%, #e1306c40 100%), var(--rs-surface-2);
+  background:
+    linear-gradient(135deg, #f7931e33 0%, #f05a2240 45%, #e1306c40 100%), var(--rs-surface-2);
   background-position: center;
   background-size: cover;
   max-height: 400px;

@@ -21,7 +21,10 @@ export class BrandingType implements Branding {
   @Field(() => String, { nullable: true, description: 'Logotipo horizontal para la cabecera.' })
   logoUrl!: string | null;
 
-  @Field(() => String, { nullable: true, description: 'Icono cuadrado para la pestaña y los correos.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Icono cuadrado para la pestaña y los correos.',
+  })
   iconUrl!: string | null;
 
   @Field({ description: 'Color principal, en hexadecimal.' })

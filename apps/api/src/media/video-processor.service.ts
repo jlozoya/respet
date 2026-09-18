@@ -62,7 +62,12 @@ export class VideoProcessorService implements OnModuleInit {
     try {
       const parsed = JSON.parse(output.toString('utf8')) as {
         format?: { duration?: string };
-        streams?: { codec_type?: string; width?: number; height?: number; tags?: { rotate?: string } }[];
+        streams?: {
+          codec_type?: string;
+          width?: number;
+          height?: number;
+          tags?: { rotate?: string };
+        }[];
       };
       const video = parsed.streams?.find((stream) => stream.codec_type === 'video');
       const seconds = Number(parsed.format?.duration);
@@ -89,7 +94,21 @@ export class VideoProcessorService implements OnModuleInit {
 
     return this.run(
       this.ffmpeg,
-      ['-v', 'error', '-ss', '0.5', '-i', path, '-frames:v', '1', '-f', 'image2', '-c:v', 'mjpeg', 'pipe:1'],
+      [
+        '-v',
+        'error',
+        '-ss',
+        '0.5',
+        '-i',
+        path,
+        '-frames:v',
+        '1',
+        '-f',
+        'image2',
+        '-c:v',
+        'mjpeg',
+        'pipe:1',
+      ],
       30_000,
     );
   }
@@ -107,7 +126,10 @@ export class VideoProcessorService implements OnModuleInit {
       };
 
       try {
-        const child = spawn(command, args, { stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true });
+        const child = spawn(command, args, {
+          stdio: ['ignore', 'pipe', 'ignore'],
+          windowsHide: true,
+        });
         const timer = setTimeout(() => {
           child.kill('SIGKILL');
           finish(null);

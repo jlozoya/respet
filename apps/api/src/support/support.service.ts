@@ -58,6 +58,11 @@ export class SupportService {
       this.tickets.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toSupportTicket(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toSupportTicket(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 }

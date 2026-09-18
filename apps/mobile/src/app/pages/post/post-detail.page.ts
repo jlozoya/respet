@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -20,7 +29,16 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 @Component({
   selector: 'app-post-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonIcon, IonButton, IonSpinner, PageHeaderComponent, PostCardComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    IonButton,
+    IonSpinner,
+    PageHeaderComponent,
+    PostCardComponent,
+  ],
   template: `
     <app-page-header title="POST.TITLE" />
 
@@ -30,9 +48,22 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
           <app-post-card [post]="item" [detail]="true" />
         } @else if (error(); as code) {
           <div class="rs-empty">
-            <ion-icon [name]="code === 'SERVER.PRIVATE_CONTENT' ? 'lock-closed-outline' : 'document-outline'" />
-            <h3>{{ (code === 'SERVER.PRIVATE_CONTENT' ? 'POST.PRIVATE_TITLE' : 'POST.NOT_FOUND_TITLE') | translate }}</h3>
-            <p>{{ (code === 'SERVER.PRIVATE_CONTENT' ? 'POST.PRIVATE' : 'POST.NOT_FOUND') | translate }}</p>
+            <ion-icon
+              [name]="
+                code === 'SERVER.PRIVATE_CONTENT' ? 'lock-closed-outline' : 'document-outline'
+              "
+            />
+            <h3>
+              {{
+                (code === 'SERVER.PRIVATE_CONTENT' ? 'POST.PRIVATE_TITLE' : 'POST.NOT_FOUND_TITLE')
+                  | translate
+              }}
+            </h3>
+            <p>
+              {{
+                (code === 'SERVER.PRIVATE_CONTENT' ? 'POST.PRIVATE' : 'POST.NOT_FOUND') | translate
+              }}
+            </p>
             <ion-button routerLink="/">{{ 'NAV_TO_MAIN_PAGE' | translate }}</ion-button>
           </div>
         } @else {

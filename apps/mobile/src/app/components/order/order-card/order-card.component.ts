@@ -1,5 +1,13 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { IonAvatar } from '@ionic/angular/ion-avatar';
 import { IonBadge } from '@ionic/angular/ion-badge';
@@ -93,7 +101,10 @@ export class OrderCardComponent {
   readonly stateLabel = computed(() => STATE_LABELS[this.current().state]);
   readonly stateColor = computed(() => STATE_COLORS[this.current().state]);
   readonly nextStates = computed(() =>
-    NEXT_STATES[this.current().state].map((state) => ({ value: state, label: STATE_LABELS[state] })),
+    NEXT_STATES[this.current().state].map((state) => ({
+      value: state,
+      label: STATE_LABELS[state],
+    })),
   );
   readonly itemCount = computed(() =>
     this.current().items.reduce((sum, item) => sum + item.quantity, 0),

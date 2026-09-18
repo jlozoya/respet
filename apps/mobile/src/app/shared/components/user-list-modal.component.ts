@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonButtons } from '@ionic/angular/ion-buttons';
@@ -71,7 +78,13 @@ export interface UserListPage {
     <ion-content>
       <div class="list">
         @for (entry of entries(); track entry.user.id) {
-          <div class="rs-row" role="button" tabindex="0" (click)="openProfile(entry.user)" (keydown.enter)="openProfile(entry.user)">
+          <div
+            class="rs-row"
+            role="button"
+            tabindex="0"
+            (click)="openProfile(entry.user)"
+            (keydown.enter)="openProfile(entry.user)"
+          >
             <span class="avatar">
               <app-avatar [user]="entry.user" [size]="44" />
               @if (entry.badge) {
@@ -83,7 +96,10 @@ export interface UserListPage {
               <span class="subtitle">{{ entry.subtitle ?? '@' + entry.user.name }}</span>
             </span>
             @if (showFollow()) {
-              <app-follow-button [userId]="entry.user.id" [followState]="entry.followState ?? null" />
+              <app-follow-button
+                [userId]="entry.user.id"
+                [followState]="entry.followState ?? null"
+              />
             }
           </div>
         } @empty {

@@ -27,7 +27,9 @@ import { SETTINGS_SECTIONS } from './settings-sections';
           @for (section of sections; track section.link) {
             <a class="rs-row" [routerLink]="section.link" routerLinkActive="active">
               <span class="rs-row-icon"><ion-icon [name]="section.icon" /></span>
-              <span class="rs-row-text"><span class="title">{{ section.title | translate }}</span></span>
+              <span class="rs-row-text"
+                ><span class="title">{{ section.title | translate }}</span></span
+              >
             </a>
           }
         </nav>

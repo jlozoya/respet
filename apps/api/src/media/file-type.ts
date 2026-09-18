@@ -60,7 +60,21 @@ export function detectFileType(buffer: Buffer): DetectedFileType | null {
       return { kind: 'video', mime: 'video/quicktime', extension: 'mov' };
     }
 
-    if (['isom', 'iso2', 'iso4', 'iso5', 'iso6', 'mp41', 'mp42', 'avc1', 'M4V ', 'dash', 'MSNV'].includes(brand)) {
+    if (
+      [
+        'isom',
+        'iso2',
+        'iso4',
+        'iso5',
+        'iso6',
+        'mp41',
+        'mp42',
+        'avc1',
+        'M4V ',
+        'dash',
+        'MSNV',
+      ].includes(brand)
+    ) {
       return { kind: 'video', mime: 'video/mp4', extension: 'mp4' };
     }
 
@@ -87,7 +101,12 @@ export function detectFileType(buffer: Buffer): DetectedFileType | null {
     return { kind: 'audio', mime: 'audio/ogg', extension: 'ogg' };
   }
 
-  if (ascii(0, 3) === 'ID3' || bytes(0, 0xff, 0xfb) || bytes(0, 0xff, 0xf3) || bytes(0, 0xff, 0xf2)) {
+  if (
+    ascii(0, 3) === 'ID3' ||
+    bytes(0, 0xff, 0xfb) ||
+    bytes(0, 0xff, 0xf3) ||
+    bytes(0, 0xff, 0xf2)
+  ) {
     return { kind: 'audio', mime: 'audio/mpeg', extension: 'mp3' };
   }
 

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnDestroy, type OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnDestroy,
+  type OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonContent } from '@ionic/angular/ion-content';
@@ -73,12 +80,18 @@ const REFRESH_MS = 30_000;
                 <app-avatar [user]="stream.host" [size]="88" ring="live" />
                 <span class="badges">
                   <span class="rs-live-badge">{{ 'LIVE.BADGE' | translate }}</span>
-                  <span class="viewers"><ion-icon name="eye" /> {{ stream.viewerCount | compactNumber }}</span>
+                  <span class="viewers"
+                    ><ion-icon name="eye" /> {{ stream.viewerCount | compactNumber }}</span
+                  >
                 </span>
               </span>
               <span class="info">
-                <span class="rs-strong rs-ellipsis">{{ stream.title || ('LIVE.UNTITLED' | translate) }}</span>
-                <span class="rs-small rs-muted rs-ellipsis">{{ stream.host | fullName }} · {{ stream.startedAt | relativeTime }}</span>
+                <span class="rs-strong rs-ellipsis">{{
+                  stream.title || ('LIVE.UNTITLED' | translate)
+                }}</span>
+                <span class="rs-small rs-muted rs-ellipsis"
+                  >{{ stream.host | fullName }} · {{ stream.startedAt | relativeTime }}</span
+                >
               </span>
             </a>
           } @empty {

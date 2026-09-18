@@ -23,7 +23,9 @@ import { MediaType } from './common.types.js';
 import { PostType } from './social.types.js';
 import { UserSummaryType } from './user.types.js';
 
-@ObjectType('MessageReactionGroup', { description: 'Las reacciones de un mensaje con el mismo emoji.' })
+@ObjectType('MessageReactionGroup', {
+  description: 'Las reacciones de un mensaje con el mismo emoji.',
+})
 export class MessageReactionGroupType implements MessageReactionGroup {
   @Field()
   emoji!: string;
@@ -100,7 +102,10 @@ export class MessageType implements Message {
   @Field(() => MessageKind)
   kind!: MessageKind;
 
-  @Field(() => String, { nullable: true, description: 'Nulo en los mensajes sólo con adjuntos y en los retirados.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Nulo en los mensajes sólo con adjuntos y en los retirados.',
+  })
   body!: string | null;
 
   @Field(() => [MediaType])
@@ -124,7 +129,10 @@ export class MessageType implements Message {
   @Field(() => [MessageReactionGroupType])
   reactions!: MessageReactionGroupType[];
 
-  @Field(() => MessageStatus, { nullable: true, description: 'Sólo en los propios: enviado, entregado o leído.' })
+  @Field(() => MessageStatus, {
+    nullable: true,
+    description: 'Sólo en los propios: enviado, entregado o leído.',
+  })
   status!: MessageStatus | null;
 
   @Field(() => Int, { description: 'En los grupos, cuántos lo han leído.' })
@@ -184,7 +192,10 @@ export class ConversationObject implements Conversation {
   @Field(() => String, { nullable: true })
   lastMessageAt!: string | null;
 
-  @Field(() => String, { nullable: true, description: 'Resumen del último mensaje, para la lista.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Resumen del último mensaje, para la lista.',
+  })
   lastPreview!: string | null;
 
   @Field(() => ID, { nullable: true })
@@ -225,7 +236,9 @@ export class MessagePageType implements MessagePage {
   nextCursor!: string | null;
 }
 
-@ObjectType('ChatEvent', { description: 'Un aviso del chat. `type` dice qué campos vienen rellenos.' })
+@ObjectType('ChatEvent', {
+  description: 'Un aviso del chat. `type` dice qué campos vienen rellenos.',
+})
 export class ChatEventObject implements ChatEvent {
   @Field(() => ChatEventType)
   type!: ChatEventType;

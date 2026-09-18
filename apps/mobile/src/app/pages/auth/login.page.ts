@@ -50,7 +50,9 @@ import { AuthLayoutComponent } from './auth-layout.component';
           <div class="step-icon"><ion-icon name="shield-checkmark" /></div>
           <h2>{{ 'AUTH.MFA_TITLE' | translate }}</h2>
           <p class="rs-muted">
-            {{ (method() === 'totp' ? 'AUTH.MFA_TOTP_HINT' : 'AUTH.MFA_RECOVERY_HINT') | translate }}
+            {{
+              (method() === 'totp' ? 'AUTH.MFA_TOTP_HINT' : 'AUTH.MFA_RECOVERY_HINT') | translate
+            }}
           </p>
 
           <ion-input
@@ -60,12 +62,18 @@ import { AuthLayoutComponent } from './auth-layout.component';
             [inputmode]="method() === 'totp' ? 'numeric' : 'text'"
             autocomplete="one-time-code"
             [maxlength]="method() === 'totp' ? 6 : 12"
-            [placeholder]="(method() === 'totp' ? 'AUTH.MFA_CODE' : 'AUTH.RECOVERY_CODE') | translate"
+            [placeholder]="
+              (method() === 'totp' ? 'AUTH.MFA_CODE' : 'AUTH.RECOVERY_CODE') | translate
+            "
             [attr.aria-label]="'AUTH.MFA_CODE' | translate"
           />
 
           <div class="trust">
-            <ion-checkbox [checked]="trustDevice()" (ionChange)="trustDevice.set($event.detail.checked)" labelPlacement="end">
+            <ion-checkbox
+              [checked]="trustDevice()"
+              (ionChange)="trustDevice.set($event.detail.checked)"
+              labelPlacement="end"
+            >
               {{ 'AUTH.TRUST_DEVICE' | translate }}
             </ion-checkbox>
           </div>
@@ -83,7 +91,9 @@ import { AuthLayoutComponent } from './auth-layout.component';
               {{ (method() === 'totp' ? 'AUTH.USE_RECOVERY' : 'AUTH.USE_TOTP') | translate }}
             </button>
           }
-          <button type="button" class="rs-text-btn back" (click)="cancelChallenge()">{{ 'AUTH.BACK_TO_LOGIN' | translate }}</button>
+          <button type="button" class="rs-text-btn back" (click)="cancelChallenge()">
+            {{ 'AUTH.BACK_TO_LOGIN' | translate }}
+          </button>
         </form>
       } @else {
         <form class="form" [formGroup]="form" (ngSubmit)="login()">
@@ -118,20 +128,38 @@ import { AuthLayoutComponent } from './auth-layout.component';
             }
           </ion-button>
 
-          <a class="rs-link forgot" routerLink="/forgot-password">{{ 'LANDING.FORGOT' | translate }}</a>
+          <a class="rs-link forgot" routerLink="/forgot-password">{{
+            'LANDING.FORGOT' | translate
+          }}</a>
 
           <hr class="rs-divider" />
 
           <div class="social">
-            <ion-button expand="block" fill="outline" color="google" [disabled]="submitting()" (click)="loginWith('google')">
-              <ion-icon name="logo-google" slot="start" /> {{ 'AUTH.CONTINUE_WITH' | translate: { provider: 'Google' } }}
+            <ion-button
+              expand="block"
+              fill="outline"
+              color="google"
+              [disabled]="submitting()"
+              (click)="loginWith('google')"
+            >
+              <ion-icon name="logo-google" slot="start" />
+              {{ 'AUTH.CONTINUE_WITH' | translate: { provider: 'Google' } }}
             </ion-button>
-            <ion-button expand="block" fill="outline" color="facebook" [disabled]="submitting()" (click)="loginWith('facebook')">
-              <ion-icon name="logo-facebook" slot="start" /> {{ 'AUTH.CONTINUE_WITH' | translate: { provider: 'Facebook' } }}
+            <ion-button
+              expand="block"
+              fill="outline"
+              color="facebook"
+              [disabled]="submitting()"
+              (click)="loginWith('facebook')"
+            >
+              <ion-icon name="logo-facebook" slot="start" />
+              {{ 'AUTH.CONTINUE_WITH' | translate: { provider: 'Facebook' } }}
             </ion-button>
           </div>
 
-          <ion-button class="create" color="success" routerLink="/signup">{{ 'LANDING.CREATE_ACCOUNT' | translate }}</ion-button>
+          <ion-button class="create" color="success" routerLink="/signup">{{
+            'LANDING.CREATE_ACCOUNT' | translate
+          }}</ion-button>
         </form>
       }
     </app-auth-layout>
@@ -253,7 +281,10 @@ export class LoginPage {
   }
 
   async loginWith(provider: SocialProvider): Promise<void> {
-    await this.run(() => this.social.signIn(provider, this.language.current()), 'SERVER.INCORRECT_CREDENTIALS');
+    await this.run(
+      () => this.social.signIn(provider, this.language.current()),
+      'SERVER.INCORRECT_CREDENTIALS',
+    );
   }
 
   async verify(): Promise<void> {
@@ -277,7 +308,10 @@ export class LoginPage {
       this.submitting.set(false);
 
       // El reto caduca a los cinco minutos: se vuelve a empezar.
-      if (error instanceof ApiError && (error.is('SERVER.BAD_TOKEN') || error.is('SERVER.WRONG_TOKEN'))) {
+      if (
+        error instanceof ApiError &&
+        (error.is('SERVER.BAD_TOKEN') || error.is('SERVER.WRONG_TOKEN'))
+      ) {
         this.cancelChallenge();
       }
 

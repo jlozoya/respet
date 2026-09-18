@@ -84,8 +84,13 @@ export class AccountCleanup {
     const postIds = posts.map((post) => post._id);
     const storyIds = stories.map((story) => story._id);
 
-    const postMedia = await this.mediaModel.find({ postId: { $in: postIds } }).select('_id').lean();
-    const commentIds = (await this.comments.find({ userId: id }).select('_id').lean()).map((doc) => doc._id);
+    const postMedia = await this.mediaModel
+      .find({ postId: { $in: postIds } })
+      .select('_id')
+      .lean();
+    const commentIds = (await this.comments.find({ userId: id }).select('_id').lean()).map(
+      (doc) => doc._id,
+    );
 
     const mediaIds = [
       ...(user?.avatarId ? [user.avatarId] : []),
@@ -110,7 +115,10 @@ export class AccountCleanup {
       this.storyViews.deleteMany({ viewerId: id }),
       this.reports.deleteMany({ reporterId: id }),
       this.notifications.deleteMany({ $or: [{ recipientId: id }, { actorIds: [id] }] }),
-      this.notifications.updateMany({ actorIds: id }, { $pull: { actorIds: id }, $inc: { actorCount: -1 } }),
+      this.notifications.updateMany(
+        { actorIds: id },
+        { $pull: { actorIds: id }, $inc: { actorCount: -1 } },
+      ),
       // Las relaciones van en los dos sentidos.
       this.follows.deleteMany({ $or: [{ followerId: id }, { followeeId: id }] }),
       this.blocks.deleteMany({ $or: [{ blockerId: id }, { blockedId: id }] }),

@@ -13,7 +13,13 @@ import type {
 import { ChatService } from '../chat/chat.service.js';
 import type { AuthenticatedUser } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';
-import { toIso, toMediaOrNull, toUserSummary, type MediaDoc, type UserSummaryDoc } from '../common/mappers.js';
+import {
+  toIso,
+  toMediaOrNull,
+  toUserSummary,
+  type MediaDoc,
+  type UserSummaryDoc,
+} from '../common/mappers.js';
 import { paginate, toPage } from '../common/utils/pagination.js';
 import { isValidObjectId, ObjectId, type Model, type Types } from '../database/mongoose.js';
 import { Audience, MediaType, NotificationType, StoryKind } from '../database/schemas/enums.js';
@@ -33,7 +39,11 @@ const STILL_DURATION_MS = 5000;
 const MAX_VIDEO_MS = 60_000;
 
 const POPULATE_STORY = [
-  { path: 'author', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } },
+  {
+    path: 'author',
+    select: 'name firstName lastName avatarId verified',
+    populate: { path: 'avatar' },
+  },
   { path: 'media' },
 ];
 
@@ -65,7 +75,11 @@ export class StoriesService {
     private readonly config: ConfigService,
   ) {}
 
-  async create(author: AuthenticatedUser, dto: CreateStoryDto, file: PendingUpload | null): Promise<StoryDto> {
+  async create(
+    author: AuthenticatedUser,
+    dto: CreateStoryDto,
+    file: PendingUpload | null,
+  ): Promise<StoryDto> {
     let mediaId: Types.ObjectId | null = null;
     let kind: StoryKind = StoryKind.Text;
     let durationMs: number;
@@ -81,9 +95,15 @@ export class StoriesService {
 
       mediaId = stored._id;
       kind = stored.type === MediaType.Video ? StoryKind.Video : StoryKind.Image;
-      durationMs = kind === StoryKind.Video ? Math.min(stored.durationMs ?? dto.durationMs ?? 15_000, MAX_VIDEO_MS) : STILL_DURATION_MS;
+      durationMs =
+        kind === StoryKind.Video
+          ? Math.min(stored.durationMs ?? dto.durationMs ?? 15_000, MAX_VIDEO_MS)
+          : STILL_DURATION_MS;
     } else if (!dto.text) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'A story needs a photo, a video or some text');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'A story needs a photo, a video or some text',
+      );
     } else {
       // Un texto largo necesita más tiempo para leerse.
       durationMs = Math.min(10_000, Math.max(STILL_DURATION_MS, dto.text.length * 60));
@@ -98,11 +118,17 @@ export class StoriesService {
       text: dto.text ?? null,
       style: { background: dto.background ?? 'sunset', font: dto.font ?? 'classic' },
       durationMs,
-      audience: dto.audience === Audience.OnlyMe ? Audience.Followers : (dto.audience ?? Audience.Followers),
+      audience:
+        dto.audience === Audience.OnlyMe
+          ? Audience.Followers
+          : (dto.audience ?? Audience.Followers),
       expiresAt: new Date(Date.now() + ttlHours * 60 * 60 * 1000),
     });
 
-    await this.bus.publish(Topic.domain(DomainEvent.StoryCreated), { storyId: String(created._id), userId: author.id });
+    await this.bus.publish(Topic.domain(DomainEvent.StoryCreated), {
+      storyId: String(created._id),
+      userId: author.id,
+    });
 
     return this.findOne(String(created._id), author.id);
   }
@@ -136,7 +162,7 @@ export class StoriesService {
 
     return [...groups.values()]
       .map((list) => ({
-        user: (list[0]).author,
+        user: list[0].author,
         stories: list,
         hasUnseen: list.some((story) => !story.seen),
         latestAt: (list.at(-1) as StoryDto).createdAt,
@@ -181,7 +207,12 @@ export class StoriesService {
       this.stories.countDocuments(filter),
     ]);
 
-    return paginate(await this.present(docs as unknown as LeanStory[], userId), total, pagination.page, pagination.perPage);
+    return paginate(
+      await this.present(docs as unknown as LeanStory[], userId),
+      total,
+      pagination.page,
+      pagination.perPage,
+    );
   }
 
   async findOne(storyId: string, viewerId: string | null): Promise<StoryDto> {
@@ -221,13 +252,19 @@ export class StoriesService {
     const authorId = String(story.authorId);
 
     if (authorId === viewerId) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'You cannot react to your own story');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'You cannot react to your own story',
+      );
     }
 
     const previous = await this.views
       .findOneAndUpdate(
         { storyId, viewerId },
-        { $set: { reaction: emoji }, $setOnInsert: { storyId, viewerId, authorId: story.authorId } },
+        {
+          $set: { reaction: emoji },
+          $setOnInsert: { storyId, viewerId, authorId: story.authorId },
+        },
         { upsert: true, returnDocument: 'before' },
       )
       .lean();
@@ -259,7 +296,10 @@ export class StoriesService {
     const authorId = String(story.authorId);
 
     if (authorId === viewerId) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'You cannot reply to your own story');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'You cannot reply to your own story',
+      );
     }
 
     if (!(await this.relationships.canMessage(viewerId, authorId, 'storyReplyPolicy'))) {
@@ -270,7 +310,12 @@ export class StoriesService {
   }
 
   /** Quién la ha visto. Sólo para quien la publicó. */
-  async viewers(storyId: string, ownerId: string, page: number, perPage: number): Promise<Paginated<StoryViewer>> {
+  async viewers(
+    storyId: string,
+    ownerId: string,
+    page: number,
+    perPage: number,
+  ): Promise<Paginated<StoryViewer>> {
     await this.assertOwner(storyId, ownerId);
 
     const pagination = toPage({ page, perPage });
@@ -281,7 +326,11 @@ export class StoriesService {
         .sort({ reaction: -1, updatedAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.take)
-        .populate({ path: 'viewer', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+        .populate({
+          path: 'viewer',
+          select: 'name firstName lastName avatarId verified',
+          populate: { path: 'avatar' },
+        })
         .lean(),
       this.views.countDocuments({ storyId }),
     ]);
@@ -328,10 +377,14 @@ export class StoriesService {
       .find({ _id: { $in: storyIds }, deletedAt: null })
       .populate(POPULATE_STORY)
       .lean()) as unknown as LeanStory[];
-    const presented = new Map((await this.present(stories, viewerId)).map((story) => [story.id, story]));
+    const presented = new Map(
+      (await this.present(stories, viewerId)).map((story) => [story.id, story]),
+    );
 
     return docs.map((doc) => {
-      const list = doc.storyIds.map((id) => presented.get(String(id))).filter((story): story is StoryDto => !!story);
+      const list = doc.storyIds
+        .map((id) => presented.get(String(id)))
+        .filter((story): story is StoryDto => !!story);
       const cover = (doc.coverStoryId && presented.get(String(doc.coverStoryId))) || list[0];
 
       return {
@@ -344,8 +397,15 @@ export class StoriesService {
     });
   }
 
-  async saveHighlight(userId: string, input: HighlightInput, highlightId: string | null): Promise<StoryHighlightDto> {
-    const owned = await this.stories.find({ _id: { $in: input.storyIds }, authorId: userId, deletedAt: null }).select('_id').lean();
+  async saveHighlight(
+    userId: string,
+    input: HighlightInput,
+    highlightId: string | null,
+  ): Promise<StoryHighlightDto> {
+    const owned = await this.stories
+      .find({ _id: { $in: input.storyIds }, authorId: userId, deletedAt: null })
+      .select('_id')
+      .lean();
 
     if (owned.length !== new Set(input.storyIds).size) {
       throw AppException.forbidden('You can only highlight your own stories');
@@ -354,13 +414,19 @@ export class StoriesService {
     const fields = {
       title: input.title,
       storyIds: input.storyIds.map((id) => new ObjectId(id)),
-      coverStoryId: input.coverStoryId && input.storyIds.includes(input.coverStoryId) ? input.coverStoryId : null,
+      coverStoryId:
+        input.coverStoryId && input.storyIds.includes(input.coverStoryId)
+          ? input.coverStoryId
+          : null,
     };
 
     let id = highlightId;
 
     if (highlightId) {
-      const updated = await this.highlights.updateOne({ _id: highlightId, userId }, { $set: fields });
+      const updated = await this.highlights.updateOne(
+        { _id: highlightId, userId },
+        { $set: fields },
+      );
 
       if (updated.matchedCount === 0) {
         throw AppException.notFound('Highlight');
@@ -394,9 +460,10 @@ export class StoriesService {
       throw AppException.notFound('Story');
     }
 
-    const doc = (await this.stories.findOne({ _id: storyId, deletedAt: null }).populate(POPULATE_STORY).lean()) as unknown as
-      | LeanStory
-      | null;
+    const doc = (await this.stories
+      .findOne({ _id: storyId, deletedAt: null })
+      .populate(POPULATE_STORY)
+      .lean()) as unknown as LeanStory | null;
 
     if (!doc) {
       throw AppException.notFound('Story');
@@ -410,7 +477,10 @@ export class StoriesService {
       const highlighted = await this.highlights.exists({ storyIds: doc._id });
 
       if (!highlighted) {
-        throw AppException.forbiddenWith(ErrorCode.StoryExpired, 'This story is no longer available');
+        throw AppException.forbiddenWith(
+          ErrorCode.StoryExpired,
+          'This story is no longer available',
+        );
       }
     }
 
@@ -452,7 +522,10 @@ export class StoriesService {
     const ids = docs.map((doc) => doc._id);
     const [myViews, replyPolicies] = await Promise.all([
       viewerId
-        ? this.views.find({ viewerId, storyId: { $in: ids } }).select('storyId reaction').lean()
+        ? this.views
+            .find({ viewerId, storyId: { $in: ids } })
+            .select('storyId reaction')
+            .lean()
         : Promise.resolve([]),
       this.replyableAuthors(docs, viewerId),
     ]);
@@ -468,7 +541,10 @@ export class StoriesService {
         kind: doc.kind,
         media: toMediaOrNull(doc.media),
         text: doc.text,
-        style: { background: doc.style?.background ?? 'sunset', font: doc.style?.font ?? 'classic' },
+        style: {
+          background: doc.style?.background ?? 'sunset',
+          font: doc.style?.font ?? 'classic',
+        },
         durationMs: doc.durationMs,
         audience: doc.audience,
         seen: own || viewed.has(String(doc._id)),
@@ -491,7 +567,10 @@ export class StoriesService {
     }
 
     for (const authorId of new Set(docs.map((doc) => String(doc.authorId)))) {
-      if (authorId !== viewerId && (await this.relationships.canMessage(viewerId, authorId, 'storyReplyPolicy'))) {
+      if (
+        authorId !== viewerId &&
+        (await this.relationships.canMessage(viewerId, authorId, 'storyReplyPolicy'))
+      ) {
         allowed.add(authorId);
       }
     }
@@ -499,7 +578,11 @@ export class StoriesService {
     return allowed;
   }
 
-  private async assertOwner(storyId: string, userId: string, allowAdmin = false): Promise<Story & { _id: Types.ObjectId }> {
+  private async assertOwner(
+    storyId: string,
+    userId: string,
+    allowAdmin = false,
+  ): Promise<Story & { _id: Types.ObjectId }> {
     if (!isValidObjectId(storyId)) {
       throw AppException.notFound('Story');
     }

@@ -13,9 +13,21 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 
 /** Mensajes por cada motivo, con el código que se enseña junto al título. */
 const REASONS = {
-  forbidden: { title: 'ERRORS_PAGE.UNAUTHORIZED.TITLE', code: '403', message: 'ERRORS_PAGE.UNAUTHORIZED.MESSAGE' },
-  'not-found': { title: 'ERRORS_PAGE.NOT_FOUND.TITLE', code: '404', message: 'ERRORS_PAGE.NOT_FOUND.MESSAGE' },
-  server: { title: 'ERRORS_PAGE.SOMETHING_WENT_WRONG.TITLE', code: '500', message: 'ERRORS_PAGE.SOMETHING_WENT_WRONG.MESSAGE' },
+  forbidden: {
+    title: 'ERRORS_PAGE.UNAUTHORIZED.TITLE',
+    code: '403',
+    message: 'ERRORS_PAGE.UNAUTHORIZED.MESSAGE',
+  },
+  'not-found': {
+    title: 'ERRORS_PAGE.NOT_FOUND.TITLE',
+    code: '404',
+    message: 'ERRORS_PAGE.NOT_FOUND.MESSAGE',
+  },
+  server: {
+    title: 'ERRORS_PAGE.SOMETHING_WENT_WRONG.TITLE',
+    code: '500',
+    message: 'ERRORS_PAGE.SOMETHING_WENT_WRONG.MESSAGE',
+  },
 } as const;
 
 type Reason = keyof typeof REASONS;
@@ -25,7 +37,16 @@ type Reason = keyof typeof REASONS;
   templateUrl: './error.page.html',
   styleUrls: ['./error.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, PageHeaderComponent, IonContent, IonRow, IonCol, IonText, IonButton, IonIcon],
+  imports: [
+    TranslatePipe,
+    PageHeaderComponent,
+    IonContent,
+    IonRow,
+    IonCol,
+    IonText,
+    IonButton,
+    IonIcon,
+  ],
 })
 export class ErrorPage {
   private readonly router = inject(Router);
@@ -36,7 +57,9 @@ export class ErrorPage {
    */
   readonly reason = input<string | null>(null);
 
-  readonly error = computed(() => REASONS[(this.reason() ?? 'not-found') as Reason] ?? REASONS['not-found']);
+  readonly error = computed(
+    () => REASONS[(this.reason() ?? 'not-found') as Reason] ?? REASONS['not-found'],
+  );
 
   goToMain(): void {
     void this.router.navigateByUrl(environment.mainUrl);

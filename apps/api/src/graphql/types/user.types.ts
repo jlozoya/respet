@@ -54,7 +54,10 @@ export class UserPermissionsType implements UserPermissions {
   @Field(() => MessagePolicy, { description: 'Quién puede escribir por primera vez.' })
   messagePolicy!: MessagePolicy;
 
-  @Field({ description: 'Con el perfil privado, seguir pasa por solicitud y lo publicado es para los seguidores.' })
+  @Field({
+    description:
+      'Con el perfil privado, seguir pasa por solicitud y lo publicado es para los seguidores.',
+  })
   privateProfile!: boolean;
 
   @Field({ description: 'Si los demás ven cuándo está conectada.' })

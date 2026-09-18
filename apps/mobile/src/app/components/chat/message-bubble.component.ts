@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -71,7 +79,13 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
         }
       </span>
 
-      <div class="stack" (contextmenu)="openSheet($event)" (touchstart)="pressStart()" (touchend)="pressEnd()" (touchmove)="pressEnd()">
+      <div
+        class="stack"
+        (contextmenu)="openSheet($event)"
+        (touchstart)="pressStart()"
+        (touchend)="pressEnd()"
+        (touchmove)="pressEnd()"
+      >
         @if (item.replyTo; as quoted) {
           <div class="quote">
             <span class="quote-label">
@@ -152,8 +166,16 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
         @if (item.reactions.length) {
           <div class="reactions">
             @for (group of item.reactions; track group.emoji) {
-              <button type="button" class="reaction" [class.mine]="group.reactedByMe" (click)="act({ type: 'react', emoji: group.emoji })">
-                {{ group.emoji }}@if (group.count > 1) {<span>{{ group.count }}</span>}
+              <button
+                type="button"
+                class="reaction"
+                [class.mine]="group.reactedByMe"
+                (click)="act({ type: 'react', emoji: group.emoji })"
+              >
+                {{ group.emoji }}
+                @if (group.count > 1) {
+                  <span>{{ group.count }}</span>
+                }
               </button>
             }
           </div>
@@ -162,19 +184,36 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
       @if (!item.deleted && item.status !== 'sending' && item.status !== 'failed') {
         <div class="tools">
-          <button type="button" class="tool" (click)="picker.set(!picker())" [attr.aria-label]="'MESSENGER.REACT' | translate">
+          <button
+            type="button"
+            class="tool"
+            (click)="picker.set(!picker())"
+            [attr.aria-label]="'MESSENGER.REACT' | translate"
+          >
             <ion-icon name="happy-outline" />
           </button>
-          <button type="button" class="tool" (click)="act({ type: 'reply' })" [attr.aria-label]="'MESSENGER.REPLY' | translate">
+          <button
+            type="button"
+            class="tool"
+            (click)="act({ type: 'reply' })"
+            [attr.aria-label]="'MESSENGER.REPLY' | translate"
+          >
             <ion-icon name="arrow-undo-outline" />
           </button>
-          <button type="button" class="tool" (click)="openSheet($event)" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+          <button
+            type="button"
+            class="tool"
+            (click)="openSheet($event)"
+            [attr.aria-label]="'COMMON.OPTIONS' | translate"
+          >
             <ion-icon name="ellipsis-vertical" />
           </button>
           @if (picker()) {
             <div class="picker">
               @for (emoji of emojis; track emoji) {
-                <button type="button" (click)="act({ type: 'react', emoji }); picker.set(false)">{{ emoji }}</button>
+                <button type="button" (click)="act({ type: 'react', emoji }); picker.set(false)">
+                  {{ emoji }}
+                </button>
               }
             </div>
           }
@@ -185,14 +224,20 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
     <div class="meta">
       @switch (item.status) {
         @case ('sending') {
-          <span class="status"><ion-spinner name="dots" /> {{ 'MESSENGER.SENDING' | translate }}</span>
+          <span class="status"
+            ><ion-spinner name="dots" /> {{ 'MESSENGER.SENDING' | translate }}</span
+          >
         }
         @case ('failed') {
           <span class="status failed">
             <ion-icon name="alert-circle" /> {{ 'MESSENGER.FAILED' | translate }} ·
-            <button type="button" class="rs-text-btn" (click)="act({ type: 'retry' })">{{ 'MESSENGER.RETRY' | translate }}</button>
+            <button type="button" class="rs-text-btn" (click)="act({ type: 'retry' })">
+              {{ 'MESSENGER.RETRY' | translate }}
+            </button>
             ·
-            <button type="button" class="rs-text-btn" (click)="act({ type: 'discard' })">{{ 'MESSENGER.DISCARD' | translate }}</button>
+            <button type="button" class="rs-text-btn" (click)="act({ type: 'discard' })">
+              {{ 'MESSENGER.DISCARD' | translate }}
+            </button>
           </span>
         }
         @default {
@@ -236,16 +281,25 @@ export class MessageBubbleComponent {
   readonly visualMedia = computed<Media[]>(() =>
     this.message().attachments.filter((item) => item.type === 'image' || item.type === 'video'),
   );
-  readonly audioMedia = computed(() => this.message().attachments.filter((item) => item.type === 'audio'));
+  readonly audioMedia = computed(() =>
+    this.message().attachments.filter((item) => item.type === 'audio'),
+  );
   readonly fileMedia = computed(() =>
-    this.message().attachments.filter((item) => item.type !== 'image' && item.type !== 'video' && item.type !== 'audio'),
+    this.message().attachments.filter(
+      (item) => item.type !== 'image' && item.type !== 'video' && item.type !== 'audio',
+    ),
   );
 
   /** Un mensaje de sólo uno a tres emojis se enseña grande y sin burbuja. */
   readonly isJumbo = computed(() => {
     const body = this.message().body?.trim() ?? '';
 
-    return body.length > 0 && body.length <= 12 && /^(\p{Extended_Pictographic}|\p{Emoji_Component}|‍|️|\s){1,8}$/u.test(body) && !/\d/.test(body);
+    return (
+      body.length > 0 &&
+      body.length <= 12 &&
+      /^(\p{Extended_Pictographic}|\p{Emoji_Component}|‍|️|\s){1,8}$/u.test(body) &&
+      !/\d/.test(body)
+    );
   });
 
   readonly statusLabel = computed(() => {
@@ -297,17 +351,56 @@ export class MessageBubbleComponent {
     }
 
     const t = (key: string) => this.translate.instant(key) as string;
-    const canEdit = this.own() && !!item.body && Date.now() - Date.parse(item.createdAt) < EDIT_WINDOW_MS && item.kind === 'text';
+    const canEdit =
+      this.own() &&
+      !!item.body &&
+      Date.now() - Date.parse(item.createdAt) < EDIT_WINDOW_MS &&
+      item.kind === 'text';
 
     const buttons = [
-      ...QUICK_EMOJIS.map((emoji) => ({ text: emoji, data: { type: 'react', emoji }, cssClass: 'emoji-button' })),
-      { text: t('MESSENGER.REPLY'), icon: 'arrow-undo-outline', data: { type: 'reply' } as MessageAction },
-      ...(item.body ? [{ text: t('MESSENGER.COPY'), icon: 'copy-outline', data: { type: 'copy' } as MessageAction }] : []),
-      ...(canEdit ? [{ text: t('MESSENGER.EDIT'), icon: 'create-outline', data: { type: 'edit' } as MessageAction }] : []),
+      ...QUICK_EMOJIS.map((emoji) => ({
+        text: emoji,
+        data: { type: 'react', emoji },
+        cssClass: 'emoji-button',
+      })),
+      {
+        text: t('MESSENGER.REPLY'),
+        icon: 'arrow-undo-outline',
+        data: { type: 'reply' } as MessageAction,
+      },
+      ...(item.body
+        ? [
+            {
+              text: t('MESSENGER.COPY'),
+              icon: 'copy-outline',
+              data: { type: 'copy' } as MessageAction,
+            },
+          ]
+        : []),
+      ...(canEdit
+        ? [
+            {
+              text: t('MESSENGER.EDIT'),
+              icon: 'create-outline',
+              data: { type: 'edit' } as MessageAction,
+            },
+          ]
+        : []),
       ...(this.own()
-        ? [{ text: t('MESSENGER.DELETE_FOR_ALL'), icon: 'trash-outline', role: 'destructive', data: { type: 'delete' } as MessageAction }]
+        ? [
+            {
+              text: t('MESSENGER.DELETE_FOR_ALL'),
+              icon: 'trash-outline',
+              role: 'destructive',
+              data: { type: 'delete' } as MessageAction,
+            },
+          ]
         : [{ text: t('REPORT'), icon: 'flag-outline', data: { type: 'report' } as MessageAction }]),
-      { text: t('MESSENGER.DELETE_FOR_ME'), icon: 'eye-off-outline', data: { type: 'hide' } as MessageAction },
+      {
+        text: t('MESSENGER.DELETE_FOR_ME'),
+        icon: 'eye-off-outline',
+        data: { type: 'hide' } as MessageAction,
+      },
       { text: t('CANCEL'), role: 'cancel' },
     ];
 

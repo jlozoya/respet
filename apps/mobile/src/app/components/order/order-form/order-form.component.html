@@ -1,12 +1,20 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <ion-item lines="none">
     <ion-label position="stacked">{{ 'ORDER.TAKE_OUT_DATE' | translate }}</ion-label>
-    <ion-datetime formControlName="takeOutDate" presentation="date-time" [showDefaultButtons]="true" />
+    <ion-datetime
+      formControlName="takeOutDate"
+      presentation="date-time"
+      [showDefaultButtons]="true"
+    />
   </ion-item>
 
   <ion-item lines="none">
     <ion-label position="stacked">{{ 'ORDER.DELIVERY_DATE' | translate }}</ion-label>
-    <ion-datetime formControlName="deliveryDate" presentation="date-time" [showDefaultButtons]="true" />
+    <ion-datetime
+      formControlName="deliveryDate"
+      presentation="date-time"
+      [showDefaultButtons]="true"
+    />
   </ion-item>
 
   <h3 class="section">{{ 'ORDER.DESTINATION' | translate }}</h3>

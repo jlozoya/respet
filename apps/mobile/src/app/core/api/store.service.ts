@@ -206,10 +206,13 @@ export class ProductsService {
   }
 
   async addImage(id: string, file: Blob): Promise<Media> {
-    const { addProductMedia } = await this.gql.request<{ addProductMedia: Media }>(ADD_PRODUCT_MEDIA, {
-      id,
-      file,
-    });
+    const { addProductMedia } = await this.gql.request<{ addProductMedia: Media }>(
+      ADD_PRODUCT_MEDIA,
+      {
+        id,
+        file,
+      },
+    );
 
     return addProductMedia;
   }

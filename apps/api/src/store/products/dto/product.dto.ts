@@ -1,7 +1,16 @@
 import { Field, Float, ID, InputType, Int, PartialType } from '@nestjs/graphql';
 import type { CreateProductRequest } from '@social-network/shared';
 import { Transform } from 'class-transformer';
-import { IsInt, IsMongoId, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
+import {
+  IsInt,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  Max,
+  Min,
+} from 'class-validator';
 
 import { SearchQueryDto } from '../../../common/dto/pagination.dto.js';
 import { trim } from '../../../common/dto/transforms.js';

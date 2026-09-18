@@ -33,7 +33,10 @@ export class TokenService {
   ) {}
 
   /** Access token de la propia aplicación, atado a una sesión. */
-  async signSessionToken(subject: TokenSubject, sessionId: string): Promise<{ token: string; expiresIn: number }> {
+  async signSessionToken(
+    subject: TokenSubject,
+    sessionId: string,
+  ): Promise<{ token: string; expiresIn: number }> {
     const expiresIn = parseDuration(this.config.getOrThrow<string>('jwt.accessTtl'));
     const token = await this.jwt.signAsync(
       { sub: subject.id, sid: sessionId, role: subject.role },
@@ -44,7 +47,10 @@ export class TokenService {
   }
 
   /** Access token de una aplicación de terceros, atado a un consentimiento. */
-  async signAppToken(subject: TokenSubject, claims: AppTokenClaims): Promise<{ token: string; expiresIn: number }> {
+  async signAppToken(
+    subject: TokenSubject,
+    claims: AppTokenClaims,
+  ): Promise<{ token: string; expiresIn: number }> {
     const expiresIn = parseDuration(this.config.getOrThrow<string>('oauth.accessTtl'));
     const token = await this.jwt.signAsync(
       {

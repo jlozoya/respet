@@ -243,9 +243,6 @@ function toLocation(
 }
 
 /** Extrae un componente de dirección por su tipo. */
-function pick(
-  components: google.maps.GeocoderAddressComponent[],
-  type: string,
-): string | null {
+function pick(components: google.maps.GeocoderAddressComponent[], type: string): string | null {
   return components.find((component) => component.types.includes(type))?.long_name ?? null;
 }

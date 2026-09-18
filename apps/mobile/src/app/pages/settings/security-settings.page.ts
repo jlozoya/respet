@@ -6,7 +6,13 @@ import { IonInput } from '@ionic/angular/ion-input';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { IonToggle } from '@ionic/angular/ion-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { DeviceInfo, DeviceSession, MfaStatus, SecurityEvent, TotpSetup } from '@social-network/shared';
+import type {
+  DeviceInfo,
+  DeviceSession,
+  MfaStatus,
+  SecurityEvent,
+  TotpSetup,
+} from '@social-network/shared';
 
 import { SecurityService } from '../../core/api/security.service';
 import { UsersService } from '../../core/api/users.service';
@@ -53,7 +59,17 @@ const EVENT_ICONS: Partial<Record<SecurityEvent['type'], string>> = {
 @Component({
   selector: 'app-security-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonButton, IonIcon, IonInput, IonSpinner, IonToggle, RelativeTimePipe, SettingsLayoutComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonButton,
+    IonIcon,
+    IonInput,
+    IonSpinner,
+    IonToggle,
+    RelativeTimePipe,
+    SettingsLayoutComponent,
+  ],
   templateUrl: './security-settings.page.html',
   styleUrl: './settings.scss',
   styles: `
@@ -148,7 +164,10 @@ export class SecuritySettingsPage implements OnInit {
     this.loginAlerts.set(this.auth.user()?.permissions?.loginAlerts ?? true);
 
     await Promise.all([
-      this.security.mfaStatus().then((status) => this.mfa.set(status), (error: unknown) => this.feedback.error(error)),
+      this.security.mfaStatus().then(
+        (status) => this.mfa.set(status),
+        (error: unknown) => this.feedback.error(error),
+      ),
       this.loadSessions(),
       this.loadEvents(1),
     ]);
@@ -231,7 +250,12 @@ export class SecuritySettingsPage implements OnInit {
   }
 
   downloadCodes(): void {
-    const blob = new Blob([`${this.branding.name()} — ${this.auth.user()?.email ?? ''}\n\n${this.recoveryCodes().join('\n')}\n`], { type: 'text/plain' });
+    const blob = new Blob(
+      [
+        `${this.branding.name()} — ${this.auth.user()?.email ?? ''}\n\n${this.recoveryCodes().join('\n')}\n`,
+      ],
+      { type: 'text/plain' },
+    );
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -242,7 +266,9 @@ export class SecuritySettingsPage implements OnInit {
 
   async regenerateCodes(): Promise<void> {
     await this.guard(async () => {
-      const result = await this.reauth.run((reauth) => this.security.regenerateRecoveryCodes(reauth));
+      const result = await this.reauth.run((reauth) =>
+        this.security.regenerateRecoveryCodes(reauth),
+      );
 
       if (result) {
         this.recoveryCodes.set(result.codes);

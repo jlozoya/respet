@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, type OnInit, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonButtons } from '@ionic/angular/ion-buttons';
 import { IonContent } from '@ionic/angular/ion-content';
@@ -45,7 +53,9 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
   template: `
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ (pickOnly() ? 'MESSENGER.ADD_PEOPLE' : 'MESSENGER.NEW') | translate }}</ion-title>
+        <ion-title>{{
+          (pickOnly() ? 'MESSENGER.ADD_PEOPLE' : 'MESSENGER.NEW') | translate
+        }}</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="close()"><ion-icon slot="icon-only" name="close" /></ion-button>
         </ion-buttons>
@@ -71,11 +81,19 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
       @if (chosen().length > 1 && !pickOnly()) {
         <label class="rs-pill-input group-name">
           <ion-icon name="people" />
-          <input type="text" maxlength="80" [value]="title()" (input)="title.set($any($event.target).value)" [placeholder]="'MESSENGER.GROUP_NAME' | translate" />
+          <input
+            type="text"
+            maxlength="80"
+            [value]="title()"
+            (input)="title.set($any($event.target).value)"
+            [placeholder]="'MESSENGER.GROUP_NAME' | translate"
+          />
         </label>
       }
 
-      <h3 class="rs-section-title">{{ (term() ? 'MESSENGER.RESULTS' : 'MESSENGER.SUGGESTED') | translate }}</h3>
+      <h3 class="rs-section-title">
+        {{ (term() ? 'MESSENGER.RESULTS' : 'MESSENGER.SUGGESTED') | translate }}
+      </h3>
 
       <div class="list">
         @if (loading()) {
@@ -100,8 +118,20 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
 
     <ion-footer>
       <ion-toolbar>
-        <ion-button expand="block" class="start" [disabled]="!canStart() || busy()" (click)="start()">
-          {{ (pickOnly() ? 'ADD' : chosen().length > 1 ? 'MESSENGER.CREATE_GROUP' : 'MESSENGER.START_CHAT') | translate }}
+        <ion-button
+          expand="block"
+          class="start"
+          [disabled]="!canStart() || busy()"
+          (click)="start()"
+        >
+          {{
+            (pickOnly()
+              ? 'ADD'
+              : chosen().length > 1
+                ? 'MESSENGER.CREATE_GROUP'
+                : 'MESSENGER.START_CHAT'
+            ) | translate
+          }}
         </ion-button>
       </ion-toolbar>
     </ion-footer>
@@ -229,7 +259,9 @@ export class NewConversationModalComponent implements OnInit {
 
   toggle(user: UserSummary): void {
     this.chosen.update((current) =>
-      current.some((item) => item.id === user.id) ? current.filter((item) => item.id !== user.id) : [...current, user],
+      current.some((item) => item.id === user.id)
+        ? current.filter((item) => item.id !== user.id)
+        : [...current, user],
     );
   }
 

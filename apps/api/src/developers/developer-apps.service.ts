@@ -12,7 +12,13 @@ import { WEBHOOK_EVENTS } from '@social-network/shared';
 
 import { CryptoService } from '../auth/crypto.service.js';
 import { AppException, ErrorCode } from '../common/errors.js';
-import { toIso, toMediaOrNull, toUserSummary, type MediaDoc, type UserSummaryDoc } from '../common/mappers.js';
+import {
+  toIso,
+  toMediaOrNull,
+  toUserSummary,
+  type MediaDoc,
+  type UserSummaryDoc,
+} from '../common/mappers.js';
 import { paginate, toPage } from '../common/utils/pagination.js';
 import { isValidObjectId, type Model, type Types } from '../database/mongoose.js';
 import {
@@ -73,7 +79,11 @@ export class DeveloperAppsService {
   ) {}
 
   async listMine(ownerId: string): Promise<DeveloperApp[]> {
-    const docs = (await this.apps.find({ ownerId }).sort({ createdAt: -1 }).populate('icon').lean()) as unknown as LeanApp[];
+    const docs = (await this.apps
+      .find({ ownerId })
+      .sort({ createdAt: -1 })
+      .populate('icon')
+      .lean()) as unknown as LeanApp[];
 
     return Promise.all(docs.map((doc) => this.present(doc)));
   }
@@ -84,7 +94,10 @@ export class DeveloperAppsService {
 
   async create(ownerId: string, input: AppInput): Promise<AppCredentials> {
     if ((await this.apps.countDocuments({ ownerId })) >= MAX_APPS_PER_OWNER) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `You cannot have more than ${MAX_APPS_PER_OWNER} apps`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `You cannot have more than ${MAX_APPS_PER_OWNER} apps`,
+      );
     }
 
     const clientType = input.clientType ?? OAuthClientType.Confidential;
@@ -104,7 +117,11 @@ export class DeveloperAppsService {
       allowedScopes: this.validScopes(input.allowedScopes),
     });
 
-    return { app: await this.findMine(String(created._id), ownerId), clientSecret: secret, webhookSecret: null };
+    return {
+      app: await this.findMine(String(created._id), ownerId),
+      clientSecret: secret,
+      webhookSecret: null,
+    };
   }
 
   async update(appId: string, ownerId: string, input: AppInput): Promise<DeveloperApp> {
@@ -117,9 +134,15 @@ export class DeveloperAppsService {
           ...(input.name !== undefined ? { name: input.name } : {}),
           ...(input.description !== undefined ? { description: input.description } : {}),
           ...(input.websiteUrl !== undefined ? { websiteUrl: input.websiteUrl } : {}),
-          ...(input.privacyPolicyUrl !== undefined ? { privacyPolicyUrl: input.privacyPolicyUrl } : {}),
-          ...(input.redirectUris !== undefined ? { redirectUris: this.validRedirectUris(input.redirectUris) } : {}),
-          ...(input.allowedScopes !== undefined ? { allowedScopes: this.validScopes(input.allowedScopes) } : {}),
+          ...(input.privacyPolicyUrl !== undefined
+            ? { privacyPolicyUrl: input.privacyPolicyUrl }
+            : {}),
+          ...(input.redirectUris !== undefined
+            ? { redirectUris: this.validRedirectUris(input.redirectUris) }
+            : {}),
+          ...(input.allowedScopes !== undefined
+            ? { allowedScopes: this.validScopes(input.allowedScopes) }
+            : {}),
         },
       },
     );
@@ -135,14 +158,22 @@ export class DeveloperAppsService {
     const app = await this.assertOwner(appId, ownerId);
 
     if (app.clientType !== OAuthClientType.Confidential) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'Public clients do not have a secret');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'Public clients do not have a secret',
+      );
     }
 
     const secret = this.newSecret();
 
     await this.apps.updateOne(
       { _id: appId },
-      { $set: { clientSecretHash: this.crypto.hashToken(secret), clientSecretHint: secret.slice(-4) } },
+      {
+        $set: {
+          clientSecretHash: this.crypto.hashToken(secret),
+          clientSecretHint: secret.slice(-4),
+        },
+      },
     );
 
     return { app: await this.findMine(appId, ownerId), clientSecret: secret, webhookSecret: null };
@@ -162,7 +193,10 @@ export class DeveloperAppsService {
     }
 
     if (status === OAuthAppStatus.Live && !app.privacyPolicyUrl) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'A privacy policy URL is required to go live');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'A privacy policy URL is required to go live',
+      );
     }
 
     if (status === OAuthAppStatus.Suspended) {
@@ -181,7 +215,11 @@ export class DeveloperAppsService {
 
   async setIcon(appId: string, ownerId: string, upload: PendingUpload): Promise<DeveloperApp> {
     const app = await this.assertOwner(appId, ownerId);
-    const stored = await this.media.storeUpload(upload, { accept: ['image'], preset: 'icon', uploaderId: ownerId });
+    const stored = await this.media.storeUpload(upload, {
+      accept: ['image'],
+      preset: 'icon',
+      uploaderId: ownerId,
+    });
 
     await this.apps.updateOne({ _id: appId }, { $set: { iconId: stored._id } });
 
@@ -194,14 +232,20 @@ export class DeveloperAppsService {
 
   async addTester(appId: string, ownerId: string, username: string): Promise<DeveloperApp> {
     const app = await this.assertOwner(appId, ownerId);
-    const tester = await this.users.findOne({ name: username.toLowerCase().replace(/^@/, '') }).select('_id').lean();
+    const tester = await this.users
+      .findOne({ name: username.toLowerCase().replace(/^@/, '') })
+      .select('_id')
+      .lean();
 
     if (!tester) {
       throw AppException.notFound('User');
     }
 
     if (app.testerIds.length >= MAX_TESTERS) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `An app cannot have more than ${MAX_TESTERS} testers`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `An app cannot have more than ${MAX_TESTERS} testers`,
+      );
     }
 
     await this.apps.updateOne({ _id: appId }, { $addToSet: { testerIds: tester._id } });
@@ -229,13 +273,18 @@ export class DeveloperAppsService {
     input: { url: string | null; events: string[]; active: boolean },
   ): Promise<AppCredentials> {
     const app = await this.assertOwner(appId, ownerId);
-    const events = [...new Set(input.events)].filter((event) => (WEBHOOK_EVENTS as readonly string[]).includes(event));
+    const events = [...new Set(input.events)].filter((event) =>
+      (WEBHOOK_EVENTS as readonly string[]).includes(event),
+    );
 
     if (input.url) {
       try {
         await assertPublicUrl(input.url, !this.config.getOrThrow<boolean>('isProduction'));
       } catch (error) {
-        throw AppException.badRequest(ErrorCode.ValidationFailed, error instanceof Error ? error.message : 'Invalid URL');
+        throw AppException.badRequest(
+          ErrorCode.ValidationFailed,
+          error instanceof Error ? error.message : 'Invalid URL',
+        );
       }
     }
 
@@ -293,11 +342,15 @@ export class DeveloperAppsService {
       throw AppException.badRequest(ErrorCode.ValidationFailed, 'Set a webhook URL first');
     }
 
-    const url = await assertPublicUrl(app.webhook.url, !this.config.getOrThrow<boolean>('isProduction')).catch(
-      (error: unknown) => {
-        throw AppException.badRequest(ErrorCode.ValidationFailed, error instanceof Error ? error.message : 'Invalid URL');
-      },
-    );
+    const url = await assertPublicUrl(
+      app.webhook.url,
+      !this.config.getOrThrow<boolean>('isProduction'),
+    ).catch((error: unknown) => {
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        error instanceof Error ? error.message : 'Invalid URL',
+      );
+    });
     const challenge = this.crypto.randomToken(16);
 
     url.searchParams.set('hub.mode', 'subscribe');
@@ -321,12 +374,22 @@ export class DeveloperAppsService {
     return this.findMine(appId, ownerId);
   }
 
-  async listDeliveries(appId: string, ownerId: string, page: number, perPage: number): Promise<Paginated<WebhookDeliveryDto>> {
+  async listDeliveries(
+    appId: string,
+    ownerId: string,
+    page: number,
+    perPage: number,
+  ): Promise<Paginated<WebhookDeliveryDto>> {
     await this.assertOwner(appId, ownerId);
 
     const pagination = toPage({ page, perPage });
     const [docs, total] = await Promise.all([
-      this.deliveries.find({ appId }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.take).lean(),
+      this.deliveries
+        .find({ appId })
+        .sort({ createdAt: -1 })
+        .skip(pagination.skip)
+        .limit(pagination.take)
+        .lean(),
       this.deliveries.countDocuments({ appId }),
     ]);
 
@@ -363,7 +426,11 @@ export class DeveloperAppsService {
       const hour = new Date(since.getTime() + index * 3600_000);
       const row = byHour.get(hour.getTime());
 
-      return { hour: hour.toISOString(), requests: row?.requests ?? 0, errors: row?.errorCount ?? 0 };
+      return {
+        hour: hour.toISOString(),
+        requests: row?.requests ?? 0,
+        errors: row?.errorCount ?? 0,
+      };
     });
   }
 
@@ -392,7 +459,10 @@ export class DeveloperAppsService {
       throw AppException.notFound('App');
     }
 
-    const app = (await this.apps.findOne({ _id: appId, ownerId }).populate('icon').lean()) as unknown as LeanApp | null;
+    const app = (await this.apps
+      .findOne({ _id: appId, ownerId })
+      .populate('icon')
+      .lean()) as unknown as LeanApp | null;
 
     if (!app) {
       throw AppException.notFound('App');
@@ -403,7 +473,11 @@ export class DeveloperAppsService {
 
   private async present(doc: LeanApp): Promise<DeveloperApp> {
     const [testers, userCount] = await Promise.all([
-      this.users.find({ _id: { $in: doc.testerIds } }).select('name firstName lastName avatarId verified').populate('avatar').lean(),
+      this.users
+        .find({ _id: { $in: doc.testerIds } })
+        .select('name firstName lastName avatarId verified')
+        .populate('avatar')
+        .lean(),
       this.grants.countDocuments({ appId: doc._id, revokedAt: null }),
     ]);
 
@@ -420,14 +494,17 @@ export class DeveloperAppsService {
       status: doc.status,
       redirectUris: doc.redirectUris,
       allowedScopes: doc.allowedScopes,
-      testers: testers.map((tester) => toUserSummary(tester as unknown as UserSummaryDoc & { _id: Types.ObjectId })),
+      testers: testers.map((tester) =>
+        toUserSummary(tester as unknown as UserSummaryDoc & { _id: Types.ObjectId }),
+      ),
       webhook: {
         url: doc.webhook?.url ?? null,
         events: doc.webhook?.events ?? [],
         active: doc.webhook?.active ?? false,
         verifiedAt: toIso(doc.webhook?.verifiedAt ?? null),
       },
-      rateLimitPerHour: doc.rateLimitPerHour ?? this.config.getOrThrow<number>('oauth.rateLimitPerHour'),
+      rateLimitPerHour:
+        doc.rateLimitPerHour ?? this.config.getOrThrow<number>('oauth.rateLimitPerHour'),
       userCount,
       createdAt: toIso(doc.createdAt),
       updatedAt: toIso(doc.updatedAt),
@@ -450,7 +527,10 @@ export class DeveloperAppsService {
     const clean = [...new Set(uris.map((uri) => uri.trim()).filter(Boolean))];
 
     if (clean.length > 10) {
-      throw AppException.badRequest(ErrorCode.InvalidRedirectUri, 'An app cannot have more than 10 redirect URIs');
+      throw AppException.badRequest(
+        ErrorCode.InvalidRedirectUri,
+        'An app cannot have more than 10 redirect URIs',
+      );
     }
 
     for (const uri of clean) {
@@ -462,8 +542,12 @@ export class DeveloperAppsService {
         throw AppException.badRequest(ErrorCode.InvalidRedirectUri, `Invalid redirect URI: ${uri}`);
       }
 
-      const isLocal = parsed.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname);
-      const isCustomScheme = !['http:', 'https:', 'javascript:', 'data:', 'file:'].includes(parsed.protocol);
+      const isLocal =
+        parsed.protocol === 'http:' &&
+        ['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname);
+      const isCustomScheme = !['http:', 'https:', 'javascript:', 'data:', 'file:'].includes(
+        parsed.protocol,
+      );
 
       if (parsed.hash || !(parsed.protocol === 'https:' || isLocal || isCustomScheme)) {
         throw AppException.badRequest(ErrorCode.InvalidRedirectUri, `Invalid redirect URI: ${uri}`);
@@ -478,7 +562,10 @@ export class DeveloperAppsService {
     const unknown = list.filter((scope) => !isKnownScope(scope));
 
     if (unknown.length > 0) {
-      throw AppException.badRequest(ErrorCode.InvalidScope, `Unknown scopes: ${unknown.join(', ')}`);
+      throw AppException.badRequest(
+        ErrorCode.InvalidScope,
+        `Unknown scopes: ${unknown.join(', ')}`,
+      );
     }
 
     return list;

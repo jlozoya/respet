@@ -45,7 +45,9 @@ export class ControlMessagesComponent {
         return;
       }
 
-      const subscription = control.events.subscribe(() => this.version.update((value) => value + 1));
+      const subscription = control.events.subscribe(() =>
+        this.version.update((value) => value + 1),
+      );
       onCleanup(() => subscription.unsubscribe());
     });
   }
@@ -70,7 +72,8 @@ export class ControlMessagesComponent {
       return {};
     }
 
-    const detail: unknown = errors['minlength'] ?? errors['maxlength'] ?? errors['min'] ?? errors['max'];
+    const detail: unknown =
+      errors['minlength'] ?? errors['maxlength'] ?? errors['min'] ?? errors['max'];
 
     return typeof detail === 'object' && detail !== null ? (detail as Record<string, unknown>) : {};
   });

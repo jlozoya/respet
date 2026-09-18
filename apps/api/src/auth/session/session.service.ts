@@ -177,9 +177,14 @@ export class SessionService implements OnModuleDestroy {
         // lo ha copiado. Se cierra esta sesión: quien lo robó pierde el acceso
         // y el dueño tendrá que volver a entrar en ese dispositivo.
         await this.revoke(sessionId, SessionEndReason.ReuseDetected);
-        await this.events.record(String(session.userId), SecurityEventType.RefreshReuseDetected, client, {
-          device: session.device?.name,
-        });
+        await this.events.record(
+          String(session.userId),
+          SecurityEventType.RefreshReuseDetected,
+          client,
+          {
+            device: session.device?.name,
+          },
+        );
 
         throw new AppException(
           ErrorCode.SessionRevoked,
@@ -290,7 +295,10 @@ export class SessionService implements OnModuleDestroy {
       .sort((a, b) => Number(b.current) - Number(a.current));
   }
 
-  async findOwned(sessionId: string, userId: string): Promise<(Session & { _id: Types.ObjectId }) | null> {
+  async findOwned(
+    sessionId: string,
+    userId: string,
+  ): Promise<(Session & { _id: Types.ObjectId }) | null> {
     if (!isValidObjectId(sessionId)) {
       return null;
     }
@@ -330,7 +338,9 @@ export class SessionService implements OnModuleDestroy {
       ...(exceptSessionId ? { _id: { $ne: new ObjectId(exceptSessionId) } } : {}),
     };
 
-    const ids = (await this.sessions.find(filter).select('_id').lean()).map((doc) => String(doc._id));
+    const ids = (await this.sessions.find(filter).select('_id').lean()).map((doc) =>
+      String(doc._id),
+    );
 
     if (ids.length === 0) {
       return 0;
@@ -354,7 +364,11 @@ export class SessionService implements OnModuleDestroy {
   }
 
   /** Si esta persona ya había entrado antes desde un dispositivo parecido. */
-  async isKnownDevice(userId: string, userAgent: string | null, exceptSessionId: string): Promise<boolean> {
+  async isKnownDevice(
+    userId: string,
+    userAgent: string | null,
+    exceptSessionId: string,
+  ): Promise<boolean> {
     const device = parseUserAgent(userAgent);
 
     const match = await this.sessions.exists({
@@ -367,7 +381,11 @@ export class SessionService implements OnModuleDestroy {
     return match !== null;
   }
 
-  private async announce(sessionIds: string[], userId: string, reason: SessionEndReason): Promise<void> {
+  private async announce(
+    sessionIds: string[],
+    userId: string,
+    reason: SessionEndReason,
+  ): Promise<void> {
     for (const id of sessionIds) {
       this.cache.delete(id);
     }
@@ -408,11 +426,15 @@ export class SessionService implements OnModuleDestroy {
   }
 
   private absoluteExpiry(from: Date): Date {
-    return new Date(from.getTime() + this.config.getOrThrow<number>('session.absoluteTtlDays') * DAY_MS);
+    return new Date(
+      from.getTime() + this.config.getOrThrow<number>('session.absoluteTtlDays') * DAY_MS,
+    );
   }
 
   private idleExpiry(from: Date, absolute: Date): Date {
-    const idle = new Date(from.getTime() + this.config.getOrThrow<number>('session.idleTtlDays') * DAY_MS);
+    const idle = new Date(
+      from.getTime() + this.config.getOrThrow<number>('session.idleTtlDays') * DAY_MS,
+    );
 
     return idle < absolute ? idle : absolute;
   }

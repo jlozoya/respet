@@ -89,7 +89,9 @@ export function isKnownScope(scope: string): boolean {
 }
 
 export function describeScopes(scopes: readonly string[]): OAuthScopeInfo[] {
-  return scopes.map((scope) => BY_SCOPE.get(scope)).filter((info): info is OAuthScopeInfo => info !== undefined);
+  return scopes
+    .map((scope) => BY_SCOPE.get(scope))
+    .filter((info): info is OAuthScopeInfo => info !== undefined);
 }
 
 /** Permisos separados por espacios o comas, sin repetir y siempre con el perfil público. */

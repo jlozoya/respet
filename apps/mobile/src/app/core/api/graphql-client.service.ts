@@ -50,13 +50,21 @@ export class GraphqlClientService {
     try {
       response = await firstValueFrom(
         files.length === 0
-          ? this.http.post<GraphqlResponse<T>>(this.url, { query: document, variables, operationName })
-          : this.http.post<GraphqlResponse<T>>(this.url, multipartBody(document, variables, operationName, files), {
-              // Apollo sólo acepta formularios con una cabecera que un
-              // formulario HTML corriente no podría poner: es su defensa
-              // contra peticiones cruzadas.
-              headers: new HttpHeaders({ 'X-Apollo-Operation-Name': operationName || 'upload' }),
-            }),
+          ? this.http.post<GraphqlResponse<T>>(this.url, {
+              query: document,
+              variables,
+              operationName,
+            })
+          : this.http.post<GraphqlResponse<T>>(
+              this.url,
+              multipartBody(document, variables, operationName, files),
+              {
+                // Apollo sólo acepta formularios con una cabecera que un
+                // formulario HTML corriente no podría poner: es su defensa
+                // contra peticiones cruzadas.
+                headers: new HttpHeaders({ 'X-Apollo-Operation-Name': operationName || 'upload' }),
+              },
+            ),
       );
     } catch (error) {
       // Aquí sólo caen los fallos de transporte: sin red, servidor caído o una
@@ -101,7 +109,11 @@ interface ExtractedFile {
  * Recorre objetos y listas; la ruta se escribe con puntos, como la pide la
  * especificación (`variables.files.0`).
  */
-function extractFiles(value: unknown, path = 'variables', found: ExtractedFile[] = []): ExtractedFile[] {
+function extractFiles(
+  value: unknown,
+  path = 'variables',
+  found: ExtractedFile[] = [],
+): ExtractedFile[] {
   if (value instanceof Blob) {
     found.push({ path, file: value });
 
@@ -135,7 +147,12 @@ function extractFiles(value: unknown, path = 'variables', found: ExtractedFile[]
   return found;
 }
 
-function multipartBody(document: string, variables: Variables, operationName: string, files: ExtractedFile[]): FormData {
+function multipartBody(
+  document: string,
+  variables: Variables,
+  operationName: string,
+  files: ExtractedFile[],
+): FormData {
   const form = new FormData();
   const map: Record<string, string[]> = {};
 

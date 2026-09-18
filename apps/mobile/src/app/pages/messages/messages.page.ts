@@ -19,7 +19,14 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 @Component({
   selector: 'app-messages',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonContent, IonIcon, PageHeaderComponent, ConversationListComponent, ChatThreadComponent],
+  imports: [
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    PageHeaderComponent,
+    ConversationListComponent,
+    ChatThreadComponent,
+  ],
   template: `
     @if (!id()) {
       <app-page-header title="MESSENGER.TITLE" />

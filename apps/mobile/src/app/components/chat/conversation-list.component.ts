@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
@@ -31,15 +40,30 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
       <h2>{{ (showArchived() ? 'MESSENGER.ARCHIVED' : 'MESSENGER.TITLE') | translate }}</h2>
       <span class="actions">
         @if (showArchived()) {
-          <button type="button" class="rs-icon-btn" (click)="showArchived.set(false)" [attr.aria-label]="'COMMON.BACK' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn"
+            (click)="showArchived.set(false)"
+            [attr.aria-label]="'COMMON.BACK' | translate"
+          >
             <ion-icon name="arrow-back" />
           </button>
         } @else {
-          <button type="button" class="rs-icon-btn" (click)="showArchived.set(true)" [attr.aria-label]="'MESSENGER.ARCHIVED' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn"
+            (click)="showArchived.set(true)"
+            [attr.aria-label]="'MESSENGER.ARCHIVED' | translate"
+          >
             <ion-icon name="archive-outline" />
           </button>
         }
-        <button type="button" class="rs-icon-btn" (click)="compose()" [attr.aria-label]="'MESSENGER.NEW' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn"
+          (click)="compose()"
+          [attr.aria-label]="'MESSENGER.NEW' | translate"
+        >
           <ion-icon name="create-outline" />
         </button>
       </span>
@@ -47,7 +71,12 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
 
     <label class="rs-pill-input search">
       <ion-icon name="search" />
-      <input type="search" [value]="term()" (input)="term.set($any($event.target).value)" [placeholder]="'MESSENGER.SEARCH' | translate" />
+      <input
+        type="search"
+        [value]="term()"
+        (input)="term.set($any($event.target).value)"
+        [placeholder]="'MESSENGER.SEARCH' | translate"
+      />
     </label>
 
     <div class="list">
@@ -82,7 +111,12 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
               <span class="dot"></span>
             }
           </span>
-          <button type="button" class="rs-icon-btn more" (click)="menu(conversation, $event)" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn more"
+            (click)="menu(conversation, $event)"
+            [attr.aria-label]="'COMMON.OPTIONS' | translate"
+          >
             <ion-icon name="ellipsis-horizontal" />
           </button>
         </div>
@@ -227,16 +261,23 @@ export class ConversationListComponent {
 
   previewOf(conversation: Conversation): string {
     if (!conversation.lastPreview) {
-      return this.translate.instant(conversation.type === 'group' ? 'MESSENGER.GROUP_CREATED' : 'MESSENGER.SAY_HI') as string;
+      return this.translate.instant(
+        conversation.type === 'group' ? 'MESSENGER.GROUP_CREATED' : 'MESSENGER.SAY_HI',
+      ) as string;
     }
 
     const own = conversation.lastSenderId === this.auth.user()?.id;
 
-    return own ? `${this.translate.instant('MESSENGER.YOU') as string}: ${conversation.lastPreview}` : conversation.lastPreview;
+    return own
+      ? `${this.translate.instant('MESSENGER.YOU') as string}: ${conversation.lastPreview}`
+      : conversation.lastPreview;
   }
 
   async compose(): Promise<void> {
-    const modal = await this.modalCtrl.create({ component: NewConversationModalComponent, cssClass: 'rs-dialog' });
+    const modal = await this.modalCtrl.create({
+      component: NewConversationModalComponent,
+      cssClass: 'rs-dialog',
+    });
     await modal.present();
 
     const { data } = await modal.onWillDismiss<Conversation>();
@@ -253,14 +294,27 @@ export class ConversationListComponent {
     const sheet = await this.actionSheetCtrl.create({
       header: this.titleOf(conversation),
       buttons: [
-        { text: t(conversation.pinned ? 'MESSENGER.UNPIN' : 'MESSENGER.PIN'), icon: 'pin-outline', data: 'pin' },
+        {
+          text: t(conversation.pinned ? 'MESSENGER.UNPIN' : 'MESSENGER.PIN'),
+          icon: 'pin-outline',
+          data: 'pin',
+        },
         {
           text: t(conversation.muted ? 'MESSENGER.UNMUTE' : 'MESSENGER.MUTE'),
           icon: conversation.muted ? 'notifications-outline' : 'notifications-off-outline',
           data: 'mute',
         },
-        { text: t(conversation.archived ? 'MESSENGER.UNARCHIVE' : 'MESSENGER.ARCHIVE'), icon: 'archive-outline', data: 'archive' },
-        { text: t('MESSENGER.DELETE_CHAT'), icon: 'trash-outline', role: 'destructive', data: 'clear' },
+        {
+          text: t(conversation.archived ? 'MESSENGER.UNARCHIVE' : 'MESSENGER.ARCHIVE'),
+          icon: 'archive-outline',
+          data: 'archive',
+        },
+        {
+          text: t('MESSENGER.DELETE_CHAT'),
+          icon: 'trash-outline',
+          role: 'destructive',
+          data: 'clear',
+        },
         { text: t('CANCEL'), role: 'cancel' },
       ],
     });

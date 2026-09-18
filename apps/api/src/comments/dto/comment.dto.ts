@@ -1,5 +1,9 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import type { CommentListQuery, CreateCommentRequest, UpdateCommentRequest } from '@social-network/shared';
+import type {
+  CommentListQuery,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+} from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsMongoId, IsOptional, IsString, Length } from 'class-validator';
 
@@ -31,7 +35,10 @@ export class UpdateCommentDto implements UpdateCommentRequest {
 
 @InputType('CommentListQueryInput')
 export class CommentListQueryDto extends PaginationQueryDto implements CommentListQuery {
-  @Field(() => ID, { nullable: true, description: 'Las respuestas de este comentario, en lugar de los de primer nivel.' })
+  @Field(() => ID, {
+    nullable: true,
+    description: 'Las respuestas de este comentario, en lugar de los de primer nivel.',
+  })
   @IsOptional()
   @IsMongoId()
   parentId?: string;

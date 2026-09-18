@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonHeader } from '@ionic/angular/ion-header';
@@ -19,14 +26,29 @@ import { SocialService } from '../../core/api/social.service';
 @Component({
   selector: 'app-explore',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonHeader, IonToolbar, IonContent, IonIcon, IonRefresher, IonRefresherContent, PostGridComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonHeader,
+    IonToolbar,
+    IonContent,
+    IonIcon,
+    IonRefresher,
+    IonRefresherContent,
+    PostGridComponent,
+  ],
   template: `
     <ion-header class="rs-mobile-only">
       <ion-toolbar>
         <form class="search" (submit)="search($event, query.value)">
           <label class="rs-pill-input">
             <ion-icon name="search" />
-            <input #query type="search" [placeholder]="'SEARCH_PAGE.PLACEHOLDER' | translate" [attr.aria-label]="'SEARCH' | translate" />
+            <input
+              #query
+              type="search"
+              [placeholder]="'SEARCH_PAGE.PLACEHOLDER' | translate"
+              [attr.aria-label]="'SEARCH' | translate"
+            />
           </label>
         </form>
       </ion-toolbar>

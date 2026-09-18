@@ -108,9 +108,7 @@ export class OrdersPage {
           ? await this.orders.list(query)
           : await this.orders.listMine(query);
 
-      this.items.update((current) =>
-        options.reset ? result.data : [...current, ...result.data],
-      );
+      this.items.update((current) => (options.reset ? result.data : [...current, ...result.data]));
       this.hasMore.set(result.meta.hasNextPage);
     } catch (error) {
       await this.feedback.error(error);

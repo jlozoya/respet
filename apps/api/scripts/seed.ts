@@ -81,7 +81,8 @@ async function guardarFoto(
   alt: string,
   dueño: { postId?: Id; position?: number } = {},
 ): Promise<Id | null> {
-  const preset = carpeta === 'avatar' ? { maxSize: 512, quality: 82 } : { maxSize: 1600, quality: 80 };
+  const preset =
+    carpeta === 'avatar' ? { maxSize: 512, quality: 82 } : { maxSize: 1600, quality: 80 };
 
   try {
     const respuesta = await fetch(url, { signal: AbortSignal.timeout(30_000) });
@@ -127,7 +128,9 @@ async function guardarFoto(
 
     return _id;
   } catch (error: unknown) {
-    console.warn(`  no se pudo preparar ${url}: ${error instanceof Error ? error.message : String(error)}`);
+    console.warn(
+      `  no se pudo preparar ${url}: ${error instanceof Error ? error.message : String(error)}`,
+    );
     return null;
   }
 }
@@ -159,12 +162,48 @@ async function main(): Promise<void> {
     // Los nombres de usuario van en minúsculas: son los que viajan en la
     // dirección del perfil, y es lo que exige el alta de verdad.
     const gente = [
-      { email: 'admin@social-network.test', name: 'admin', firstName: 'Ana', lastName: 'Ruiz', role: 'admin' },
-      { email: 'supervisor@social-network.test', name: 'supervisor', firstName: 'Sara', lastName: 'Gil', role: 'supervisor' },
-      { email: 'repartidor@social-network.test', name: 'repartidor', firstName: 'Raúl', lastName: 'Mena', role: 'roundsman' },
-      { email: 'usuario@social-network.test', name: 'usuario', firstName: 'Uxía', lastName: 'Soto', role: 'user' },
-      { email: 'marta@social-network.test', name: 'marta', firstName: 'Marta', lastName: 'Bravo', role: 'user' },
-      { email: 'kike@social-network.test', name: 'kike', firstName: 'Enrique', lastName: 'Nava', role: 'user' },
+      {
+        email: 'admin@social-network.test',
+        name: 'admin',
+        firstName: 'Ana',
+        lastName: 'Ruiz',
+        role: 'admin',
+      },
+      {
+        email: 'supervisor@social-network.test',
+        name: 'supervisor',
+        firstName: 'Sara',
+        lastName: 'Gil',
+        role: 'supervisor',
+      },
+      {
+        email: 'repartidor@social-network.test',
+        name: 'repartidor',
+        firstName: 'Raúl',
+        lastName: 'Mena',
+        role: 'roundsman',
+      },
+      {
+        email: 'usuario@social-network.test',
+        name: 'usuario',
+        firstName: 'Uxía',
+        lastName: 'Soto',
+        role: 'user',
+      },
+      {
+        email: 'marta@social-network.test',
+        name: 'marta',
+        firstName: 'Marta',
+        lastName: 'Bravo',
+        role: 'user',
+      },
+      {
+        email: 'kike@social-network.test',
+        name: 'kike',
+        firstName: 'Enrique',
+        lastName: 'Nava',
+        role: 'user',
+      },
     ] as const;
 
     const ids = new Map<string, Id>();
@@ -449,7 +488,10 @@ async function main(): Promise<void> {
     // Se buscan por su texto para que también reciban fotos las que quedaron
     // creadas en una ejecución anterior.
     const galerias = [
-      { busca: 'limpieza del parque', fotos: ['parque-limpieza', 'parque-voluntarios', 'parque-arboles'] },
+      {
+        busca: 'limpieza del parque',
+        fotos: ['parque-limpieza', 'parque-voluntarios', 'parque-arboles'],
+      },
       { busca: 'estantería de pino', fotos: ['estanteria-pino'] },
       { busca: 'amanecer de hoy desde el cerro', fotos: ['amanecer-cerro', 'amanecer-valle'] },
       { busca: 'taller mecánico de la calle Victoria', fotos: ['taller-mecanico'] },

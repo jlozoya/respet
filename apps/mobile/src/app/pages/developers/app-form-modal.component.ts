@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonButtons } from '@ionic/angular/ion-buttons';
@@ -53,7 +60,9 @@ import { ControlMessagesComponent } from '../../shared/components/control-messag
   template: `
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ (app() ? 'DEVELOPERS.EDIT_APP' : 'DEVELOPERS.CREATE_APP') | translate }}</ion-title>
+        <ion-title>{{
+          (app() ? 'DEVELOPERS.EDIT_APP' : 'DEVELOPERS.CREATE_APP') | translate
+        }}</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="close()"><ion-icon slot="icon-only" name="close" /></ion-button>
         </ion-buttons>
@@ -62,18 +71,54 @@ import { ControlMessagesComponent } from '../../shared/components/control-messag
 
     <ion-content class="ion-padding">
       <form class="form" [formGroup]="form" (ngSubmit)="save()">
-        <ion-input fill="outline" labelPlacement="floating" [label]="'DEVELOPERS.APP_NAME' | translate" formControlName="name" />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'DEVELOPERS.APP_NAME' | translate"
+          formControlName="name"
+        />
         <app-control-messages [control]="form.controls.name" />
 
-        <ion-textarea fill="outline" labelPlacement="floating" [label]="'DESCRIPTION' | translate" formControlName="description" [autoGrow]="true" [maxlength]="500" />
+        <ion-textarea
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'DESCRIPTION' | translate"
+          formControlName="description"
+          [autoGrow]="true"
+          [maxlength]="500"
+        />
 
-        <ion-input fill="outline" labelPlacement="floating" [label]="'DEVELOPERS.WEBSITE' | translate" formControlName="websiteUrl" type="url" placeholder="https://" />
-        <ion-input fill="outline" labelPlacement="floating" [label]="'DEVELOPERS.PRIVACY_URL' | translate" formControlName="privacyPolicyUrl" type="url" placeholder="https://" />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'DEVELOPERS.WEBSITE' | translate"
+          formControlName="websiteUrl"
+          type="url"
+          placeholder="https://"
+        />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'DEVELOPERS.PRIVACY_URL' | translate"
+          formControlName="privacyPolicyUrl"
+          type="url"
+          placeholder="https://"
+        />
 
         @if (!app()) {
-          <ion-select fill="outline" labelPlacement="floating" [label]="'DEVELOPERS.CLIENT_TYPE' | translate" formControlName="clientType" interface="popover">
-            <ion-select-option value="confidential">{{ 'DEVELOPERS.CONFIDENTIAL' | translate }}</ion-select-option>
-            <ion-select-option value="public">{{ 'DEVELOPERS.PUBLIC' | translate }}</ion-select-option>
+          <ion-select
+            fill="outline"
+            labelPlacement="floating"
+            [label]="'DEVELOPERS.CLIENT_TYPE' | translate"
+            formControlName="clientType"
+            interface="popover"
+          >
+            <ion-select-option value="confidential">{{
+              'DEVELOPERS.CONFIDENTIAL' | translate
+            }}</ion-select-option>
+            <ion-select-option value="public">{{
+              'DEVELOPERS.PUBLIC' | translate
+            }}</ion-select-option>
           </ion-select>
           <p class="rs-small rs-muted hint">{{ 'DEVELOPERS.CLIENT_TYPE_HINT' | translate }}</p>
         }
@@ -103,7 +148,9 @@ import { ControlMessagesComponent } from '../../shared/components/control-messag
         </div>
 
         <div class="actions">
-          <ion-button class="rs-soft" type="button" (click)="close()">{{ 'CANCEL' | translate }}</ion-button>
+          <ion-button class="rs-soft" type="button" (click)="close()">{{
+            'CANCEL' | translate
+          }}</ion-button>
           <ion-button type="submit" [disabled]="busy()">
             @if (busy()) {
               <ion-spinner name="crescent" />

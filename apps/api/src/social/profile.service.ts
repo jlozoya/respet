@@ -13,7 +13,8 @@ import { PresenceService } from '../realtime/presence.service.js';
 import { RelationshipService } from './relationship.service.js';
 
 /** Los campos de una cuenta que hacen falta para su ficha pública. */
-export const PROFILE_FIELDS = 'name firstName lastName avatarId coverId bio website verified lastSeenAt createdAt';
+export const PROFILE_FIELDS =
+  'name firstName lastName avatarId coverId bio website verified lastSeenAt createdAt';
 
 interface ProfileDoc {
   _id: Types.ObjectId;
@@ -55,7 +56,11 @@ export class ProfileService {
       throw AppException.notFound('User');
     }
 
-    const doc = await this.users.findById(id).select(PROFILE_FIELDS).populate(['avatar', 'cover']).lean();
+    const doc = await this.users
+      .findById(id)
+      .select(PROFILE_FIELDS)
+      .populate(['avatar', 'cover'])
+      .lean();
 
     if (!doc) {
       throw AppException.notFound('User');
@@ -130,8 +135,16 @@ export class ProfileService {
       activeStories,
       online,
     ] = await Promise.all([
-      this.countBy(this.follows, { followeeId: { $in: ids }, pending: { $ne: true } }, '$followeeId'),
-      this.countBy(this.follows, { followerId: { $in: ids }, pending: { $ne: true } }, '$followerId'),
+      this.countBy(
+        this.follows,
+        { followeeId: { $in: ids }, pending: { $ne: true } },
+        '$followeeId',
+      ),
+      this.countBy(
+        this.follows,
+        { followerId: { $in: ids }, pending: { $ne: true } },
+        '$followerId',
+      ),
       this.countBy(this.posts, { userId: { $in: ids } }, '$userId'),
       this.permissions
         .find({ userId: { $in: ids } })
@@ -190,9 +203,13 @@ export class ProfileService {
       const followState = followStates.get(id) ?? null;
       const isSelf = viewerId === id;
       const blocked = context.blockedIds.has(id);
-      const canViewContent = isSelf || (!blocked && (!isPrivate || followState === FollowState.Following));
-      const stories = canViewContent ? visibleStories.filter((story) => String(story.authorId) === id) : [];
-      const showsOnline = !isSelf && !blocked && pref?.showOnlineStatus !== false && !viewerHidesOnline;
+      const canViewContent =
+        isSelf || (!blocked && (!isPrivate || followState === FollowState.Following));
+      const stories = canViewContent
+        ? visibleStories.filter((story) => String(story.authorId) === id)
+        : [];
+      const showsOnline =
+        !isSelf && !blocked && pref?.showOnlineStatus !== false && !viewerHidesOnline;
       const policy = pref?.messagePolicy ?? MessagePolicy.Everyone;
 
       return toPublicProfile(doc, {
@@ -211,7 +228,8 @@ export class ProfileService {
           viewerId !== null &&
           !isSelf &&
           !blocked &&
-          (policy === MessagePolicy.Everyone || (policy === MessagePolicy.Following && followsViewer.has(id))),
+          (policy === MessagePolicy.Everyone ||
+            (policy === MessagePolicy.Following && followsViewer.has(id))),
         mutualFollowerCount: mutuals.get(id) ?? 0,
       });
     });
@@ -230,7 +248,10 @@ export class ProfileService {
     return new Map(rows.map((row) => [String(row._id), row.total]));
   }
 
-  private async mutualCounts(viewerId: string | null, ids: Types.ObjectId[]): Promise<Map<string, number>> {
+  private async mutualCounts(
+    viewerId: string | null,
+    ids: Types.ObjectId[],
+  ): Promise<Map<string, number>> {
     if (!viewerId) {
       return new Map();
     }

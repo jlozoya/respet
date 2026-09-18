@@ -57,7 +57,12 @@ async function bootstrap(): Promise<void> {
       'Apollo-Require-Preflight',
       'X-Apollo-Operation-Name',
     ],
-    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'X-App-Usage'],
+    exposedHeaders: [
+      'X-RateLimit-Limit',
+      'X-RateLimit-Remaining',
+      'X-RateLimit-Reset',
+      'X-App-Usage',
+    ],
     credentials: false,
     maxAge: 86_400,
   });
@@ -114,7 +119,9 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(port, '0.0.0.0');
 
-  logger.log(`API de ${config.getOrThrow<Branding>('branding').name} escuchando en http://localhost:${port}/graphql`);
+  logger.log(
+    `API de ${config.getOrThrow<Branding>('branding').name} escuchando en http://localhost:${port}/graphql`,
+  );
 }
 
 void bootstrap();

@@ -6,7 +6,16 @@ import type { ReportTarget } from '@social-network/shared';
 import { SocialService } from '../api/social.service';
 import { FeedbackService } from './feedback.service';
 
-const REASONS = ['SPAM', 'HARASSMENT', 'HATE', 'VIOLENCE', 'NUDITY', 'FALSE_INFO', 'ANIMAL_ABUSE', 'OTHER'] as const;
+const REASONS = [
+  'SPAM',
+  'HARASSMENT',
+  'HATE',
+  'VIOLENCE',
+  'NUDITY',
+  'FALSE_INFO',
+  'ANIMAL_ABUSE',
+  'OTHER',
+] as const;
 
 /**
  * Denunciar algo: una publicación, un comentario, una persona, una historia,

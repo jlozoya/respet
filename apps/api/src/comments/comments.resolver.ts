@@ -22,12 +22,14 @@ export class CommentsResolver {
   @Scopes('user_posts')
   @Query(() => CommentPage, {
     name: 'comments',
-    description: 'Comentarios de primer nivel de una publicación, o las respuestas de uno con `parentId`.',
+    description:
+      'Comentarios de primer nivel de una publicación, o las respuestas de uno con `parentId`.',
   })
   async list(
     @Args('postId', { type: () => ID }, ParseObjectIdPipe) postId: string,
     @OptionalUser() viewer: AuthenticatedUser | null,
-    @Args('query', { type: () => CommentListQueryDto, nullable: true }) query: CommentListQueryDto = {},
+    @Args('query', { type: () => CommentListQueryDto, nullable: true })
+    query: CommentListQueryDto = {},
   ): Promise<Paginated<Comment>> {
     return this.comments.list(postId, query, viewer?.id ?? null);
   }
@@ -54,7 +56,9 @@ export class CommentsResolver {
   }
 
   @Scopes('publish_posts')
-  @Mutation(() => Boolean, { description: 'Retira un comentario propio, o uno ajeno en una publicación propia.' })
+  @Mutation(() => Boolean, {
+    description: 'Retira un comentario propio, o uno ajeno en una publicación propia.',
+  })
   async deleteComment(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser() actor: AuthenticatedUser,

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -89,7 +97,9 @@ export class FollowButtonComponent {
 
     try {
       const result =
-        previous === 'none' ? await this.users.follow(this.userId()) : await this.users.unfollow(this.userId());
+        previous === 'none'
+          ? await this.users.follow(this.userId())
+          : await this.users.unfollow(this.userId());
 
       this.override.set(result.followState);
       this.changed.emit(result);

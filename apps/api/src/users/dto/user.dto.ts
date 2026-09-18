@@ -93,7 +93,10 @@ export class UpdateProfileDto implements UpdateProfileRequest {
   @IsOptional()
   @Transform(trim)
   @ValidateIf((_object, value) => value !== null && value !== '')
-  @IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { message: 'website must be a valid URL' })
+  @IsUrl(
+    { protocols: ['http', 'https'], require_protocol: true },
+    { message: 'website must be a valid URL' },
+  )
   @MaxLength(200)
   website?: string | null;
 }

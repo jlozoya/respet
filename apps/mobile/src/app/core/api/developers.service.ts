@@ -27,7 +27,10 @@ import { GraphqlClientService } from './graphql-client.service';
 
 const CREDENTIALS_FIELDS = `clientSecret webhookSecret app { ...DeveloperAppFields }`;
 
-const DEVELOPER_APPS = gql(`query DeveloperApps { developerApps { ...DeveloperAppFields } }`, ...DEVELOPER_APP_FRAGMENTS);
+const DEVELOPER_APPS = gql(
+  `query DeveloperApps { developerApps { ...DeveloperAppFields } }`,
+  ...DEVELOPER_APP_FRAGMENTS,
+);
 
 const DEVELOPER_APP = gql(
   `query DeveloperApp($id: ID!) { developerApp(id: $id) { ...DeveloperAppFields } }`,
@@ -117,7 +120,10 @@ const WEBHOOK_DELIVERIES = gql(
   ...PAGE_META_FRAGMENTS,
 );
 
-const OAUTH_SCOPES = gql(`query OAuthScopes { oauthScopes { ...ScopeFields } }`, ...SCOPE_FRAGMENTS);
+const OAUTH_SCOPES = gql(
+  `query OAuthScopes { oauthScopes { ...ScopeFields } }`,
+  ...SCOPE_FRAGMENTS,
+);
 
 const AUTHORIZATION_PREVIEW = gql(
   `query OAuthAuthorizationPreview($input: OAuthAuthorizeInput!) {

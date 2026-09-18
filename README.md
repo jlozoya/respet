@@ -88,18 +88,18 @@ El seed deja una cuenta por rol (`admin@social-network.test`, `supervisor@social
 
 ## Órdenes disponibles
 
-| Orden | Qué hace |
-| --- | --- |
-| `npm run dev` | Levanta API y aplicación en paralelo |
-| `npm run build` | Compila los tres paquetes en orden |
-| `npm run lint` | ESLint en todo el monorepo |
-| `npm test` | Pruebas unitarias |
-| `npm run db:seed` | Carga datos de ejemplo |
-| `npm run migrate:mongo` | Vuelca en Mongo la base MySQL anterior |
+| Orden                    | Qué hace                                    |
+| ------------------------ | ------------------------------------------- |
+| `npm run dev`            | Levanta API y aplicación en paralelo        |
+| `npm run build`          | Compila los tres paquetes en orden          |
+| `npm run lint`           | ESLint en todo el monorepo                  |
+| `npm test`               | Pruebas unitarias                           |
+| `npm run db:seed`        | Carga datos de ejemplo                      |
+| `npm run migrate:mongo`  | Vuelca en Mongo la base MySQL anterior      |
 | `npm run migrate:social` | Adapta los datos existentes a la red social |
-| `npm run test:e2e` | Pruebas de extremo a extremo de la API |
-| `docker compose up -d` | Levanta MongoDB para desarrollo |
-| `docker compose down -v` | Lo para y borra sus datos |
+| `npm run test:e2e`       | Pruebas de extremo a extremo de la API      |
+| `docker compose up -d`   | Levanta MongoDB para desarrollo             |
+| `docker compose down -v` | Lo para y borra sus datos                   |
 
 ## Migrar los datos de la versión anterior
 
@@ -135,18 +135,18 @@ contenedor de desarrollo, lo mismo con `docker compose exec mongo sh -c '…'`.
 
 ### Backend: de Lumen a NestJS
 
-| Antes | Ahora | Motivo |
-| --- | --- | --- |
-| Lumen 8 (PHP) | NestJS 12 | Mismo lenguaje que la aplicación y contratos compartidos |
-| Eloquent | Mongoose 9 sobre MongoDB | Documentos con la forma que ya tenían las respuestas |
-| Rutas REST | Un esquema de GraphQL | La app pide lo que pinta, y en una sola ida y vuelta |
-| OAuth2 de Passport | JWT con refresh rotativo | El `client_secret` viajaba dentro del binario de la app |
-| bcrypt | Argon2id | Recomendación actual de OWASP frente a ataques con GPU |
-| Intervention Image | sharp | Más rápido y descarta los EXIF, incluida la posición GPS |
-| srmklive/paypal | Cliente REST propio | Sólo hacían falta tres operaciones |
-| `addresses` + `directions` | `locations` | Eran dos tablas idénticas |
-| `post_media`, `product_media` | Clave foránea en `media` | Las tablas puente no aportaban nada |
-| `invoices`, `items`, `ipn_status` | `payments` | Un solo sitio donde mirar un cobro |
+| Antes                             | Ahora                    | Motivo                                                   |
+| --------------------------------- | ------------------------ | -------------------------------------------------------- |
+| Lumen 8 (PHP)                     | NestJS 12                | Mismo lenguaje que la aplicación y contratos compartidos |
+| Eloquent                          | Mongoose 9 sobre MongoDB | Documentos con la forma que ya tenían las respuestas     |
+| Rutas REST                        | Un esquema de GraphQL    | La app pide lo que pinta, y en una sola ida y vuelta     |
+| OAuth2 de Passport                | JWT con refresh rotativo | El `client_secret` viajaba dentro del binario de la app  |
+| bcrypt                            | Argon2id                 | Recomendación actual de OWASP frente a ataques con GPU   |
+| Intervention Image                | sharp                    | Más rápido y descarta los EXIF, incluida la posición GPS |
+| srmklive/paypal                   | Cliente REST propio      | Sólo hacían falta tres operaciones                       |
+| `addresses` + `directions`        | `locations`              | Eran dos tablas idénticas                                |
+| `post_media`, `product_media`     | Clave foránea en `media` | Las tablas puente no aportaban nada                      |
+| `invoices`, `items`, `ipn_status` | `payments`               | Un solo sitio donde mirar un cobro                       |
 
 Además, el servidor ya no se fía del perfil que le manda el cliente al entrar
 con Google o Facebook: verifica el token contra el proveedor y decide él de
@@ -155,18 +155,18 @@ suplantarlo.
 
 ### Aplicación: de Angular 10 a Angular 22
 
-| Antes | Ahora |
-| --- | --- |
-| Angular 10, Ionic 5, Capacitor 2 | Angular 22, Ionic 9, Capacitor 8 |
-| NgModules por pantalla | Componentes standalone y `loadComponent` |
-| `*ngIf` / `*ngFor` | `@if` / `@for` |
-| TSLint | ESLint |
-| Karma y Jasmine | Vitest |
-| Protractor | Playwright |
-| `@ionic-native/*` | Plugins de Capacitor |
-| `@ionic/storage` | `@capacitor/preferences` |
-| Bus de eventos propio | Señales de Angular |
-| `@codetrix-studio/capacitor-google-auth` y `@capacitor-community/facebook-login` | `@capgo/capacitor-social-login` |
+| Antes                                                                            | Ahora                                    |
+| -------------------------------------------------------------------------------- | ---------------------------------------- |
+| Angular 10, Ionic 5, Capacitor 2                                                 | Angular 22, Ionic 9, Capacitor 8         |
+| NgModules por pantalla                                                           | Componentes standalone y `loadComponent` |
+| `*ngIf` / `*ngFor`                                                               | `@if` / `@for`                           |
+| TSLint                                                                           | ESLint                                   |
+| Karma y Jasmine                                                                  | Vitest                                   |
+| Protractor                                                                       | Playwright                               |
+| `@ionic-native/*`                                                                | Plugins de Capacitor                     |
+| `@ionic/storage`                                                                 | `@capacitor/preferences`                 |
+| Bus de eventos propio                                                            | Señales de Angular                       |
+| `@codetrix-studio/capacitor-google-auth` y `@capacitor-community/facebook-login` | `@capgo/capacitor-social-login`          |
 
 ## La red social
 

@@ -22,7 +22,12 @@ import { SettingsLayoutComponent } from './settings-layout.component';
         <h3>{{ 'SETTINGS.APPEARANCE' | translate }}</h3>
         <div class="choices">
           @for (option of theme.options; track option.value) {
-            <button type="button" class="choice" [class.active]="theme.preference() === option.value" (click)="setTheme(option.value)">
+            <button
+              type="button"
+              class="choice"
+              [class.active]="theme.preference() === option.value"
+              (click)="setTheme(option.value)"
+            >
               <ion-icon [name]="option.icon" />
               <span>{{ option.label | translate }}</span>
             </button>
@@ -34,7 +39,12 @@ import { SettingsLayoutComponent } from './settings-layout.component';
         <h3>{{ 'SETTINGS.LANGUAGE' | translate }}</h3>
         <div class="choices">
           @for (option of language.available(); track option.code) {
-            <button type="button" class="choice" [class.active]="language.current() === option.code" (click)="setLanguage(option.code)">
+            <button
+              type="button"
+              class="choice"
+              [class.active]="language.current() === option.code"
+              (click)="setLanguage(option.code)"
+            >
               <span class="flag">{{ option.code.toUpperCase() }}</span>
               <span>{{ option.label }}</span>
             </button>
@@ -48,10 +58,14 @@ import { SettingsLayoutComponent } from './settings-layout.component';
           <div class="setting">
             <span class="text">
               <span class="label">{{ 'SETTINGS.PUSH_STATUS' | translate }}</span>
-              <span class="hint">{{ 'SETTINGS.PUSH_' + push.permission().toUpperCase() | translate }}</span>
+              <span class="hint">{{
+                'SETTINGS.PUSH_' + push.permission().toUpperCase() | translate
+              }}</span>
             </span>
             @if (push.permission() !== 'granted') {
-              <ion-button size="small" (click)="push.start()">{{ 'SETTINGS.PUSH_ENABLE' | translate }}</ion-button>
+              <ion-button size="small" (click)="push.start()">{{
+                'SETTINGS.PUSH_ENABLE' | translate
+              }}</ion-button>
             }
           </div>
         } @else {

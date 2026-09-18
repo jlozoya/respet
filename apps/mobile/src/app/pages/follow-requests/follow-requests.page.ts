@@ -18,7 +18,18 @@ import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
 @Component({
   selector: 'app-follow-requests',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonButton, IonIcon, IonSpinner, PageHeaderComponent, AvatarComponent, FullNamePipe, RelativeTimePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    PageHeaderComponent,
+    AvatarComponent,
+    FullNamePipe,
+    RelativeTimePipe,
+  ],
   template: `
     <app-page-header title="NAV.FOLLOW_REQUESTS" />
 
@@ -28,13 +39,23 @@ import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
           <h2 class="rs-card-title rs-desktop-only">{{ 'NAV.FOLLOW_REQUESTS' | translate }}</h2>
           @for (request of requests(); track request.id) {
             <div class="request">
-              <a [routerLink]="['/profile', request.requester.name]"><app-avatar [user]="request.requester" [size]="60" /></a>
+              <a [routerLink]="['/profile', request.requester.name]"
+                ><app-avatar [user]="request.requester" [size]="60"
+              /></a>
               <div class="info">
-                <a class="rs-strong" [routerLink]="['/profile', request.requester.name]">{{ request.requester | fullName }}</a>
-                <span class="rs-small rs-muted">&#64;{{ request.requester.name }} · {{ request.createdAt | relativeTime }}</span>
+                <a class="rs-strong" [routerLink]="['/profile', request.requester.name]">{{
+                  request.requester | fullName
+                }}</a>
+                <span class="rs-small rs-muted"
+                  >&#64;{{ request.requester.name }} · {{ request.createdAt | relativeTime }}</span
+                >
                 <div class="actions">
-                  <ion-button size="small" (click)="respond(request, true)">{{ 'FOLLOW.CONFIRM' | translate }}</ion-button>
-                  <ion-button size="small" class="rs-soft" (click)="respond(request, false)">{{ 'DELETE' | translate }}</ion-button>
+                  <ion-button size="small" (click)="respond(request, true)">{{
+                    'FOLLOW.CONFIRM' | translate
+                  }}</ion-button>
+                  <ion-button size="small" class="rs-soft" (click)="respond(request, false)">{{
+                    'DELETE' | translate
+                  }}</ion-button>
                 </div>
               </div>
             </div>

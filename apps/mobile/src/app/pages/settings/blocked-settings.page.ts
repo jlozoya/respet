@@ -17,18 +17,34 @@ import { SettingsLayoutComponent } from './settings-layout.component';
 @Component({
   selector: 'app-blocked-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonButton, IonIcon, IonSpinner, AvatarComponent, FullNamePipe, RelativeTimePipe, SettingsLayoutComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    FullNamePipe,
+    RelativeTimePipe,
+    SettingsLayoutComponent,
+  ],
   template: `
     <app-settings-layout title="SETTINGS.BLOCKED" subtitle="SETTINGS.BLOCKED_HINT">
       <section class="rs-card block">
         @for (entry of blocked(); track entry.user.id) {
           <div class="item">
-            <a [routerLink]="['/profile', entry.user.name]"><app-avatar [user]="entry.user" [size]="44" /></a>
+            <a [routerLink]="['/profile', entry.user.name]"
+              ><app-avatar [user]="entry.user" [size]="44"
+            /></a>
             <span class="text">
               <span class="title">{{ entry.user | fullName }}</span>
-              <span class="meta">{{ 'BLOCKED.SINCE' | translate: { time: (entry.blockedAt | relativeTime) } }}</span>
+              <span class="meta">{{
+                'BLOCKED.SINCE' | translate: { time: (entry.blockedAt | relativeTime) }
+              }}</span>
             </span>
-            <ion-button size="small" class="rs-soft" (click)="unblock(entry)">{{ 'PROFILE.UNBLOCK' | translate }}</ion-button>
+            <ion-button size="small" class="rs-soft" (click)="unblock(entry)">{{
+              'PROFILE.UNBLOCK' | translate
+            }}</ion-button>
           </div>
         } @empty {
           @if (loading()) {

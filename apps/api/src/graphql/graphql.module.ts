@@ -96,7 +96,10 @@ export class SubscriptionsModule {}
           // Por nombre y no con `instanceof`: `graphql` puede cargarse dos
           // veces —como ESM desde este código y como CommonJS desde Apollo— y
           // entonces la clase de uno no es la del otro.
-          if (original instanceof GraphQLError || (original instanceof Error && original.name === 'GraphQLError')) {
+          if (
+            original instanceof GraphQLError ||
+            (original instanceof Error && original.name === 'GraphQLError')
+          ) {
             const code = formatted.extensions?.['code'];
             const own = typeof code === 'string' && code.startsWith('SERVER.');
 

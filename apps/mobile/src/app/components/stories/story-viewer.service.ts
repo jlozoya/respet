@@ -24,7 +24,11 @@ export class StoryViewerService {
 
     const modal = await this.modalCtrl.create({
       component: StoryViewerComponent,
-      componentProps: { reels, startReel: Math.max(0, startReel), startStoryId: startStoryId ?? null },
+      componentProps: {
+        reels,
+        startReel: Math.max(0, startReel),
+        startStoryId: startStoryId ?? null,
+      },
       cssClass: 'rs-fullscreen',
       animated: true,
     });

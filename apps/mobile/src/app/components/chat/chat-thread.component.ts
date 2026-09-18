@@ -84,7 +84,12 @@ type Row =
     @if (conversation(); as item) {
       <header class="head" [class.dock]="mode() === 'dock'">
         @if (mode() === 'page') {
-          <button type="button" class="rs-icon-btn plain rs-mobile-only back" (click)="back()" [attr.aria-label]="'COMMON.BACK' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain rs-mobile-only back"
+            (click)="back()"
+            [attr.aria-label]="'COMMON.BACK' | translate"
+          >
             <ion-icon name="arrow-back" />
           </button>
         }
@@ -108,14 +113,29 @@ type Row =
         </button>
 
         <span class="head-actions">
-          <button type="button" class="rs-icon-btn plain accent" (click)="openInfo()" [attr.aria-label]="'MESSENGER.INFO' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain accent"
+            (click)="openInfo()"
+            [attr.aria-label]="'MESSENGER.INFO' | translate"
+          >
             <ion-icon name="information-circle" />
           </button>
           @if (mode() === 'dock') {
-            <button type="button" class="rs-icon-btn plain accent" (click)="minimize.emit()" [attr.aria-label]="'MESSENGER.MINIMIZE' | translate">
+            <button
+              type="button"
+              class="rs-icon-btn plain accent"
+              (click)="minimize.emit()"
+              [attr.aria-label]="'MESSENGER.MINIMIZE' | translate"
+            >
               <ion-icon name="remove" />
             </button>
-            <button type="button" class="rs-icon-btn plain accent" (click)="closed.emit()" [attr.aria-label]="'CLOSE' | translate">
+            <button
+              type="button"
+              class="rs-icon-btn plain accent"
+              (click)="closed.emit()"
+              [attr.aria-label]="'CLOSE' | translate"
+            >
               <ion-icon name="close" />
             </button>
           }
@@ -132,9 +152,13 @@ type Row =
             <app-conversation-avatar [conversation]="item" [size]="mode() === 'dock' ? 60 : 88" />
             <h3>{{ title() }}</h3>
             @if (item.peer; as peer) {
-              <a class="rs-muted" [routerLink]="['/profile', peer.name]">{{ 'MESSENGER.VIEW_PROFILE' | translate }}</a>
+              <a class="rs-muted" [routerLink]="['/profile', peer.name]">{{
+                'MESSENGER.VIEW_PROFILE' | translate
+              }}</a>
             } @else {
-              <span class="rs-muted">{{ 'MESSENGER.MEMBER_COUNT' | translate: { count: item.members.length } }}</span>
+              <span class="rs-muted">{{
+                'MESSENGER.MEMBER_COUNT' | translate: { count: item.members.length }
+              }}</span>
             }
           </div>
         }
@@ -272,7 +296,9 @@ export class ChatThreadComponent implements OnDestroy {
         this.chat.focus(id);
 
         if (!this.chat.conversation(id)()) {
-          void this.chat.fetchConversation(id).catch(() => this.feedback.toast('SERVER.NOT_FOUND', { color: 'danger' }));
+          void this.chat
+            .fetchConversation(id)
+            .catch(() => this.feedback.toast('SERVER.NOT_FOUND', { color: 'danger' }));
         }
 
         void this.chat.openThread(id).catch((error: unknown) => this.feedback.error(error));
@@ -299,7 +325,8 @@ export class ChatThreadComponent implements OnDestroy {
         this.heightBeforeOlder = 0;
       } else if (newest && newest.id !== this.lastNewestId) {
         const own = newest.sender.id === this.auth.user()?.id;
-        const nearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < STICKY_BOTTOM_PX + 200;
+        const nearBottom =
+          element.scrollHeight - element.scrollTop - element.clientHeight < STICKY_BOTTOM_PX + 200;
 
         if (own || nearBottom) {
           element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
@@ -331,7 +358,12 @@ export class ChatThreadComponent implements OnDestroy {
       this.unseenBelow.set(false);
     }
 
-    if (element.scrollTop < 200 && this.thread().hasOlder && !this.thread().loadingOlder && this.thread().loaded) {
+    if (
+      element.scrollTop < 200 &&
+      this.thread().hasOlder &&
+      !this.thread().loadingOlder &&
+      this.thread().loaded
+    ) {
       this.heightBeforeOlder = element.scrollHeight;
       void this.chat.loadOlder(this.conversationId()).catch(() => undefined);
     }
@@ -471,14 +503,22 @@ export class ChatThreadComponent implements OnDestroy {
 
     // El último mensaje propio es el que lleva el estado de entrega; en una
     // conversación de dos, el último que la otra persona leyó lleva su carita.
-    const lastOwn = [...messages].reverse().find((message) => message.sender.id === me && message.kind !== 'system');
+    const lastOwn = [...messages]
+      .reverse()
+      .find((message) => message.sender.id === me && message.kind !== 'system');
     const peer = conversation?.type === 'direct' ? conversation.peer : null;
-    const peerMember = peer ? conversation?.members.find((member) => member.user.id === peer.id) : null;
+    const peerMember = peer
+      ? conversation?.members.find((member) => member.user.id === peer.id)
+      : null;
     const peerReadAt = peerMember?.lastReadAt ? Date.parse(peerMember.lastReadAt) : 0;
     const lastSeenOwn = peer
       ? [...messages]
           .reverse()
-          .find((message) => message.sender.id === me && (message.status === 'read' || Date.parse(message.createdAt) <= peerReadAt))
+          .find(
+            (message) =>
+              message.sender.id === me &&
+              (message.status === 'read' || Date.parse(message.createdAt) <= peerReadAt),
+          )
       : undefined;
 
     messages.forEach((message, index) => {
@@ -486,7 +526,11 @@ export class ChatThreadComponent implements OnDestroy {
       const next = messages[index + 1];
 
       if (!previous || !sameDay(previous.createdAt, message.createdAt)) {
-        rows.push({ kind: 'day', key: `day:${message.createdAt.slice(0, 10)}:${message.id}`, label: dayLabel(message.createdAt, locale, today, yesterday) });
+        rows.push({
+          kind: 'day',
+          key: `day:${message.createdAt.slice(0, 10)}:${message.id}`,
+          label: dayLabel(message.createdAt, locale, today, yesterday),
+        });
       }
 
       if (message.kind === 'system') {

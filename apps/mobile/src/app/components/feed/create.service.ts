@@ -17,7 +17,9 @@ export class CreateService {
   private readonly modalCtrl = inject(ModalController);
 
   /** Publicar, editar o compartir. Devuelve la publicación resultante. */
-  async post(options: { edit?: Post; share?: Post; openFiles?: boolean } = {}): Promise<Post | null> {
+  async post(
+    options: { edit?: Post; share?: Post; openFiles?: boolean } = {},
+  ): Promise<Post | null> {
     const modal = await this.modalCtrl.create({
       component: PostComposerComponent,
       componentProps: {

@@ -59,8 +59,7 @@ export class LocationSearchComponent {
   readonly empty = signal(false);
 
   /** Cómo se lee la ubicación ya puesta. */
-  readonly currentLabel = (location: LocationInput): string =>
-    describeLocation(location) ?? '';
+  readonly currentLabel = (location: LocationInput): string => describeLocation(location) ?? '';
 
   async search(query: string): Promise<void> {
     if (!query.trim()) {

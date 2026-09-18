@@ -27,9 +27,7 @@ export class WarehousesResolver {
 
   @Public()
   @Query(() => WarehouseType, { name: 'warehouse' })
-  async findOne(
-    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
-  ): Promise<Warehouse> {
+  async findOne(@Args('id', { type: () => ID }, ParseObjectIdPipe) id: string): Promise<Warehouse> {
     return this.warehouses.findById(id);
   }
 
@@ -49,7 +47,9 @@ export class WarehousesResolver {
   }
 
   @Roles('supervisor')
-  @Mutation(() => WarehouseType, { description: 'Cambia la imagen de la bodega, subida en la propia operación.' })
+  @Mutation(() => WarehouseType, {
+    description: 'Cambia la imagen de la bodega, subida en la propia operación.',
+  })
   async setWarehouseImage(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,

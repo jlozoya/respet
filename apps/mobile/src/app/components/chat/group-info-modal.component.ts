@@ -72,13 +72,15 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
                 <ion-icon slot="start" name="create-outline" /> {{ 'MESSENGER.RENAME' | translate }}
               </ion-button>
               <ion-button size="small" class="rs-soft" (click)="changePhoto()">
-                <ion-icon slot="start" name="camera-outline" /> {{ 'MESSENGER.CHANGE_PHOTO' | translate }}
+                <ion-icon slot="start" name="camera-outline" />
+                {{ 'MESSENGER.CHANGE_PHOTO' | translate }}
               </ion-button>
             </div>
           }
           @if (item.peer; as peer) {
             <ion-button size="small" class="rs-soft" (click)="openProfile(peer.name)">
-              <ion-icon slot="start" name="person-circle-outline" /> {{ 'MESSENGER.VIEW_PROFILE' | translate }}
+              <ion-icon slot="start" name="person-circle-outline" />
+              {{ 'MESSENGER.VIEW_PROFILE' | translate }}
             </ion-button>
           }
         </div>
@@ -86,16 +88,28 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
         <div class="section">
           <div class="rs-row">
             <span class="rs-row-icon"><ion-icon name="notifications-off-outline" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'MESSENGER.MUTE' | translate }}</span></span>
-            <ion-toggle [checked]="item.muted" (ionChange)="setMuted($event.detail.checked)" [attr.aria-label]="'MESSENGER.MUTE' | translate" />
+            <span class="rs-row-text"
+              ><span class="title">{{ 'MESSENGER.MUTE' | translate }}</span></span
+            >
+            <ion-toggle
+              [checked]="item.muted"
+              (ionChange)="setMuted($event.detail.checked)"
+              [attr.aria-label]="'MESSENGER.MUTE' | translate"
+            />
           </div>
           <label class="rs-pill-input search">
             <ion-icon name="search" />
-            <input type="search" [placeholder]="'MESSENGER.SEARCH_IN_CHAT' | translate" (keydown.enter)="search($any($event.target).value)" />
+            <input
+              type="search"
+              [placeholder]="'MESSENGER.SEARCH_IN_CHAT' | translate"
+              (keydown.enter)="search($any($event.target).value)"
+            />
           </label>
           @for (hit of hits(); track hit.id) {
             <div class="hit">
-              <span class="rs-strong rs-small">{{ hit.sender | fullName }} · {{ hit.createdAt | relativeTime }}</span>
+              <span class="rs-strong rs-small"
+                >{{ hit.sender | fullName }} · {{ hit.createdAt | relativeTime }}</span
+              >
               <span class="rs-small">{{ hit.body }}</span>
             </div>
           }
@@ -103,11 +117,15 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
 
         @if (item.type === 'group') {
           <div class="section">
-            <h3 class="rs-section-title">{{ 'MESSENGER.MEMBERS' | translate: { count: item.members.length } }}</h3>
+            <h3 class="rs-section-title">
+              {{ 'MESSENGER.MEMBERS' | translate: { count: item.members.length } }}
+            </h3>
             @if (isAdmin()) {
               <button type="button" class="rs-row" (click)="addMembers()">
                 <span class="rs-row-icon"><ion-icon name="person-add" /></span>
-                <span class="rs-row-text"><span class="title">{{ 'MESSENGER.ADD_PEOPLE' | translate }}</span></span>
+                <span class="rs-row-text"
+                  ><span class="title">{{ 'MESSENGER.ADD_PEOPLE' | translate }}</span></span
+                >
               </button>
             }
             @for (member of item.members; track member.user.id) {
@@ -118,7 +136,12 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
                   <span class="subtitle">{{ roleLabel(member) | translate }}</span>
                 </span>
                 @if (isAdmin() && member.user.id !== meId() && member.role !== 'owner') {
-                  <button type="button" class="rs-icon-btn plain" (click)="memberMenu(member)" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+                  <button
+                    type="button"
+                    class="rs-icon-btn plain"
+                    (click)="memberMenu(member)"
+                    [attr.aria-label]="'COMMON.OPTIONS' | translate"
+                  >
                     <ion-icon name="ellipsis-horizontal" />
                   </button>
                 }
@@ -130,21 +153,29 @@ import { NewConversationModalComponent } from './new-conversation-modal.componen
         <div class="section">
           <button type="button" class="rs-row" (click)="clear()">
             <span class="rs-row-icon"><ion-icon name="trash-outline" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'MESSENGER.DELETE_CHAT' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'MESSENGER.DELETE_CHAT' | translate }}</span></span
+            >
           </button>
           @if (item.type === 'group') {
             <button type="button" class="rs-row danger" (click)="leave()">
               <span class="rs-row-icon"><ion-icon name="exit-outline" /></span>
-              <span class="rs-row-text"><span class="title">{{ 'MESSENGER.LEAVE_GROUP' | translate }}</span></span>
+              <span class="rs-row-text"
+                ><span class="title">{{ 'MESSENGER.LEAVE_GROUP' | translate }}</span></span
+              >
             </button>
           } @else if (item.peer; as peer) {
             <button type="button" class="rs-row danger" (click)="block(peer.id)">
               <span class="rs-row-icon"><ion-icon name="ban-outline" /></span>
-              <span class="rs-row-text"><span class="title">{{ 'PROFILE.BLOCK' | translate }}</span></span>
+              <span class="rs-row-text"
+                ><span class="title">{{ 'PROFILE.BLOCK' | translate }}</span></span
+              >
             </button>
             <button type="button" class="rs-row danger" (click)="reportUser(peer.id)">
               <span class="rs-row-icon"><ion-icon name="flag-outline" /></span>
-              <span class="rs-row-text"><span class="title">{{ 'REPORT' | translate }}</span></span>
+              <span class="rs-row-text"
+                ><span class="title">{{ 'REPORT' | translate }}</span></span
+              >
             </button>
           }
         </div>
@@ -243,13 +274,17 @@ export class GroupInfoModalComponent {
       return;
     }
 
-    await this.guard(async () => this.hits.set(await this.chat.search(this.conversationId(), term.trim())));
+    await this.guard(async () =>
+      this.hits.set(await this.chat.search(this.conversationId(), term.trim())),
+    );
   }
 
   async rename(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: this.t('MESSENGER.RENAME'),
-      inputs: [{ name: 'title', value: this.conversation()?.title ?? '', attributes: { maxlength: 80 } }],
+      inputs: [
+        { name: 'title', value: this.conversation()?.title ?? '', attributes: { maxlength: 80 } },
+      ],
       buttons: [
         { text: this.t('CANCEL'), role: 'cancel' },
         { text: this.t('SAVE'), role: 'confirm' },
@@ -296,7 +331,12 @@ export class GroupInfoModalComponent {
           icon: 'shield-outline',
           data: 'admin',
         },
-        { text: this.t('MESSENGER.REMOVE_MEMBER'), icon: 'person-remove-outline', role: 'destructive', data: 'remove' },
+        {
+          text: this.t('MESSENGER.REMOVE_MEMBER'),
+          icon: 'person-remove-outline',
+          role: 'destructive',
+          data: 'remove',
+        },
         { text: this.t('CANCEL'), role: 'cancel' },
       ],
     });
@@ -305,7 +345,9 @@ export class GroupInfoModalComponent {
     const { data } = await sheet.onWillDismiss<string>();
 
     if (data === 'admin') {
-      await this.guard(() => this.chat.setAdmin(this.conversationId(), member.user.id, member.role !== 'admin'));
+      await this.guard(() =>
+        this.chat.setAdmin(this.conversationId(), member.user.id, member.role !== 'admin'),
+      );
     } else if (data === 'remove') {
       await this.guard(() => this.chat.removeMember(this.conversationId(), member.user.id));
     }

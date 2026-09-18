@@ -48,7 +48,8 @@ export class ChatResolver {
   })
   async conversations(
     @CurrentUser('id') userId: string,
-    @Args('query', { type: () => ConversationListQueryDto, nullable: true }) query: ConversationListQueryDto = {},
+    @Args('query', { type: () => ConversationListQueryDto, nullable: true })
+    query: ConversationListQueryDto = {},
   ): Promise<Conversation[]> {
     return this.chat.listConversations(userId, query);
   }
@@ -63,7 +64,10 @@ export class ChatResolver {
   }
 
   @Scopes('read_messages')
-  @Query(() => Int, { name: 'unreadMessageCount', description: 'Mensajes sin leer, para el distintivo del menú.' })
+  @Query(() => Int, {
+    name: 'unreadMessageCount',
+    description: 'Mensajes sin leer, para el distintivo del menú.',
+  })
   async unread(@CurrentUser('id') userId: string): Promise<number> {
     return this.chat.countUnread(userId);
   }
@@ -76,7 +80,8 @@ export class ChatResolver {
   async messages(
     @Args('conversationId', { type: () => ID }, ParseObjectIdPipe) conversationId: string,
     @CurrentUser('id') userId: string,
-    @Args('query', { type: () => MessageListQueryDto, nullable: true }) query: MessageListQueryDto = {},
+    @Args('query', { type: () => MessageListQueryDto, nullable: true })
+    query: MessageListQueryDto = {},
   ): Promise<MessagePage> {
     return this.chat.listMessages(conversationId, userId, query);
   }
@@ -104,7 +109,10 @@ export class ChatResolver {
 
   @RateLimit({ limit: 20, windowSeconds: 3600 })
   @Mutation(() => ConversationObject, { description: 'Crea un grupo.' })
-  async createGroup(@CurrentUser('id') userId: string, @Args('input') input: CreateGroupDto): Promise<Conversation> {
+  async createGroup(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: CreateGroupDto,
+  ): Promise<Conversation> {
     return this.chat.createGroup(userId, input.title, input.memberIds);
   }
 
@@ -185,7 +193,9 @@ export class ChatResolver {
   }
 
   @Scopes('send_messages')
-  @Mutation(() => MessageType, { description: 'Edita un mensaje propio durante los 15 minutos siguientes a enviarlo.' })
+  @Mutation(() => MessageType, {
+    description: 'Edita un mensaje propio durante los 15 minutos siguientes a enviarlo.',
+  })
   async editMessage(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args('body') body: string,
@@ -214,7 +224,9 @@ export class ChatResolver {
   }
 
   @RateLimit({ limit: 300, windowSeconds: 60 })
-  @Mutation(() => MessageType, { description: 'Reacciona con un emoji. Repetir el mismo lo quita.' })
+  @Mutation(() => MessageType, {
+    description: 'Reacciona con un emoji. Repetir el mismo lo quita.',
+  })
   async reactToMessage(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args('emoji') emoji: string,
@@ -230,7 +242,9 @@ export class ChatResolver {
   }
 
   @Scopes('read_messages')
-  @Mutation(() => String, { description: 'Marca la conversación como leída y devuelve el momento.' })
+  @Mutation(() => String, {
+    description: 'Marca la conversación como leída y devuelve el momento.',
+  })
   async markConversationRead(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -238,7 +252,9 @@ export class ChatResolver {
     return this.chat.markRead(id, userId);
   }
 
-  @Mutation(() => Boolean, { description: 'Confirma que los mensajes llegaron a este dispositivo.' })
+  @Mutation(() => Boolean, {
+    description: 'Confirma que los mensajes llegaron a este dispositivo.',
+  })
   async markConversationDelivered(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -310,7 +326,11 @@ export class ChatResolver {
   @Scopes('read_messages')
   @Subscription(() => ChatEventObject, {
     name: 'chatEvents',
-    resolve: (message: UserChannelMessage, _args: unknown, context: GraphqlContext): ChatEvent | null => {
+    resolve: (
+      message: UserChannelMessage,
+      _args: unknown,
+      context: GraphqlContext,
+    ): ChatEvent | null => {
       if (message.channel !== 'chat') {
         return null;
       }
@@ -321,6 +341,9 @@ export class ChatResolver {
     },
   })
   chatEvents(@CurrentUser('id') userId: string): AsyncIterableIterator<UserChannelMessage> {
-    return this.bus.subscribe<UserChannelMessage>(Topic.user(userId), (message) => message.channel === 'chat');
+    return this.bus.subscribe<UserChannelMessage>(
+      Topic.user(userId),
+      (message) => message.channel === 'chat',
+    );
   }
 }

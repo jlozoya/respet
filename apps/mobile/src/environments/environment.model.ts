@@ -45,7 +45,10 @@ export type SupportedLanguage = 'es' | 'en';
  * producción, cada una con sus direcciones y su marca.
  */
 export type RuntimeEnvironment = Partial<
-  Pick<Environment, 'apiUrl' | 'graphqlUrl' | 'googleMapsApiKey' | 'googleClientId' | 'facebookAppId'>
+  Pick<
+    Environment,
+    'apiUrl' | 'graphqlUrl' | 'googleMapsApiKey' | 'googleClientId' | 'facebookAppId'
+  >
 > & { branding?: Partial<Branding> };
 
 /** Las claves de la marca que pueden llegar en `env.js`, todas de texto. */

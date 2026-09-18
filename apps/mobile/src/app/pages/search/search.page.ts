@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -45,7 +54,13 @@ const MAX_RECENT = 8;
       <form class="search-form" (submit)="submit($event, box.value)">
         <label class="rs-pill-input">
           <ion-icon name="search" />
-          <input #box type="search" [value]="q() ?? ''" [placeholder]="'SEARCH_PAGE.PLACEHOLDER' | translate" [attr.aria-label]="'SEARCH' | translate" />
+          <input
+            #box
+            type="search"
+            [value]="q() ?? ''"
+            [placeholder]="'SEARCH_PAGE.PLACEHOLDER' | translate"
+            [attr.aria-label]="'SEARCH' | translate"
+          />
         </label>
       </form>
     </app-page-header>
@@ -55,7 +70,12 @@ const MAX_RECENT = 8;
         @if (q()) {
           <div class="rs-chips filters">
             @for (option of filters; track option.value) {
-              <button type="button" class="rs-chip" [class.active]="filter() === option.value" (click)="filter.set(option.value)">
+              <button
+                type="button"
+                class="rs-chip"
+                [class.active]="filter() === option.value"
+                (click)="filter.set(option.value)"
+              >
                 {{ option.label | translate }}
               </button>
             }
@@ -69,14 +89,25 @@ const MAX_RECENT = 8;
                 <h2 class="rs-card-title">{{ 'SEARCH_PAGE.PEOPLE' | translate }}</h2>
                 @for (user of found.users; track user.id) {
                   <div class="rs-row person">
-                    <a [routerLink]="['/profile', user.name]"><app-avatar [user]="user" [size]="56" [ring]="user.hasUnseenStory ? 'unseen' : 'none'" /></a>
+                    <a [routerLink]="['/profile', user.name]"
+                      ><app-avatar
+                        [user]="user"
+                        [size]="56"
+                        [ring]="user.hasUnseenStory ? 'unseen' : 'none'"
+                    /></a>
                     <a class="rs-row-text" [routerLink]="['/profile', user.name]">
                       <app-user-name class="title" [user]="user" [link]="false" />
                       <span class="subtitle">
-                        &#64;{{ user.name }} · {{ 'SEARCH_PAGE.FOLLOWERS' | translate: { count: (user.followerCount | compactNumber) } }}
+                        &#64;{{ user.name }} ·
+                        {{
+                          'SEARCH_PAGE.FOLLOWERS'
+                            | translate: { count: (user.followerCount | compactNumber) }
+                        }}
                       </span>
                       @if (user.mutualFollowerCount) {
-                        <span class="subtitle">{{ 'PROFILE.MUTUALS' | translate: { count: user.mutualFollowerCount } }}</span>
+                        <span class="subtitle">{{
+                          'PROFILE.MUTUALS' | translate: { count: user.mutualFollowerCount }
+                        }}</span>
                       }
                     </a>
                     <app-follow-button [userId]="user.id" [followState]="user.followState" />
@@ -93,7 +124,10 @@ const MAX_RECENT = 8;
                     <span class="rs-row-icon hash">#</span>
                     <span class="rs-row-text">
                       <span class="title">#{{ tag.tag }}</span>
-                      <span class="subtitle">{{ 'SEARCH_PAGE.POST_COUNT' | translate: { count: (tag.postCount | compactNumber) } }}</span>
+                      <span class="subtitle">{{
+                        'SEARCH_PAGE.POST_COUNT'
+                          | translate: { count: (tag.postCount | compactNumber) }
+                      }}</span>
                     </span>
                   </a>
                 }
@@ -119,13 +153,17 @@ const MAX_RECENT = 8;
             <h2 class="rs-card-title">
               {{ 'SEARCH_PAGE.RECENT' | translate }}
               @if (recent().length) {
-                <button type="button" class="rs-text-btn" (click)="clearRecent()">{{ 'SEARCH_PAGE.CLEAR' | translate }}</button>
+                <button type="button" class="rs-text-btn" (click)="clearRecent()">
+                  {{ 'SEARCH_PAGE.CLEAR' | translate }}
+                </button>
               }
             </h2>
             @for (term of recent(); track term) {
               <a class="rs-row" [routerLink]="['/search']" [queryParams]="{ q: term }">
                 <span class="rs-row-icon"><ion-icon name="time-outline" /></span>
-                <span class="rs-row-text"><span class="title">{{ term }}</span></span>
+                <span class="rs-row-text"
+                  ><span class="title">{{ term }}</span></span
+                >
               </a>
             } @empty {
               <p class="rs-card-body rs-muted">{{ 'SEARCH_PAGE.NO_RECENT' | translate }}</p>
@@ -199,7 +237,9 @@ export class SearchPage {
   });
 
   constructor() {
-    void this.storage.get<string[]>(StorageKey.RecentSearches).then((terms) => this.recent.set(terms ?? []));
+    void this.storage
+      .get<string[]>(StorageKey.RecentSearches)
+      .then((terms) => this.recent.set(terms ?? []));
 
     effect(() => {
       const term = this.q()?.trim();

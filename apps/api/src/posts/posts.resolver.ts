@@ -59,7 +59,10 @@ export class PostsResolver {
   }
 
   @Public()
-  @Query(() => PostPage, { name: 'explore', description: 'Lo más destacado del último mes, con foto o vídeo.' })
+  @Query(() => PostPage, {
+    name: 'explore',
+    description: 'Lo más destacado del último mes, con foto o vídeo.',
+  })
   async explore(
     @OptionalUser() viewer: AuthenticatedUser | null,
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 }) page = 1,
@@ -68,7 +71,10 @@ export class PostsResolver {
     return this.posts.explore(viewer?.id ?? null, page, Math.min(perPage, 60));
   }
 
-  @Query(() => PostPage, { name: 'savedPosts', description: 'Lo que has guardado, de lo último a lo primero.' })
+  @Query(() => PostPage, {
+    name: 'savedPosts',
+    description: 'Lo que has guardado, de lo último a lo primero.',
+  })
   async savedPosts(
     @CurrentUser('id') userId: string,
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 }) page = 1,
@@ -82,7 +88,8 @@ export class PostsResolver {
   async reactors(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @OptionalUser() viewer: AuthenticatedUser | null,
-    @Args('query', { type: () => ReactorListQueryDto, nullable: true }) query: ReactorListQueryDto = {},
+    @Args('query', { type: () => ReactorListQueryDto, nullable: true })
+    query: ReactorListQueryDto = {},
   ): Promise<Paginated<PostReactor>> {
     return this.posts.reactors(id, query, viewer?.id ?? null);
   }
@@ -126,7 +133,9 @@ export class PostsResolver {
   }
 
   @Scopes('publish_posts')
-  @Mutation(() => MediaType, { description: 'Añade una foto o un vídeo a una publicación ya creada.' })
+  @Mutation(() => MediaType, {
+    description: 'Añade una foto o un vídeo a una publicación ya creada.',
+  })
   async addPostMedia(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,

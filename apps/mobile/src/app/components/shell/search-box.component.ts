@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
@@ -19,7 +26,14 @@ import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
 @Component({
   selector: 'app-search-box',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonIcon, IonSpinner, AvatarComponent, UserNameComponent, CompactNumberPipe],
+  imports: [
+    TranslatePipe,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    UserNameComponent,
+    CompactNumberPipe,
+  ],
   template: `
     <label class="rs-pill-input">
       <ion-icon name="search" />
@@ -41,7 +55,11 @@ import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
       <div class="dropdown">
         @for (user of users(); track user.id) {
           <button type="button" class="rs-row" (click)="go(['/profile', user.name])">
-            <app-avatar [user]="user" [size]="36" [ring]="user.hasUnseenStory ? 'unseen' : 'none'" />
+            <app-avatar
+              [user]="user"
+              [size]="36"
+              [ring]="user.hasUnseenStory ? 'unseen' : 'none'"
+            />
             <span class="rs-row-text">
               <app-user-name class="title" [user]="user" [link]="false" />
               <span class="subtitle">&#64;{{ user.name }}</span>
@@ -53,7 +71,9 @@ import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
             <span class="rs-row-icon">#</span>
             <span class="rs-row-text">
               <span class="title">#{{ tag.tag }}</span>
-              <span class="subtitle">{{ 'SEARCH_PAGE.POST_COUNT' | translate: { count: (tag.postCount | compactNumber) } }}</span>
+              <span class="subtitle">{{
+                'SEARCH_PAGE.POST_COUNT' | translate: { count: (tag.postCount | compactNumber) }
+              }}</span>
             </span>
           </button>
         }

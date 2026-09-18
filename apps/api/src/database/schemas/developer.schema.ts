@@ -72,7 +72,11 @@ export class OAuthApp {
   @Prop({ type: String, default: null })
   clientSecretHint!: string | null;
 
-  @Prop({ type: String, enum: Object.values(OAuthClientType), default: OAuthClientType.Confidential })
+  @Prop({
+    type: String,
+    enum: Object.values(OAuthClientType),
+    default: OAuthClientType.Confidential,
+  })
   clientType!: OAuthClientType;
 
   @Prop({ type: String, enum: Object.values(OAuthAppStatus), default: OAuthAppStatus.Development })

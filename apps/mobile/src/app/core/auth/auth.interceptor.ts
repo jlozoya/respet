@@ -46,7 +46,11 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       return of(event);
     }),
     catchError((error: unknown) => {
-      if (!(error instanceof HttpErrorResponse) || error.status !== 401 || isPublicOperation(request)) {
+      if (
+        !(error instanceof HttpErrorResponse) ||
+        error.status !== 401 ||
+        isPublicOperation(request)
+      ) {
         return throwError(() => error);
       }
 

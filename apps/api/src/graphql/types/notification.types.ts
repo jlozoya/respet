@@ -5,7 +5,9 @@ import { NotificationEventType, NotificationType } from '../enums.js';
 import { MediaType } from './common.types.js';
 import { UserSummaryType } from './user.types.js';
 
-@ObjectType('Notification', { description: 'Un aviso: reacciones, comentarios, seguidores, directos…' })
+@ObjectType('Notification', {
+  description: 'Un aviso: reacciones, comentarios, seguidores, directos…',
+})
 export class NotificationObject implements Notification {
   @Field(() => ID)
   id!: string;

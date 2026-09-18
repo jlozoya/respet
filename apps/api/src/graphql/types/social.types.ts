@@ -11,7 +11,14 @@ import type {
   SearchResults,
 } from '@social-network/shared';
 
-import { Audience, FollowState, PostKind, ReactionType, ReportStatus, ReportTarget } from '../enums.js';
+import {
+  Audience,
+  FollowState,
+  PostKind,
+  ReactionType,
+  ReportStatus,
+  ReportTarget,
+} from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';
 import { PublicProfileType, UserSummaryType } from './user.types.js';
 
@@ -133,7 +140,9 @@ export class PostType implements Post {
   })
   authorFollowState!: FollowState | null;
 
-  @Field(() => [CommentType], { description: 'Los últimos comentarios, para enseñarlos bajo la tarjeta.' })
+  @Field(() => [CommentType], {
+    description: 'Los últimos comentarios, para enseñarlos bajo la tarjeta.',
+  })
   commentPreview!: CommentType[];
 
   @Field(() => String, { nullable: true })

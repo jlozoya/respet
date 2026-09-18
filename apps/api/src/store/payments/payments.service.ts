@@ -10,11 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId } from '../../database/mongoose.js';
 import type { Model } from '../../database/mongoose.js';
 
-import {
-  OrderState,
-  PaymentProvider,
-  PaymentStatus,
-} from '../../database/schemas/enums.js';
+import { OrderState, PaymentProvider, PaymentStatus } from '../../database/schemas/enums.js';
 import { Order, Payment as PaymentDoc } from '../../database/schemas/store.schema.js';
 import { User } from '../../database/schemas/user.schema.js';
 import { OrdersService } from '../orders/orders.service.js';
@@ -83,7 +79,9 @@ export class PaymentsService {
       cancelUrl: `${clientUrl}/orders/${orderId}?payment=cancelled`,
     });
 
-    const approvalUrl = paypalOrder.links?.find((link) => link.rel === 'payer-action' || link.rel === 'approve')?.href;
+    const approvalUrl = paypalOrder.links?.find(
+      (link) => link.rel === 'payer-action' || link.rel === 'approve',
+    )?.href;
 
     if (!approvalUrl) {
       throw new AppException(
@@ -181,7 +179,10 @@ export class PaymentsService {
       return;
     }
 
-    const event = body as { event_type?: string; resource?: { id?: string; supplementary_data?: { related_ids?: { order_id?: string } } } };
+    const event = body as {
+      event_type?: string;
+      resource?: { id?: string; supplementary_data?: { related_ids?: { order_id?: string } } };
+    };
 
     if (event.event_type !== 'PAYMENT.CAPTURE.COMPLETED') {
       return;

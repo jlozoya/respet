@@ -92,7 +92,13 @@ export class LocationPickerComponent {
   /** Busca en el mapa la dirección que se ha escrito. */
   async locateFromFields(): Promise<void> {
     const current = this.location();
-    const query = [current?.streetNumber, current?.route, current?.city, current?.state, current?.country]
+    const query = [
+      current?.streetNumber,
+      current?.route,
+      current?.city,
+      current?.state,
+      current?.country,
+    ]
       .filter(Boolean)
       .join(', ');
 

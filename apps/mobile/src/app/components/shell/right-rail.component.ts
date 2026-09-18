@@ -24,7 +24,15 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
 @Component({
   selector: 'app-right-rail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonIcon, AvatarComponent, FollowButtonComponent, CompactNumberPipe, FullNamePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonIcon,
+    AvatarComponent,
+    FollowButtonComponent,
+    CompactNumberPipe,
+    FullNamePipe,
+  ],
   template: `
     <aside class="rail">
       @if (lives().length) {
@@ -63,7 +71,9 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
           <h3 class="rs-section-title">{{ 'SUGGESTIONS.TITLE' | translate }}</h3>
           @for (suggestion of suggestions(); track suggestion.user.id) {
             <div class="rs-row suggestion">
-              <a [routerLink]="['/profile', suggestion.user.name]"><app-avatar [user]="suggestion.user" [size]="40" /></a>
+              <a [routerLink]="['/profile', suggestion.user.name]"
+                ><app-avatar [user]="suggestion.user" [size]="40"
+              /></a>
               <a class="rs-row-text" [routerLink]="['/profile', suggestion.user.name]">
                 <span class="title">{{ suggestion.user | fullName }}</span>
                 <span class="subtitle">
@@ -88,7 +98,9 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
               <span class="rs-row-icon hash">#</span>
               <span class="rs-row-text">
                 <span class="title">#{{ tag.tag }}</span>
-                <span class="subtitle">{{ 'SEARCH_PAGE.POST_COUNT' | translate: { count: (tag.postCount | compactNumber) } }}</span>
+                <span class="subtitle">{{
+                  'SEARCH_PAGE.POST_COUNT' | translate: { count: (tag.postCount | compactNumber) }
+                }}</span>
               </span>
             </a>
           }
@@ -98,12 +110,19 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
       <section>
         <h3 class="rs-section-title contacts-title">
           {{ 'CONTACTS.TITLE' | translate }}
-          <a routerLink="/messages" class="rs-icon-btn plain" [attr.aria-label]="'NAV.MESSAGES' | translate"><ion-icon name="create-outline" /></a>
+          <a
+            routerLink="/messages"
+            class="rs-icon-btn plain"
+            [attr.aria-label]="'NAV.MESSAGES' | translate"
+            ><ion-icon name="create-outline"
+          /></a>
         </h3>
         @for (contact of presence.contacts(); track contact.user.id) {
           <button type="button" class="rs-row" (click)="chat.openWith(contact.user.id)">
             <app-avatar [user]="contact.user" [size]="36" [online]="contact.online" />
-            <span class="rs-row-text"><span class="title">{{ contact.user | fullName }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ contact.user | fullName }}</span></span
+            >
           </button>
         } @empty {
           <p class="rs-small rs-muted empty">{{ 'CONTACTS.EMPTY' | translate }}</p>
@@ -188,10 +207,22 @@ export class RightRailComponent implements OnInit {
   private async initialize(): Promise<void> {
     // Cada bloque va por su cuenta: si uno falla, los demás se pintan igual.
     await Promise.all([
-      this.social.suggestedUsers(4).then((items) => this.suggestions.set(items), () => undefined),
-      this.social.trendingHashtags(5).then((items) => this.trending.set(items), () => undefined),
-      this.live.list().then((items) => this.lives.set(items.slice(0, 3)), () => undefined),
-      this.bulletinsService.list({ perPage: 2 }).then((page) => this.bulletins.set(page.data), () => undefined),
+      this.social.suggestedUsers(4).then(
+        (items) => this.suggestions.set(items),
+        () => undefined,
+      ),
+      this.social.trendingHashtags(5).then(
+        (items) => this.trending.set(items),
+        () => undefined,
+      ),
+      this.live.list().then(
+        (items) => this.lives.set(items.slice(0, 3)),
+        () => undefined,
+      ),
+      this.bulletinsService.list({ perPage: 2 }).then(
+        (page) => this.bulletins.set(page.data),
+        () => undefined,
+      ),
     ]);
   }
 }

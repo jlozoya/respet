@@ -26,7 +26,10 @@ import { AuthService } from '../../core/auth/auth.service';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { ReportService } from '../../core/ui/report.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';
-import { UserListModalComponent, type UserListPage } from '../../shared/components/user-list-modal.component';
+import {
+  UserListModalComponent,
+  type UserListPage,
+} from '../../shared/components/user-list-modal.component';
 import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
 import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
 import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
@@ -49,7 +52,15 @@ const QUICK_REACTIONS = ['😂', '😮', '😍', '😢', '👏', '🔥'];
 @Component({
   selector: 'app-story-viewer',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonContent, IonIcon, AvatarComponent, CompactNumberPipe, FullNamePipe, RelativeTimePipe],
+  imports: [
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    AvatarComponent,
+    CompactNumberPipe,
+    FullNamePipe,
+    RelativeTimePipe,
+  ],
   template: `
     <ion-content [fullscreen]="true" [scrollY]="false" class="viewer">
       <div class="frame">
@@ -57,7 +68,12 @@ const QUICK_REACTIONS = ['😂', '😮', '😍', '😢', '👏', '🔥'];
           <div class="stage" [style.background]="item.kind === 'text' ? background(item) : '#000'">
             @switch (item.kind) {
               @case ('image') {
-                <img class="media" [src]="item.media?.url" [alt]="item.text ?? ''" (load)="mediaReady()" />
+                <img
+                  class="media"
+                  [src]="item.media?.url"
+                  [alt]="item.text ?? ''"
+                  (load)="mediaReady()"
+                />
               }
               @case ('video') {
                 <video
@@ -101,17 +117,37 @@ const QUICK_REACTIONS = ['😂', '😮', '😍', '😢', '👏', '🔥'];
               <span class="time">{{ reel()?.title ?? (item.createdAt | relativeTime) }}</span>
               <span class="spacer"></span>
               @if (item.kind === 'video') {
-                <button type="button" class="icon" (click)="muted.set(!muted())" [attr.aria-label]="'STORIES.MUTE' | translate">
+                <button
+                  type="button"
+                  class="icon"
+                  (click)="muted.set(!muted())"
+                  [attr.aria-label]="'STORIES.MUTE' | translate"
+                >
                   <ion-icon [name]="muted() ? 'volume-mute' : 'volume-high'" />
                 </button>
               }
-              <button type="button" class="icon" (click)="togglePause()" [attr.aria-label]="'STORIES.PAUSE' | translate">
+              <button
+                type="button"
+                class="icon"
+                (click)="togglePause()"
+                [attr.aria-label]="'STORIES.PAUSE' | translate"
+              >
                 <ion-icon [name]="paused() ? 'play' : 'pause'" />
               </button>
-              <button type="button" class="icon" (click)="menu()" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+              <button
+                type="button"
+                class="icon"
+                (click)="menu()"
+                [attr.aria-label]="'COMMON.OPTIONS' | translate"
+              >
                 <ion-icon name="ellipsis-horizontal" />
               </button>
-              <button type="button" class="icon" (click)="close()" [attr.aria-label]="'CLOSE' | translate">
+              <button
+                type="button"
+                class="icon"
+                (click)="close()"
+                [attr.aria-label]="'CLOSE' | translate"
+              >
                 <ion-icon name="close" />
               </button>
             </div>
@@ -135,15 +171,30 @@ const QUICK_REACTIONS = ['😂', '😮', '😍', '😢', '👏', '🔥'];
                   (focus)="pause()"
                   (blur)="resume()"
                   (keydown.enter)="sendReply()"
-                  [placeholder]="'STORIES.REPLY_TO' | translate: { name: item.author.firstName || item.author.name }"
+                  [placeholder]="
+                    'STORIES.REPLY_TO'
+                      | translate: { name: item.author.firstName || item.author.name }
+                  "
                 />
                 @if (replyText().trim()) {
-                  <button type="button" class="icon" (click)="sendReply()" [attr.aria-label]="'SEND' | translate">
+                  <button
+                    type="button"
+                    class="icon"
+                    (click)="sendReply()"
+                    [attr.aria-label]="'SEND' | translate"
+                  >
                     <ion-icon name="send" />
                   </button>
                 } @else {
                   @for (emoji of reactions; track emoji) {
-                    <button type="button" class="quick" [class.mine]="item.myReaction === emoji" (click)="react(emoji)">{{ emoji }}</button>
+                    <button
+                      type="button"
+                      class="quick"
+                      [class.mine]="item.myReaction === emoji"
+                      (click)="react(emoji)"
+                    >
+                      {{ emoji }}
+                    </button>
                   }
                 }
               </div>
@@ -155,10 +206,20 @@ const QUICK_REACTIONS = ['😂', '😮', '😍', '😢', '👏', '🔥'];
           }
         }
 
-        <button type="button" class="nav prev" (click)="previous()" [attr.aria-label]="'COMMON.PREVIOUS' | translate">
+        <button
+          type="button"
+          class="nav prev"
+          (click)="previous()"
+          [attr.aria-label]="'COMMON.PREVIOUS' | translate"
+        >
           <ion-icon name="chevron-back" />
         </button>
-        <button type="button" class="nav next" (click)="next()" [attr.aria-label]="'COMMON.NEXT' | translate">
+        <button
+          type="button"
+          class="nav next"
+          (click)="next()"
+          [attr.aria-label]="'COMMON.NEXT' | translate"
+        >
           <ion-icon name="chevron-forward" />
         </button>
       </div>
@@ -317,7 +378,9 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
       this.storyIndex.update((value) => value + 1);
     } else if (this.reelIndex() < this.reels().length - 1) {
       this.reelIndex.update((value) => value + 1);
-      this.storyIndex.set(Math.max(0, this.reels()[this.reelIndex()]?.stories.findIndex((story) => !story.seen) ?? 0));
+      this.storyIndex.set(
+        Math.max(0, this.reels()[this.reelIndex()]?.stories.findIndex((story) => !story.seen) ?? 0),
+      );
     } else {
       this.close();
     }
@@ -400,7 +463,9 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
 
     this.paused.set(false);
     this.startedAt = performance.now();
-    void this.video()?.nativeElement.play().catch(() => undefined);
+    void this.video()
+      ?.nativeElement.play()
+      .catch(() => undefined);
   }
 
   async react(emoji: string): Promise<void> {
@@ -461,7 +526,12 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
 
     const modal = await this.modalCtrl.create({
       component: UserListModalComponent,
-      componentProps: { title: 'STORIES.VIEWERS', load, showFollow: false, emptyText: 'STORIES.NO_VIEWERS' },
+      componentProps: {
+        title: 'STORIES.VIEWERS',
+        load,
+        showFollow: false,
+        emptyText: 'STORIES.NO_VIEWERS',
+      },
       cssClass: 'rs-dialog',
     });
 
@@ -483,7 +553,12 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
       buttons: this.isOwn()
         ? [
             { text: t('STORIES.ARCHIVE'), icon: 'time-outline', data: 'archive' },
-            { text: t('STORIES.DELETE'), icon: 'trash-outline', role: 'destructive', data: 'delete' },
+            {
+              text: t('STORIES.DELETE'),
+              icon: 'trash-outline',
+              role: 'destructive',
+              data: 'delete',
+            },
             { text: t('CANCEL'), role: 'cancel' },
           ]
         : [
@@ -534,7 +609,10 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
   }
 
   private patch(id: string, changes: Partial<Story> | null): void {
-    this.local.update((current) => ({ ...current, [id]: changes === null ? null : { ...(current[id] ?? {}), ...changes } }));
+    this.local.update((current) => ({
+      ...current,
+      [id]: changes === null ? null : { ...(current[id] ?? {}), ...changes },
+    }));
   }
 
   private tick(): void {
@@ -553,7 +631,11 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
           progress = video.currentTime / video.duration;
         } else {
           const elapsed = this.elapsedBeforePause + performance.now() - this.startedAt;
-          progress = elapsed / (story.kind === 'video' ? story.durationMs || 15000 : story.durationMs || DEFAULT_DURATION_MS);
+          progress =
+            elapsed /
+            (story.kind === 'video'
+              ? story.durationMs || 15000
+              : story.durationMs || DEFAULT_DURATION_MS);
         }
 
         this.progress.set(Math.min(1, progress));

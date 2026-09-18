@@ -3,8 +3,16 @@ import type { NotificationEvent, NotificationPage } from '@social-network/shared
 import { IsIn, IsString, Length } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 
-import { CurrentUser, RateLimit, Scopes, type AuthenticatedUser } from '../common/decorators/index.js';
-import { NotificationEventObject, NotificationPageType } from '../graphql/types/notification.types.js';
+import {
+  CurrentUser,
+  RateLimit,
+  Scopes,
+  type AuthenticatedUser,
+} from '../common/decorators/index.js';
+import {
+  NotificationEventObject,
+  NotificationPageType,
+} from '../graphql/types/notification.types.js';
 import { EventBusService } from '../realtime/event-bus.service.js';
 import { Topic } from '../realtime/topics.js';
 import type { UserChannelMessage } from '../realtime/user-channel.js';
@@ -50,7 +58,9 @@ export class NotificationsResolver {
     return this.notifications.unreadCount(userId);
   }
 
-  @Mutation(() => Int, { description: 'Marca avisos como leídos. Devuelve los que quedan sin leer.' })
+  @Mutation(() => Int, {
+    description: 'Marca avisos como leídos. Devuelve los que quedan sin leer.',
+  })
   async markNotificationsRead(
     @CurrentUser('id') userId: string,
     @Args('ids', { type: () => [ID] }) ids: string[],
@@ -64,7 +74,9 @@ export class NotificationsResolver {
   }
 
   @RateLimit({ limit: 30, windowSeconds: 3600 })
-  @Mutation(() => Boolean, { description: 'Registra este dispositivo para recibir notificaciones push.' })
+  @Mutation(() => Boolean, {
+    description: 'Registra este dispositivo para recibir notificaciones push.',
+  })
   async registerPushDevice(
     @CurrentUser() actor: AuthenticatedUser,
     @Args('input') input: RegisterPushDeviceDto,
@@ -85,7 +97,8 @@ export class NotificationsResolver {
   @Scopes('notifications')
   @Subscription(() => NotificationEventObject, {
     name: 'notificationEvents',
-    resolve: (message: UserChannelMessage) => (message.channel === 'notification' ? message.event : null),
+    resolve: (message: UserChannelMessage) =>
+      message.channel === 'notification' ? message.event : null,
   })
   notificationEvents(@CurrentUser('id') userId: string): AsyncIterableIterator<UserChannelMessage> {
     return this.bus.subscribe<UserChannelMessage>(

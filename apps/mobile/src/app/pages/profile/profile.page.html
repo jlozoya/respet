@@ -1,5 +1,11 @@
 <app-page-header [title]="profile()?.name ?? ''" [translateTitle]="false">
-  <button slot="end" type="button" class="rs-icon-btn plain" (click)="menu()" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+  <button
+    slot="end"
+    type="button"
+    class="rs-icon-btn plain"
+    (click)="menu()"
+    [attr.aria-label]="'COMMON.OPTIONS' | translate"
+  >
     <ion-icon name="ellipsis-horizontal" />
   </button>
 </app-page-header>
@@ -12,14 +18,24 @@
   @if (profile(); as person) {
     <section class="header">
       <div class="header-inner">
-        <div class="cover" [style.background-image]="person.cover ? 'url(' + person.cover.url + ')' : null">
+        <div
+          class="cover"
+          [style.background-image]="person.cover ? 'url(' + person.cover.url + ')' : null"
+        >
           @if (isOwn()) {
-            <ion-button size="small" class="rs-soft cover-button" [disabled]="uploading() === 'cover'" (click)="changeImage('cover')">
+            <ion-button
+              size="small"
+              class="rs-soft cover-button"
+              [disabled]="uploading() === 'cover'"
+              (click)="changeImage('cover')"
+            >
               @if (uploading() === 'cover') {
                 <ion-spinner name="crescent" />
               } @else {
                 <ion-icon slot="start" name="camera" />
-                <span class="rs-desktop-only">{{ (person.cover ? 'PROFILE.EDIT_COVER' : 'PROFILE.ADD_COVER') | translate }}</span>
+                <span class="rs-desktop-only">{{
+                  (person.cover ? 'PROFILE.EDIT_COVER' : 'PROFILE.ADD_COVER') | translate
+                }}</span>
               }
             </ion-button>
           }
@@ -27,12 +43,22 @@
 
         <div class="identity">
           <div class="avatar-wrap">
-            <button type="button" class="avatar-button" (click)="openStories()" [attr.aria-label]="person | fullName">
+            <button
+              type="button"
+              class="avatar-button"
+              (click)="openStories()"
+              [attr.aria-label]="person | fullName"
+            >
               <app-avatar [user]="person" [size]="168" [ring]="ring()" class="avatar big" />
               <app-avatar [user]="person" [size]="112" [ring]="ring()" class="avatar small" />
             </button>
             @if (isOwn()) {
-              <button type="button" class="rs-icon-btn camera" (click)="avatarMenu()" [attr.aria-label]="'PROFILE.CHANGE_AVATAR' | translate">
+              <button
+                type="button"
+                class="rs-icon-btn camera"
+                (click)="avatarMenu()"
+                [attr.aria-label]="'PROFILE.CHANGE_AVATAR' | translate"
+              >
                 @if (uploading() === 'avatar') {
                   <ion-spinner name="crescent" />
                 } @else {
@@ -55,36 +81,69 @@
             <span class="handle">&#64;{{ person.name }}</span>
 
             <div class="stats">
-              <span><b>{{ person.postCount | compactNumber }}</b> {{ 'PROFILE.POSTS' | translate }}</span>
-              <button type="button" (click)="showFollowers('followers')"><b>{{ person.followerCount | compactNumber }}</b> {{ 'PROFILE.FOLLOWERS' | translate }}</button>
-              <button type="button" (click)="showFollowers('following')"><b>{{ person.followingCount | compactNumber }}</b> {{ 'PROFILE.FOLLOWING' | translate }}</button>
+              <span
+                ><b>{{ person.postCount | compactNumber }}</b>
+                {{ 'PROFILE.POSTS' | translate }}</span
+              >
+              <button type="button" (click)="showFollowers('followers')">
+                <b>{{ person.followerCount | compactNumber }}</b>
+                {{ 'PROFILE.FOLLOWERS' | translate }}
+              </button>
+              <button type="button" (click)="showFollowers('following')">
+                <b>{{ person.followingCount | compactNumber }}</b>
+                {{ 'PROFILE.FOLLOWING' | translate }}
+              </button>
             </div>
 
             @if (!isOwn() && person.mutualFollowerCount) {
-              <span class="rs-small rs-muted">{{ 'PROFILE.MUTUALS' | translate: { count: person.mutualFollowerCount } }}</span>
+              <span class="rs-small rs-muted">{{
+                'PROFILE.MUTUALS' | translate: { count: person.mutualFollowerCount }
+              }}</span>
             }
             @if (!isOwn()) {
               @if (online()) {
                 <span class="rs-small presence">{{ 'PRESENCE.ACTIVE_NOW' | translate }}</span>
               } @else if (person.lastSeenAt) {
-                <span class="rs-small rs-muted">{{ 'PRESENCE.ACTIVE_AGO' | translate: { time: (person.lastSeenAt | relativeTime) } }}</span>
+                <span class="rs-small rs-muted">{{
+                  'PRESENCE.ACTIVE_AGO' | translate: { time: (person.lastSeenAt | relativeTime) }
+                }}</span>
               }
             }
           </div>
 
           <div class="buttons">
             @if (isOwn()) {
-              <ion-button (click)="addStory()"><ion-icon slot="start" name="add" /> {{ 'PROFILE.ADD_STORY' | translate }}</ion-button>
-              <ion-button class="rs-soft" routerLink="/settings/profile"><ion-icon slot="start" name="create" /> {{ 'PROFILE.EDIT' | translate }}</ion-button>
+              <ion-button (click)="addStory()"
+                ><ion-icon slot="start" name="add" />
+                {{ 'PROFILE.ADD_STORY' | translate }}</ion-button
+              >
+              <ion-button class="rs-soft" routerLink="/settings/profile"
+                ><ion-icon slot="start" name="create" />
+                {{ 'PROFILE.EDIT' | translate }}</ion-button
+              >
             } @else if (person.blockedByViewer) {
-              <ion-button class="rs-soft" (click)="unblock()">{{ 'PROFILE.UNBLOCK' | translate }}</ion-button>
+              <ion-button class="rs-soft" (click)="unblock()">{{
+                'PROFILE.UNBLOCK' | translate
+              }}</ion-button>
             } @else {
-              <app-follow-button size="default" [userId]="person.id" [followState]="person.followState" (changed)="onFollowChanged($event)" />
+              <app-follow-button
+                size="default"
+                [userId]="person.id"
+                [followState]="person.followState"
+                (changed)="onFollowChanged($event)"
+              />
               @if (person.canMessage) {
-                <ion-button class="rs-soft" (click)="message()"><ion-icon slot="start" name="chatbubble-ellipses" /> {{ 'PROFILE.MESSAGE' | translate }}</ion-button>
+                <ion-button class="rs-soft" (click)="message()"
+                  ><ion-icon slot="start" name="chatbubble-ellipses" />
+                  {{ 'PROFILE.MESSAGE' | translate }}</ion-button
+                >
               }
             }
-            <ion-button class="rs-soft rs-desktop-only" (click)="menu()" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+            <ion-button
+              class="rs-soft rs-desktop-only"
+              (click)="menu()"
+              [attr.aria-label]="'COMMON.OPTIONS' | translate"
+            >
               <ion-icon slot="icon-only" name="ellipsis-horizontal" />
             </ion-button>
           </div>
@@ -96,8 +155,14 @@
               <app-rich-text [text]="person.bio" />
             }
             @if (person.website) {
-              <a class="website" [href]="person.website" target="_blank" rel="noopener noreferrer nofollow">
-                <ion-icon name="link" /> {{ person.website.replace('https://', '').replace('http://', '') }}
+              <a
+                class="website"
+                [href]="person.website"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                <ion-icon name="link" />
+                {{ person.website.replace('https://', '').replace('http://', '') }}
               </a>
             }
           </div>
@@ -126,14 +191,26 @@
 
         @if (canView()) {
           <nav class="rs-tabs tabs">
-            <button type="button" class="rs-tab" [class.active]="tab() === 'posts'" (click)="tab.set('posts')">
+            <button
+              type="button"
+              class="rs-tab"
+              [class.active]="tab() === 'posts'"
+              (click)="tab.set('posts')"
+            >
               <ion-icon name="list" /> {{ 'PROFILE.POSTS' | translate }}
             </button>
-            <button type="button" class="rs-tab" [class.active]="tab() === 'photos'" (click)="tab.set('photos')">
+            <button
+              type="button"
+              class="rs-tab"
+              [class.active]="tab() === 'photos'"
+              (click)="tab.set('photos')"
+            >
               <ion-icon name="grid" /> {{ 'PROFILE.PHOTOS' | translate }}
             </button>
             @if (isOwn()) {
-              <a class="rs-tab" routerLink="/saved"><ion-icon name="bookmark" /> {{ 'NAV.SAVED' | translate }}</a>
+              <a class="rs-tab" routerLink="/saved"
+                ><ion-icon name="bookmark" /> {{ 'NAV.SAVED' | translate }}</a
+              >
             }
           </nav>
         }
@@ -144,7 +221,9 @@
       @if (person.blockedByViewer) {
         <div class="rs-card rs-empty">
           <ion-icon name="ban-outline" />
-          <h3>{{ 'PROFILE.YOU_BLOCKED' | translate: { name: person.firstName || person.name } }}</h3>
+          <h3>
+            {{ 'PROFILE.YOU_BLOCKED' | translate: { name: person.firstName || person.name } }}
+          </h3>
         </div>
       } @else if (!canView()) {
         <div class="rs-card rs-empty">
@@ -153,7 +232,11 @@
           <p>{{ 'PROFILE.PRIVATE' | translate }}</p>
         </div>
       } @else if (tab() === 'posts') {
-        <app-post-feed [query]="feedQuery()" emptyTitle="PROFILE.NO_POSTS" emptyIcon="camera-outline" />
+        <app-post-feed
+          [query]="feedQuery()"
+          emptyTitle="PROFILE.NO_POSTS"
+          emptyIcon="camera-outline"
+        />
       } @else {
         <app-post-grid class="rs-card" [query]="photosQuery()" emptyText="PROFILE.NO_PHOTOS" />
       }

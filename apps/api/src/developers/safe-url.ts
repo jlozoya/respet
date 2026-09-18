@@ -32,7 +32,9 @@ export async function assertPublicUrl(raw: string, allowPrivate: boolean): Promi
   }
 
   const host = url.hostname.replace(/^\[|\]$/g, '');
-  const addresses = isIP(host) ? [host] : (await lookup(host, { all: true })).map((entry) => entry.address);
+  const addresses = isIP(host)
+    ? [host]
+    : (await lookup(host, { all: true })).map((entry) => entry.address);
 
   if (addresses.length === 0 || addresses.some(isPrivateAddress)) {
     throw new Error('The URL points to a private network');
@@ -51,7 +53,7 @@ function isPrivateAddress(address: string): boolean {
       normalized.startsWith('fc') ||
       normalized.startsWith('fd') ||
       normalized.startsWith('fe80') ||
-      normalized.startsWith('::ffff:') && isPrivateAddress(normalized.slice('::ffff:'.length))
+      (normalized.startsWith('::ffff:') && isPrivateAddress(normalized.slice('::ffff:'.length)))
     );
   }
 

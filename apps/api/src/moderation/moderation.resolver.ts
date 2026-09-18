@@ -32,8 +32,13 @@ export class ModerationResolver {
   constructor(private readonly moderation: ModerationService) {}
 
   @RateLimit({ limit: 30, windowSeconds: 3600 })
-  @Mutation(() => Boolean, { description: 'Denuncia una publicación, comentario, persona, historia, mensaje o directo.' })
-  async reportContent(@CurrentUser('id') userId: string, @Args('input') input: ReportContentDto): Promise<boolean> {
+  @Mutation(() => Boolean, {
+    description: 'Denuncia una publicación, comentario, persona, historia, mensaje o directo.',
+  })
+  async reportContent(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: ReportContentDto,
+  ): Promise<boolean> {
     await this.moderation.report(userId, input.targetType, input.targetId, input.reason);
 
     return true;
@@ -50,7 +55,9 @@ export class ModerationResolver {
   }
 
   @Roles('supervisor')
-  @Mutation(() => Boolean, { description: 'Marca una denuncia —y las iguales— como revisada o descartada.' })
+  @Mutation(() => Boolean, {
+    description: 'Marca una denuncia —y las iguales— como revisada o descartada.',
+  })
   async resolveReport(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args('status', { type: () => ReportStatus }) status: ReportStatus,

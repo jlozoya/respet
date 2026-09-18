@@ -227,7 +227,10 @@ export class AuthService {
     );
 
     if (completeMfaLogin.trustedDeviceToken) {
-      await this.rememberTrustedDevice(completeMfaLogin.user.email, completeMfaLogin.trustedDeviceToken);
+      await this.rememberTrustedDevice(
+        completeMfaLogin.user.email,
+        completeMfaLogin.trustedDeviceToken,
+      );
     }
 
     return this.acceptSession(completeMfaLogin);
@@ -395,9 +398,12 @@ export class AuthService {
     }
 
     try {
-      const { refreshTokens } = await this.gql.request<{ refreshTokens: AuthTokens }>(REFRESH_TOKENS, {
-        refreshToken,
-      });
+      const { refreshTokens } = await this.gql.request<{ refreshTokens: AuthTokens }>(
+        REFRESH_TOKENS,
+        {
+          refreshToken,
+        },
+      );
       await this.storeTokens(refreshTokens);
 
       return refreshTokens.accessToken;
@@ -433,7 +439,10 @@ export class AuthService {
     return null;
   }
 
-  private async acceptLoginResult(result: LoginResult, email: string | null): Promise<LoginOutcome> {
+  private async acceptLoginResult(
+    result: LoginResult,
+    email: string | null,
+  ): Promise<LoginOutcome> {
     if (result.status === 'mfa_required' && result.challenge) {
       return { status: 'mfa_required', challenge: result.challenge, email };
     }

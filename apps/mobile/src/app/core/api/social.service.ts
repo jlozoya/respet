@@ -11,12 +11,7 @@ import type {
 import type { Observable } from 'rxjs';
 
 import { RealtimeService } from '../realtime/realtime.service';
-import {
-  POST_FRAGMENTS,
-  PUBLIC_PROFILE_FRAGMENTS,
-  USER_SUMMARY_FRAGMENTS,
-  gql,
-} from './fragments';
+import { POST_FRAGMENTS, PUBLIC_PROFILE_FRAGMENTS, USER_SUMMARY_FRAGMENTS, gql } from './fragments';
 import { GraphqlClientService } from './graphql-client.service';
 
 const SEARCH = gql(

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, HostListener, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { ModalController } from '@ionic/angular/modal-controller';
@@ -20,7 +28,13 @@ import type { Media } from '@social-network/shared';
         @if (current(); as item) {
           @switch (item.type) {
             @case ('video') {
-              <video [src]="item.url" [poster]="item.posterUrl ?? ''" controls autoplay playsinline></video>
+              <video
+                [src]="item.url"
+                [poster]="item.posterUrl ?? ''"
+                controls
+                autoplay
+                playsinline
+              ></video>
             }
             @case ('audio') {
               <audio [src]="item.url" controls autoplay></audio>
@@ -37,7 +51,13 @@ import type { Media } from '@social-network/shared';
       </button>
 
       @if (media().length > 1) {
-        <button type="button" class="control prev" [disabled]="index() === 0" (click)="go(-1)" aria-label="Anterior">
+        <button
+          type="button"
+          class="control prev"
+          [disabled]="index() === 0"
+          (click)="go(-1)"
+          aria-label="Anterior"
+        >
           <ion-icon name="chevron-back" />
         </button>
         <button

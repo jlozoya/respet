@@ -1,5 +1,11 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { AuthSession, AuthTokens, LoginResult, MfaLoginResult, User } from '@social-network/shared';
+import type {
+  AuthSession,
+  AuthTokens,
+  LoginResult,
+  MfaLoginResult,
+  User,
+} from '@social-network/shared';
 
 import {
   Client,
@@ -42,14 +48,18 @@ export class AuthResolver {
   @Public()
   @RateLimit({ limit: 5, windowSeconds: 900 })
   @Mutation(() => AuthSessionType, { description: 'Da de alta una cuenta y abre sesión.' })
-  async register(@Args('input') input: RegisterDto, @Client() client: ClientInfo): Promise<AuthSession> {
+  async register(
+    @Args('input') input: RegisterDto,
+    @Client() client: ClientInfo,
+  ): Promise<AuthSession> {
     return this.auth.register(input, client);
   }
 
   @Public()
   @RateLimit({ limit: 10, windowSeconds: 300 })
   @Mutation(() => LoginResultType, {
-    description: 'Primer paso del inicio de sesión. Con verificación en dos pasos devuelve un reto.',
+    description:
+      'Primer paso del inicio de sesión. Con verificación en dos pasos devuelve un reto.',
   })
   async login(@Args('input') input: LoginDto, @Client() client: ClientInfo): Promise<LoginResult> {
     return this.auth.login(input, client);
@@ -65,14 +75,18 @@ export class AuthResolver {
   @Public()
   @RateLimit({ limit: 20, windowSeconds: 300 })
   @Mutation(() => LoginResultType)
-  async socialLogin(@Args('input') input: SocialLoginDto, @Client() client: ClientInfo): Promise<LoginResult> {
+  async socialLogin(
+    @Args('input') input: SocialLoginDto,
+    @Client() client: ClientInfo,
+  ): Promise<LoginResult> {
     return this.auth.socialLogin(input, client);
   }
 
   @Public()
   @RateLimit({ limit: 10, windowSeconds: 300 })
   @Mutation(() => MfaLoginResultType, {
-    description: 'Segundo paso: completa el inicio de sesión con el código de la app o uno de recuperación.',
+    description:
+      'Segundo paso: completa el inicio de sesión con el código de la app o uno de recuperación.',
   })
   async completeMfaLogin(
     @Args('input') input: CompleteMfaLoginDto,
@@ -131,7 +145,10 @@ export class AuthResolver {
   @Public()
   @RateLimit({ limit: 10, windowSeconds: 900 })
   @Mutation(() => Boolean, { description: 'Fija una contraseña nueva con el token del correo.' })
-  async resetPassword(@Args('input') input: ResetPasswordDto, @Client() client: ClientInfo): Promise<boolean> {
+  async resetPassword(
+    @Args('input') input: ResetPasswordDto,
+    @Client() client: ClientInfo,
+  ): Promise<boolean> {
     await this.auth.resetPassword(input, client);
 
     return true;
@@ -158,7 +175,9 @@ export class AuthResolver {
    */
   @Public()
   @RateLimit({ limit: 20, windowSeconds: 900 })
-  @Mutation(() => Boolean, { description: 'Confirma una dirección de correo con el token del enlace.' })
+  @Mutation(() => Boolean, {
+    description: 'Confirma una dirección de correo con el token del enlace.',
+  })
   async verifyEmail(@Args('token') token: string): Promise<boolean> {
     await this.auth.verifyEmail(token);
 

@@ -1,5 +1,12 @@
 import { SlicePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, type OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { AlertController } from '@ionic/angular/alert-controller';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonContent } from '@ionic/angular/ion-content';
@@ -23,7 +30,16 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 @Component({
   selector: 'app-story-archive',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SlicePipe, TranslatePipe, IonContent, IonButton, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, PageHeaderComponent],
+  imports: [
+    SlicePipe,
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    PageHeaderComponent,
+  ],
   template: `
     <app-page-header title="NAV.STORY_ARCHIVE" />
 
@@ -32,10 +48,16 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
         <div class="head">
           <h1 class="rs-desktop-only">{{ 'NAV.STORY_ARCHIVE' | translate }}</h1>
           @if (selecting()) {
-            <span class="rs-muted">{{ 'STORIES.SELECTED' | translate: { count: selected().size } }}</span>
+            <span class="rs-muted">{{
+              'STORIES.SELECTED' | translate: { count: selected().size }
+            }}</span>
             <span class="spacer"></span>
-            <ion-button class="rs-soft" (click)="cancelSelection()">{{ 'CANCEL' | translate }}</ion-button>
-            <ion-button [disabled]="!selected().size" (click)="createHighlight()">{{ 'STORIES.CREATE_HIGHLIGHT' | translate }}</ion-button>
+            <ion-button class="rs-soft" (click)="cancelSelection()">{{
+              'CANCEL' | translate
+            }}</ion-button>
+            <ion-button [disabled]="!selected().size" (click)="createHighlight()">{{
+              'STORIES.CREATE_HIGHLIGHT' | translate
+            }}</ion-button>
           } @else {
             <span class="spacer"></span>
             <ion-button (click)="selecting.set(true)" [disabled]="!stories().length">
@@ -56,7 +78,9 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
                     }
                   </button>
                   <span class="rs-small rs-strong">{{ highlight.title }}</span>
-                  <button type="button" class="rs-text-btn" (click)="removeHighlight(highlight)">{{ 'DELETE' | translate }}</button>
+                  <button type="button" class="rs-text-btn" (click)="removeHighlight(highlight)">
+                    {{ 'DELETE' | translate }}
+                  </button>
                 </div>
               }
             </div>
@@ -65,10 +89,20 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 
         <div class="grid">
           @for (story of stories(); track story.id; let index = $index) {
-            <button type="button" class="tile" [class.picked]="selected().has(story.id)" (click)="tap(story, index)">
+            <button
+              type="button"
+              class="tile"
+              [class.picked]="selected().has(story.id)"
+              (click)="tap(story, index)"
+            >
               @switch (story.kind) {
                 @case ('text') {
-                  <span class="text" [style.background]="background(story)" [style.font-family]="font(story)">{{ story.text }}</span>
+                  <span
+                    class="text"
+                    [style.background]="background(story)"
+                    [style.font-family]="font(story)"
+                    >{{ story.text }}</span
+                  >
                 }
                 @default {
                   <img [src]="story.media?.posterUrl ?? story.media?.url" alt="" loading="lazy" />
@@ -248,7 +282,12 @@ export class StoryArchivePage implements OnInit {
 
     await Promise.all([
       this.fetch(),
-      me ? this.storiesService.highlights(me.id).then((items) => this.highlights.set(items), () => undefined) : Promise.resolve(),
+      me
+        ? this.storiesService.highlights(me.id).then(
+            (items) => this.highlights.set(items),
+            () => undefined,
+          )
+        : Promise.resolve(),
     ]);
   }
 
@@ -302,7 +341,13 @@ export class StoryArchivePage implements OnInit {
   async createHighlight(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: this.translate.instant('STORIES.HIGHLIGHT_NAME') as string,
-      inputs: [{ name: 'title', attributes: { maxlength: 40 }, placeholder: this.translate.instant('STORIES.HIGHLIGHT_PLACEHOLDER') as string }],
+      inputs: [
+        {
+          name: 'title',
+          attributes: { maxlength: 40 },
+          placeholder: this.translate.instant('STORIES.HIGHLIGHT_PLACEHOLDER') as string,
+        },
+      ],
       buttons: [
         { text: this.translate.instant('CANCEL') as string, role: 'cancel' },
         { text: this.translate.instant('ADD') as string, role: 'confirm' },
@@ -318,7 +363,9 @@ export class StoryArchivePage implements OnInit {
     }
 
     try {
-      const ids = this.stories().filter((story) => this.selected().has(story.id)).map((story) => story.id);
+      const ids = this.stories()
+        .filter((story) => this.selected().has(story.id))
+        .map((story) => story.id);
       const highlight = await this.storiesService.createHighlight({ title, storyIds: ids });
       this.highlights.update((items) => [highlight, ...items]);
       this.cancelSelection();

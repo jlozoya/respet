@@ -58,7 +58,11 @@ export class SocialService {
       throw AppException.notFound('User');
     }
 
-    await this.blocks.updateOne({ blockerId, blockedId }, { $setOnInsert: { blockerId, blockedId } }, { upsert: true });
+    await this.blocks.updateOne(
+      { blockerId, blockedId },
+      { $setOnInsert: { blockerId, blockedId } },
+      { upsert: true },
+    );
     await this.follows.deleteMany({
       $or: [
         { followerId: blockerId, followeeId: blockedId },
@@ -81,7 +85,9 @@ export class SocialService {
     return docs
       .filter((doc) => (doc as { blocked?: unknown }).blocked)
       .map((doc) => ({
-        user: toUserSummary((doc as unknown as { blocked: Parameters<typeof toUserSummary>[0] }).blocked),
+        user: toUserSummary(
+          (doc as unknown as { blocked: Parameters<typeof toUserSummary>[0] }).blocked,
+        ),
         blockedAt: toIso(doc.createdAt),
       }));
   }
@@ -121,7 +127,11 @@ export class SocialService {
             .limit(limit)
             .lean(),
       tag.length > 0
-        ? this.hashtags.find({ tag: new RegExp(`^${escapeRegex(tag)}`) }).sort({ postCount: -1 }).limit(limit).lean()
+        ? this.hashtags
+            .find({ tag: new RegExp(`^${escapeRegex(tag)}`) })
+            .sort({ postCount: -1 })
+            .limit(limit)
+            .lean()
         : Promise.resolve([]),
       this.posts
         .find({
@@ -185,14 +195,23 @@ export class SocialService {
     ];
 
     // Incluye también las solicitudes pendientes: no se sugiere a quien ya se pidió seguir.
-    const pending = await this.follows.find({ followerId: userId, pending: true }).select('followeeId').lean();
+    const pending = await this.follows
+      .find({ followerId: userId, pending: true })
+      .select('followeeId')
+      .lean();
     exclude.push(...pending.map((doc) => doc.followeeId));
 
     let rows: { _id: Types.ObjectId; total: number; via: Types.ObjectId[] }[] = [];
 
     if (following.length > 0) {
       rows = await this.follows.aggregate([
-        { $match: { followerId: { $in: following }, followeeId: { $nin: exclude }, pending: { $ne: true } } },
+        {
+          $match: {
+            followerId: { $in: following },
+            followeeId: { $nin: exclude },
+            pending: { $ne: true },
+          },
+        },
         { $group: { _id: '$followeeId', total: { $sum: 1 }, via: { $push: '$followerId' } } },
         { $sort: { total: -1 } },
         { $limit: limit },
@@ -228,7 +247,9 @@ export class SocialService {
       rows.push(...recent.map((doc) => ({ _id: doc._id, total: 0, via: [] })));
     }
 
-    const userIds = [...new Set(rows.flatMap((row) => [row._id, ...row.via.slice(0, 2)]).map(String))];
+    const userIds = [
+      ...new Set(rows.flatMap((row) => [row._id, ...row.via.slice(0, 2)]).map(String)),
+    ];
     const docs = await this.users
       .find({ _id: { $in: userIds } })
       .select(SUMMARY_FIELDS)
@@ -273,7 +294,11 @@ export class SocialService {
         online: online.has(String(doc._id)),
         lastSeenAt: online.has(String(doc._id)) ? null : toIso(doc.lastSeenAt),
       }))
-      .sort((a, b) => Number(b.online) - Number(a.online) || (b.lastSeenAt ?? '').localeCompare(a.lastSeenAt ?? ''))
+      .sort(
+        (a, b) =>
+          Number(b.online) - Number(a.online) ||
+          (b.lastSeenAt ?? '').localeCompare(a.lastSeenAt ?? ''),
+      )
       .slice(0, limit);
   }
 }

@@ -2,12 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from '../../database/mongoose.js';
 import type { HydratedDocument, Types } from '../../database/mongoose.js';
 
-import {
-  ConversationRole,
-  ConversationType,
-  MessageKind,
-  SystemMessageAction,
-} from './enums.js';
+import { ConversationRole, ConversationType, MessageKind, SystemMessageAction } from './enums.js';
 
 /**
  * Una conversación: de dos o de grupo.

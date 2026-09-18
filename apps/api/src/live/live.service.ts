@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  Logger,
+  type OnModuleDestroy,
+  type OnModuleInit,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type {
   LiveComment as LiveCommentDto,
@@ -12,7 +18,12 @@ import type { AuthenticatedUser } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';
 import { toIso, toUserSummary, type UserSummaryDoc } from '../common/mappers.js';
 import { isValidObjectId, ObjectId, type Model, type Types } from '../database/mongoose.js';
-import { Audience, LiveEventType, LiveStatus, NotificationType } from '../database/schemas/enums.js';
+import {
+  Audience,
+  LiveEventType,
+  LiveStatus,
+  NotificationType,
+} from '../database/schemas/enums.js';
 import { LiveComment, LiveStream } from '../database/schemas/story.schema.js';
 import { User, UserPermissions } from '../database/schemas/user.schema.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
@@ -30,7 +41,10 @@ const MAX_LIVE_NOTIFICATIONS = 2000;
 
 const SUMMARY = 'name firstName lastName avatarId verified';
 
-type LeanStream = LiveStream & { _id: Types.ObjectId; host?: UserSummaryDoc & { _id: Types.ObjectId } };
+type LeanStream = LiveStream & {
+  _id: Types.ObjectId;
+  host?: UserSummaryDoc & { _id: Types.ObjectId };
+};
 
 /**
  * Directos: quién emite, quién mira y lo que se comenta.
@@ -74,12 +88,20 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
   async start(host: AuthenticatedUser, title: string, audience: Audience): Promise<LiveConnection> {
     this.livekit.assertEnabled();
 
-    const active = await this.streams.findOne({ hostId: host.id, status: LiveStatus.Live }).select('_id').lean();
+    const active = await this.streams
+      .findOne({ hostId: host.id, status: LiveStatus.Live })
+      .select('_id')
+      .lean();
 
     if (active) {
-      throw new AppException(ErrorCode.LiveAlreadyActive, HttpStatus.CONFLICT, 'You are already live', {
-        streamId: [String(active._id)],
-      });
+      throw new AppException(
+        ErrorCode.LiveAlreadyActive,
+        HttpStatus.CONFLICT,
+        'You are already live',
+        {
+          streamId: [String(active._id)],
+        },
+      );
     }
 
     const roomName = `live-${randomUUID()}`;
@@ -99,7 +121,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
     const identity = await this.identityOf(host.id);
 
     void this.notifyFollowers(host.id, String(created._id));
-    await this.bus.publish(Topic.domain(DomainEvent.LiveStarted), { streamId: String(created._id), userId: host.id });
+    await this.bus.publish(Topic.domain(DomainEvent.LiveStarted), {
+      streamId: String(created._id),
+      userId: host.id,
+    });
 
     return {
       stream: this.present(stream),
@@ -125,9 +150,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
     return {
       stream: this.present(stream),
       serverUrl: this.livekit.serverUrl,
-      token: String(stream.hostId) === viewer.id
-        ? await this.livekit.hostToken(stream.roomName, identity)
-        : await this.livekit.viewerToken(stream.roomName, identity),
+      token:
+        String(stream.hostId) === viewer.id
+          ? await this.livekit.hostToken(stream.roomName, identity)
+          : await this.livekit.viewerToken(stream.roomName, identity),
     };
   }
 
@@ -205,7 +231,11 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
 
     const user = await this.users.findById(userId).select(SUMMARY).populate('avatar').lean();
 
-    await this.emit(streamId, { type: LiveEventType.Reaction, reaction: emoji, user: toUserSummary(user) });
+    await this.emit(streamId, {
+      type: LiveEventType.Reaction,
+      reaction: emoji,
+      user: toUserSummary(user),
+    });
 
     return true;
   }
@@ -232,7 +262,8 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
       )
       .sort(
         (a, b) =>
-          Number(context.followingIds.has(String(b.hostId))) - Number(context.followingIds.has(String(a.hostId))),
+          Number(context.followingIds.has(String(b.hostId))) -
+          Number(context.followingIds.has(String(a.hostId))),
       )
       .slice(0, limit)
       .map((doc) => this.present(doc));
@@ -251,7 +282,9 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
   ): Promise<{ data: LiveCommentDto[]; nextCursor: string | null }> {
     await this.findVisible(streamId, viewerId);
 
-    const blocked = viewerId ? [...(await this.relationships.blockedIds(viewerId))].map((id) => new ObjectId(id)) : [];
+    const blocked = viewerId
+      ? [...(await this.relationships.blockedIds(viewerId))].map((id) => new ObjectId(id))
+      : [];
     const take = Math.min(Math.max(limit, 1), 100);
 
     const docs = await this.comments
@@ -300,7 +333,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
   private async endAbandoned(): Promise<void> {
     try {
       const stale = (await this.streams
-        .find({ status: LiveStatus.Live, lastHeartbeatAt: { $lt: new Date(Date.now() - HEARTBEAT_TIMEOUT_MS) } })
+        .find({
+          status: LiveStatus.Live,
+          lastHeartbeatAt: { $lt: new Date(Date.now() - HEARTBEAT_TIMEOUT_MS) },
+        })
         .lean()) as unknown as LeanStream[];
 
       for (const stream of stale) {
@@ -325,7 +361,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async emit(streamId: string, event: Partial<LiveEvent> & { type: LiveEvent['type'] }): Promise<void> {
+  private async emit(
+    streamId: string,
+    event: Partial<LiveEvent> & { type: LiveEvent['type'] },
+  ): Promise<void> {
     const payload: LiveEvent = {
       streamId,
       comment: null,
@@ -373,7 +412,11 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
     return stream;
   }
 
-  private async assertHost(streamId: string, userId: string, allowAdmin = false): Promise<LeanStream> {
+  private async assertHost(
+    streamId: string,
+    userId: string,
+    allowAdmin = false,
+  ): Promise<LeanStream> {
     const stream = await this.findDoc(streamId);
 
     if (String(stream.hostId) !== userId && !allowAdmin) {
@@ -385,7 +428,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
 
   private async privateHostsOf(docs: LeanStream[]): Promise<Set<string>> {
     const ids = [...new Set(docs.map((doc) => String(doc.hostId)))];
-    const rows = await this.permissions.find({ userId: { $in: ids }, privateProfile: true }).select('userId').lean();
+    const rows = await this.permissions
+      .find({ userId: { $in: ids }, privateProfile: true })
+      .select('userId')
+      .lean();
 
     return new Set(rows.map((row) => String(row.userId)));
   }
@@ -393,7 +439,10 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
   private async identityOf(userId: string): Promise<{ id: string; name: string }> {
     const user = await this.users.findById(userId).select('firstName lastName name').lean();
 
-    return { id: userId, name: user ? `${user.firstName} ${user.lastName}`.trim() || user.name : userId };
+    return {
+      id: userId,
+      name: user ? `${user.firstName} ${user.lastName}`.trim() || user.name : userId,
+    };
   }
 
   private present(doc: LeanStream): LiveStreamDto {
@@ -412,7 +461,9 @@ export class LiveService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  private presentComment(doc: LiveComment & { _id: Types.ObjectId; author?: UserSummaryDoc & { _id: Types.ObjectId } }): LiveCommentDto {
+  private presentComment(
+    doc: LiveComment & { _id: Types.ObjectId; author?: UserSummaryDoc & { _id: Types.ObjectId } },
+  ): LiveCommentDto {
     return {
       id: String(doc._id),
       streamId: String(doc.streamId),

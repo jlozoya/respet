@@ -27,7 +27,9 @@
           }
 
           <ion-item class="total">
-            <ion-label><strong>{{ 'ORDER.TOTAL' | translate }}</strong></ion-label>
+            <ion-label
+              ><strong>{{ 'ORDER.TOTAL' | translate }}</strong></ion-label
+            >
             <ion-note slot="end" color="dark">
               <strong>{{ current.total | currency: 'MXN' }}</strong>
             </ion-note>

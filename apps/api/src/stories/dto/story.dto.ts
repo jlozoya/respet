@@ -22,12 +22,18 @@ import { Audience, StoryKind } from '../../graphql/enums.js';
 
 @InputType('CreateStoryInput')
 export class CreateStoryDto implements CreateStoryRequest {
-  @Field(() => StoryKind, { nullable: true, description: 'Sólo hace falta para las de texto; con archivo se deduce.' })
+  @Field(() => StoryKind, {
+    nullable: true,
+    description: 'Sólo hace falta para las de texto; con archivo se deduce.',
+  })
   @IsOptional()
   @IsEnum(StoryKind)
   kind?: StoryKind;
 
-  @Field(() => String, { nullable: true, description: 'El texto de una historia de texto, o el pie de una foto.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'El texto de una historia de texto, o el pie de una foto.',
+  })
   @IsOptional()
   @Transform(trim)
   @IsString()
@@ -49,7 +55,10 @@ export class CreateStoryDto implements CreateStoryRequest {
   @IsEnum(Audience)
   audience?: Audience;
 
-  @Field(() => Int, { nullable: true, description: 'Duración de un vídeo, por si el servidor no puede medirla.' })
+  @Field(() => Int, {
+    nullable: true,
+    description: 'Duración de un vídeo, por si el servidor no puede medirla.',
+  })
   @IsOptional()
   @IsInt()
   @Min(0)

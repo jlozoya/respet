@@ -61,7 +61,10 @@ export class GalleryComponent {
   async openViewer(image: Media): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: ImgModalComponent,
-      componentProps: { images: this.images(), startIndex: Math.max(0, this.images().indexOf(image)) },
+      componentProps: {
+        images: this.images(),
+        startIndex: Math.max(0, this.images().indexOf(image)),
+      },
     });
 
     await modal.present();

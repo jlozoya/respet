@@ -141,7 +141,11 @@ export class PayPalClient {
 
   private async request<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
     if (!this.enabled) {
-      throw new AppException(ErrorCode.PaymentFailed, 501, 'PayPal is not configured on this server');
+      throw new AppException(
+        ErrorCode.PaymentFailed,
+        501,
+        'PayPal is not configured on this server',
+      );
     }
 
     const response = await fetch(`${this.baseUrl}${path}`, {

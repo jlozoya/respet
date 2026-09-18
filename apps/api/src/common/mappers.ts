@@ -99,7 +99,11 @@ export const POPULATE_POST = [
   { path: 'author', populate: { path: 'avatar' } },
   { path: 'location' },
   { path: 'media' },
-  { path: 'mentions', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } },
+  {
+    path: 'mentions',
+    select: 'name firstName lastName avatarId verified',
+    populate: { path: 'avatar' },
+  },
   {
     path: 'sharedPost',
     populate: [
@@ -446,7 +450,16 @@ export function toPublicProfile(
   >,
   extra: Omit<
     PublicProfile,
-    'id' | 'name' | 'firstName' | 'lastName' | 'avatar' | 'cover' | 'bio' | 'website' | 'verified' | 'createdAt'
+    | 'id'
+    | 'name'
+    | 'firstName'
+    | 'lastName'
+    | 'avatar'
+    | 'cover'
+    | 'bio'
+    | 'website'
+    | 'verified'
+    | 'createdAt'
   >,
 ): PublicProfile {
   return {

@@ -80,7 +80,10 @@ export class OAuthController {
         return;
       }
 
-      throw new OAuthError('unsupported_grant_type', 'Supported grant types: authorization_code, refresh_token');
+      throw new OAuthError(
+        'unsupported_grant_type',
+        'Supported grant types: authorization_code, refresh_token',
+      );
     } catch (error) {
       sendOAuthError(response, error);
     }
@@ -97,7 +100,10 @@ export class OAuthController {
   ): Promise<void> {
     try {
       if (body.token) {
-        await this.oauth.revokeToken({ ...clientCredentials(body, authorization), token: body.token });
+        await this.oauth.revokeToken({
+          ...clientCredentials(body, authorization),
+          token: body.token,
+        });
       }
 
       response.status(HttpStatus.OK).json({});
@@ -156,7 +162,9 @@ function sendOAuthError(response: Response, error: unknown): void {
   if (error instanceof OAuthError) {
     const payload = error.getResponse() as { message: string };
 
-    response.status(error.getStatus()).json({ error: error.oauthCode, error_description: payload.message });
+    response
+      .status(error.getStatus())
+      .json({ error: error.oauthCode, error_description: payload.message });
 
     return;
   }

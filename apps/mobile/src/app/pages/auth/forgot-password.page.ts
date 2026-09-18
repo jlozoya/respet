@@ -22,21 +22,43 @@ import { AuthLayoutComponent } from './auth-layout.component';
 @Component({
   selector: 'app-forgot-password',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, AuthLayoutComponent, ControlMessagesComponent, IonInput, IonButton, IonIcon, IonSpinner],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    AuthLayoutComponent,
+    ControlMessagesComponent,
+    IonInput,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+  ],
   template: `
     <app-auth-layout [showPitch]="false">
       @if (sent()) {
         <div class="done">
           <ion-icon name="mail-unread-outline" />
           <h2>{{ 'AUTH.CHECK_EMAIL' | translate }}</h2>
-          <p class="rs-muted">{{ 'AUTH.RESET_SENT' | translate: { email: form.controls.email.value } }}</p>
-          <ion-button routerLink="/login" expand="block">{{ 'AUTH.BACK_TO_LOGIN' | translate }}</ion-button>
+          <p class="rs-muted">
+            {{ 'AUTH.RESET_SENT' | translate: { email: form.controls.email.value } }}
+          </p>
+          <ion-button routerLink="/login" expand="block">{{
+            'AUTH.BACK_TO_LOGIN' | translate
+          }}</ion-button>
         </div>
       } @else {
         <form class="form" [formGroup]="form" (ngSubmit)="send()">
           <h2>{{ 'AUTH.FIND_ACCOUNT' | translate }}</h2>
           <p class="rs-muted">{{ 'FORGOT_PASSWORD_MESSAGE' | translate }}</p>
-          <ion-input fill="outline" formControlName="email" type="email" inputmode="email" autocomplete="email" [placeholder]="'EMAIL' | translate" [attr.aria-label]="'EMAIL' | translate" />
+          <ion-input
+            fill="outline"
+            formControlName="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            [placeholder]="'EMAIL' | translate"
+            [attr.aria-label]="'EMAIL' | translate"
+          />
           <app-control-messages [control]="form.controls.email" />
           <div class="actions">
             <ion-button class="rs-soft" routerLink="/login">{{ 'CANCEL' | translate }}</ion-button>
@@ -114,7 +136,10 @@ export class ForgotPasswordPage {
     this.busy.set(true);
 
     try {
-      await this.auth.forgotPassword(this.form.controls.email.value.trim(), this.language.current());
+      await this.auth.forgotPassword(
+        this.form.controls.email.value.trim(),
+        this.language.current(),
+      );
     } catch {
       // Igual que el servidor: un fallo no debe delatar si la cuenta existe.
     } finally {

@@ -44,7 +44,11 @@ describe('enumerados del esquema', () => {
   });
 
   it('describe los muros y los intervalos con sus propios valores', () => {
-    expect(esquema.PostFeed).toEqual({ home: 'home', discover: 'discover', following: 'following' });
+    expect(esquema.PostFeed).toEqual({
+      home: 'home',
+      discover: 'discover',
+      following: 'following',
+    });
     expect(Object.keys(esquema.RegistrationInterval)).toEqual(['day', 'week', 'month', 'year']);
   });
 });

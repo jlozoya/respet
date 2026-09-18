@@ -50,7 +50,10 @@ export class ReauthService {
       try {
         return await operation(reauth);
       } catch (error) {
-        if (error instanceof ApiError && (error.is('SERVER.INCORRECT_USER') || error.is('SERVER.INVALID_MFA_CODE'))) {
+        if (
+          error instanceof ApiError &&
+          (error.is('SERVER.INCORRECT_USER') || error.is('SERVER.INVALID_MFA_CODE'))
+        ) {
           await this.feedback.error(error);
           continue;
         }
@@ -85,8 +88,18 @@ export class ReauthService {
       message: this.t(usesPassword ? 'REAUTH.PASSWORD_MESSAGE' : 'REAUTH.CODE_MESSAGE'),
       inputs: [
         usesPassword
-          ? { name: 'value', type: 'password', placeholder: this.t('PASSWORD'), attributes: { autocomplete: 'current-password' } }
-          : { name: 'value', type: 'text', placeholder: '123456', attributes: { inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 12 } },
+          ? {
+              name: 'value',
+              type: 'password',
+              placeholder: this.t('PASSWORD'),
+              attributes: { autocomplete: 'current-password' },
+            }
+          : {
+              name: 'value',
+              type: 'text',
+              placeholder: '123456',
+              attributes: { inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 12 },
+            },
       ],
       buttons: [
         { text: this.t('CANCEL'), role: 'cancel' },

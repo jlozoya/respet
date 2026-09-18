@@ -38,15 +38,24 @@ export class MailService implements OnModuleDestroy {
   }
 
   async sendVerifyEmail(to: string, name: string, url: string, lang: string): Promise<void> {
-    await this.send(to, verifyEmailMail({ name, url, lang: resolveLang(lang), brand: this.brand() }));
+    await this.send(
+      to,
+      verifyEmailMail({ name, url, lang: resolveLang(lang), brand: this.brand() }),
+    );
   }
 
   async sendPasswordReset(to: string, name: string, url: string, lang: string): Promise<void> {
-    await this.send(to, resetPasswordMail({ name, url, lang: resolveLang(lang), brand: this.brand() }));
+    await this.send(
+      to,
+      resetPasswordMail({ name, url, lang: resolveLang(lang), brand: this.brand() }),
+    );
   }
 
   async sendSupportConfirmation(to: string, name: string, lang: string): Promise<void> {
-    await this.send(to, supportConfirmationMail({ name, lang: resolveLang(lang), brand: this.brand() }));
+    await this.send(
+      to,
+      supportConfirmationMail({ name, lang: resolveLang(lang), brand: this.brand() }),
+    );
   }
 
   /** Avisa al buzón de soporte. No hace nada si `SUPPORT_MAIL` está vacío. */
@@ -62,7 +71,11 @@ export class MailService implements OnModuleDestroy {
       return;
     }
 
-    await this.send(inbox, supportNotificationMail({ ...params, brand: this.brand() }), params.email);
+    await this.send(
+      inbox,
+      supportNotificationMail({ ...params, brand: this.brand() }),
+      params.email,
+    );
   }
 
   async sendPaymentConfirmation(

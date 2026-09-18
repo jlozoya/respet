@@ -7,8 +7,12 @@ import { applyPostChange } from './posts.service';
 
 describe('operationNameOf', () => {
   it('saca el nombre de la operación del documento', () => {
-    expect(operationNameOf('query Posts($query: PostListQueryInput) { posts { data { id } } }')).toBe('Posts');
-    expect(operationNameOf('mutation CreatePost($input: CreatePostInput!) { createPost { id } }')).toBe('CreatePost');
+    expect(
+      operationNameOf('query Posts($query: PostListQueryInput) { posts { data { id } } }'),
+    ).toBe('Posts');
+    expect(
+      operationNameOf('mutation CreatePost($input: CreatePostInput!) { createPost { id } }'),
+    ).toBe('CreatePost');
     expect(operationNameOf('subscription ChatEvents { chatEvents { type } }')).toBe('ChatEvents');
   });
 
@@ -24,7 +28,11 @@ describe('applyPostChange', () => {
   ];
 
   it('mezcla los cambios en la publicación que toca', () => {
-    const result = applyPostChange(posts, { type: 'updated', id: 'b', changes: { reactionCount: 5 } });
+    const result = applyPostChange(posts, {
+      type: 'updated',
+      id: 'b',
+      changes: { reactionCount: 5 },
+    });
 
     expect(result[1]).toEqual({ id: 'b', reactionCount: 5 });
     // Las demás se quedan como estaban, con la misma referencia.
@@ -32,7 +40,9 @@ describe('applyPostChange', () => {
   });
 
   it('quita la publicación borrada', () => {
-    expect(applyPostChange(posts, { type: 'deleted', id: 'a' }).map((post) => post.id)).toEqual(['b']);
+    expect(applyPostChange(posts, { type: 'deleted', id: 'a' }).map((post) => post.id)).toEqual([
+      'b',
+    ]);
   });
 });
 
@@ -52,7 +62,9 @@ describe('notificationLink', () => {
   const base = {
     id: '1',
     actorCount: 1,
-    actors: [{ id: 'u1', name: 'ana', firstName: 'Ana', lastName: 'Ruiz', avatar: null, verified: false }],
+    actors: [
+      { id: 'u1', name: 'ana', firstName: 'Ana', lastName: 'Ruiz', avatar: null, verified: false },
+    ],
     commentId: null,
     liveStreamId: null,
     postId: null,
@@ -73,7 +85,9 @@ describe('notificationLink', () => {
   });
 
   it('lleva al directo que ha empezado', () => {
-    expect(notificationLink({ ...base, type: 'live_started', liveStreamId: 'l1' })).toBe('/live/l1');
+    expect(notificationLink({ ...base, type: 'live_started', liveStreamId: 'l1' })).toBe(
+      '/live/l1',
+    );
   });
 
   it('lleva a seguridad con un aviso de la cuenta', () => {

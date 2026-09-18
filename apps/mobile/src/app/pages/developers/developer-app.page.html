@@ -5,20 +5,38 @@
     @if (app(); as current) {
       <header class="rs-card block">
         <div class="row">
-          <button type="button" class="icon-button" (click)="changeIcon()" [attr.aria-label]="'DEVELOPERS.APP_ICON' | translate">
+          <button
+            type="button"
+            class="icon-button"
+            (click)="changeIcon()"
+            [attr.aria-label]="'DEVELOPERS.APP_ICON' | translate"
+          >
             <app-avatar [src]="current.icon?.url" [label]="current.name" [size]="64" />
             <span class="camera"><ion-icon name="camera" /></span>
           </button>
           <div class="app-text">
             <h1>{{ current.name }}</h1>
-            <span class="rs-small rs-muted">{{ current.description || ('DEVELOPERS.NO_DESCRIPTION' | translate) }}</span>
-            <span class="badge" [class]="current.status">{{ 'DEVELOPERS.STATUS.' + current.status.toUpperCase() | translate }}</span>
+            <span class="rs-small rs-muted">{{
+              current.description || ('DEVELOPERS.NO_DESCRIPTION' | translate)
+            }}</span>
+            <span class="badge" [class]="current.status">{{
+              'DEVELOPERS.STATUS.' + current.status.toUpperCase() | translate
+            }}</span>
           </div>
           <div class="actions">
-            <ion-button size="small" class="rs-soft" (click)="edit()"><ion-icon slot="start" name="create-outline" /> {{ 'EDIT' | translate }}</ion-button>
+            <ion-button size="small" class="rs-soft" (click)="edit()"
+              ><ion-icon slot="start" name="create-outline" /> {{ 'EDIT' | translate }}</ion-button
+            >
             @if (current.status !== 'suspended') {
-              <ion-button size="small" [class.rs-soft]="current.status === 'live'" (click)="toggleStatus()">
-                {{ (current.status === 'live' ? 'DEVELOPERS.TO_DEVELOPMENT' : 'DEVELOPERS.PUBLISH') | translate }}
+              <ion-button
+                size="small"
+                [class.rs-soft]="current.status === 'live'"
+                (click)="toggleStatus()"
+              >
+                {{
+                  (current.status === 'live' ? 'DEVELOPERS.TO_DEVELOPMENT' : 'DEVELOPERS.PUBLISH')
+                    | translate
+                }}
               </ion-button>
             }
           </div>
@@ -26,10 +44,38 @@
       </header>
 
       <nav class="rs-tabs tabs">
-        <button type="button" class="rs-tab" [class.active]="tab() === 'settings'" (click)="tab.set('settings')">{{ 'DEVELOPERS.TAB_SETTINGS' | translate }}</button>
-        <button type="button" class="rs-tab" [class.active]="tab() === 'webhook'" (click)="tab.set('webhook')">{{ 'DEVELOPERS.WEBHOOKS' | translate }}</button>
-        <button type="button" class="rs-tab" [class.active]="tab() === 'testers'" (click)="tab.set('testers')">{{ 'DEVELOPERS.TESTERS' | translate }}</button>
-        <button type="button" class="rs-tab" [class.active]="tab() === 'usage'" (click)="tab.set('usage')">{{ 'DEVELOPERS.USAGE' | translate }}</button>
+        <button
+          type="button"
+          class="rs-tab"
+          [class.active]="tab() === 'settings'"
+          (click)="tab.set('settings')"
+        >
+          {{ 'DEVELOPERS.TAB_SETTINGS' | translate }}
+        </button>
+        <button
+          type="button"
+          class="rs-tab"
+          [class.active]="tab() === 'webhook'"
+          (click)="tab.set('webhook')"
+        >
+          {{ 'DEVELOPERS.WEBHOOKS' | translate }}
+        </button>
+        <button
+          type="button"
+          class="rs-tab"
+          [class.active]="tab() === 'testers'"
+          (click)="tab.set('testers')"
+        >
+          {{ 'DEVELOPERS.TESTERS' | translate }}
+        </button>
+        <button
+          type="button"
+          class="rs-tab"
+          [class.active]="tab() === 'usage'"
+          (click)="tab.set('usage')"
+        >
+          {{ 'DEVELOPERS.USAGE' | translate }}
+        </button>
       </nav>
 
       @switch (tab()) {
@@ -39,18 +85,26 @@
             <div class="endpoints">
               <div class="endpoint">
                 <span class="rs-small rs-muted">client_id</span>
-                <button type="button" class="copy" (click)="copy(current.clientId)">{{ current.clientId }} <ion-icon name="copy-outline" /></button>
+                <button type="button" class="copy" (click)="copy(current.clientId)">
+                  {{ current.clientId }} <ion-icon name="copy-outline" />
+                </button>
               </div>
               <div class="endpoint">
                 <span class="rs-small rs-muted">client_secret</span>
                 <span class="copy">
-                  {{ current.clientSecretHint ? '••••••••' + current.clientSecretHint : ('DEVELOPERS.PUBLIC_NO_SECRET' | translate) }}
+                  {{
+                    current.clientSecretHint
+                      ? '••••••••' + current.clientSecretHint
+                      : ('DEVELOPERS.PUBLIC_NO_SECRET' | translate)
+                  }}
                 </span>
               </div>
             </div>
             @if (current.clientType === 'confidential') {
               <div class="actions">
-                <ion-button size="small" fill="outline" color="danger" (click)="rotateSecret()">{{ 'DEVELOPERS.ROTATE_SECRET' | translate }}</ion-button>
+                <ion-button size="small" fill="outline" color="danger" (click)="rotateSecret()">{{
+                  'DEVELOPERS.ROTATE_SECRET' | translate
+                }}</ion-button>
               </div>
             }
           </section>
@@ -58,7 +112,9 @@
           <section class="rs-card block">
             <h2>{{ 'DEVELOPERS.REDIRECT_URIS' | translate }}</h2>
             @for (uri of current.redirectUris; track uri) {
-              <div class="endpoint"><span class="copy">{{ uri }}</span></div>
+              <div class="endpoint">
+                <span class="copy">{{ uri }}</span>
+              </div>
             }
 
             <h2>{{ 'DEVELOPERS.ALLOWED_SCOPES' | translate }}</h2>
@@ -69,14 +125,18 @@
             </div>
 
             <h2>{{ 'DEVELOPERS.LIMITS' | translate }}</h2>
-            <p class="rs-muted">{{ 'DEVELOPERS.RATE_LIMIT' | translate: { count: current.rateLimitPerHour } }}</p>
+            <p class="rs-muted">
+              {{ 'DEVELOPERS.RATE_LIMIT' | translate: { count: current.rateLimitPerHour } }}
+            </p>
           </section>
 
           <section class="rs-card block danger-zone">
             <h2>{{ 'DEVELOPERS.DELETE_APP' | translate }}</h2>
             <p class="rs-muted">{{ 'DEVELOPERS.DELETE_APP_HINT' | translate }}</p>
             <div class="actions">
-              <ion-button size="small" color="danger" fill="outline" (click)="remove()">{{ 'DELETE' | translate }}</ion-button>
+              <ion-button size="small" color="danger" fill="outline" (click)="remove()">{{
+                'DELETE' | translate
+              }}</ion-button>
             </div>
           </section>
         }
@@ -99,7 +159,11 @@
 
               <div class="row">
                 <span>{{ 'DEVELOPERS.WEBHOOK_ACTIVE' | translate }}</span>
-                <ion-toggle [checked]="webhookActive()" (ionChange)="webhookActive.set($event.detail.checked)" [attr.aria-label]="'DEVELOPERS.WEBHOOK_ACTIVE' | translate" />
+                <ion-toggle
+                  [checked]="webhookActive()"
+                  (ionChange)="webhookActive.set($event.detail.checked)"
+                  [attr.aria-label]="'DEVELOPERS.WEBHOOK_ACTIVE' | translate"
+                />
               </div>
 
               <div class="checks">
@@ -124,9 +188,27 @@
                   }
                 </span>
                 <span class="actions">
-                  <ion-button size="small" class="rs-soft" (click)="verifyWebhook()" [disabled]="busy()">{{ 'DEVELOPERS.VERIFY' | translate }}</ion-button>
-                  <ion-button size="small" class="rs-soft" (click)="testWebhook()" [disabled]="busy()">{{ 'DEVELOPERS.SEND_TEST' | translate }}</ion-button>
-                  <ion-button size="small" class="rs-soft" (click)="rotateWebhookSecret()" [disabled]="busy()">{{ 'DEVELOPERS.NEW_SECRET' | translate }}</ion-button>
+                  <ion-button
+                    size="small"
+                    class="rs-soft"
+                    (click)="verifyWebhook()"
+                    [disabled]="busy()"
+                    >{{ 'DEVELOPERS.VERIFY' | translate }}</ion-button
+                  >
+                  <ion-button
+                    size="small"
+                    class="rs-soft"
+                    (click)="testWebhook()"
+                    [disabled]="busy()"
+                    >{{ 'DEVELOPERS.SEND_TEST' | translate }}</ion-button
+                  >
+                  <ion-button
+                    size="small"
+                    class="rs-soft"
+                    (click)="rotateWebhookSecret()"
+                    [disabled]="busy()"
+                    >{{ 'DEVELOPERS.NEW_SECRET' | translate }}</ion-button
+                  >
                   <ion-button size="small" (click)="saveWebhook()" [disabled]="busy()">
                     @if (busy()) {
                       <ion-spinner name="crescent" />
@@ -143,11 +225,20 @@
             <h2>{{ 'DEVELOPERS.DELIVERIES' | translate }}</h2>
             @for (delivery of deliveries(); track delivery.id) {
               <div class="delivery">
-                <ion-icon [name]="delivery.status === 'delivered' ? 'checkmark-circle' : delivery.status === 'failed' ? 'close-circle' : 'time-outline'" />
+                <ion-icon
+                  [name]="
+                    delivery.status === 'delivered'
+                      ? 'checkmark-circle'
+                      : delivery.status === 'failed'
+                        ? 'close-circle'
+                        : 'time-outline'
+                  "
+                />
                 <span class="text">
                   <span class="rs-strong">{{ delivery.event }}</span>
                   <span class="rs-small rs-muted">
-                    {{ delivery.createdAt | relativeTime }} · {{ 'DEVELOPERS.ATTEMPTS' | translate: { count: delivery.attempts } }}
+                    {{ delivery.createdAt | relativeTime }} ·
+                    {{ 'DEVELOPERS.ATTEMPTS' | translate: { count: delivery.attempts } }}
                     @if (delivery.responseStatus) {
                       · HTTP {{ delivery.responseStatus }}
                     }
@@ -170,7 +261,9 @@
                 <h2>{{ 'DEVELOPERS.TESTERS' | translate }}</h2>
                 <p class="rs-muted">{{ 'DEVELOPERS.TESTERS_HINT' | translate }}</p>
               </div>
-              <ion-button size="small" (click)="addTester()"><ion-icon slot="start" name="person-add" /> {{ 'ADD' | translate }}</ion-button>
+              <ion-button size="small" (click)="addTester()"
+                ><ion-icon slot="start" name="person-add" /> {{ 'ADD' | translate }}</ion-button
+              >
             </div>
 
             @for (tester of current.testers; track tester.id) {
@@ -180,7 +273,9 @@
                   <span class="rs-strong">{{ tester.firstName }} {{ tester.lastName }}</span>
                   <span class="rs-small rs-muted">&#64;{{ tester.name }}</span>
                 </span>
-                <ion-button size="small" class="rs-soft" (click)="removeTester(tester.id)">{{ 'REMOVE' | translate }}</ion-button>
+                <ion-button size="small" class="rs-soft" (click)="removeTester(tester.id)">{{
+                  'REMOVE' | translate
+                }}</ion-button>
               </div>
             } @empty {
               <p class="rs-muted">{{ 'DEVELOPERS.NO_TESTERS' | translate }}</p>
@@ -191,7 +286,9 @@
         @case ('usage') {
           <section class="rs-card block">
             <h2>{{ 'DEVELOPERS.USAGE_24H' | translate }}</h2>
-            <p class="rs-muted">{{ 'DEVELOPERS.USERS' | translate: { count: current.userCount } }}</p>
+            <p class="rs-muted">
+              {{ 'DEVELOPERS.USERS' | translate: { count: current.userCount } }}
+            </p>
             <div class="usage">
               @for (point of usage(); track point.hour) {
                 <span class="bar" [title]="hourLabel(point) + ' · ' + point.requests">

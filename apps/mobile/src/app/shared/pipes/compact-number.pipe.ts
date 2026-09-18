@@ -19,6 +19,8 @@ export class CompactNumberPipe implements PipeTransform {
 
     const locale = this.translate.currentLang() ?? 'es';
 
-    return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(value);
+    return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(
+      value,
+    );
   }
 }

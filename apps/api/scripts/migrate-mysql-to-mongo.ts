@@ -169,8 +169,7 @@ function traducir(
 
     // `DECIMAL` llega como cadena desde el driver de MySQL; las coordenadas
     // pasan a número, que es lo que declara el esquema nuevo.
-    documento[camel(columna)] =
-      columna === 'lat' || columna === 'lng' ? Number(valor) : valor;
+    documento[camel(columna)] = columna === 'lat' || columna === 'lng' ? Number(valor) : valor;
   }
 
   return documento;

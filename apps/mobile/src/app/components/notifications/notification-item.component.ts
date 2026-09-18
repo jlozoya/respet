@@ -36,10 +36,17 @@ const TYPE_BADGES: Record<Notification['type'], { icon: string; color: string }>
   imports: [TranslatePipe, IonIcon, AvatarComponent, RelativeTimePipe],
   template: `
     @let item = notification();
-    <button type="button" class="rs-row item" [class.unread]="!item.read" (click)="selected.emit(item)">
+    <button
+      type="button"
+      class="rs-row item"
+      [class.unread]="!item.read"
+      (click)="selected.emit(item)"
+    >
       <span class="avatar">
         <app-avatar [user]="item.actors[0]" [size]="compact() ? 48 : 56" />
-        <span class="type" [style.background]="badge().color"><ion-icon [name]="badge().icon" /></span>
+        <span class="type" [style.background]="badge().color"
+          ><ion-icon [name]="badge().icon"
+        /></span>
       </span>
 
       <span class="text">
@@ -51,7 +58,12 @@ const TYPE_BADGES: Record<Notification['type'], { icon: string; color: string }>
       </span>
 
       @if (item.thumbnail) {
-        <img class="thumb" [src]="item.thumbnail.posterUrl ?? item.thumbnail.url" alt="" loading="lazy" />
+        <img
+          class="thumb"
+          [src]="item.thumbnail.posterUrl ?? item.thumbnail.url"
+          alt=""
+          loading="lazy"
+        />
       }
 
       @if (!item.read) {

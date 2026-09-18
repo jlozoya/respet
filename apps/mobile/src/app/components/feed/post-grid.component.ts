@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, type OnInit, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonInfiniteScroll } from '@ionic/angular/ion-infinite-scroll';
@@ -24,13 +33,29 @@ const PAGE_SIZE = 30;
 @Component({
   selector: 'app-post-grid',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, CompactNumberPipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonIcon,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    CompactNumberPipe,
+  ],
   template: `
     <div class="rs-grid" [class.explore]="source() === 'explore'">
       @for (item of items(); track item.id; let index = $index) {
-        <a class="rs-grid-tile" [class.big]="source() === 'explore' && index % 10 === 2" [routerLink]="['/post', item.id]">
+        <a
+          class="rs-grid-tile"
+          [class.big]="source() === 'explore' && index % 10 === 2"
+          [routerLink]="['/post', item.id]"
+        >
           @if (item.media[0]; as cover) {
-            <img [src]="cover.posterUrl ?? cover.url" [alt]="cover.alt || item.description" loading="lazy" decoding="async" />
+            <img
+              [src]="cover.posterUrl ?? cover.url"
+              [alt]="cover.alt || item.description"
+              loading="lazy"
+              decoding="async"
+            />
             @if (item.media.length > 1) {
               <ion-icon class="badge" name="copy" />
             } @else if (cover.type === 'video') {
@@ -200,7 +225,10 @@ export class PostGridComponent implements OnInit {
       }
 
       const known = new Set(this.items().map((item) => item.id));
-      this.items.update((items) => [...items, ...result.data.filter((item) => !known.has(item.id))]);
+      this.items.update((items) => [
+        ...items,
+        ...result.data.filter((item) => !known.has(item.id)),
+      ]);
       this.page = next;
       this.hasMore.set(result.meta.hasNextPage);
     } catch {

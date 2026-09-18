@@ -14,7 +14,10 @@ type ObjectId = mongo.ObjectId;
  * Lo usan `npm run migrate:social` y el seed, que escribe documentos a mano y
  * se apoya en esto para dejar contadores y claves como los dejaría la API.
  */
-export async function migrateToSocial(db: Db, log: (message: string) => void = console.log): Promise<void> {
+export async function migrateToSocial(
+  db: Db,
+  log: (message: string) => void = console.log,
+): Promise<void> {
   await votesToReactions(db, log);
   await normalizeUsers(db, log);
   await normalizePosts(db, log);
@@ -61,13 +64,24 @@ async function normalizeUsers(db: Db, log: (message: string) => void): Promise<v
   const users = db.collection('users');
   const result = await users.updateMany(
     { mfaEnabled: { $exists: false } },
-    { $set: { mfaEnabled: false, verified: false, bio: null, website: null, coverId: null, lastSeenAt: null } },
+    {
+      $set: {
+        mfaEnabled: false,
+        verified: false,
+        bio: null,
+        website: null,
+        coverId: null,
+        lastSeenAt: null,
+      },
+    },
   );
 
-  await db.collection('user_permissions').updateMany(
-    { showOnlineStatus: { $exists: false } },
-    { $set: { showOnlineStatus: true, storyReplyPolicy: 'everyone', loginAlerts: true } },
-  );
+  await db
+    .collection('user_permissions')
+    .updateMany(
+      { showOnlineStatus: { $exists: false } },
+      { $set: { showOnlineStatus: true, storyReplyPolicy: 'everyone', loginAlerts: true } },
+    );
 
   // El nombre de usuario viaja en la dirección del perfil, y desde el alta
   // nueva sólo admite minúsculas. Los de antes se pasan a minúsculas salvo
@@ -75,11 +89,16 @@ async function normalizeUsers(db: Db, log: (message: string) => void): Promise<v
   // renombrar a alguien sin avisarle sería peor que la inconsistencia.
   let renamed = 0;
 
-  const named = users.find({ name: /[A-ZÁÉÍÓÚÜÑ]/ }).project<{ _id: ObjectId; name: string }>({ name: 1 });
+  const named = users
+    .find({ name: /[A-ZÁÉÍÓÚÜÑ]/ })
+    .project<{ _id: ObjectId; name: string }>({ name: 1 });
 
   for await (const user of named) {
     const lowered = user.name.toLowerCase();
-    const taken = await users.findOne({ _id: { $ne: user._id }, name: lowered }, { projection: { _id: 1 } });
+    const taken = await users.findOne(
+      { _id: { $ne: user._id }, name: lowered },
+      { projection: { _id: 1 } },
+    );
 
     if (!taken) {
       await users.updateOne({ _id: user._id }, { $set: { name: lowered } });
@@ -100,9 +119,13 @@ async function normalizeUsers(db: Db, log: (message: string) => void): Promise<v
 async function normalizePosts(db: Db, log: (message: string) => void): Promise<void> {
   const posts = db.collection('posts');
   const privateUsers = new Set(
-    (await db.collection('user_permissions').find({ privateProfile: true }).project({ userId: 1 }).toArray()).map(
-      (doc) => String(doc['userId']),
-    ),
+    (
+      await db
+        .collection('user_permissions')
+        .find({ privateProfile: true })
+        .project({ userId: 1 })
+        .toArray()
+    ).map((doc) => String(doc['userId'])),
   );
 
   const reactionRows = await db
@@ -139,7 +162,10 @@ async function normalizePosts(db: Db, log: (message: string) => void): Promise<v
   const media = new Map(mediaRows.map((row) => [String(row._id), row.total]));
   let updated = 0;
 
-  for await (const post of posts.find({}, { projection: { _id: 1, userId: 1, description: 1, audience: 1 } })) {
+  for await (const post of posts.find(
+    {},
+    { projection: { _id: 1, userId: 1, description: 1, audience: 1 } },
+  )) {
     const id = String(post._id);
     const summary = reactionsByPost.get(id) ?? {};
     const description = typeof post['description'] === 'string' ? post['description'] : '';
@@ -170,7 +196,15 @@ async function normalizePosts(db: Db, log: (message: string) => void): Promise<v
 
     await posts.updateOne(
       { _id: post._id, shareCount: { $exists: false } },
-      { $set: { shareCount: 0, mentionIds: [], sharedPostId: null, commentsDisabled: false, editedAt: null } },
+      {
+        $set: {
+          shareCount: 0,
+          mentionIds: [],
+          sharedPostId: null,
+          commentsDisabled: false,
+          editedAt: null,
+        },
+      },
     );
 
     updated += 1;
@@ -191,7 +225,10 @@ async function rebuildHashtags(db: Db, log: (message: string) => void): Promise<
   for (const row of rows) {
     await db.collection('hashtags').updateOne(
       { tag: row._id },
-      { $set: { postCount: row.total, lastUsedAt: row.last, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
+      {
+        $set: { postCount: row.total, lastUsedAt: row.last, updatedAt: new Date() },
+        $setOnInsert: { createdAt: new Date() },
+      },
       { upsert: true },
     );
   }
@@ -225,18 +262,26 @@ async function normalizeChat(db: Db, log: (message: string) => void): Promise<vo
   let keyed = 0;
 
   for await (const conversation of conversations.find({ type: { $exists: false } })) {
-    const participants = await members.find({ conversationId: conversation._id }).project({ userId: 1 }).toArray();
+    const participants = await members
+      .find({ conversationId: conversation._id })
+      .project({ userId: 1 })
+      .toArray();
     const ids = participants.map((doc) => String(doc['userId'])).sort();
     const directKey = ids.length === 2 ? ids.join(':') : null;
     // Si por un error antiguo había dos conversaciones para la misma pareja, la
     // segunda se queda sin clave: sigue existiendo, pero no choca con el índice.
-    const usable = directKey && !seenKeys.has(directKey) && !(await conversations.findOne({ directKey }));
+    const usable =
+      directKey && !seenKeys.has(directKey) && !(await conversations.findOne({ directKey }));
 
     if (usable && directKey) {
       seenKeys.add(directKey);
     }
 
-    const last = await messages.find({ conversationId: conversation._id }).sort({ _id: -1 }).limit(1).next();
+    const last = await messages
+      .find({ conversationId: conversation._id })
+      .sort({ _id: -1 })
+      .limit(1)
+      .next();
 
     await conversations.updateOne(
       { _id: conversation._id },
@@ -256,25 +301,22 @@ async function normalizeChat(db: Db, log: (message: string) => void): Promise<vo
     keyed += 1;
   }
 
-  const attachments = await messages.updateMany(
-    { attachmentIds: { $exists: false } },
-    [
-      {
-        $set: {
-          attachmentIds: { $cond: [{ $ifNull: ['$mediaId', false] }, ['$mediaId'], []] },
-          reactions: [],
-          hiddenFor: [],
-          replyToId: null,
-          sharedPostId: null,
-          storyId: null,
-          system: null,
-          clientId: null,
-          editedAt: null,
-        },
+  const attachments = await messages.updateMany({ attachmentIds: { $exists: false } }, [
+    {
+      $set: {
+        attachmentIds: { $cond: [{ $ifNull: ['$mediaId', false] }, ['$mediaId'], []] },
+        reactions: [],
+        hiddenFor: [],
+        replyToId: null,
+        sharedPostId: null,
+        storyId: null,
+        system: null,
+        clientId: null,
+        editedAt: null,
       },
-      { $unset: 'mediaId' },
-    ],
-  );
+    },
+    { $unset: 'mediaId' },
+  ]);
 
   let counted = 0;
 
@@ -306,7 +348,9 @@ async function normalizeChat(db: Db, log: (message: string) => void): Promise<vo
     counted += 1;
   }
 
-  log(`  chat: ${keyed} conversaciones, ${attachments.modifiedCount} mensajes y ${counted} participaciones al día`);
+  log(
+    `  chat: ${keyed} conversaciones, ${attachments.modifiedCount} mensajes y ${counted} participaciones al día`,
+  );
 }
 
 async function reportsToGeneric(db: Db, log: (message: string) => void): Promise<void> {

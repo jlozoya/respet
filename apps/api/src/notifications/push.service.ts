@@ -52,7 +52,10 @@ export class PushService {
       const json = raw.trim().startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8');
       this.account = JSON.parse(json) as ServiceAccount;
       this.auth = new GoogleAuth({
-        credentials: { client_email: this.account.client_email, private_key: this.account.private_key },
+        credentials: {
+          client_email: this.account.client_email,
+          private_key: this.account.private_key,
+        },
         scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
       });
     } catch (error) {
@@ -64,7 +67,12 @@ export class PushService {
     return this.auth !== undefined;
   }
 
-  async register(userId: string, token: string, platform: string, sessionId: string | null): Promise<void> {
+  async register(
+    userId: string,
+    token: string,
+    platform: string,
+    sessionId: string | null,
+  ): Promise<void> {
     // Un mismo token pasa a quien inicie sesión después en ese dispositivo.
     await this.devices.updateOne(
       { token },
@@ -84,7 +92,10 @@ export class PushService {
     }
 
     try {
-      const devices = await this.devices.find({ userId: { $in: userIds } }).select('token').lean();
+      const devices = await this.devices
+        .find({ userId: { $in: userIds } })
+        .select('token')
+        .lean();
 
       if (devices.length === 0) {
         return;
@@ -104,7 +115,9 @@ export class PushService {
                 token: device.token,
                 notification: { title: message.title, body: message.body },
                 data: message.data ?? {},
-                android: { notification: { tag: message.tag, click_action: 'FCM_PLUGIN_ACTIVITY' } },
+                android: {
+                  notification: { tag: message.tag, click_action: 'FCM_PLUGIN_ACTIVITY' },
+                },
                 apns: { payload: { aps: { 'thread-id': message.tag } } },
               },
             }),

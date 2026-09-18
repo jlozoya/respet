@@ -45,7 +45,12 @@ import { SettingsLayoutComponent } from './settings-layout.component';
             <h3>{{ 'PROFILE.AVATAR' | translate }}</h3>
             <p class="rs-small rs-muted">{{ 'PROFILE.AVATAR_HINT' | translate }}</p>
           </div>
-          <ion-button class="rs-tinted" size="small" (click)="changeAvatar()" [disabled]="busy() === 'avatar'">
+          <ion-button
+            class="rs-tinted"
+            size="small"
+            (click)="changeAvatar()"
+            [disabled]="busy() === 'avatar'"
+          >
             {{ 'EDIT' | translate }}
           </ion-button>
         </div>
@@ -66,14 +71,26 @@ import { SettingsLayoutComponent } from './settings-layout.component';
           </div>
           <span class="buttons">
             @if (auth.user()?.cover) {
-              <ion-button class="rs-soft" size="small" (click)="removeCover()">{{ 'REMOVE' | translate }}</ion-button>
+              <ion-button class="rs-soft" size="small" (click)="removeCover()">{{
+                'REMOVE' | translate
+              }}</ion-button>
             }
-            <ion-button class="rs-tinted" size="small" (click)="changeCover()" [disabled]="busy() === 'cover'">
+            <ion-button
+              class="rs-tinted"
+              size="small"
+              (click)="changeCover()"
+              [disabled]="busy() === 'cover'"
+            >
               {{ (auth.user()?.cover ? 'EDIT' : 'ADD') | translate }}
             </ion-button>
           </span>
         </div>
-        <div class="cover-preview" [style.background-image]="auth.user()?.cover ? 'url(' + auth.user()?.cover?.url + ')' : null">
+        <div
+          class="cover-preview"
+          [style.background-image]="
+            auth.user()?.cover ? 'url(' + auth.user()?.cover?.url + ')' : null
+          "
+        >
           @if (busy() === 'cover') {
             <ion-spinner />
           }
@@ -83,16 +100,33 @@ import { SettingsLayoutComponent } from './settings-layout.component';
       <form class="rs-card block form" [formGroup]="form" (ngSubmit)="save()">
         <div class="pair">
           <div>
-            <ion-input fill="outline" labelPlacement="floating" [label]="'FIRST_NAME' | translate" formControlName="firstName" />
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'FIRST_NAME' | translate"
+              formControlName="firstName"
+            />
             <app-control-messages [control]="form.controls.firstName" />
           </div>
           <div>
-            <ion-input fill="outline" labelPlacement="floating" [label]="'LAST_NAME' | translate" formControlName="lastName" />
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'LAST_NAME' | translate"
+              formControlName="lastName"
+            />
             <app-control-messages [control]="form.controls.lastName" />
           </div>
         </div>
 
-        <ion-input fill="outline" labelPlacement="floating" [label]="'SIGNUP_PAGE.USERNAME' | translate" formControlName="name" autocapitalize="off" [helperText]="'PROFILE.USERNAME_HINT' | translate" />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'SIGNUP_PAGE.USERNAME' | translate"
+          formControlName="name"
+          autocapitalize="off"
+          [helperText]="'PROFILE.USERNAME_HINT' | translate"
+        />
         <app-control-messages [control]="form.controls.name" />
 
         <ion-textarea
@@ -105,10 +139,25 @@ import { SettingsLayoutComponent } from './settings-layout.component';
           [maxlength]="280"
         />
 
-        <ion-input fill="outline" labelPlacement="floating" [label]="'PROFILE.WEBSITE' | translate" formControlName="website" type="url" inputmode="url" placeholder="https://" />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'PROFILE.WEBSITE' | translate"
+          formControlName="website"
+          type="url"
+          inputmode="url"
+          placeholder="https://"
+        />
         <app-control-messages [control]="form.controls.website" />
 
-        <ion-input fill="outline" labelPlacement="floating" [label]="'PHONE' | translate" formControlName="phone" type="tel" inputmode="tel" />
+        <ion-input
+          fill="outline"
+          labelPlacement="floating"
+          [label]="'PHONE' | translate"
+          formControlName="phone"
+          type="tel"
+          inputmode="tel"
+        />
         <app-control-messages [control]="form.controls.phone" />
 
         <div class="pair">
@@ -116,10 +165,18 @@ import { SettingsLayoutComponent } from './settings-layout.component';
             <span class="rs-small rs-muted">{{ 'BIRTHDAY' | translate }}</span>
             <input type="date" formControlName="birthday" [max]="today" />
           </label>
-          <ion-select fill="outline" labelPlacement="floating" [label]="'GENDER' | translate" formControlName="gender" interface="popover">
+          <ion-select
+            fill="outline"
+            labelPlacement="floating"
+            [label]="'GENDER' | translate"
+            formControlName="gender"
+            interface="popover"
+          >
             <ion-select-option value="female">{{ 'FEMALE' | translate }}</ion-select-option>
             <ion-select-option value="male">{{ 'MALE' | translate }}</ion-select-option>
-            <ion-select-option value="unspecified">{{ 'PREFER_NOT_TO_SAY' | translate }}</ion-select-option>
+            <ion-select-option value="unspecified">{{
+              'PREFER_NOT_TO_SAY' | translate
+            }}</ion-select-option>
           </ion-select>
         </div>
 

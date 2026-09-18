@@ -14,7 +14,10 @@ import { GraphqlClientService } from './graphql-client.service';
 
 const LIVE_ENABLED = `query LiveStreamingEnabled { liveStreamingEnabled }`;
 
-const LIVE_STREAMS = gql(`query LiveStreams { liveStreams { ...LiveStreamFields } }`, ...LIVE_STREAM_FRAGMENTS);
+const LIVE_STREAMS = gql(
+  `query LiveStreams { liveStreams { ...LiveStreamFields } }`,
+  ...LIVE_STREAM_FRAGMENTS,
+);
 
 const LIVE_STREAM = gql(
   `query LiveStreamById($id: ID!) { liveStream(id: $id) { ...LiveStreamFields } }`,
@@ -98,7 +101,11 @@ export class LiveService {
     return this.gql.field(LIVE_STREAM, { id });
   }
 
-  comments(id: string, before?: string, limit = 50): Promise<{ data: LiveComment[]; nextCursor: string | null }> {
+  comments(
+    id: string,
+    before?: string,
+    limit = 50,
+  ): Promise<{ data: LiveComment[]; nextCursor: string | null }> {
     return this.gql.field(LIVE_COMMENTS, { id, before, limit });
   }
 

@@ -37,17 +37,16 @@ export class BulletinsService {
       : {};
 
     const [docs, total] = await Promise.all([
-      this.bulletins
-        .find(where)
-        .sort({ date: -1 })
-        .skip(skip)
-        .limit(take)
-        .populate('media')
-        .lean(),
+      this.bulletins.find(where).sort({ date: -1 }).skip(skip).limit(take).populate('media').lean(),
       this.bulletins.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toBulletin(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toBulletin(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   async findById(id: string): Promise<BulletinDto> {
@@ -83,7 +82,11 @@ export class BulletinsService {
 
   async setImage(id: string, file: PendingUpload): Promise<BulletinDto> {
     const current = await this.findDocOrFail(id);
-    const created = await this.media.storeUpload(file, { accept: ['image'], preset: 'bulletin', alt: current.title });
+    const created = await this.media.storeUpload(file, {
+      accept: ['image'],
+      preset: 'bulletin',
+      alt: current.title,
+    });
 
     await this.bulletins.updateOne({ _id: id }, { $set: { mediaId: created._id } });
 

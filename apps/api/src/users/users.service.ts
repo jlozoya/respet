@@ -18,7 +18,14 @@ import type {
 import { AuthService } from '../auth/auth.service.js';
 import { SessionService } from '../auth/session/session.service.js';
 import { AppException, ErrorCode } from '../common/errors.js';
-import { POPULATE_USER, toLocation, toMedia, toPermissions, toUser, toUserSummary } from '../common/mappers.js';
+import {
+  POPULATE_USER,
+  toLocation,
+  toMedia,
+  toPermissions,
+  toUser,
+  toUserSummary,
+} from '../common/mappers.js';
 import { upsertLocation } from '../common/utils/location.js';
 import { paginate, toPage } from '../common/utils/pagination.js';
 import { escapeRegex } from '../common/utils/regex.js';
@@ -123,7 +130,8 @@ export class UsersService {
 
     return {
       followerCount: await this.countFollowers(followeeId),
-      followState: (await this.relationships.followState(followerId, followeeId)) ?? FollowState.None,
+      followState:
+        (await this.relationships.followState(followerId, followeeId)) ?? FollowState.None,
     };
   }
 
@@ -186,7 +194,13 @@ export class UsersService {
       const quien = porId.get(String(doc.followerId));
 
       return quien
-        ? [{ id: String(doc._id), requester: toUserSummary(quien), createdAt: doc.createdAt.toISOString() }]
+        ? [
+            {
+              id: String(doc._id),
+              requester: toUserSummary(quien),
+              createdAt: doc.createdAt.toISOString(),
+            },
+          ]
         : [];
     });
 
@@ -201,9 +215,20 @@ export class UsersService {
 
     const requesterId = String(doc.followerId);
 
-    await this.notifications.retract({ recipientId: userId, actorId: requesterId, type: NotificationType.FollowRequest });
-    await this.notifications.notify({ recipientId: requesterId, actorId: userId, type: NotificationType.FollowAccepted });
-    await this.bus.publish(Topic.domain(DomainEvent.FollowCreated), { followerId: requesterId, followeeId: userId });
+    await this.notifications.retract({
+      recipientId: userId,
+      actorId: requesterId,
+      type: NotificationType.FollowRequest,
+    });
+    await this.notifications.notify({
+      recipientId: requesterId,
+      actorId: userId,
+      type: NotificationType.FollowAccepted,
+    });
+    await this.bus.publish(Topic.domain(DomainEvent.FollowCreated), {
+      followerId: requesterId,
+      followeeId: userId,
+    });
 
     return { followerCount: await this.countFollowers(userId) };
   }
@@ -234,12 +259,17 @@ export class UsersService {
    * Se filtra también por destinatario: sin eso, cualquiera con el
    * identificador de una solicitud podría responder a la de otro.
    */
-  private async findPendingRequest(userId: string, requestId: string): Promise<Follow & { _id: unknown }> {
+  private async findPendingRequest(
+    userId: string,
+    requestId: string,
+  ): Promise<Follow & { _id: unknown }> {
     if (!isValidObjectId(requestId)) {
       throw AppException.notFound('FollowRequest');
     }
 
-    const doc = await this.follows.findOne({ _id: requestId, followeeId: userId, pending: true }).lean();
+    const doc = await this.follows
+      .findOne({ _id: requestId, followeeId: userId, pending: true })
+      .lean();
 
     if (!doc) {
       throw AppException.notFound('FollowRequest');
@@ -254,17 +284,35 @@ export class UsersService {
    * Con el perfil privado, la lista es tan privada como lo publicado: sólo la
    * ven sus seguidores.
    */
-  async followers(id: string, query: UserListQueryDto, viewerId: string | null): Promise<Paginated<UserSummary>> {
+  async followers(
+    id: string,
+    query: UserListQueryDto,
+    viewerId: string | null,
+  ): Promise<Paginated<UserSummary>> {
     await this.relationships.assertCanViewContentOf(viewerId, id);
 
-    return this.listFollows({ followeeId: id, pending: { $ne: true } }, 'followerId', query, viewerId);
+    return this.listFollows(
+      { followeeId: id, pending: { $ne: true } },
+      'followerId',
+      query,
+      viewerId,
+    );
   }
 
   /** A quiénes sigue esta persona. */
-  async following(id: string, query: UserListQueryDto, viewerId: string | null): Promise<Paginated<UserSummary>> {
+  async following(
+    id: string,
+    query: UserListQueryDto,
+    viewerId: string | null,
+  ): Promise<Paginated<UserSummary>> {
     await this.relationships.assertCanViewContentOf(viewerId, id);
 
-    return this.listFollows({ followerId: id, pending: { $ne: true } }, 'followeeId', query, viewerId);
+    return this.listFollows(
+      { followerId: id, pending: { $ne: true } },
+      'followeeId',
+      query,
+      viewerId,
+    );
   }
 
   /**
@@ -291,14 +339,24 @@ export class UsersService {
     ]);
 
     const ids = docs.map((doc) => doc[campo]);
-    const gente = await this.users.find({ _id: { $in: ids } }).populate('avatar').lean();
+    const gente = await this.users
+      .find({ _id: { $in: ids } })
+      .populate('avatar')
+      .lean();
 
     // Se reordenan como venían: `find` los devuelve en el orden de la
     // colección, no en el de la lista de identificadores.
     const porId = new Map(gente.map((persona) => [String(persona._id), persona]));
-    const ordenados = ids.map((personId) => porId.get(String(personId))).filter((persona) => persona !== undefined);
+    const ordenados = ids
+      .map((personId) => porId.get(String(personId)))
+      .filter((persona) => persona !== undefined);
 
-    return paginate(ordenados.map((doc) => toUserSummary(doc as never)), total, page, perPage);
+    return paginate(
+      ordenados.map((doc) => toUserSummary(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   /** Seguidores de verdad: las solicitudes sin responder no suman. */
@@ -330,11 +388,22 @@ export class UsersService {
     const where = this.buildSearchFilter(query);
 
     const [docs, total] = await Promise.all([
-      this.users.find(where).sort({ createdAt: -1 }).skip(skip).limit(take).populate(POPULATE_USER).lean(),
+      this.users
+        .find(where)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(take)
+        .populate(POPULATE_USER)
+        .lean(),
       this.users.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toUser(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toUser(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   async updateProfile(id: string, dto: UpdateProfileDto): Promise<User> {
@@ -353,7 +422,9 @@ export class UsersService {
           ...(dto.phone !== undefined ? { phone: dto.phone } : {}),
           ...(dto.bio !== undefined ? { bio: dto.bio || null } : {}),
           ...(dto.website !== undefined ? { website: dto.website || null } : {}),
-          ...(dto.birthday !== undefined ? { birthday: dto.birthday ? new Date(dto.birthday) : null } : {}),
+          ...(dto.birthday !== undefined
+            ? { birthday: dto.birthday ? new Date(dto.birthday) : null }
+            : {}),
         },
       },
     );
@@ -383,7 +454,10 @@ export class UsersService {
     }
 
     if (await this.users.exists({ email: dto.email })) {
-      throw AppException.conflict(ErrorCode.UserAlreadyExists, 'That email address is already registered');
+      throw AppException.conflict(
+        ErrorCode.UserAlreadyExists,
+        'That email address is already registered',
+      );
     }
 
     await this.auth.sendVerificationEmail(id, dto.email, user.name, user.lang);
@@ -482,7 +556,11 @@ export class UsersService {
     // Con `upsert` y `new` siempre hay documento, pero el tipo admite nulo
     // porque la misma llamada sin `upsert` podría no encontrar nada.
     const doc = await this.permissions
-      .findOneAndUpdate({ userId: id }, { $setOnInsert: { userId: id } }, { upsert: true, returnDocument: 'after' })
+      .findOneAndUpdate(
+        { userId: id },
+        { $setOnInsert: { userId: id } },
+        { upsert: true, returnDocument: 'after' },
+      )
       .lean();
 
     const permissions = toPermissions(doc);
@@ -510,11 +588,17 @@ export class UsersService {
       { upsert: true },
     );
 
-    if (dto.privateProfile !== undefined && dto.privateProfile !== (before?.privateProfile ?? false)) {
+    if (
+      dto.privateProfile !== undefined &&
+      dto.privateProfile !== (before?.privateProfile ?? false)
+    ) {
       await this.posts.updateMany({ userId: id }, { $set: { authorPrivate: dto.privateProfile } });
 
       if (!dto.privateProfile) {
-        await this.follows.updateMany({ followeeId: id, pending: true }, { $set: { pending: false } });
+        await this.follows.updateMany(
+          { followeeId: id, pending: true },
+          { $set: { pending: false } },
+        );
       }
     }
 
@@ -525,7 +609,11 @@ export class UsersService {
     // Uno a uno con `upsert`: el índice único sobre el par descarta los
     // repetidos sin que un duplicado tire toda la operación.
     for (const email of dto.emails) {
-      await this.emails.updateOne({ userId: id, email }, { $setOnInsert: { userId: id, email } }, { upsert: true });
+      await this.emails.updateOne(
+        { userId: id, email },
+        { $setOnInsert: { userId: id, email } },
+        { upsert: true },
+      );
     }
 
     return this.listEmails(id);
@@ -533,7 +621,11 @@ export class UsersService {
 
   async addPhones(id: string, dto: AddPhonesDto): Promise<UserPhoneDto[]> {
     for (const phone of dto.phones) {
-      await this.phones.updateOne({ userId: id, phone }, { $setOnInsert: { userId: id, phone } }, { upsert: true });
+      await this.phones.updateOne(
+        { userId: id, phone },
+        { $setOnInsert: { userId: id, phone } },
+        { upsert: true },
+      );
     }
 
     return this.listPhones(id);
@@ -608,7 +700,11 @@ export class UsersService {
 
     await this.relationships.assertCanViewContentOf(viewerId, id);
 
-    const user = await this.users.findById(id).select('name email phone locationId').populate('location').lean();
+    const user = await this.users
+      .findById(id)
+      .select('name email phone locationId')
+      .populate('location')
+      .lean();
 
     if (!user) {
       throw AppException.notFound('User');
@@ -628,7 +724,9 @@ export class UsersService {
       emails: permisos?.showAlternativeEmails ? emails : [],
       phone: permisos?.showMainPhone ? user.phone : null,
       phones: permisos?.showAlternativePhones ? phones : [],
-      location: permisos?.showLocation ? toLocation((user as { location?: never }).location ?? null) : null,
+      location: permisos?.showLocation
+        ? toLocation((user as { location?: never }).location ?? null)
+        : null,
     };
   }
 
@@ -676,4 +774,3 @@ export class UsersService {
     return filtros.length > 0 ? { $and: filtros } : {};
   }
 }
-

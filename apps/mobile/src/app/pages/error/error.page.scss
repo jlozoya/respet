@@ -1,5 +1,5 @@
 ion-content {
-  --background:black;
+  --background: black;
 }
 
 .container {
@@ -22,14 +22,14 @@ ion-content {
   border-bottom-right-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-left-radius: 50%;
-  transform:rotate(-45deg) scale(1.5,1.5);
+  transform: rotate(-45deg) scale(1.5, 1.5);
 }
 
 .yellow {
   left: 15px;
   width: 30px;
   height: 30px;
-  background:gold;
+  background: gold;
   box-shadow: 0 0 9px 4px gold;
 }
 
@@ -37,7 +37,7 @@ ion-content {
   left: 10px;
   width: 40px;
   height: 40px;
-  background:orange;
+  background: orange;
   box-shadow: 0 0 9px 4px orange;
 }
 
@@ -45,20 +45,20 @@ ion-content {
   left: 5px;
   width: 50px;
   height: 50px;
-  background:orangered;
+  background: orangered;
   box-shadow: 0 0 5px 4px orangered;
 }
 
 .white {
   left: 15px;
-  bottom:-4px;
+  bottom: -4px;
   width: 30px;
   height: 30px;
-  background:white;
+  background: white;
   box-shadow: 0 0 9px 4px white;
 }
 
-.circle{
+.circle {
   border-radius: 50%;
   position: absolute;
 }
@@ -82,12 +82,29 @@ ion-content {
 }
 
 @keyframes flicker {
-  0% {transform: rotate(-1deg);}
-  20% {transform: rotate(1deg);}
-  40% {transform: rotate(-1deg);}
-  60% {transform: rotate(1deg) scaleY(1.04);}
-  80% {transform: rotate(-2deg) scaleY(0.92);}
-  100% {transform: rotate(1deg);}
+  0% {
+    transform: rotate(-1deg);
+  }
+
+  20% {
+    transform: rotate(1deg);
+  }
+
+  40% {
+    transform: rotate(-1deg);
+  }
+
+  60% {
+    transform: rotate(1deg) scaleY(1.04);
+  }
+
+  80% {
+    transform: rotate(-2deg) scaleY(0.92);
+  }
+
+  100% {
+    transform: rotate(1deg);
+  }
 }
 
 :host .full-height {

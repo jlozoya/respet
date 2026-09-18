@@ -4,7 +4,11 @@ import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { IonToggle } from '@ionic/angular/ion-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { MessagePolicy, UpdatePermissionsRequest, UserPermissions } from '@social-network/shared';
+import type {
+  MessagePolicy,
+  UpdatePermissionsRequest,
+  UserPermissions,
+} from '@social-network/shared';
 
 import { UsersService } from '../../core/api/users.service';
 import { AuthService } from '../../core/auth/auth.service';
@@ -30,7 +34,14 @@ interface ToggleSetting {
 @Component({
   selector: 'app-privacy-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonToggle, IonSelect, IonSelectOption, IonSpinner, SettingsLayoutComponent],
+  imports: [
+    TranslatePipe,
+    IonToggle,
+    IonSelect,
+    IonSelectOption,
+    IonSpinner,
+    SettingsLayoutComponent,
+  ],
   template: `
     <app-settings-layout title="SETTINGS.PRIVACY" subtitle="SETTINGS.PRIVACY_HINT">
       @if (permissions(); as current) {
@@ -42,7 +53,11 @@ interface ToggleSetting {
                 <span class="label">{{ setting.label | translate }}</span>
                 <span class="hint">{{ setting.hint | translate }}</span>
               </span>
-              <ion-toggle [checked]="current[setting.key]" (ionChange)="toggle(setting.key, $event.detail.checked)" [attr.aria-label]="setting.label | translate" />
+              <ion-toggle
+                [checked]="current[setting.key]"
+                (ionChange)="toggle(setting.key, $event.detail.checked)"
+                [attr.aria-label]="setting.label | translate"
+              />
             </div>
           }
         </section>
@@ -54,9 +69,16 @@ interface ToggleSetting {
               <span class="label">{{ 'PRIVACY_SETTINGS.MESSAGES' | translate }}</span>
               <span class="hint">{{ 'PRIVACY_SETTINGS.MESSAGES_HINT' | translate }}</span>
             </span>
-            <ion-select interface="popover" [value]="current.messagePolicy" (ionChange)="update({ messagePolicy: $event.detail.value })" [attr.aria-label]="'PRIVACY_SETTINGS.MESSAGES' | translate">
+            <ion-select
+              interface="popover"
+              [value]="current.messagePolicy"
+              (ionChange)="update({ messagePolicy: $event.detail.value })"
+              [attr.aria-label]="'PRIVACY_SETTINGS.MESSAGES' | translate"
+            >
               @for (option of policies; track option.value) {
-                <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                <ion-select-option [value]="option.value">{{
+                  option.label | translate
+                }}</ion-select-option>
               }
             </ion-select>
           </div>
@@ -65,9 +87,16 @@ interface ToggleSetting {
               <span class="label">{{ 'PRIVACY_SETTINGS.STORY_REPLIES' | translate }}</span>
               <span class="hint">{{ 'PRIVACY_SETTINGS.STORY_REPLIES_HINT' | translate }}</span>
             </span>
-            <ion-select interface="popover" [value]="current.storyReplyPolicy" (ionChange)="update({ storyReplyPolicy: $event.detail.value })" [attr.aria-label]="'PRIVACY_SETTINGS.STORY_REPLIES' | translate">
+            <ion-select
+              interface="popover"
+              [value]="current.storyReplyPolicy"
+              (ionChange)="update({ storyReplyPolicy: $event.detail.value })"
+              [attr.aria-label]="'PRIVACY_SETTINGS.STORY_REPLIES' | translate"
+            >
               @for (option of policies; track option.value) {
-                <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                <ion-select-option [value]="option.value">{{
+                  option.label | translate
+                }}</ion-select-option>
               }
             </ion-select>
           </div>
@@ -81,7 +110,11 @@ interface ToggleSetting {
                 <span class="label">{{ setting.label | translate }}</span>
                 <span class="hint">{{ setting.hint | translate }}</span>
               </span>
-              <ion-toggle [checked]="current[setting.key]" (ionChange)="toggle(setting.key, $event.detail.checked)" [attr.aria-label]="setting.label | translate" />
+              <ion-toggle
+                [checked]="current[setting.key]"
+                (ionChange)="toggle(setting.key, $event.detail.checked)"
+                [attr.aria-label]="setting.label | translate"
+              />
             </div>
           }
         </section>
@@ -100,15 +133,39 @@ export class PrivacySettingsPage implements OnInit {
   readonly permissions = signal<UserPermissions | null>(null);
 
   readonly audienceToggles: readonly ToggleSetting[] = [
-    { key: 'privateProfile', label: 'PRIVACY_SETTINGS.PRIVATE', hint: 'PRIVACY_SETTINGS.PRIVATE_HINT' },
-    { key: 'showOnlineStatus', label: 'PRIVACY_SETTINGS.ONLINE', hint: 'PRIVACY_SETTINGS.ONLINE_HINT' },
+    {
+      key: 'privateProfile',
+      label: 'PRIVACY_SETTINGS.PRIVATE',
+      hint: 'PRIVACY_SETTINGS.PRIVATE_HINT',
+    },
+    {
+      key: 'showOnlineStatus',
+      label: 'PRIVACY_SETTINGS.ONLINE',
+      hint: 'PRIVACY_SETTINGS.ONLINE_HINT',
+    },
   ];
 
   readonly contactToggles: readonly ToggleSetting[] = [
-    { key: 'showMainEmail', label: 'PRIVACY_SETTINGS.SHOW_EMAIL', hint: 'PRIVACY_SETTINGS.SHOW_EMAIL_HINT' },
-    { key: 'showMainPhone', label: 'PRIVACY_SETTINGS.SHOW_PHONE', hint: 'PRIVACY_SETTINGS.SHOW_PHONE_HINT' },
-    { key: 'showLocation', label: 'PRIVACY_SETTINGS.SHOW_LOCATION', hint: 'PRIVACY_SETTINGS.SHOW_LOCATION_HINT' },
-    { key: 'receiveMailAds', label: 'PRIVACY_SETTINGS.MAIL_ADS', hint: 'PRIVACY_SETTINGS.MAIL_ADS_HINT' },
+    {
+      key: 'showMainEmail',
+      label: 'PRIVACY_SETTINGS.SHOW_EMAIL',
+      hint: 'PRIVACY_SETTINGS.SHOW_EMAIL_HINT',
+    },
+    {
+      key: 'showMainPhone',
+      label: 'PRIVACY_SETTINGS.SHOW_PHONE',
+      hint: 'PRIVACY_SETTINGS.SHOW_PHONE_HINT',
+    },
+    {
+      key: 'showLocation',
+      label: 'PRIVACY_SETTINGS.SHOW_LOCATION',
+      hint: 'PRIVACY_SETTINGS.SHOW_LOCATION_HINT',
+    },
+    {
+      key: 'receiveMailAds',
+      label: 'PRIVACY_SETTINGS.MAIL_ADS',
+      hint: 'PRIVACY_SETTINGS.MAIL_ADS_HINT',
+    },
   ];
 
   readonly policies: readonly { value: MessagePolicy; label: string }[] = [

@@ -39,7 +39,12 @@ export class ModerationService {
    * documentos: el peso de una denuncia no debe depender de cuántas veces
    * pulse el botón la misma persona.
    */
-  async report(reporterId: string, targetType: ReportTarget, targetId: string, reason: string): Promise<void> {
+  async report(
+    reporterId: string,
+    targetType: ReportTarget,
+    targetId: string,
+    reason: string,
+  ): Promise<void> {
     const ownerId = await this.ownerOf(targetType, targetId);
 
     if (ownerId === null) {
@@ -47,7 +52,10 @@ export class ModerationService {
     }
 
     if (String(ownerId) === reporterId) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, 'You cannot report your own content');
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        'You cannot report your own content',
+      );
     }
 
     await this.reports.updateOne(
@@ -57,7 +65,11 @@ export class ModerationService {
     );
   }
 
-  async list(status: ReportStatus | undefined, page: number, perPage: number): Promise<Paginated<ReportDto>> {
+  async list(
+    status: ReportStatus | undefined,
+    page: number,
+    perPage: number,
+  ): Promise<Paginated<ReportDto>> {
     const pagination = toPage({ page, perPage });
     const filter = status ? { status } : {};
 
@@ -67,12 +79,18 @@ export class ModerationService {
         .sort({ createdAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.take)
-        .populate({ path: 'reporter', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+        .populate({
+          path: 'reporter',
+          select: 'name firstName lastName avatarId verified',
+          populate: { path: 'avatar' },
+        })
         .lean(),
       this.reports.countDocuments(filter),
     ]);
 
-    const ownerIds = [...new Set(docs.map((doc) => String(doc.targetOwnerId)).filter((id) => id !== 'null'))];
+    const ownerIds = [
+      ...new Set(docs.map((doc) => String(doc.targetOwnerId)).filter((id) => id !== 'null')),
+    ];
     const owners = await this.users
       .find({ _id: { $in: ownerIds } })
       .select('name firstName lastName avatarId verified')

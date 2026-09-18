@@ -1,4 +1,13 @@
-import { Injectable, computed, effect, inject, signal, untracked, type Signal, type WritableSignal } from '@angular/core';
+import {
+  Injectable,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  type Signal,
+  type WritableSignal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import type {
   ChatEvent,
@@ -200,7 +209,13 @@ interface StoredOutboxEntry {
   createdAt: string;
 }
 
-const EMPTY_THREAD: ThreadState = { messages: [], loaded: false, loadingOlder: false, hasOlder: true, cursor: null };
+const EMPTY_THREAD: ThreadState = {
+  messages: [],
+  loaded: false,
+  loadingOlder: false,
+  hasOlder: true,
+  cursor: null,
+};
 
 /**
  * El chat.
@@ -238,15 +253,22 @@ export class ChatService {
   private readonly threads = new Map<string, WritableSignal<ThreadState>>();
   private readonly active = new Map<string, number>();
   private readonly typingTimers = new Map<string, ReturnType<typeof setTimeout>>();
-  private readonly outgoingTyping = new Map<string, { lastSent: number; idle?: ReturnType<typeof setTimeout> }>();
+  private readonly outgoingTyping = new Map<
+    string,
+    { lastSent: number; idle?: ReturnType<typeof setTimeout> }
+  >();
   private readonly pendingRead = new Map<string, ReturnType<typeof setTimeout>>();
   private readonly pendingDelivered = new Map<string, ReturnType<typeof setTimeout>>();
   private subscription: Subscription | null = null;
   private lastEpoch = 0;
 
   /** La bandeja: fijadas primero y luego por actividad. */
-  readonly conversations = computed(() => sortConversations(this.conversationsSignal().filter((item) => !item.archived)));
-  readonly archived = computed(() => sortConversations(this.conversationsSignal().filter((item) => item.archived)));
+  readonly conversations = computed(() =>
+    sortConversations(this.conversationsSignal().filter((item) => !item.archived)),
+  );
+  readonly archived = computed(() =>
+    sortConversations(this.conversationsSignal().filter((item) => item.archived)),
+  );
   readonly loaded = this.loadedSignal.asReadonly();
 
   /** Conversaciones con algo sin leer, para el distintivo del menú. */
@@ -279,14 +301,12 @@ export class ChatService {
       return;
     }
 
-    this.subscription = this.realtime
-      .subscribe<{ chatEvents: ChatEvent }>(CHAT_EVENTS)
-      .subscribe({
-        next: ({ chatEvents }) => this.apply(chatEvents),
-        error: () => {
-          this.subscription = null;
-        },
-      });
+    this.subscription = this.realtime.subscribe<{ chatEvents: ChatEvent }>(CHAT_EVENTS).subscribe({
+      next: ({ chatEvents }) => this.apply(chatEvents),
+      error: () => {
+        this.subscription = null;
+      },
+    });
 
     void this.loadConversations().then(() => this.flushStoredOutbox());
   }
@@ -303,7 +323,11 @@ export class ChatService {
     this.threads.clear();
     this.active.clear();
 
-    for (const timer of [...this.typingTimers.values(), ...this.pendingRead.values(), ...this.pendingDelivered.values()]) {
+    for (const timer of [
+      ...this.typingTimers.values(),
+      ...this.pendingRead.values(),
+      ...this.pendingDelivered.values(),
+    ]) {
       clearTimeout(timer);
     }
 
@@ -349,7 +373,9 @@ export class ChatService {
   }
 
   async createGroup(title: string, memberIds: string[]): Promise<Conversation> {
-    const conversation = await this.gql.field<Conversation>(CREATE_GROUP, { input: { title, memberIds } });
+    const conversation = await this.gql.field<Conversation>(CREATE_GROUP, {
+      input: { title, memberIds },
+    });
     this.upsert(conversation);
 
     return conversation;
@@ -532,7 +558,10 @@ export class ChatService {
       },
     };
 
-    this.threadSignal(conversationId).update((state) => ({ ...state, messages: [...state.messages, optimistic] }));
+    this.threadSignal(conversationId).update((state) => ({
+      ...state,
+      messages: [...state.messages, optimistic],
+    }));
     this.stopTyping(conversationId);
 
     if (attachments.length === 0) {
@@ -642,7 +671,9 @@ export class ChatService {
     });
 
     this.dockSignal.update((current) =>
-      current.includes(conversationId) ? current : [...current, conversationId].slice(-MAX_DOCK_WINDOWS),
+      current.includes(conversationId)
+        ? current
+        : [...current, conversationId].slice(-MAX_DOCK_WINDOWS),
     );
   }
 
@@ -707,7 +738,13 @@ export class ChatService {
 
       case 'read':
         if (event.userId && event.at) {
-          this.applyRead(event.conversationId, event.userId, event.at, event.lastReadMessageId, event.userId === me);
+          this.applyRead(
+            event.conversationId,
+            event.userId,
+            event.at,
+            event.lastReadMessageId,
+            event.userId === me,
+          );
         }
 
         return;
@@ -770,7 +807,10 @@ export class ChatService {
       lastPreview: previewOf(message),
       lastSenderId: message.sender.id,
       archived: false,
-      unreadCount: own || this.isVisible(message.conversationId) ? existing.unreadCount : existing.unreadCount + 1,
+      unreadCount:
+        own || this.isVisible(message.conversationId)
+          ? existing.unreadCount
+          : existing.unreadCount + 1,
     });
   }
 
@@ -780,7 +820,13 @@ export class ChatService {
    * En una conversación de dos, lo propio anterior pasa a «leído». En un grupo
    * se suma uno a quienes lo han leído, si esa persona no lo había leído ya.
    */
-  private applyRead(conversationId: string, userId: string, at: string, lastReadMessageId: string | null, byMe: boolean): void {
+  private applyRead(
+    conversationId: string,
+    userId: string,
+    at: string,
+    lastReadMessageId: string | null,
+    byMe: boolean,
+  ): void {
     const conversation = this.conversationsSignal().find((item) => item.id === conversationId);
 
     if (!conversation) {
@@ -809,7 +855,12 @@ export class ChatService {
       messages: state.messages.map((message) => {
         const created = Date.parse(message.createdAt);
 
-        if (message.sender.id !== me || message.status === 'sending' || message.status === 'failed' || created > until) {
+        if (
+          message.sender.id !== me ||
+          message.status === 'sending' ||
+          message.status === 'failed' ||
+          created > until
+        ) {
           return message;
         }
 
@@ -829,7 +880,9 @@ export class ChatService {
     this.threads.get(conversationId)?.update((state) => ({
       ...state,
       messages: state.messages.map((message) =>
-        message.sender.id === me && message.status === 'sent' && Date.parse(message.createdAt) <= until
+        message.sender.id === me &&
+        message.status === 'sent' &&
+        Date.parse(message.createdAt) <= until
           ? { ...message, status: 'delivered' }
           : message,
       ),
@@ -860,7 +913,10 @@ export class ChatService {
 
     // Sin caducidad, cerrar la aplicación a media frase dejaría el aviso
     // colgado para siempre en la pantalla de la otra persona.
-    this.typingTimers.set(key, setTimeout(() => this.clearTyping(conversationId, userId), TYPING_TIMEOUT_MS));
+    this.typingTimers.set(
+      key,
+      setTimeout(() => this.clearTyping(conversationId, userId), TYPING_TIMEOUT_MS),
+    );
   }
 
   private clearTyping(conversationId: string, userId: string): void {
@@ -891,7 +947,9 @@ export class ChatService {
 
     for (const [conversationId, thread] of this.threads) {
       const state = thread();
-      const last = [...state.messages].reverse().find((message) => !message.id.startsWith('local:'));
+      const last = [...state.messages]
+        .reverse()
+        .find((message) => !message.id.startsWith('local:'));
 
       if (!state.loaded || !last) {
         continue;
@@ -899,7 +957,10 @@ export class ChatService {
 
       try {
         const page = await this.fetchMessages(conversationId, { after: last.id, limit: 100 });
-        thread.update((current) => ({ ...current, messages: mergeMessages(page.data, current.messages) }));
+        thread.update((current) => ({
+          ...current,
+          messages: mergeMessages(page.data, current.messages),
+        }));
       } catch {
         // Se reintentará en la siguiente reconexión.
       }
@@ -952,7 +1013,11 @@ export class ChatService {
       let found = false;
       const messages = state.messages
         .map((message) => {
-          if (message.id === id || message.id === next.id || (next.clientId && message.clientId === next.clientId)) {
+          if (
+            message.id === id ||
+            message.id === next.id ||
+            (next.clientId && message.clientId === next.clientId)
+          ) {
             if (found) {
               return null;
             }
@@ -970,7 +1035,10 @@ export class ChatService {
     });
   }
 
-  private fetchMessages(conversationId: string, query: { before?: string; after?: string; limit?: number }): Promise<MessagePage> {
+  private fetchMessages(
+    conversationId: string,
+    query: { before?: string; after?: string; limit?: number },
+  ): Promise<MessagePage> {
     return this.gql.field(MESSAGES, { conversationId, query: { limit: PAGE_SIZE, ...query } });
   }
 
@@ -1124,7 +1192,12 @@ export class ChatService {
         editedAt: null,
         deleted: false,
         createdAt: entry.createdAt,
-        local: { attachments: [], replyToId: entry.replyToId, sharedPostId: entry.sharedPostId, durationMs: null },
+        local: {
+          attachments: [],
+          replyToId: entry.replyToId,
+          sharedPostId: entry.sharedPostId,
+          durationMs: null,
+        },
       };
 
       thread.update((state) => ({ ...state, messages: [...state.messages, message] }));
@@ -1138,7 +1211,10 @@ function mergeMessages(incoming: ChatMessage[], existing: ChatMessage[]): ChatMe
   const byKey = new Map<string, ChatMessage>();
 
   for (const message of existing) {
-    byKey.set(message.clientId && message.id.startsWith('local:') ? `c:${message.clientId}` : message.id, message);
+    byKey.set(
+      message.clientId && message.id.startsWith('local:') ? `c:${message.clientId}` : message.id,
+      message,
+    );
   }
 
   for (const message of incoming) {
@@ -1179,7 +1255,11 @@ export function previewOf(message: Pick<Message, 'kind' | 'body' | 'deleted'>): 
   return [icon[message.kind], message.body].filter(Boolean).join(' ');
 }
 
-function kindOf(attachments: LocalAttachment[], sharedPostId?: string, durationMs?: number): Message['kind'] {
+function kindOf(
+  attachments: LocalAttachment[],
+  sharedPostId?: string,
+  durationMs?: number,
+): Message['kind'] {
   if (sharedPostId) {
     return 'post_share';
   }
@@ -1251,6 +1331,7 @@ export function toAttachment(file: File | Blob, name?: string): LocalAttachment 
     file,
     name: name ?? (file instanceof File ? file.name : 'archivo'),
     type,
-    previewUrl: type === 'image' || type === 'video' || type === 'audio' ? URL.createObjectURL(file) : null,
+    previewUrl:
+      type === 'image' || type === 'video' || type === 'audio' ? URL.createObjectURL(file) : null,
   };
 }

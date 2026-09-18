@@ -15,11 +15,7 @@ import type { ClientInfo } from '../../common/decorators/index.js';
 import { AppException, ErrorCode } from '../../common/errors.js';
 import { toIso } from '../../common/mappers.js';
 import { isValidObjectId, type Model } from '../../database/mongoose.js';
-import {
-  AuthMethod,
-  MfaMethod,
-  SecurityEventType,
-} from '../../database/schemas/enums.js';
+import { AuthMethod, MfaMethod, SecurityEventType } from '../../database/schemas/enums.js';
 import {
   MfaChallenge,
   MfaFactor,
@@ -97,7 +93,10 @@ export class MfaService {
     }
 
     if (user.mfaEnabled) {
-      throw AppException.conflict(ErrorCode.MfaAlreadyEnabled, 'Two-factor authentication is already on');
+      throw AppException.conflict(
+        ErrorCode.MfaAlreadyEnabled,
+        'Two-factor authentication is already on',
+      );
     }
 
     const secret = generateTotpSecret();
@@ -137,7 +136,10 @@ export class MfaService {
     }
 
     if (factor.confirmedAt) {
-      throw AppException.conflict(ErrorCode.MfaAlreadyEnabled, 'Two-factor authentication is already on');
+      throw AppException.conflict(
+        ErrorCode.MfaAlreadyEnabled,
+        'Two-factor authentication is already on',
+      );
     }
 
     const step = verifyTotp(this.crypto.decrypt(factor.secretCiphertext), code, null);
@@ -154,7 +156,10 @@ export class MfaService {
         $set: {
           confirmedAt: new Date(),
           lastUsedStep: step,
-          recoveryCodes: codes.map((plain) => ({ hash: this.hashRecoveryCode(plain), usedAt: null })),
+          recoveryCodes: codes.map((plain) => ({
+            hash: this.hashRecoveryCode(plain),
+            usedAt: null,
+          })),
         },
       },
     );
@@ -177,7 +182,10 @@ export class MfaService {
   }
 
   async regenerateRecoveryCodes(userId: string, client: ClientInfo): Promise<RecoveryCodes> {
-    const factor = await this.factors.findOne({ userId, confirmedAt: { $ne: null } }).select('_id').lean();
+    const factor = await this.factors
+      .findOne({ userId, confirmedAt: { $ne: null } })
+      .select('_id')
+      .lean();
 
     if (!factor) {
       throw AppException.badRequest(ErrorCode.MfaNotEnabled, 'Two-factor authentication is off');
@@ -187,7 +195,14 @@ export class MfaService {
 
     await this.factors.updateOne(
       { _id: factor._id },
-      { $set: { recoveryCodes: codes.map((plain) => ({ hash: this.hashRecoveryCode(plain), usedAt: null })) } },
+      {
+        $set: {
+          recoveryCodes: codes.map((plain) => ({
+            hash: this.hashRecoveryCode(plain),
+            usedAt: null,
+          })),
+        },
+      },
     );
     await this.events.record(userId, SecurityEventType.RecoveryCodesRegenerated, client);
 
@@ -228,7 +243,11 @@ export class MfaService {
       expiresAt,
     });
 
-    return { token, methods: [MfaMethod.Totp, MfaMethod.RecoveryCode], expiresAt: expiresAt.toISOString() };
+    return {
+      token,
+      methods: [MfaMethod.Totp, MfaMethod.RecoveryCode],
+      expiresAt: expiresAt.toISOString(),
+    };
   }
 
   /**
@@ -339,7 +358,11 @@ export class MfaService {
     }));
   }
 
-  async revokeTrustedDevice(userId: string, deviceId: string | null, client: ClientInfo): Promise<void> {
+  async revokeTrustedDevice(
+    userId: string,
+    deviceId: string | null,
+    client: ClientInfo,
+  ): Promise<void> {
     if (deviceId !== null && !isValidObjectId(deviceId)) {
       throw AppException.notFound('Trusted device');
     }
@@ -353,7 +376,11 @@ export class MfaService {
     await this.trustedDevices.deleteMany({ userId });
   }
 
-  private async checkCode(userId: string, code: string, client: ClientInfo): Promise<AuthMethod | null> {
+  private async checkCode(
+    userId: string,
+    code: string,
+    client: ClientInfo,
+  ): Promise<AuthMethod | null> {
     if (await this.checkTotp(userId, code)) {
       return AuthMethod.Totp;
     }
@@ -372,7 +399,11 @@ export class MfaService {
       return false;
     }
 
-    const step = verifyTotp(this.crypto.decrypt(factor.secretCiphertext), code, factor.lastUsedStep);
+    const step = verifyTotp(
+      this.crypto.decrypt(factor.secretCiphertext),
+      code,
+      factor.lastUsedStep,
+    );
 
     if (step === null) {
       return false;
@@ -388,7 +419,11 @@ export class MfaService {
     return updated.modifiedCount === 1;
   }
 
-  private async consumeRecoveryCode(userId: string, code: string, client: ClientInfo): Promise<boolean> {
+  private async consumeRecoveryCode(
+    userId: string,
+    code: string,
+    client: ClientInfo,
+  ): Promise<boolean> {
     const hash = this.hashRecoveryCode(code);
 
     const updated = await this.factors.updateOne(
@@ -411,7 +446,10 @@ export class MfaService {
 
   private generateRecoveryCodes(): string[] {
     return Array.from({ length: RECOVERY_CODE_COUNT }, () => {
-      const chars = Array.from({ length: 10 }, () => RECOVERY_ALPHABET[randomInt(RECOVERY_ALPHABET.length)]);
+      const chars = Array.from(
+        { length: 10 },
+        () => RECOVERY_ALPHABET[randomInt(RECOVERY_ALPHABET.length)],
+      );
 
       return `${chars.slice(0, 5).join('')}-${chars.slice(5).join('')}`;
     });
@@ -424,5 +462,9 @@ export class MfaService {
 }
 
 function invalidCode(): AppException {
-  return new AppException(ErrorCode.InvalidMfaCode, HttpStatus.BAD_REQUEST, 'The code is not valid');
+  return new AppException(
+    ErrorCode.InvalidMfaCode,
+    HttpStatus.BAD_REQUEST,
+    'The code is not valid',
+  );
 }

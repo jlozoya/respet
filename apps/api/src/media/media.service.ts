@@ -172,7 +172,10 @@ export class MediaService {
     }
 
     await this.media.deleteOne({ _id: mediaId });
-    await Promise.all([this.storage.remove(media.storageKey), this.storage.remove(media.posterKey)]);
+    await Promise.all([
+      this.storage.remove(media.storageKey),
+      this.storage.remove(media.posterKey),
+    ]);
   }
 
   /** Borra en bloque, por ejemplo al eliminar una publicación entera. */
@@ -188,7 +191,10 @@ export class MediaService {
 
     await this.media.deleteMany({ _id: { $in: mediaIds } });
     await Promise.all(
-      docs.flatMap((doc) => [this.storage.remove(doc.storageKey), this.storage.remove(doc.posterKey)]),
+      docs.flatMap((doc) => [
+        this.storage.remove(doc.storageKey),
+        this.storage.remove(doc.posterKey),
+      ]),
     );
   }
 

@@ -15,7 +15,15 @@ import { SETTINGS_SECTIONS } from './settings-sections';
 @Component({
   selector: 'app-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonIcon, AvatarComponent, PageHeaderComponent, FullNamePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    AvatarComponent,
+    PageHeaderComponent,
+    FullNamePipe,
+  ],
   template: `
     <app-page-header title="NAV.SETTINGS" />
 
@@ -50,11 +58,19 @@ import { SETTINGS_SECTIONS } from './settings-sections';
         <div class="rs-card list">
           <button type="button" class="rs-row" (click)="navigation.closeSession()">
             <span class="rs-row-icon"><ion-icon name="log-out-outline" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span
+            >
           </button>
-          <button type="button" class="rs-row" (click)="navigation.closeSession({ everywhere: true })">
+          <button
+            type="button"
+            class="rs-row"
+            (click)="navigation.closeSession({ everywhere: true })"
+          >
             <span class="rs-row-icon"><ion-icon name="exit-outline" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'SETTINGS.LOGOUT_EVERYWHERE' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'SETTINGS.LOGOUT_EVERYWHERE' | translate }}</span></span
+            >
           </button>
         </div>
       </div>

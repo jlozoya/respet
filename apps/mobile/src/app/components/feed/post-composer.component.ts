@@ -85,9 +85,18 @@ const MAX_MEDIA = 10;
   template: `
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ (post() ? 'COMPOSER.EDIT_TITLE' : sharedPost() ? 'COMPOSER.SHARE_TITLE' : 'COMPOSER.TITLE') | translate }}</ion-title>
+        <ion-title>{{
+          (post()
+            ? 'COMPOSER.EDIT_TITLE'
+            : sharedPost()
+              ? 'COMPOSER.SHARE_TITLE'
+              : 'COMPOSER.TITLE'
+          ) | translate
+        }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="close()" [attr.aria-label]="'CLOSE' | translate"><ion-icon slot="icon-only" name="close" /></ion-button>
+          <ion-button (click)="close()" [attr.aria-label]="'CLOSE' | translate"
+            ><ion-icon slot="icon-only" name="close"
+          /></ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -106,7 +115,9 @@ const MAX_MEDIA = 10;
               [attr.aria-label]="'AUDIENCE.TITLE' | translate"
             >
               @for (option of audiences; track option.value) {
-                <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                <ion-select-option [value]="option.value">{{
+                  option.label | translate
+                }}</ion-select-option>
               }
             </ion-select>
             <ion-select
@@ -117,7 +128,9 @@ const MAX_MEDIA = 10;
               [attr.aria-label]="'POST_KINDS.TITLE' | translate"
             >
               @for (option of kinds; track option.value) {
-                <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                <ion-select-option [value]="option.value">{{
+                  option.label | translate
+                }}</ion-select-option>
               }
             </ion-select>
           </span>
@@ -144,7 +157,12 @@ const MAX_MEDIA = 10;
           @for (item of media(); track item.id) {
             <div class="thumb">
               <img [src]="item.posterUrl ?? item.url" [alt]="item.alt" />
-              <button type="button" class="remove" (click)="removeExisting(item)" [attr.aria-label]="'REMOVE' | translate">
+              <button
+                type="button"
+                class="remove"
+                (click)="removeExisting(item)"
+                [attr.aria-label]="'REMOVE' | translate"
+              >
                 <ion-icon name="close" />
               </button>
             </div>
@@ -157,7 +175,12 @@ const MAX_MEDIA = 10;
               } @else {
                 <img [src]="item.url" alt="" />
               }
-              <button type="button" class="remove" (click)="removePending(item)" [attr.aria-label]="'REMOVE' | translate">
+              <button
+                type="button"
+                class="remove"
+                (click)="removePending(item)"
+                [attr.aria-label]="'REMOVE' | translate"
+              >
                 <ion-icon name="close" />
               </button>
             </div>
@@ -169,7 +192,12 @@ const MAX_MEDIA = 10;
         <div class="place">
           <ion-icon name="location" />
           <span>{{ placeLabel(place) }}</span>
-          <button type="button" class="rs-icon-btn plain" (click)="location.set(null)" [attr.aria-label]="'REMOVE' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain"
+            (click)="location.set(null)"
+            [attr.aria-label]="'REMOVE' | translate"
+          >
             <ion-icon name="close" />
           </button>
         </div>
@@ -179,11 +207,21 @@ const MAX_MEDIA = 10;
         <span class="rs-strong">{{ 'COMPOSER.ADD_TO_POST' | translate }}</span>
         <span class="add-actions">
           @if (!sharedPost()) {
-            <button type="button" class="rs-icon-btn plain photo" (click)="fileInput.click()" [title]="'COMPOSER.PHOTO_VIDEO' | translate">
+            <button
+              type="button"
+              class="rs-icon-btn plain photo"
+              (click)="fileInput.click()"
+              [title]="'COMPOSER.PHOTO_VIDEO' | translate"
+            >
               <ion-icon name="images" />
             </button>
           }
-          <button type="button" class="rs-icon-btn plain place-btn" (click)="pickLocation()" [title]="'COMPOSER.LOCATION' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain place-btn"
+            (click)="pickLocation()"
+            [title]="'COMPOSER.LOCATION' | translate"
+          >
             <ion-icon name="location" />
           </button>
         </span>
@@ -193,15 +231,31 @@ const MAX_MEDIA = 10;
         <span class="rs-row-text">
           <span class="title">{{ 'COMPOSER.DISABLE_COMMENTS' | translate }}</span>
         </span>
-        <ion-toggle [checked]="commentsDisabled()" (ionChange)="commentsDisabled.set($event.detail.checked)" [attr.aria-label]="'COMPOSER.DISABLE_COMMENTS' | translate" />
+        <ion-toggle
+          [checked]="commentsDisabled()"
+          (ionChange)="commentsDisabled.set($event.detail.checked)"
+          [attr.aria-label]="'COMPOSER.DISABLE_COMMENTS' | translate"
+        />
       </div>
 
-      <input #fileInput type="file" hidden multiple accept="image/*,video/*" (change)="onFiles($event)" />
+      <input
+        #fileInput
+        type="file"
+        hidden
+        multiple
+        accept="image/*,video/*"
+        (change)="onFiles($event)"
+      />
     </ion-content>
 
     <ion-footer>
       <ion-toolbar>
-        <ion-button class="publish" expand="block" [disabled]="!canPublish() || busy()" (click)="publish()">
+        <ion-button
+          class="publish"
+          expand="block"
+          [disabled]="!canPublish() || busy()"
+          (click)="publish()"
+        >
           {{ (busy() ? 'COMPOSER.PUBLISHING' : post() ? 'SAVE' : 'COMPOSER.PUBLISH') | translate }}
         </ion-button>
       </ion-toolbar>
@@ -238,7 +292,11 @@ export class PostComposerComponent implements OnInit, OnDestroy {
   private readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly canPublish = computed(
-    () => this.text().trim().length > 0 || this.media().length > 0 || this.pending().length > 0 || !!this.sharedPost(),
+    () =>
+      this.text().trim().length > 0 ||
+      this.media().length > 0 ||
+      this.pending().length > 0 ||
+      !!this.sharedPost(),
   );
 
   ngOnInit(): void {
@@ -271,7 +329,9 @@ export class PostComposerComponent implements OnInit, OnDestroy {
   onFiles(event: Event): void {
     const input = event.target as HTMLInputElement;
     const room = MAX_MEDIA - this.media().length - this.pending().length;
-    const files = Array.from(input.files ?? []).filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'));
+    const files = Array.from(input.files ?? []).filter(
+      (file) => file.type.startsWith('image/') || file.type.startsWith('video/'),
+    );
 
     if (files.length > room) {
       void this.feedback.toast('COMPOSER.TOO_MANY_FILES');
@@ -279,7 +339,11 @@ export class PostComposerComponent implements OnInit, OnDestroy {
 
     this.pending.update((current) => [
       ...current,
-      ...files.slice(0, Math.max(0, room)).map((file) => ({ file, url: URL.createObjectURL(file), video: file.type.startsWith('video/') })),
+      ...files.slice(0, Math.max(0, room)).map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+        video: file.type.startsWith('video/'),
+      })),
     ]);
     input.value = '';
   }
@@ -324,7 +388,9 @@ export class PostComposerComponent implements OnInit, OnDestroy {
       let result: Post;
 
       if (existing) {
-        await Promise.all(this.removed().map((mediaId) => this.posts.removeMedia(existing.id, mediaId)));
+        await Promise.all(
+          this.removed().map((mediaId) => this.posts.removeMedia(existing.id, mediaId)),
+        );
 
         for (const item of this.pending()) {
           await this.posts.addMedia(existing.id, item.file);
@@ -338,7 +404,10 @@ export class PostComposerComponent implements OnInit, OnDestroy {
         );
       }
 
-      await this.feedback.toast(existing ? 'COMPOSER.UPDATED' : 'COMPOSER.PUBLISHED', { color: 'success', duration: 2000 });
+      await this.feedback.toast(existing ? 'COMPOSER.UPDATED' : 'COMPOSER.PUBLISHED', {
+        color: 'success',
+        duration: 2000,
+      });
       await this.modalCtrl.dismiss(result, 'published');
     } catch (error) {
       await this.feedback.error(error);

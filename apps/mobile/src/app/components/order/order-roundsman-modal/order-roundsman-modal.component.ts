@@ -101,9 +101,7 @@ export class OrderRoundsmanModalComponent {
         search: this.search() || undefined,
       });
 
-      this.items.update((current) =>
-        options.reset ? result.data : [...current, ...result.data],
-      );
+      this.items.update((current) => (options.reset ? result.data : [...current, ...result.data]));
       this.hasMore.set(result.meta.hasNextPage);
     } catch (error) {
       await this.feedback.error(error);

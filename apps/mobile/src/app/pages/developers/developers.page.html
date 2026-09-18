@@ -7,7 +7,10 @@
         <span class="eyebrow">{{ 'DEVELOPERS.EYEBROW' | translate }}</span>
         <h1>{{ 'DEVELOPERS.TITLE' | translate }}</h1>
         <p>{{ 'DEVELOPERS.SUBTITLE' | translate }}</p>
-        <ion-button (click)="create()"><ion-icon slot="start" name="add" /> {{ 'DEVELOPERS.CREATE_APP' | translate }}</ion-button>
+        <ion-button (click)="create()"
+          ><ion-icon slot="start" name="add" />
+          {{ 'DEVELOPERS.CREATE_APP' | translate }}</ion-button
+        >
       </div>
       <ion-icon name="code-slash" class="hero-icon" />
     </header>
@@ -23,9 +26,13 @@
               <app-avatar [src]="app.icon?.url" [label]="app.name" [size]="48" />
               <span class="app-text">
                 <span class="rs-strong rs-ellipsis">{{ app.name }}</span>
-                <span class="rs-small rs-muted">{{ 'DEVELOPERS.USERS' | translate: { count: app.userCount } }}</span>
+                <span class="rs-small rs-muted">{{
+                  'DEVELOPERS.USERS' | translate: { count: app.userCount }
+                }}</span>
               </span>
-              <span class="badge" [class]="app.status">{{ 'DEVELOPERS.STATUS.' + app.status.toUpperCase() | translate }}</span>
+              <span class="badge" [class]="app.status">{{
+                'DEVELOPERS.STATUS.' + app.status.toUpperCase() | translate
+              }}</span>
             </a>
           } @empty {
             <p class="rs-muted">{{ 'DEVELOPERS.NO_APPS' | translate }}</p>
@@ -53,15 +60,23 @@ grant_type=authorization_code&code=CODE&redirect_uri=REDIRECT_URI&client_id=CLIE
       <div class="endpoints">
         <div class="endpoint">
           <span class="rs-small rs-muted">GraphQL</span>
-          <button type="button" class="copy" (click)="copy(graphqlUrl)">{{ graphqlUrl }} <ion-icon name="copy-outline" /></button>
+          <button type="button" class="copy" (click)="copy(graphqlUrl)">
+            {{ graphqlUrl }} <ion-icon name="copy-outline" />
+          </button>
         </div>
         <div class="endpoint">
           <span class="rs-small rs-muted">{{ 'DEVELOPERS.REALTIME' | translate }}</span>
-          <button type="button" class="copy" (click)="copy(wsUrl())">{{ wsUrl() }} <ion-icon name="copy-outline" /></button>
+          <button type="button" class="copy" (click)="copy(wsUrl())">
+            {{ wsUrl() }} <ion-icon name="copy-outline" />
+          </button>
         </div>
         <div class="endpoint">
           <span class="rs-small rs-muted">{{ 'DEVELOPERS.DISCOVERY' | translate }}</span>
-          <button type="button" class="copy" (click)="copy(apiUrl + '/.well-known/oauth-authorization-server')">
+          <button
+            type="button"
+            class="copy"
+            (click)="copy(apiUrl + '/.well-known/oauth-authorization-server')"
+          >
             {{ apiUrl }}/.well-known/oauth-authorization-server <ion-icon name="copy-outline" />
           </button>
         </div>

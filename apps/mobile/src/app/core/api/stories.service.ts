@@ -36,7 +36,10 @@ const USER_STORIES = gql(
   ...STORY_FRAGMENTS,
 );
 
-const STORY = gql(`query StoryById($id: ID!) { story(id: $id) { ...StoryFields } }`, ...STORY_FRAGMENTS);
+const STORY = gql(
+  `query StoryById($id: ID!) { story(id: $id) { ...StoryFields } }`,
+  ...STORY_FRAGMENTS,
+);
 
 const STORY_ARCHIVE = gql(
   `query StoryArchive($page: Int, $perPage: Int) {
@@ -196,7 +199,9 @@ export class StoriesService {
           return group;
         }
 
-        const stories = group.stories.map((item) => (item.id === story.id ? { ...item, seen: true } : item));
+        const stories = group.stories.map((item) =>
+          item.id === story.id ? { ...item, seen: true } : item,
+        );
 
         return { ...group, stories, hasUnseen: stories.some((item) => !item.seen) };
       }),

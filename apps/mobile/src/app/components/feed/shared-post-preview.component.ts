@@ -20,7 +20,16 @@ import { audienceIcon } from '../../shared/utils/audience';
 @Component({
   selector: 'app-shared-post-preview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonIcon, AvatarComponent, MediaGridComponent, RichTextComponent, UserNameComponent, RelativeTimePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonIcon,
+    AvatarComponent,
+    MediaGridComponent,
+    RichTextComponent,
+    UserNameComponent,
+    RelativeTimePipe,
+  ],
   template: `
     @if (post(); as shared) {
       @if (shared.media.length) {

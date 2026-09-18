@@ -15,7 +15,11 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import type { Message } from '@social-network/shared';
 
-import { toAttachment, type LocalAttachment, type OutgoingMessage } from '../../core/api/chat.service';
+import {
+  toAttachment,
+  type LocalAttachment,
+  type OutgoingMessage,
+} from '../../core/api/chat.service';
 import { VoiceRecorder } from '../../core/media/voice-recorder';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
@@ -42,10 +46,19 @@ const MAX_FILES = 10;
     @if (replyTo(); as quoted) {
       <div class="banner">
         <span class="banner-text">
-          <span class="rs-strong">{{ 'MESSENGER.REPLYING_TO' | translate: { name: (quoted.sender | fullName) } }}</span>
-          <span class="rs-muted rs-ellipsis">{{ quoted.body || ('MESSENGER.ATTACHMENT' | translate) }}</span>
+          <span class="rs-strong">{{
+            'MESSENGER.REPLYING_TO' | translate: { name: (quoted.sender | fullName) }
+          }}</span>
+          <span class="rs-muted rs-ellipsis">{{
+            quoted.body || ('MESSENGER.ATTACHMENT' | translate)
+          }}</span>
         </span>
-        <button type="button" class="rs-icon-btn plain" (click)="cancelReply.emit()" [attr.aria-label]="'CANCEL' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn plain"
+          (click)="cancelReply.emit()"
+          [attr.aria-label]="'CANCEL' | translate"
+        >
           <ion-icon name="close" />
         </button>
       </div>
@@ -57,7 +70,12 @@ const MAX_FILES = 10;
           <span class="rs-strong">{{ 'MESSENGER.EDITING' | translate }}</span>
           <span class="rs-muted rs-ellipsis">{{ message.body }}</span>
         </span>
-        <button type="button" class="rs-icon-btn plain" (click)="cancelEdit.emit()" [attr.aria-label]="'CANCEL' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn plain"
+          (click)="cancelEdit.emit()"
+          [attr.aria-label]="'CANCEL' | translate"
+        >
           <ion-icon name="close" />
         </button>
       </div>
@@ -75,10 +93,19 @@ const MAX_FILES = 10;
                 <video [src]="file.previewUrl" muted></video>
               }
               @default {
-                <span class="file"><ion-icon name="document-text" /><span class="rs-ellipsis">{{ file.name }}</span></span>
+                <span class="file"
+                  ><ion-icon name="document-text" /><span class="rs-ellipsis">{{
+                    file.name
+                  }}</span></span
+                >
               }
             }
-            <button type="button" class="remove" (click)="removeAttachment($index)" [attr.aria-label]="'REMOVE' | translate">
+            <button
+              type="button"
+              class="remove"
+              (click)="removeAttachment($index)"
+              [attr.aria-label]="'REMOVE' | translate"
+            >
               <ion-icon name="close" />
             </button>
           </div>
@@ -90,25 +117,50 @@ const MAX_FILES = 10;
       <p class="read-only">{{ 'MESSENGER.READ_ONLY' | translate }}</p>
     } @else if (recorder.recording()) {
       <div class="bar recording">
-        <button type="button" class="rs-icon-btn plain danger" (click)="cancelRecording()" [attr.aria-label]="'CANCEL' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn plain danger"
+          (click)="cancelRecording()"
+          [attr.aria-label]="'CANCEL' | translate"
+        >
           <ion-icon name="trash-outline" />
         </button>
         <span class="wave"><span class="pulse"></span>{{ recorder.elapsedMs() | duration }}</span>
-        <button type="button" class="rs-icon-btn send" (click)="finishRecording()" [attr.aria-label]="'SEND' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn send"
+          (click)="finishRecording()"
+          [attr.aria-label]="'SEND' | translate"
+        >
           <ion-icon name="send" />
         </button>
       </div>
     } @else {
       <div class="bar">
         @if (!editing()) {
-          <button type="button" class="rs-icon-btn plain accent" (click)="fileInput.click()" [attr.aria-label]="'MESSENGER.ATTACH' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain accent"
+            (click)="fileInput.click()"
+            [attr.aria-label]="'MESSENGER.ATTACH' | translate"
+          >
             <ion-icon name="add-circle" />
           </button>
-          <button type="button" class="rs-icon-btn plain accent" (click)="photoInput.click()" [attr.aria-label]="'MESSENGER.PHOTO' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain accent"
+            (click)="photoInput.click()"
+            [attr.aria-label]="'MESSENGER.PHOTO' | translate"
+          >
             <ion-icon name="image" />
           </button>
           @if (canRecord && !hasContent()) {
-            <button type="button" class="rs-icon-btn plain accent" (click)="startRecording()" [attr.aria-label]="'MESSENGER.VOICE' | translate">
+            <button
+              type="button"
+              class="rs-icon-btn plain accent"
+              (click)="startRecording()"
+              [attr.aria-label]="'MESSENGER.VOICE' | translate"
+            >
               <ion-icon name="mic" />
             </button>
           }
@@ -128,11 +180,21 @@ const MAX_FILES = 10;
         </label>
 
         @if (hasContent() || editing()) {
-          <button type="button" class="rs-icon-btn plain accent" (click)="submit()" [attr.aria-label]="'SEND' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain accent"
+            (click)="submit()"
+            [attr.aria-label]="'SEND' | translate"
+          >
             <ion-icon name="send" />
           </button>
         } @else {
-          <button type="button" class="rs-icon-btn plain like" (click)="sendLike()" [attr.aria-label]="'MESSENGER.LIKE' | translate">
+          <button
+            type="button"
+            class="rs-icon-btn plain like"
+            (click)="sendLike()"
+            [attr.aria-label]="'MESSENGER.LIKE' | translate"
+          >
             👍
           </button>
         }
@@ -140,7 +202,14 @@ const MAX_FILES = 10;
     }
 
     <input #fileInput type="file" multiple hidden (change)="onFiles($event)" />
-    <input #photoInput type="file" multiple hidden accept="image/*,video/*" (change)="onFiles($event)" />
+    <input
+      #photoInput
+      type="file"
+      multiple
+      hidden
+      accept="image/*,video/*"
+      (change)="onFiles($event)"
+    />
   `,
   styleUrl: './chat-composer.component.scss',
 })
@@ -163,7 +232,9 @@ export class ChatComposerComponent implements OnDestroy {
   readonly recorder = new VoiceRecorder();
   readonly canRecord = VoiceRecorder.supported;
 
-  readonly hasContent = computed(() => this.text().trim().length > 0 || this.attachments().length > 0);
+  readonly hasContent = computed(
+    () => this.text().trim().length > 0 || this.attachments().length > 0,
+  );
 
   private readonly textarea = viewChild<ElementRef<HTMLTextAreaElement>>('textarea');
 
@@ -302,10 +373,18 @@ export class ChatComposerComponent implements OnDestroy {
       return;
     }
 
-    const extension = note.mimeType.includes('mp4') ? 'm4a' : note.mimeType.includes('ogg') ? 'ogg' : 'webm';
+    const extension = note.mimeType.includes('mp4')
+      ? 'm4a'
+      : note.mimeType.includes('ogg')
+        ? 'ogg'
+        : 'webm';
     const file = new File([note.blob], `nota-de-voz.${extension}`, { type: note.blob.type });
 
-    this.send.emit({ files: [toAttachment(file)], durationMs: note.durationMs, replyTo: this.replyTo() });
+    this.send.emit({
+      files: [toAttachment(file)],
+      durationMs: note.durationMs,
+      replyTo: this.replyTo(),
+    });
   }
 
   private addFiles(files: File[]): void {
@@ -315,7 +394,10 @@ export class ChatComposerComponent implements OnDestroy {
       void this.feedback.toast('MESSENGER.TOO_MANY_FILES');
     }
 
-    this.attachments.update((current) => [...current, ...files.slice(0, room).map((file) => toAttachment(file))]);
+    this.attachments.update((current) => [
+      ...current,
+      ...files.slice(0, room).map((file) => toAttachment(file)),
+    ]);
   }
 
   private clear(): void {

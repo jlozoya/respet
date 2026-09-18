@@ -62,7 +62,9 @@ export const LIVE_REACTIONS = ['❤️', '👍', '😂', '😮', '👏', '🔥']
           [attr.aria-label]="'LIVE.COMMENT_PLACEHOLDER' | translate"
         />
         @if (draft().trim()) {
-          <button type="submit" class="icon" [attr.aria-label]="'SEND' | translate"><ion-icon name="send" /></button>
+          <button type="submit" class="icon" [attr.aria-label]="'SEND' | translate">
+            <ion-icon name="send" />
+          </button>
         } @else {
           @for (emoji of emojis; track emoji) {
             <button type="button" class="emoji" (click)="react.emit(emoji)">{{ emoji }}</button>

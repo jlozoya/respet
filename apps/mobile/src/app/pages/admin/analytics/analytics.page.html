@@ -26,14 +26,21 @@
           <ion-segment [value]="interval()" (ionChange)="changeInterval($any($event.detail.value))">
             @for (option of intervals; track option) {
               <ion-segment-button [value]="option">
-                <ion-label>{{ 'ANALYTICS.INTERVAL.' + option.toUpperCase() | translate }}</ion-label>
+                <ion-label>{{
+                  'ANALYTICS.INTERVAL.' + option.toUpperCase() | translate
+                }}</ion-label>
               </ion-segment-button>
             }
           </ion-segment>
         </ion-card-header>
         <ion-card-content>
           <div class="chart">
-            <canvas baseChart type="line" [data]="registrationChart()" [options]="chartOptions"></canvas>
+            <canvas
+              baseChart
+              type="line"
+              [data]="registrationChart()"
+              [options]="chartOptions"
+            ></canvas>
           </div>
         </ion-card-content>
       </ion-card>
@@ -46,7 +53,12 @@
         </ion-card-header>
         <ion-card-content>
           <div class="chart">
-            <canvas baseChart type="doughnut" [data]="genderChart()" [options]="doughnutOptions"></canvas>
+            <canvas
+              baseChart
+              type="doughnut"
+              [data]="genderChart()"
+              [options]="doughnutOptions"
+            ></canvas>
           </div>
         </ion-card-content>
       </ion-card>
@@ -59,7 +71,12 @@
         </ion-card-header>
         <ion-card-content>
           <div class="chart">
-            <canvas baseChart type="doughnut" [data]="providerChart()" [options]="doughnutOptions"></canvas>
+            <canvas
+              baseChart
+              type="doughnut"
+              [data]="providerChart()"
+              [options]="doughnutOptions"
+            ></canvas>
           </div>
         </ion-card-content>
       </ion-card>

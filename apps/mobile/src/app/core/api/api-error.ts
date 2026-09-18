@@ -47,7 +47,12 @@ export class ApiError extends Error {
     }
 
     if (body && typeof body === 'object' && typeof body.code === 'string') {
-      return new ApiError(response.status, body.code, body.message ?? response.message, body.errors);
+      return new ApiError(
+        response.status,
+        body.code,
+        body.message ?? response.message,
+        body.errors,
+      );
     }
 
     return new ApiError(response.status, 'SERVER.ERROR', response.message);

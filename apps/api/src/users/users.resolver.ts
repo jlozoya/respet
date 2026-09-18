@@ -71,7 +71,10 @@ export class UsersResolver {
 
   // --- Cuenta propia --------------------------------------------------------
 
-  @Query(() => UserPermissionsType, { name: 'myPermissions', description: 'Preferencias de privacidad.' })
+  @Query(() => UserPermissionsType, {
+    name: 'myPermissions',
+    description: 'Preferencias de privacidad.',
+  })
   async myPermissions(@CurrentUser('id') userId: string): Promise<UserPermissions> {
     return this.users.getPermissions(userId);
   }
@@ -87,12 +90,17 @@ export class UsersResolver {
   }
 
   @Mutation(() => UserType)
-  async updateProfile(@CurrentUser('id') userId: string, @Args('input') input: UpdateProfileDto): Promise<User> {
+  async updateProfile(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: UpdateProfileDto,
+  ): Promise<User> {
     return this.users.updateProfile(userId, input);
   }
 
   @RateLimit({ limit: 20, windowSeconds: 3600 })
-  @Mutation(() => MediaType, { description: 'Cambia la foto de perfil. Se sube en la propia operación.' })
+  @Mutation(() => MediaType, {
+    description: 'Cambia la foto de perfil. Se sube en la propia operación.',
+  })
   async updateMyAvatar(
     @CurrentUser('id') userId: string,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,
@@ -139,12 +147,18 @@ export class UsersResolver {
   }
 
   @Mutation(() => UserType)
-  async updateLanguage(@CurrentUser('id') userId: string, @Args('input') input: UpdateLanguageDto): Promise<User> {
+  async updateLanguage(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: UpdateLanguageDto,
+  ): Promise<User> {
     return this.users.updateLanguage(userId, input.lang);
   }
 
   @Mutation(() => UserType)
-  async updateLocation(@CurrentUser('id') userId: string, @Args('input') input: UpdateLocationDto): Promise<User> {
+  async updateLocation(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: UpdateLocationDto,
+  ): Promise<User> {
     return this.users.updateLocation(userId, input);
   }
 
@@ -157,7 +171,10 @@ export class UsersResolver {
   }
 
   @Mutation(() => [UserEmailType])
-  async addEmails(@CurrentUser('id') userId: string, @Args('input') input: AddEmailsDto): Promise<UserEmail[]> {
+  async addEmails(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: AddEmailsDto,
+  ): Promise<UserEmail[]> {
     return this.users.addEmails(userId, input);
   }
 
@@ -172,7 +189,10 @@ export class UsersResolver {
   }
 
   @Mutation(() => [UserPhoneType])
-  async addPhones(@CurrentUser('id') userId: string, @Args('input') input: AddPhonesDto): Promise<UserPhone[]> {
+  async addPhones(
+    @CurrentUser('id') userId: string,
+    @Args('input') input: AddPhonesDto,
+  ): Promise<UserPhone[]> {
     return this.users.addPhones(userId, input);
   }
 
@@ -197,7 +217,9 @@ export class UsersResolver {
   }
 
   @RateLimit({ limit: 3, windowSeconds: 3600 })
-  @Mutation(() => Boolean, { description: 'Borra la cuenta propia y todo su contenido. Pide confirmar la identidad.' })
+  @Mutation(() => Boolean, {
+    description: 'Borra la cuenta propia y todo su contenido. Pide confirmar la identidad.',
+  })
   async deleteMyAccount(
     @CurrentUser() actor: AuthenticatedUser,
     @Args('reauth') reauth: ReauthDto,
@@ -264,7 +286,9 @@ export class UsersResolver {
     return this.users.unfollow(userId, id);
   }
 
-  @Mutation(() => FollowRequestResultType, { description: 'Quita a alguien de tus seguidores sin bloquearle.' })
+  @Mutation(() => FollowRequestResultType, {
+    description: 'Quita a alguien de tus seguidores sin bloquearle.',
+  })
   async removeFollower(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -363,7 +387,9 @@ export class UsersResolver {
 
   @Roles('admin')
   @Mutation(() => Boolean)
-  async deleteUser(@Args('id', { type: () => ID }, ParseObjectIdPipe) id: string): Promise<boolean> {
+  async deleteUser(
+    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
+  ): Promise<boolean> {
     await this.users.remove(id);
 
     return true;

@@ -99,7 +99,10 @@ export class SocialResolver {
   }
 
   @Scopes('user_follows')
-  @Query(() => [UserSuggestionType], { name: 'suggestedUsers', description: 'Personas que quizá conozcas.' })
+  @Query(() => [UserSuggestionType], {
+    name: 'suggestedUsers',
+    description: 'Personas que quizá conozcas.',
+  })
   async suggestedUsers(
     @CurrentUser('id') userId: string,
     @Args('limit', { type: () => Int, nullable: true, defaultValue: 10 }) limit = 10,
@@ -115,7 +118,9 @@ export class SocialResolver {
     return this.social.onlineContacts(userId);
   }
 
-  @Mutation(() => Boolean, { description: 'Bloquea a alguien y deshace los seguimientos entre ambos.' })
+  @Mutation(() => Boolean, {
+    description: 'Bloquea a alguien y deshace los seguimientos entre ambos.',
+  })
   async blockUser(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,

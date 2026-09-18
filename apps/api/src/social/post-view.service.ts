@@ -45,7 +45,11 @@ export class PostViewService {
     private readonly relationships: RelationshipService,
   ) {}
 
-  async present(docs: LeanPost[], viewerId: string | null, context?: ViewerContext): Promise<PostDto[]> {
+  async present(
+    docs: LeanPost[],
+    viewerId: string | null,
+    context?: ViewerContext,
+  ): Promise<PostDto[]> {
     if (docs.length === 0) {
       return [];
     }
@@ -81,17 +85,23 @@ export class PostViewService {
         {
           myReaction: myReactions.get(id) ?? null,
           saved: savedIds.has(id),
-          authorFollowState: viewerId && authorId !== viewerId ? (followStates.get(authorId) ?? null) : null,
+          authorFollowState:
+            viewerId && authorId !== viewerId ? (followStates.get(authorId) ?? null) : null,
           commentPreview: previews.get(id) ?? [],
         },
         { sharedPostVisible: sharedVisible },
       );
 
-      return blurLocation(post.sharedPost ? { ...post, sharedPost: blurLocation(post.sharedPost) } : post);
+      return blurLocation(
+        post.sharedPost ? { ...post, sharedPost: blurLocation(post.sharedPost) } : post,
+      );
     });
   }
 
-  private async myReactions(viewerId: string | null, ids: Types.ObjectId[]): Promise<Map<string, ReactionType>> {
+  private async myReactions(
+    viewerId: string | null,
+    ids: Types.ObjectId[],
+  ): Promise<Map<string, ReactionType>> {
     if (!viewerId) {
       return new Map();
     }
@@ -109,7 +119,10 @@ export class PostViewService {
       return new Set();
     }
 
-    const docs = await this.saved.find({ userId: viewerId, postId: { $in: ids } }).select('postId').lean();
+    const docs = await this.saved
+      .find({ userId: viewerId, postId: { $in: ids } })
+      .select('postId')
+      .lean();
 
     return new Set(docs.map((doc) => String(doc.postId)));
   }
@@ -153,7 +166,10 @@ export class PostViewService {
         .populate({ path: 'author', populate: { path: 'avatar' } })
         .lean(),
       viewerId
-        ? this.commentLikes.find({ userId: viewerId, commentId: { $in: commentIds } }).select('commentId').lean()
+        ? this.commentLikes
+            .find({ userId: viewerId, commentId: { $in: commentIds } })
+            .select('commentId')
+            .lean()
         : Promise.resolve([]),
     ]);
 
@@ -183,7 +199,11 @@ function blurLocation(post: PostDto): PostDto {
     return post;
   }
 
-  const blurred = fuzzyPoint({ lat: post.location.lat, lng: post.location.lng }, post.locationAccuracy, post.id);
+  const blurred = fuzzyPoint(
+    { lat: post.location.lat, lng: post.location.lng },
+    post.locationAccuracy,
+    post.id,
+  );
 
   return { ...post, location: { ...post.location, lat: blurred.lat, lng: blurred.lng } };
 }

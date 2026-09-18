@@ -19,7 +19,11 @@ import type { CommentListQueryDto, CreateCommentDto, UpdateCommentDto } from './
 
 const POPULATE_COMMENT = [
   { path: 'author', populate: { path: 'avatar' } },
-  { path: 'mentions', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } },
+  {
+    path: 'mentions',
+    select: 'name firstName lastName avatarId verified',
+    populate: { path: 'avatar' },
+  },
 ];
 
 type LeanComment = CommentDoc & { _id: Types.ObjectId; userId: Types.ObjectId };
@@ -48,11 +52,17 @@ export class CommentsService {
    * Al revés que el muro: una conversación se lee en el orden en que ocurrió.
    * Los comentarios de personas con las que hay un bloqueo no aparecen.
    */
-  async list(postId: string, query: CommentListQueryDto, viewerId: string | null): Promise<Paginated<Comment>> {
+  async list(
+    postId: string,
+    query: CommentListQueryDto,
+    viewerId: string | null,
+  ): Promise<Paginated<Comment>> {
     await this.postsService.findVisibleDoc(postId, viewerId);
 
     const { skip, take, page, perPage } = toPage(query);
-    const blocked = viewerId ? [...(await this.relationships.blockedIds(viewerId))].map((id) => new ObjectId(id)) : [];
+    const blocked = viewerId
+      ? [...(await this.relationships.blockedIds(viewerId))].map((id) => new ObjectId(id))
+      : [];
     const where = {
       postId,
       parentId: query.parentId ? new ObjectId(query.parentId) : null,
@@ -60,18 +70,32 @@ export class CommentsService {
     };
 
     const [docs, total] = await Promise.all([
-      this.comments.find(where).sort({ createdAt: 1 }).skip(skip).limit(take).populate(POPULATE_COMMENT).lean(),
+      this.comments
+        .find(where)
+        .sort({ createdAt: 1 })
+        .skip(skip)
+        .limit(take)
+        .populate(POPULATE_COMMENT)
+        .lean(),
       this.comments.countDocuments(where),
     ]);
 
-    return paginate(await this.present(docs as unknown as LeanComment[], viewerId), total, page, perPage);
+    return paginate(
+      await this.present(docs as unknown as LeanComment[], viewerId),
+      total,
+      page,
+      perPage,
+    );
   }
 
   async create(postId: string, author: AuthenticatedUser, dto: CreateCommentDto): Promise<Comment> {
     const post = await this.postsService.findVisibleDoc(postId, author.id);
 
     if (post.commentsDisabled && String(post.userId) !== author.id) {
-      throw AppException.forbiddenWith(ErrorCode.CommentsDisabled, 'Comments are turned off for this post');
+      throw AppException.forbiddenWith(
+        ErrorCode.CommentsDisabled,
+        'Comments are turned off for this post',
+      );
     }
 
     let parent: (CommentModel & { _id: Types.ObjectId }) | null = null;
@@ -84,7 +108,10 @@ export class CommentsService {
       }
     }
 
-    const mentionIds = await this.relationships.resolveUsernames(extractMentions(dto.body), author.id);
+    const mentionIds = await this.relationships.resolveUsernames(
+      extractMentions(dto.body),
+      author.id,
+    );
     // Una respuesta a una respuesta cuelga del comentario raíz.
     const rootId = parent?.parentId ?? parent?._id ?? null;
 
@@ -144,7 +171,11 @@ export class CommentsService {
       }
     }
 
-    await this.bus.publish(Topic.domain(DomainEvent.CommentCreated), { commentId, postId, userId: author.id });
+    await this.bus.publish(Topic.domain(DomainEvent.CommentCreated), {
+      commentId,
+      postId,
+      userId: author.id,
+    });
 
     return this.findOrFail(commentId, author.id);
   }
@@ -156,9 +187,15 @@ export class CommentsService {
       throw AppException.notFound('Comment');
     }
 
-    const mentionIds = await this.relationships.resolveUsernames(extractMentions(dto.body), actor.id);
+    const mentionIds = await this.relationships.resolveUsernames(
+      extractMentions(dto.body),
+      actor.id,
+    );
 
-    await this.comments.updateOne({ _id: id }, { $set: { body: dto.body, mentionIds, editedAt: new Date() } });
+    await this.comments.updateOne(
+      { _id: id },
+      { $set: { body: dto.body, mentionIds, editedAt: new Date() } },
+    );
 
     return this.findOrFail(id, actor.id);
   }
@@ -179,11 +216,20 @@ export class CommentsService {
       return;
     }
 
-    await this.comments.updateOne({ _id: id }, { $set: { body: '', mentionIds: [], deletedAt: new Date() } });
-    await this.posts.updateOne({ _id: comment.postId, commentCount: { $gt: 0 } }, { $inc: { commentCount: -1 } });
+    await this.comments.updateOne(
+      { _id: id },
+      { $set: { body: '', mentionIds: [], deletedAt: new Date() } },
+    );
+    await this.posts.updateOne(
+      { _id: comment.postId, commentCount: { $gt: 0 } },
+      { $inc: { commentCount: -1 } },
+    );
 
     if (comment.parentId) {
-      await this.comments.updateOne({ _id: comment.parentId, replyCount: { $gt: 0 } }, { $inc: { replyCount: -1 } });
+      await this.comments.updateOne(
+        { _id: comment.parentId, replyCount: { $gt: 0 } },
+        { $inc: { replyCount: -1 } },
+      );
     }
 
     await this.notifications.removeFor({ commentId: id });
@@ -220,7 +266,10 @@ export class CommentsService {
     const deleted = await this.likes.deleteOne({ commentId: id, userId });
 
     if (deleted.deletedCount > 0) {
-      await this.comments.updateOne({ _id: id, likeCount: { $gt: 0 } }, { $inc: { likeCount: -1 } });
+      await this.comments.updateOne(
+        { _id: id, likeCount: { $gt: 0 } },
+        { $inc: { likeCount: -1 } },
+      );
       await this.notifications.retract({
         recipientId: comment.userId,
         actorId: userId,

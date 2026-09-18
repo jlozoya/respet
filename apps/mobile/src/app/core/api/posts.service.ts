@@ -155,7 +155,10 @@ const LIKE_COMMENT = `mutation LikeComment($id: ID!) { likeComment(id: $id) { li
 const UNLIKE_COMMENT = `mutation UnlikeComment($id: ID!) { unlikeComment(id: $id) { likeCount likedByMe } }`;
 
 /** Una casilla de la cuadrícula: la publicación con lo justo para pintarla. */
-export type PostGridItem = Pick<Post, 'id' | 'description' | 'media' | 'reactionCount' | 'commentCount'>;
+export type PostGridItem = Pick<
+  Post,
+  'id' | 'description' | 'media' | 'reactionCount' | 'commentCount'
+>;
 
 /** Un cambio en una publicación, para que lo vean todas las pantallas que la enseñan. */
 export type PostChange =

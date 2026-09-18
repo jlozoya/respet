@@ -19,7 +19,15 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
 @Component({
   selector: 'app-menu',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonIcon, AvatarComponent, PageHeaderComponent, FullNamePipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    AvatarComponent,
+    PageHeaderComponent,
+    FullNamePipe,
+  ],
   template: `
     <app-page-header title="NAV.MENU" [always]="true" />
 
@@ -56,23 +64,37 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
         <div class="rs-card list">
           <a class="rs-row" routerLink="/settings">
             <span class="rs-row-icon"><ion-icon name="settings" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'NAV.SETTINGS' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'NAV.SETTINGS' | translate }}</span></span
+            >
           </a>
           <button type="button" class="rs-row" (click)="theme.toggle()">
             <span class="rs-row-icon"><ion-icon [name]="theme.isDark() ? 'sunny' : 'moon'" /></span>
-            <span class="rs-row-text"><span class="title">{{ (theme.isDark() ? 'THEME.LIGHT' : 'THEME.DARK') | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{
+                (theme.isDark() ? 'THEME.LIGHT' : 'THEME.DARK') | translate
+              }}</span></span
+            >
           </button>
           <button type="button" class="rs-row" (click)="toggleLanguage()">
             <span class="rs-row-icon"><ion-icon name="language" /></span>
-            <span class="rs-row-text"><span class="title">{{ language.current() === 'es' ? 'English' : 'Español' }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{
+                language.current() === 'es' ? 'English' : 'Español'
+              }}</span></span
+            >
           </button>
           <a class="rs-row" routerLink="/about">
             <span class="rs-row-icon"><ion-icon name="help-circle" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'NAV.ABOUT_US' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'NAV.ABOUT_US' | translate }}</span></span
+            >
           </a>
           <button type="button" class="rs-row" (click)="navigation.closeSession()">
             <span class="rs-row-icon"><ion-icon name="log-out" /></span>
-            <span class="rs-row-text"><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span
+            >
           </button>
         </div>
       </div>

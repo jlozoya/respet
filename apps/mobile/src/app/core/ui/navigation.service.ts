@@ -42,8 +42,20 @@ export class NavigationService {
   readonly shortcuts = computed<NavEntry[]>(() => {
     const user = this.auth.user();
     const entries: NavEntry[] = [
-      { title: 'NAV.MESSAGES', link: '/messages', icon: 'chatbubble-ellipses', color: '#0a7cff', badge: this.chat.unreadConversations() },
-      { title: 'NAV.NOTIFICATIONS', link: '/notifications', icon: 'notifications', color: '#f05a22', badge: this.notifications.unreadCount() },
+      {
+        title: 'NAV.MESSAGES',
+        link: '/messages',
+        icon: 'chatbubble-ellipses',
+        color: '#0a7cff',
+        badge: this.chat.unreadConversations(),
+      },
+      {
+        title: 'NAV.NOTIFICATIONS',
+        link: '/notifications',
+        icon: 'notifications',
+        color: '#f05a22',
+        badge: this.notifications.unreadCount(),
+      },
       { title: 'NAV.EXPLORE', link: '/explore', icon: 'compass', color: '#14a697' },
       { title: 'NAV.LIVE', link: '/live', icon: 'videocam', color: '#e41e3f' },
       { title: 'NAV.SAVED', link: '/saved', icon: 'bookmark', color: '#8a3ab9' },
@@ -51,12 +63,23 @@ export class NavigationService {
     ];
 
     if (user?.permissions?.privateProfile) {
-      entries.push({ title: 'NAV.FOLLOW_REQUESTS', link: '/follow-requests', icon: 'person-add', color: '#31a24c' });
+      entries.push({
+        title: 'NAV.FOLLOW_REQUESTS',
+        link: '/follow-requests',
+        icon: 'person-add',
+        color: '#31a24c',
+      });
     }
 
     entries.push(
       { title: 'NAV.STORE', link: '/products', icon: 'storefront', color: '#e9710f' },
-      { title: 'NAV.CART', link: '/cart', icon: 'cart', color: '#d99a00', badge: this.orders.itemCount() },
+      {
+        title: 'NAV.CART',
+        link: '/cart',
+        icon: 'cart',
+        color: '#d99a00',
+        badge: this.orders.itemCount(),
+      },
       { title: 'NAV.ORDERS', link: '/orders', icon: 'cube', color: '#65676b' },
       { title: 'NAV.DEVELOPERS', link: '/developers', icon: 'code-slash', color: '#1c1e21' },
     );

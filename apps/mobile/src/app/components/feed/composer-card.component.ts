@@ -25,10 +25,12 @@ import { CreateService } from './create.service';
       </div>
       <div class="bottom">
         <button type="button" class="option" (click)="live()">
-          <ion-icon name="videocam" class="live" /> <span>{{ 'CREATE.LIVE_SHORT' | translate }}</span>
+          <ion-icon name="videocam" class="live" />
+          <span>{{ 'CREATE.LIVE_SHORT' | translate }}</span>
         </button>
         <button type="button" class="option" (click)="write(true)">
-          <ion-icon name="images" class="photo" /> <span>{{ 'COMPOSER.PHOTO_VIDEO' | translate }}</span>
+          <ion-icon name="images" class="photo" />
+          <span>{{ 'COMPOSER.PHOTO_VIDEO' | translate }}</span>
         </button>
         <button type="button" class="option" (click)="story()">
           <ion-icon name="book" class="story" /> <span>{{ 'CREATE.STORY_SHORT' | translate }}</span>

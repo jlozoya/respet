@@ -10,7 +10,16 @@ interface AvatarUser {
 }
 
 /** Colores de fondo para las iniciales, elegidos por el id para que no cambien. */
-const PALETTE = ['#f05a22', '#1877f2', '#31a24c', '#8a3ab9', '#e1306c', '#14a697', '#d99a00', '#e9710f'];
+const PALETTE = [
+  '#f05a22',
+  '#1877f2',
+  '#31a24c',
+  '#8a3ab9',
+  '#e1306c',
+  '#14a697',
+  '#d99a00',
+  '#e9710f',
+];
 
 /**
  * La foto de una persona, en un círculo.
@@ -35,7 +44,12 @@ const PALETTE = ['#f05a22', '#1877f2', '#31a24c', '#8a3ab9', '#e1306c', '#14a697
       @if (url(); as src) {
         <img class="rs-avatar" [src]="src" [alt]="alt()" loading="lazy" decoding="async" />
       } @else {
-        <span class="rs-avatar initials" [style.background]="color()" role="img" [attr.aria-label]="alt()">
+        <span
+          class="rs-avatar initials"
+          [style.background]="color()"
+          role="img"
+          [attr.aria-label]="alt()"
+        >
           {{ initials() }}
         </span>
       }
@@ -113,7 +127,10 @@ export class AvatarComponent {
   readonly alt = computed(() => {
     const user = this.user();
 
-    return this.label() ?? ([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || '');
+    return (
+      this.label() ??
+      ([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || '')
+    );
   });
 
   readonly initials = computed(() => {

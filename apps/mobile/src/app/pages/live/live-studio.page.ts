@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, type OnDestroy, type OnInit, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  type ElementRef,
+  type OnDestroy,
+  type OnInit,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -12,7 +22,10 @@ import type { Audience, LiveComment, LiveStream } from '@social-network/shared';
 import type { LocalAudioTrack, LocalVideoTrack, Room } from 'livekit-client';
 import type { Subscription } from 'rxjs';
 
-import { LiveOverlayComponent, type FloatingReaction } from '../../components/live/live-overlay.component';
+import {
+  LiveOverlayComponent,
+  type FloatingReaction,
+} from '../../components/live/live-overlay.component';
 import { LiveService } from '../../core/api/live.service';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
@@ -36,17 +49,43 @@ type Phase = 'checking' | 'disabled' | 'preview' | 'starting' | 'live' | 'ended'
 @Component({
   selector: 'app-live-studio',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonButton, IonIcon, IonSelect, IonSelectOption, IonSpinner, LiveOverlayComponent, CompactNumberPipe, DurationPipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSelect,
+    IonSelectOption,
+    IonSpinner,
+    LiveOverlayComponent,
+    CompactNumberPipe,
+    DurationPipe,
+  ],
   template: `
     <ion-content [fullscreen]="true" [scrollY]="false" class="studio">
       <div class="stage">
-        <video #preview class="video" autoplay muted playsinline [class.hidden]="!cameraOn()"></video>
+        <video
+          #preview
+          class="video"
+          autoplay
+          muted
+          playsinline
+          [class.hidden]="!cameraOn()"
+        ></video>
         @if (!cameraOn() && phase() !== 'checking' && phase() !== 'disabled') {
           <div class="camera-off"><ion-icon name="videocam-off" /></div>
         }
 
         <header class="top">
-          <button type="button" class="icon" (click)="leave()" [attr.aria-label]="'CLOSE' | translate"><ion-icon name="close" /></button>
+          <button
+            type="button"
+            class="icon"
+            (click)="leave()"
+            [attr.aria-label]="'CLOSE' | translate"
+          >
+            <ion-icon name="close" />
+          </button>
           @if (phase() === 'live') {
             <span class="rs-live-badge">{{ 'LIVE.BADGE' | translate }}</span>
             <span class="pill">{{ elapsed() | duration }}</span>
@@ -54,13 +93,28 @@ type Phase = 'checking' | 'disabled' | 'preview' | 'starting' | 'live' | 'ended'
           }
           <span class="spacer"></span>
           @if (phase() === 'preview' || phase() === 'live') {
-            <button type="button" class="icon" (click)="toggleMic()" [attr.aria-label]="'LIVE.MIC' | translate">
+            <button
+              type="button"
+              class="icon"
+              (click)="toggleMic()"
+              [attr.aria-label]="'LIVE.MIC' | translate"
+            >
               <ion-icon [name]="micOn() ? 'mic' : 'mic-off'" />
             </button>
-            <button type="button" class="icon" (click)="toggleCamera()" [attr.aria-label]="'LIVE.CAMERA' | translate">
+            <button
+              type="button"
+              class="icon"
+              (click)="toggleCamera()"
+              [attr.aria-label]="'LIVE.CAMERA' | translate"
+            >
               <ion-icon [name]="cameraOn() ? 'videocam' : 'videocam-off'" />
             </button>
-            <button type="button" class="icon" (click)="flipCamera()" [attr.aria-label]="'LIVE.FLIP' | translate">
+            <button
+              type="button"
+              class="icon"
+              (click)="flipCamera()"
+              [attr.aria-label]="'LIVE.FLIP' | translate"
+            >
               <ion-icon name="camera-reverse" />
             </button>
           }
@@ -89,9 +143,17 @@ type Phase = 'checking' | 'disabled' | 'preview' | 'starting' | 'live' | 'ended'
                 [attr.aria-label]="'LIVE.TITLE_PLACEHOLDER' | translate"
               />
               <div class="row">
-                <ion-select class="audience" interface="popover" [value]="audience()" (ionChange)="audience.set($event.detail.value)" [attr.aria-label]="'AUDIENCE.TITLE' | translate">
+                <ion-select
+                  class="audience"
+                  interface="popover"
+                  [value]="audience()"
+                  (ionChange)="audience.set($event.detail.value)"
+                  [attr.aria-label]="'AUDIENCE.TITLE' | translate"
+                >
                   @for (option of audiences; track option.value) {
-                    <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                    <ion-select-option [value]="option.value">{{
+                      option.label | translate
+                    }}</ion-select-option>
                   }
                 </ion-select>
                 <ion-button color="danger" shape="round" (click)="start()">
@@ -101,18 +163,39 @@ type Phase = 'checking' | 'disabled' | 'preview' | 'starting' | 'live' | 'ended'
             </div>
           }
           @case ('starting') {
-            <div class="center"><ion-spinner name="crescent" /><p>{{ 'LIVE.STARTING' | translate }}</p></div>
+            <div class="center">
+              <ion-spinner name="crescent" />
+              <p>{{ 'LIVE.STARTING' | translate }}</p>
+            </div>
           }
           @case ('live') {
-            <app-live-overlay [comments]="comments()" [reactions]="reactions()" [canComment]="true" (comment)="comment($event)" (react)="react($event)" />
-            <ion-button class="end" color="danger" size="small" (click)="end()">{{ 'LIVE.END' | translate }}</ion-button>
+            <app-live-overlay
+              [comments]="comments()"
+              [reactions]="reactions()"
+              [canComment]="true"
+              (comment)="comment($event)"
+              (react)="react($event)"
+            />
+            <ion-button class="end" color="danger" size="small" (click)="end()">{{
+              'LIVE.END' | translate
+            }}</ion-button>
           }
           @case ('ended') {
             <div class="center panel">
               <ion-icon name="checkmark-circle" />
               <h2>{{ 'LIVE.ENDED_TITLE' | translate }}</h2>
               @if (stream(); as summary) {
-                <p>{{ 'LIVE.SUMMARY' | translate: { peak: summary.peakViewerCount, comments: summary.commentCount, reactions: summary.reactionCount } }}</p>
+                <p>
+                  {{
+                    'LIVE.SUMMARY'
+                      | translate
+                        : {
+                            peak: summary.peakViewerCount,
+                            comments: summary.commentCount,
+                            reactions: summary.reactionCount,
+                          }
+                  }}
+                </p>
               }
               <ion-button routerLink="/">{{ 'NAV_TO_MAIN_PAGE' | translate }}</ion-button>
             </div>
@@ -187,7 +270,10 @@ export class LiveStudioPage implements OnInit, OnDestroy {
 
     try {
       const { Room } = await import('livekit-client');
-      const connection = await this.live.start({ title: this.title().trim() || undefined, audience: this.audience() });
+      const connection = await this.live.start({
+        title: this.title().trim() || undefined,
+        audience: this.audience(),
+      });
 
       this.stream.set(connection.stream);
       this.room = new Room({ adaptiveStream: false, dynacast: true });
@@ -225,7 +311,12 @@ export class LiveStudioPage implements OnInit, OnDestroy {
   }
 
   async end(): Promise<void> {
-    const confirmed = await this.feedback.confirm({ header: 'LIVE.END', message: 'LIVE.END_MESSAGE', confirmText: 'LIVE.END', danger: true });
+    const confirmed = await this.feedback.confirm({
+      header: 'LIVE.END',
+      message: 'LIVE.END_MESSAGE',
+      confirmText: 'LIVE.END',
+      danger: true,
+    });
 
     if (confirmed) {
       await this.finish();
@@ -246,7 +337,9 @@ export class LiveStudioPage implements OnInit, OnDestroy {
     const stream = this.stream();
 
     if (stream) {
-      await this.live.comment(stream.id, body).catch((error: unknown) => this.feedback.error(error));
+      await this.live
+        .comment(stream.id, body)
+        .catch((error: unknown) => this.feedback.error(error));
     }
   }
 
@@ -314,7 +407,10 @@ export class LiveStudioPage implements OnInit, OnDestroy {
   }
 
   private listen(streamId: string): void {
-    void this.live.comments(streamId).then((page) => this.comments.set([...page.data].reverse())).catch(() => undefined);
+    void this.live
+      .comments(streamId)
+      .then((page) => this.comments.set([...page.data].reverse()))
+      .catch(() => undefined);
 
     this.events = this.live
       .events(streamId)
@@ -344,8 +440,14 @@ export class LiveStudioPage implements OnInit, OnDestroy {
 
   private float(emoji: string): void {
     const id = ++this.reactionId;
-    this.reactions.update((items) => [...items.slice(-30), { id, emoji, left: 10 + Math.random() * 70 }]);
-    setTimeout(() => this.reactions.update((items) => items.filter((item) => item.id !== id)), 2700);
+    this.reactions.update((items) => [
+      ...items.slice(-30),
+      { id, emoji, left: 10 + Math.random() * 70 },
+    ]);
+    setTimeout(
+      () => this.reactions.update((items) => items.filter((item) => item.id !== id)),
+      2700,
+    );
   }
 
   private async finish(): Promise<void> {

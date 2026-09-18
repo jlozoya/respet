@@ -25,7 +25,34 @@ const TOKEN =
   selector: 'app-rich-text',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, TranslatePipe],
-  template: `@for (segment of segments(); track $index) {@switch (segment.kind) {@case ('hashtag') {<a class="link" [routerLink]="['/hashtag', segment.tag]">{{ segment.value }}</a>}@case ('mention') {<a class="link" [routerLink]="['/profile', segment.name]">{{ segment.value }}</a>}@case ('url') {<a class="link" [href]="segment.href" target="_blank" rel="noopener noreferrer nofollow">{{ segment.value }}</a>}@default {{{ segment.value }}}}}@if (truncated()) {… <button type="button" class="more" (click)="expand($event)">{{ 'COMMON.SEE_MORE' | translate }}</button>}`,
+  template: `@for (segment of segments(); track $index) {
+      @switch (segment.kind) {
+        @case ('hashtag') {
+          <a class="link" [routerLink]="['/hashtag', segment.tag]">{{ segment.value }}</a>
+        }
+        @case ('mention') {
+          <a class="link" [routerLink]="['/profile', segment.name]">{{ segment.value }}</a>
+        }
+        @case ('url') {
+          <a
+            class="link"
+            [href]="segment.href"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            >{{ segment.value }}</a
+          >
+        }
+        @default {
+          {{ segment.value }}
+        }
+      }
+    }
+    @if (truncated()) {
+      …
+      <button type="button" class="more" (click)="expand($event)">
+        {{ 'COMMON.SEE_MORE' | translate }}
+      </button>
+    }`,
   styles: `
     :host {
       display: block;

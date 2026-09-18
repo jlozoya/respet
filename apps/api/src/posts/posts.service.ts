@@ -105,18 +105,33 @@ export class PostsService {
     const { skip, take, page, perPage } = toPage(query);
 
     const [docs, total] = await Promise.all([
-      this.posts.find(filter).sort({ createdAt: -1 }).skip(skip).limit(take).populate(POPULATE_POST).lean(),
+      this.posts
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(take)
+        .populate(POPULATE_POST)
+        .lean(),
       this.posts.countDocuments(filter),
     ]);
 
-    return paginate(await this.views.present(docs as unknown as LeanPost[], viewerId, context), total, page, perPage);
+    return paginate(
+      await this.views.present(docs as unknown as LeanPost[], viewerId, context),
+      total,
+      page,
+      perPage,
+    );
   }
 
   /**
    * Explorar: lo más comentado y con más reacciones del último mes, con foto
    * o vídeo, de quien no sigues todavía. La cuadrícula de Instagram.
    */
-  async explore(viewerId: string | null, page: number, perPage: number): Promise<Paginated<PostDto>> {
+  async explore(
+    viewerId: string | null,
+    page: number,
+    perPage: number,
+  ): Promise<Paginated<PostDto>> {
     const context = await this.relationships.viewerContext(viewerId);
     const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const pagination = toPage({ page, perPage });
@@ -132,7 +147,11 @@ export class PostsService {
     const [docs, total] = await Promise.all([
       this.posts.aggregate<{ _id: Types.ObjectId }>([
         { $match: filter },
-        { $addFields: { score: { $add: ['$reactionCount', { $multiply: ['$commentCount', 2] }, '$shareCount'] } } },
+        {
+          $addFields: {
+            score: { $add: ['$reactionCount', { $multiply: ['$commentCount', 2] }, '$shareCount'] },
+          },
+        },
         { $sort: { score: -1, createdAt: -1 } },
         { $skip: pagination.skip },
         { $limit: pagination.take },
@@ -142,13 +161,21 @@ export class PostsService {
     ]);
 
     const ids = docs.map((doc) => doc._id);
-    const full = await this.posts.find({ _id: { $in: ids } }).populate(POPULATE_POST).lean();
+    const full = await this.posts
+      .find({ _id: { $in: ids } })
+      .populate(POPULATE_POST)
+      .lean();
     const order = new Map(ids.map((id, index) => [String(id), index]));
     const sorted = (full as unknown as LeanPost[]).sort(
       (a, b) => (order.get(String(a._id)) ?? 0) - (order.get(String(b._id)) ?? 0),
     );
 
-    return paginate(await this.views.present(sorted, viewerId, context), total, pagination.page, pagination.perPage);
+    return paginate(
+      await this.views.present(sorted, viewerId, context),
+      total,
+      pagination.page,
+      pagination.perPage,
+    );
   }
 
   /**
@@ -173,7 +200,10 @@ export class PostsService {
     // amplía para no perder publicaciones por el camino.
     const box = boundingBox(center, radiusKm + 25);
     const nearby = await this.locations
-      .find({ lat: { $gte: box.minLat, $lte: box.maxLat }, lng: { $gte: box.minLng, $lte: box.maxLng } })
+      .find({
+        lat: { $gte: box.minLat, $lte: box.maxLat },
+        lng: { $gte: box.minLng, $lte: box.maxLng },
+      })
       .select('_id')
       .lean();
 
@@ -184,7 +214,9 @@ export class PostsService {
       .populate(POPULATE_POST)
       .lean();
 
-    const near = (await this.views.present(docs as unknown as LeanPost[], context.viewerId, context))
+    const near = (
+      await this.views.present(docs as unknown as LeanPost[], context.viewerId, context)
+    )
       .map((post) => ({
         post,
         distance:
@@ -213,12 +245,22 @@ export class PostsService {
     const context = await this.relationships.viewerContext(userId);
 
     const [rows, total] = await Promise.all([
-      this.saved.find({ userId }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.take).lean(),
+      this.saved
+        .find({ userId })
+        .sort({ createdAt: -1 })
+        .skip(pagination.skip)
+        .limit(pagination.take)
+        .lean(),
       this.saved.countDocuments({ userId }),
     ]);
 
     const docs = await this.posts
-      .find({ $and: [{ _id: { $in: rows.map((row) => row.postId) } }, this.relationships.visiblePostsFilter(context)] })
+      .find({
+        $and: [
+          { _id: { $in: rows.map((row) => row.postId) } },
+          this.relationships.visiblePostsFilter(context),
+        ],
+      })
       .populate(POPULATE_POST)
       .lean();
     const order = new Map(rows.map((row, index) => [String(row.postId), index]));
@@ -226,7 +268,12 @@ export class PostsService {
       (a, b) => (order.get(String(a._id)) ?? 0) - (order.get(String(b._id)) ?? 0),
     );
 
-    return paginate(await this.views.present(sorted, userId, context), total, pagination.page, pagination.perPage);
+    return paginate(
+      await this.views.present(sorted, userId, context),
+      total,
+      pagination.page,
+      pagination.perPage,
+    );
   }
 
   /**
@@ -236,11 +283,18 @@ export class PostsService {
    * publicación y, si alguno no vale, se borran los que ya estaban: nunca
    * queda una publicación a medias ni archivos sueltos.
    */
-  async create(author: AuthenticatedUser, dto: CreatePostDto, files: PendingUpload[] = []): Promise<PostDto> {
+  async create(
+    author: AuthenticatedUser,
+    dto: CreatePostDto,
+    files: PendingUpload[] = [],
+  ): Promise<PostDto> {
     const description = (dto.description ?? '').trim();
 
     if (files.length > MAX_MEDIA_PER_POST) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `A post cannot have more than ${MAX_MEDIA_PER_POST} files`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `A post cannot have more than ${MAX_MEDIA_PER_POST} files`,
+      );
     }
 
     if (!description && files.length === 0 && !dto.sharedPostId) {
@@ -253,7 +307,10 @@ export class PostsService {
       const shared = await this.findVisibleDoc(dto.sharedPostId, author.id);
 
       if (shared.audience !== Audience.Public || shared.authorPrivate) {
-        throw AppException.forbiddenWith(ErrorCode.PrivateContent, 'Only public posts can be shared');
+        throw AppException.forbiddenWith(
+          ErrorCode.PrivateContent,
+          'Only public posts can be shared',
+        );
       }
 
       dto.sharedPostId = shared.sharedPostId ? String(shared.sharedPostId) : dto.sharedPostId;
@@ -280,7 +337,10 @@ export class PostsService {
 
     const locationId = await upsertLocation(this.locations, null, dto.location);
     const hashtags = extractHashtags(description);
-    const mentionIds = await this.relationships.resolveUsernames(extractMentions(description), author.id);
+    const mentionIds = await this.relationships.resolveUsernames(
+      extractMentions(description),
+      author.id,
+    );
 
     const created = await this.posts.create({
       userId: author.id,
@@ -326,7 +386,11 @@ export class PostsService {
 
   async update(id: string, dto: UpdatePostDto, actor: AuthenticatedUser): Promise<PostDto> {
     const post = await this.assertCanEdit(id, actor);
-    const locationId = await upsertLocation(this.locations, post.locationId ? String(post.locationId) : null, dto.location);
+    const locationId = await upsertLocation(
+      this.locations,
+      post.locationId ? String(post.locationId) : null,
+      dto.location,
+    );
 
     const changes: Record<string, unknown> = {
       ...(dto.kind !== undefined ? { kind: dto.kind } : {}),
@@ -339,7 +403,10 @@ export class PostsService {
     if (dto.description !== undefined && dto.description.trim() !== post.description) {
       const description = dto.description.trim();
       const hashtags = extractHashtags(description);
-      const mentionIds = await this.relationships.resolveUsernames(extractMentions(description), post.userId.toString());
+      const mentionIds = await this.relationships.resolveUsernames(
+        extractMentions(description),
+        post.userId.toString(),
+      );
       const previousMentions = new Set(post.mentionIds.map(String));
 
       Object.assign(changes, { description, hashtags, mentionIds, editedAt: new Date() });
@@ -371,8 +438,12 @@ export class PostsService {
    */
   async remove(id: string, actor: AuthenticatedUser): Promise<void> {
     const post = await this.assertCanEdit(id, actor);
-    const mediaIds = (await this.mediaModel.find({ postId: id }).select('_id').lean()).map((doc) => doc._id);
-    const commentIds = (await this.comments.find({ postId: id }).select('_id').lean()).map((doc) => doc._id);
+    const mediaIds = (await this.mediaModel.find({ postId: id }).select('_id').lean()).map(
+      (doc) => doc._id,
+    );
+    const commentIds = (await this.comments.find({ postId: id }).select('_id').lean()).map(
+      (doc) => doc._id,
+    );
 
     await Promise.all([
       this.posts.deleteOne({ _id: id }),
@@ -382,13 +453,19 @@ export class PostsService {
       this.saved.deleteMany({ postId: id }),
       this.notifications.removeFor({ postId: id }),
       post.sharedPostId
-        ? this.posts.updateOne({ _id: post.sharedPostId, shareCount: { $gt: 0 } }, { $inc: { shareCount: -1 } })
+        ? this.posts.updateOne(
+            { _id: post.sharedPostId, shareCount: { $gt: 0 } },
+            { $inc: { shareCount: -1 } },
+          )
         : Promise.resolve(),
     ]);
 
     await this.trackHashtags([], post.hashtags);
     await this.media.removeMany(mediaIds);
-    await this.bus.publish(Topic.domain(DomainEvent.PostDeleted), { postId: id, userId: String(post.userId) });
+    await this.bus.publish(Topic.domain(DomainEvent.PostDeleted), {
+      postId: id,
+      userId: String(post.userId),
+    });
   }
 
   async addMedia(id: string, file: PendingUpload, actor: AuthenticatedUser): Promise<Media> {
@@ -397,7 +474,10 @@ export class PostsService {
     const count = await this.mediaModel.countDocuments({ postId: id });
 
     if (count >= MAX_MEDIA_PER_POST) {
-      throw AppException.badRequest(ErrorCode.ValidationFailed, `A post cannot have more than ${MAX_MEDIA_PER_POST} files`);
+      throw AppException.badRequest(
+        ErrorCode.ValidationFailed,
+        `A post cannot have more than ${MAX_MEDIA_PER_POST} files`,
+      );
     }
 
     const stored = await this.media.storeUpload(file, {
@@ -416,7 +496,10 @@ export class PostsService {
   async removeMedia(id: string, mediaId: string, actor: AuthenticatedUser): Promise<void> {
     await this.assertCanEdit(id, actor);
 
-    if (!isValidObjectId(mediaId) || !(await this.mediaModel.exists({ _id: mediaId, postId: id }))) {
+    if (
+      !isValidObjectId(mediaId) ||
+      !(await this.mediaModel.exists({ _id: mediaId, postId: id }))
+    ) {
       throw AppException.notFound('Media');
     }
 
@@ -435,11 +518,18 @@ export class PostsService {
     const post = await this.findVisibleDoc(postId, userId);
 
     const previous = await this.reactions
-      .findOneAndUpdate({ postId, userId }, { $set: { type } }, { upsert: true, returnDocument: 'before' })
+      .findOneAndUpdate(
+        { postId, userId },
+        { $set: { type } },
+        { upsert: true, returnDocument: 'before' },
+      )
       .lean();
 
     if (!previous) {
-      await this.posts.updateOne({ _id: postId }, { $inc: { reactionCount: 1, [`reactions.${type}`]: 1 } });
+      await this.posts.updateOne(
+        { _id: postId },
+        { $inc: { reactionCount: 1, [`reactions.${type}`]: 1 } },
+      );
       await this.notifications.notify({
         recipientId: post.userId,
         actorId: userId,
@@ -479,7 +569,11 @@ export class PostsService {
   }
 
   /** Quién reaccionó, con qué, y si quien mira ya le sigue. */
-  async reactors(postId: string, query: ReactorListQueryDto, viewerId: string | null): Promise<Paginated<PostReactor>> {
+  async reactors(
+    postId: string,
+    query: ReactorListQueryDto,
+    viewerId: string | null,
+  ): Promise<Paginated<PostReactor>> {
     await this.findVisibleDoc(postId, viewerId);
 
     const { skip, take, page, perPage } = toPage(query);
@@ -496,7 +590,11 @@ export class PostsService {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(take)
-        .populate({ path: 'user', select: 'name firstName lastName avatarId verified', populate: { path: 'avatar' } })
+        .populate({
+          path: 'user',
+          select: 'name firstName lastName avatarId verified',
+          populate: { path: 'avatar' },
+        })
         .lean(),
       this.reactions.countDocuments(filter),
     ]);
@@ -522,7 +620,11 @@ export class PostsService {
 
   async save(postId: string, userId: string): Promise<boolean> {
     await this.findVisibleDoc(postId, userId);
-    await this.saved.updateOne({ userId, postId }, { $setOnInsert: { userId, postId } }, { upsert: true });
+    await this.saved.updateOne(
+      { userId, postId },
+      { $setOnInsert: { userId, postId } },
+      { upsert: true },
+    );
 
     return true;
   }
@@ -544,8 +646,7 @@ export class PostsService {
     }
 
     const doc = (await this.posts.findById(id).populate(POPULATE_POST).lean()) as unknown as
-      | (LeanPost & { sharedPostId: Types.ObjectId | null })
-      | null;
+      (LeanPost & { sharedPostId: Types.ObjectId | null }) | null;
 
     if (!doc) {
       throw AppException.notFound('Post');
@@ -567,7 +668,10 @@ export class PostsService {
     return doc;
   }
 
-  private async reactionResult(postId: string, myReaction: ReactionType | null): Promise<ReactionResult> {
+  private async reactionResult(
+    postId: string,
+    myReaction: ReactionType | null,
+  ): Promise<ReactionResult> {
     const post = await this.posts.findById(postId).select('reactions reactionCount').lean();
 
     return {
@@ -646,7 +750,7 @@ export class PostsService {
       }
     }
 
-    return filtros.length === 1 ? (filtros[0]) : { $and: filtros };
+    return filtros.length === 1 ? filtros[0] : { $and: filtros };
   }
 
   private async notifyMentions(
@@ -674,9 +778,15 @@ export class PostsService {
 
     await Promise.all([
       ...added.map((tag) =>
-        this.hashtags.updateOne({ tag }, { $inc: { postCount: 1 }, $set: { lastUsedAt: now } }, { upsert: true }),
+        this.hashtags.updateOne(
+          { tag },
+          { $inc: { postCount: 1 }, $set: { lastUsedAt: now } },
+          { upsert: true },
+        ),
       ),
-      ...removed.map((tag) => this.hashtags.updateOne({ tag, postCount: { $gt: 0 } }, { $inc: { postCount: -1 } })),
+      ...removed.map((tag) =>
+        this.hashtags.updateOne({ tag, postCount: { $gt: 0 } }, { $inc: { postCount: -1 } }),
+      ),
     ]);
   }
 }

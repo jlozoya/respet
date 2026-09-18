@@ -44,17 +44,16 @@ export class WarehousesService {
       : {};
 
     const [docs, total] = await Promise.all([
-      this.warehouses
-        .find(where)
-        .sort({ name: 1 })
-        .skip(skip)
-        .limit(take)
-        .populate(POBLAR)
-        .lean(),
+      this.warehouses.find(where).sort({ name: 1 }).skip(skip).limit(take).populate(POBLAR).lean(),
       this.warehouses.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toWarehouse(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toWarehouse(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   async findById(id: string): Promise<WarehouseDto> {
@@ -98,7 +97,11 @@ export class WarehousesService {
 
   async setImage(id: string, file: PendingUpload): Promise<WarehouseDto> {
     const current = await this.findDocOrFail(id);
-    const created = await this.media.storeUpload(file, { accept: ['image'], preset: 'warehouse', alt: current.name });
+    const created = await this.media.storeUpload(file, {
+      accept: ['image'],
+      preset: 'warehouse',
+      alt: current.name,
+    });
 
     await this.warehouses.updateOne({ _id: id }, { $set: { mediaId: created._id } });
 

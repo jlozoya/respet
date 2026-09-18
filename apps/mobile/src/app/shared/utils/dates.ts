@@ -35,5 +35,7 @@ export function dayLabel(value: string, locale: string, today: string, yesterday
 
 /** Hora corta: «14:05». */
 export function shortTime(value: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(value));
+  return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(
+    new Date(value),
+  );
 }

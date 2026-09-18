@@ -21,7 +21,10 @@ export function distanceKm(from: LatLng, to: LatLng): number {
  * punto. Sirve para acotar la consulta SQL con un `BETWEEN` sobre los índices
  * de `lat`/`lng`; el filtrado exacto por distancia se hace después en memoria.
  */
-export function boundingBox(center: LatLng, radiusKm: number): {
+export function boundingBox(
+  center: LatLng,
+  radiusKm: number,
+): {
   minLat: number;
   maxLat: number;
   minLng: number;
@@ -83,7 +86,7 @@ function seedFromString(value: string): number {
 
 function hash(value: number): number {
   let x = Math.trunc(value) | 0;
-  x = (x ^ 61) ^ (x >>> 16);
+  x = x ^ 61 ^ (x >>> 16);
   x = x + (x << 3);
   x = x ^ (x >>> 4);
   x = Math.imul(x, 0x27d4eb2d);

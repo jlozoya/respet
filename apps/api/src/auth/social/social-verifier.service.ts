@@ -34,7 +34,10 @@ export class SocialVerifierService {
 
   constructor(private readonly config: ConfigService) {}
 
-  async verify(provider: 'google' | 'facebook' | 'apple', token: string): Promise<VerifiedIdentity> {
+  async verify(
+    provider: 'google' | 'facebook' | 'apple',
+    token: string,
+  ): Promise<VerifiedIdentity> {
     switch (provider) {
       case 'google':
         return this.verifyGoogle(token);

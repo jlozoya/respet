@@ -24,7 +24,17 @@ import { ConversationAvatarComponent, conversationTitle } from './conversation-a
 @Component({
   selector: 'app-send-to-chat-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ConversationAvatarComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent],
+  imports: [
+    TranslatePipe,
+    ConversationAvatarComponent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonContent,
+  ],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -38,17 +48,36 @@ import { ConversationAvatarComponent, conversationTitle } from './conversation-a
     <ion-content>
       <label class="rs-pill-input search">
         <ion-icon name="search" />
-        <input type="search" [value]="term()" (input)="term.set($any($event.target).value)" [placeholder]="'MESSENGER.SEARCH' | translate" />
+        <input
+          type="search"
+          [value]="term()"
+          (input)="term.set($any($event.target).value)"
+          [placeholder]="'MESSENGER.SEARCH' | translate"
+        />
       </label>
 
-      <textarea class="note" rows="2" maxlength="1000" [value]="note()" (input)="note.set($any($event.target).value)" [placeholder]="'SHARE_MENU.SAY_SOMETHING' | translate"></textarea>
+      <textarea
+        class="note"
+        rows="2"
+        maxlength="1000"
+        [value]="note()"
+        (input)="note.set($any($event.target).value)"
+        [placeholder]="'SHARE_MENU.SAY_SOMETHING' | translate"
+      ></textarea>
 
       <div class="list">
         @for (conversation of filtered(); track conversation.id) {
           <div class="rs-row">
             <app-conversation-avatar [conversation]="conversation" [size]="40" />
-            <span class="rs-row-text"><span class="title">{{ titleOf(conversation) }}</span></span>
-            <ion-button size="small" [class.rs-soft]="sent().has(conversation.id)" [disabled]="sent().has(conversation.id) || conversation.readOnly" (click)="send(conversation)">
+            <span class="rs-row-text"
+              ><span class="title">{{ titleOf(conversation) }}</span></span
+            >
+            <ion-button
+              size="small"
+              [class.rs-soft]="sent().has(conversation.id)"
+              [disabled]="sent().has(conversation.id) || conversation.readOnly"
+              (click)="send(conversation)"
+            >
               {{ (sent().has(conversation.id) ? 'SHARE_MENU.SENT' : 'SEND') | translate }}
             </ion-button>
           </div>

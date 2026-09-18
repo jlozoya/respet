@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonCard } from '@ionic/angular/ion-card';
@@ -52,9 +60,7 @@ export class WarehouseCardComponent {
   readonly current = computed(() => this.overrides() ?? this.warehouse());
 
   readonly canManage = computed(() => this.auth.hasRole('supervisor'));
-  readonly imageUrl = computed(
-    () => this.current().media?.url ?? './assets/imgs/warehouse.png',
-  );
+  readonly imageUrl = computed(() => this.current().media?.url ?? './assets/imgs/warehouse.png');
 
   /** Dirección legible a partir de los campos que estén rellenos. */
   readonly address = computed(() => {

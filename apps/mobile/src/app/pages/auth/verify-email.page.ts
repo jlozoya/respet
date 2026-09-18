@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -35,7 +42,10 @@ import { AuthLayoutComponent } from './auth-layout.component';
             <ion-icon name="close-circle" class="ko" />
             <h2>{{ 'AUTH.LINK_INVALID' | translate }}</h2>
             <p class="rs-muted">{{ 'AUTH.VERIFY_LINK_INVALID_HINT' | translate }}</p>
-            <ion-button [routerLink]="auth.isAuthenticated() ? '/settings/account' : '/login'" expand="block">
+            <ion-button
+              [routerLink]="auth.isAuthenticated() ? '/settings/account' : '/login'"
+              expand="block"
+            >
               {{ 'AUTH.CONTINUE' | translate }}
             </ion-button>
           }

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonContent } from '@ionic/angular/ion-content';
@@ -27,7 +34,16 @@ import { CredentialsModalComponent } from './credentials-modal.component';
 @Component({
   selector: 'app-developers',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslatePipe, IonContent, IonButton, IonIcon, IonSpinner, AvatarComponent, PageHeaderComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    PageHeaderComponent,
+  ],
   templateUrl: './developers.page.html',
   styleUrl: './developers.scss',
 })

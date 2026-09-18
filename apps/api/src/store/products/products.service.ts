@@ -60,7 +60,12 @@ export class ProductsService {
       this.products.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toProduct(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toProduct(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   async findById(id: string): Promise<ProductDto> {

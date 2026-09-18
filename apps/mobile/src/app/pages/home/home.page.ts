@@ -51,13 +51,23 @@ import { StoriesService } from '../../core/api/stories.service';
       <ion-toolbar>
         <app-brand slot="start" class="brand" [wordmark]="true" />
         <ion-buttons slot="end">
-          <a routerLink="/notifications" class="rs-icon-btn plain" [attr.aria-label]="'NAV.NOTIFICATIONS' | translate">
+          <a
+            routerLink="/notifications"
+            class="rs-icon-btn plain"
+            [attr.aria-label]="'NAV.NOTIFICATIONS' | translate"
+          >
             <ion-icon name="heart-outline" />
             @if (notifications.unreadCount() > 0) {
-              <span class="rs-badge">{{ notifications.unreadCount() > 99 ? '99+' : notifications.unreadCount() }}</span>
+              <span class="rs-badge">{{
+                notifications.unreadCount() > 99 ? '99+' : notifications.unreadCount()
+              }}</span>
             }
           </a>
-          <a routerLink="/menu" class="rs-icon-btn plain" [attr.aria-label]="'NAV.MENU' | translate">
+          <a
+            routerLink="/menu"
+            class="rs-icon-btn plain"
+            [attr.aria-label]="'NAV.MENU' | translate"
+          >
             <ion-icon name="menu" />
           </a>
         </ion-buttons>
@@ -82,13 +92,28 @@ import { StoriesService } from '../../core/api/stories.service';
           <app-composer-card />
 
           <div class="tabs rs-card">
-            <button type="button" class="rs-chip" [class.active]="feed() === 'home'" (click)="feed.set('home')">
+            <button
+              type="button"
+              class="rs-chip"
+              [class.active]="feed() === 'home'"
+              (click)="feed.set('home')"
+            >
               {{ 'FEED.FOR_YOU' | translate }}
             </button>
-            <button type="button" class="rs-chip" [class.active]="feed() === 'following'" (click)="feed.set('following')">
+            <button
+              type="button"
+              class="rs-chip"
+              [class.active]="feed() === 'following'"
+              (click)="feed.set('following')"
+            >
               {{ 'FEED.FOLLOWING' | translate }}
             </button>
-            <button type="button" class="rs-chip" [class.active]="feed() === 'discover'" (click)="feed.set('discover')">
+            <button
+              type="button"
+              class="rs-chip"
+              [class.active]="feed() === 'discover'"
+              (click)="feed.set('discover')"
+            >
               {{ 'FEED.DISCOVER' | translate }}
             </button>
           </div>
@@ -204,7 +229,10 @@ export class HomePage {
   private readonly feedComponent = viewChild(PostFeedComponent);
 
   async refresh(event: CustomEvent): Promise<void> {
-    await Promise.all([this.feedComponent()?.reload(), this.stories.loadFeed().catch(() => undefined)]);
+    await Promise.all([
+      this.feedComponent()?.reload(),
+      this.stories.loadFeed().catch(() => undefined),
+    ]);
     await (event.target as HTMLIonRefresherElement).complete();
   }
 }

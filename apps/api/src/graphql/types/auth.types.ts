@@ -79,7 +79,8 @@ export class LoginResultType implements LoginResult {
 export class MfaLoginResultType extends AuthSessionType implements MfaLoginResult {
   @Field(() => String, {
     nullable: true,
-    description: 'Presente si se pidió confiar en el dispositivo: hay que enviarlo en los próximos inicios.',
+    description:
+      'Presente si se pidió confiar en el dispositivo: hay que enviarlo en los próximos inicios.',
   })
   trustedDeviceToken!: string | null;
 }

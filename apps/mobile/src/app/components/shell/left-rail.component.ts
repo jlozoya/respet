@@ -22,14 +22,20 @@ import { BrandingService } from '../../core/branding/branding.service';
       @if (auth.user(); as user) {
         <a class="rs-row" [routerLink]="['/profile', user.name]" routerLinkActive="active">
           <app-avatar [user]="user" [size]="36" />
-          <span class="rs-row-text"><span class="title">{{ user | fullName }}</span></span>
+          <span class="rs-row-text"
+            ><span class="title">{{ user | fullName }}</span></span
+          >
         </a>
       }
 
       @for (entry of navigation.shortcuts(); track entry.link) {
         <a class="rs-row" [routerLink]="entry.link" routerLinkActive="active">
-          <span class="icon" [style.background]="entry.color"><ion-icon [name]="entry.icon" /></span>
-          <span class="rs-row-text"><span class="title">{{ entry.title | translate }}</span></span>
+          <span class="icon" [style.background]="entry.color"
+            ><ion-icon [name]="entry.icon"
+          /></span>
+          <span class="rs-row-text"
+            ><span class="title">{{ entry.title | translate }}</span></span
+          >
           @if (entry.badge) {
             <span class="count">{{ entry.badge > 99 ? '99+' : entry.badge }}</span>
           }
@@ -41,8 +47,12 @@ import { BrandingService } from '../../core/branding/branding.service';
         <h3 class="rs-section-title">{{ 'NAV.MANAGEMENT' | translate }}</h3>
         @for (entry of navigation.management(); track entry.link) {
           <a class="rs-row" [routerLink]="entry.link" routerLinkActive="active">
-            <span class="icon" [style.background]="entry.color"><ion-icon [name]="entry.icon" /></span>
-            <span class="rs-row-text"><span class="title">{{ entry.title | translate }}</span></span>
+            <span class="icon" [style.background]="entry.color"
+              ><ion-icon [name]="entry.icon"
+            /></span>
+            <span class="rs-row-text"
+              ><span class="title">{{ entry.title | translate }}</span></span
+            >
           </a>
         }
       }
@@ -52,7 +62,8 @@ import { BrandingService } from '../../core/branding/branding.service';
         <a routerLink="/politics/privacy">{{ 'PRIVACY_POLICY' | translate }}</a> ·
         <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a> ·
         <a routerLink="/about">{{ 'NAV.ABOUT_US' | translate }}</a> ·
-        <a routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a> · {{ appName() }} © {{ year }}
+        <a routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a> · {{ appName() }} ©
+        {{ year }}
       </p>
     </nav>
   `,

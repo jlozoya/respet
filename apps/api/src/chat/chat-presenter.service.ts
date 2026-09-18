@@ -38,13 +38,19 @@ export const POPULATE_MESSAGE = [
   {
     path: 'replyTo',
     select: 'kind body senderId attachmentIds deletedAt',
-    populate: [{ path: 'sender', select: SUMMARY, populate: { path: 'avatar' } }, { path: 'attachments' }],
+    populate: [
+      { path: 'sender', select: SUMMARY, populate: { path: 'avatar' } },
+      { path: 'attachments' },
+    ],
   },
   { path: 'sharedPost', populate: POPULATE_POST },
   { path: 'story', select: 'mediaId text expiresAt deletedAt', populate: { path: 'media' } },
 ];
 
-export type LeanConversation = Conversation & { _id: Types.ObjectId; photo?: MediaDoc & { _id: Types.ObjectId } };
+export type LeanConversation = Conversation & {
+  _id: Types.ObjectId;
+  photo?: MediaDoc & { _id: Types.ObjectId };
+};
 export type LeanMember = ConversationMember & {
   _id: Types.ObjectId;
   user?: UserSummaryDoc & { _id: Types.ObjectId };
@@ -53,11 +59,13 @@ export type LeanMessage = Message & {
   _id: Types.ObjectId;
   sender?: UserSummaryDoc & { _id: Types.ObjectId };
   attachments?: (MediaDoc & { _id: Types.ObjectId })[];
-  replyTo?: (Message & {
-    _id: Types.ObjectId;
-    sender?: UserSummaryDoc & { _id: Types.ObjectId };
-    attachments?: (MediaDoc & { _id: Types.ObjectId })[];
-  }) | null;
+  replyTo?:
+    | (Message & {
+        _id: Types.ObjectId;
+        sender?: UserSummaryDoc & { _id: Types.ObjectId };
+        attachments?: (MediaDoc & { _id: Types.ObjectId })[];
+      })
+    | null;
   sharedPost?: LeanPost | null;
   story?: {
     _id: Types.ObjectId;
@@ -129,7 +137,11 @@ export class ChatPresenterService {
    * El estado —enviado, entregado, leído— sale de hasta dónde han leído y
    * recibido los demás participantes, no de una fila por mensaje.
    */
-  async messages(docs: LeanMessage[], members: LeanMember[], viewerId: string): Promise<MessageDto[]> {
+  async messages(
+    docs: LeanMessage[],
+    members: LeanMember[],
+    viewerId: string,
+  ): Promise<MessageDto[]> {
     const systemTargets = await this.systemTargets(docs);
     const sharedPosts = await this.sharedPosts(docs, viewerId);
 
@@ -157,8 +169,12 @@ export class ChatPresenterService {
     const deleted = doc.deletedAt !== null;
     const senderId = String(doc.senderId);
     const createdAt = doc.createdAt;
-    const others = members.filter((member) => String(member.userId) !== senderId && member.leftAt === null);
-    const readCount = others.filter((member) => member.lastReadAt && member.lastReadAt >= createdAt).length;
+    const others = members.filter(
+      (member) => String(member.userId) !== senderId && member.leftAt === null,
+    );
+    const readCount = others.filter(
+      (member) => member.lastReadAt && member.lastReadAt >= createdAt,
+    ).length;
     const deliveredCount = others.filter(
       (member) =>
         (member.lastDeliveredAt && member.lastDeliveredAt >= createdAt) ||
@@ -193,12 +209,16 @@ export class ChatPresenterService {
             deleted: reply.deletedAt !== null,
           }
         : null,
-      sharedPost: !deleted && doc.sharedPostId ? (sharedPosts.get(String(doc.sharedPostId)) ?? null) : null,
+      sharedPost:
+        !deleted && doc.sharedPostId ? (sharedPosts.get(String(doc.sharedPostId)) ?? null) : null,
       story:
         doc.storyId && !deleted
           ? {
               id: String(doc.storyId),
-              media: story && !story.deletedAt && story.expiresAt > new Date() ? toMediaOrNull(story.media) : null,
+              media:
+                story && !story.deletedAt && story.expiresAt > new Date()
+                  ? toMediaOrNull(story.media)
+                  : null,
               text: story && !story.deletedAt ? story.text : null,
               expired: !story || story.deletedAt !== null || story.expiresAt <= new Date(),
             }
@@ -223,16 +243,27 @@ export class ChatPresenterService {
     };
   }
 
-  private async systemTargets(docs: LeanMessage[]): Promise<Map<string, UserSummaryDoc & { _id: Types.ObjectId }>> {
+  private async systemTargets(
+    docs: LeanMessage[],
+  ): Promise<Map<string, UserSummaryDoc & { _id: Types.ObjectId }>> {
     const ids = [...new Set(docs.flatMap((doc) => doc.system?.targetIds ?? []).map(String))];
 
     if (ids.length === 0) {
       return new Map();
     }
 
-    const users = await this.users.find({ _id: { $in: ids } }).select(SUMMARY).populate('avatar').lean();
+    const users = await this.users
+      .find({ _id: { $in: ids } })
+      .select(SUMMARY)
+      .populate('avatar')
+      .lean();
 
-    return new Map(users.map((user) => [String(user._id), user as unknown as UserSummaryDoc & { _id: Types.ObjectId }]));
+    return new Map(
+      users.map((user) => [
+        String(user._id),
+        user as unknown as UserSummaryDoc & { _id: Types.ObjectId },
+      ]),
+    );
   }
 
   private async sharedPosts(docs: LeanMessage[], viewerId: string): Promise<Map<string, PostDto>> {
@@ -253,7 +284,10 @@ export function personalizeMessage(message: MessageDto, viewerId: string): Messa
   return {
     ...message,
     status: message.sender.id === viewerId ? message.status : null,
-    reactions: message.reactions.map((group) => ({ ...group, reactedByMe: group.userIds.includes(viewerId) })),
+    reactions: message.reactions.map((group) => ({
+      ...group,
+      reactedByMe: group.userIds.includes(viewerId),
+    })),
   };
 }
 
@@ -274,6 +308,11 @@ function groupReactions(
   }
 
   return [...groups.entries()]
-    .map(([emoji, userIds]) => ({ emoji, count: userIds.length, userIds, reactedByMe: userIds.includes(viewerId) }))
+    .map(([emoji, userIds]) => ({
+      emoji,
+      count: userIds.length,
+      userIds,
+      reactedByMe: userIds.includes(viewerId),
+    }))
     .sort((a, b) => b.count - a.count);
 }

@@ -22,9 +22,7 @@ import * as dominio from '../database/schemas/enums.js';
 type Invertido<T extends Record<string, string>> = { [K in T[keyof T]]: K };
 
 function esquema<T extends Record<string, string>>(origen: T): Invertido<T> {
-  return Object.fromEntries(
-    Object.values(origen).map((valor) => [valor, valor]),
-  ) as Invertido<T>;
+  return Object.fromEntries(Object.values(origen).map((valor) => [valor, valor])) as Invertido<T>;
 }
 
 export const UserRole = esquema(dominio.UserRole);
@@ -140,14 +138,16 @@ export const RegistrationInterval = {
   month: 'month',
   year: 'year',
 } as const;
-export type RegistrationInterval =
-  (typeof RegistrationInterval)[keyof typeof RegistrationInterval];
+export type RegistrationInterval = (typeof RegistrationInterval)[keyof typeof RegistrationInterval];
 
 registerEnumType(UserRole, {
   name: 'UserRole',
   description: 'Rol de una cuenta. Son jerárquicos: `admin` cubre a los demás.',
 });
-registerEnumType(AuthProvider, { name: 'AuthProvider', description: 'Con qué se autentica la cuenta.' });
+registerEnumType(AuthProvider, {
+  name: 'AuthProvider',
+  description: 'Con qué se autentica la cuenta.',
+});
 registerEnumType(Gender, { name: 'Gender' });
 registerEnumType(MediaType, { name: 'MediaType' });
 registerEnumType(PostKind, {
@@ -155,7 +155,10 @@ registerEnumType(PostKind, {
   description: 'Intención de una publicación: se cuenta algo, se ofrece o se pide.',
 });
 registerEnumType(Audience, { name: 'Audience', description: 'Quién puede ver lo publicado.' });
-registerEnumType(ReactionType, { name: 'ReactionType', description: 'Las reacciones de una publicación.' });
+registerEnumType(ReactionType, {
+  name: 'ReactionType',
+  description: 'Las reacciones de una publicación.',
+});
 registerEnumType(ReportTarget, { name: 'ReportTarget' });
 registerEnumType(ReportStatus, { name: 'ReportStatus' });
 registerEnumType(OrderState, { name: 'OrderState' });

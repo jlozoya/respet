@@ -26,9 +26,7 @@ export class BulletinsResolver {
 
   @Public()
   @Query(() => BulletinType, { name: 'bulletin' })
-  async findOne(
-    @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
-  ): Promise<Bulletin> {
+  async findOne(@Args('id', { type: () => ID }, ParseObjectIdPipe) id: string): Promise<Bulletin> {
     return this.bulletins.findById(id);
   }
 
@@ -48,7 +46,9 @@ export class BulletinsResolver {
   }
 
   @Roles('admin')
-  @Mutation(() => BulletinType, { description: 'Cambia la imagen del aviso, subida en la propia operación.' })
+  @Mutation(() => BulletinType, {
+    description: 'Cambia la imagen del aviso, subida en la propia operación.',
+  })
   async setBulletinImage(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,

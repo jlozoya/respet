@@ -35,18 +35,24 @@ import { BrandingService } from '../../core/branding/branding.service';
 
       <button type="button" class="rs-row" (click)="go(['/settings'])">
         <span class="rs-row-icon"><ion-icon name="settings" /></span>
-        <span class="rs-row-text"><span class="title">{{ 'NAV.SETTINGS' | translate }}</span></span>
+        <span class="rs-row-text"
+          ><span class="title">{{ 'NAV.SETTINGS' | translate }}</span></span
+        >
       </button>
 
       <button type="button" class="rs-row" (click)="go(['/settings/security'])">
         <span class="rs-row-icon"><ion-icon name="shield-checkmark" /></span>
-        <span class="rs-row-text"><span class="title">{{ 'SETTINGS.SECURITY' | translate }}</span></span>
+        <span class="rs-row-text"
+          ><span class="title">{{ 'SETTINGS.SECURITY' | translate }}</span></span
+        >
       </button>
 
       @for (entry of navigation.management(); track entry.link) {
         <button type="button" class="rs-row" (click)="go([entry.link])">
           <span class="rs-row-icon"><ion-icon [name]="entry.icon" /></span>
-          <span class="rs-row-text"><span class="title">{{ entry.title | translate }}</span></span>
+          <span class="rs-row-text"
+            ><span class="title">{{ entry.title | translate }}</span></span
+          >
         </button>
       }
 
@@ -56,7 +62,12 @@ import { BrandingService } from '../../core/branding/branding.service';
           <span class="title">{{ 'SETTINGS.APPEARANCE' | translate }}</span>
           <span class="rs-chips">
             @for (option of theme.options; track option.value) {
-              <button type="button" class="rs-chip" [class.active]="theme.preference() === option.value" (click)="theme.use(option.value)">
+              <button
+                type="button"
+                class="rs-chip"
+                [class.active]="theme.preference() === option.value"
+                (click)="theme.use(option.value)"
+              >
                 {{ option.label | translate }}
               </button>
             }
@@ -70,7 +81,12 @@ import { BrandingService } from '../../core/branding/branding.service';
           <span class="title">{{ 'SETTINGS.LANGUAGE' | translate }}</span>
           <span class="rs-chips">
             @for (option of language.available(); track option.code) {
-              <button type="button" class="rs-chip" [class.active]="language.current() === option.code" (click)="language.use(option.code)">
+              <button
+                type="button"
+                class="rs-chip"
+                [class.active]="language.current() === option.code"
+                (click)="language.use(option.code)"
+              >
                 {{ option.label }}
               </button>
             }
@@ -80,13 +96,21 @@ import { BrandingService } from '../../core/branding/branding.service';
 
       <button type="button" class="rs-row" (click)="logout()">
         <span class="rs-row-icon"><ion-icon name="log-out" /></span>
-        <span class="rs-row-text"><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span>
+        <span class="rs-row-text"
+          ><span class="title">{{ 'NAV.LOGOUT' | translate }}</span></span
+        >
       </button>
 
       <p class="legal rs-small rs-muted">
-        <button type="button" (click)="go(['/politics', 'privacy'])">{{ 'PRIVACY_POLICY' | translate }}</button> ·
-        <button type="button" (click)="go(['/politics', 'end_user_agreement'])">{{ 'TERMS_AND_CONDITIONS' | translate }}</button> ·
-        <button type="button" (click)="go(['/about'])">{{ 'NAV.ABOUT_US' | translate }}</button> · {{ appName() }} © {{ year }}
+        <button type="button" (click)="go(['/politics', 'privacy'])">
+          {{ 'PRIVACY_POLICY' | translate }}
+        </button>
+        ·
+        <button type="button" (click)="go(['/politics', 'end_user_agreement'])">
+          {{ 'TERMS_AND_CONDITIONS' | translate }}
+        </button>
+        · <button type="button" (click)="go(['/about'])">{{ 'NAV.ABOUT_US' | translate }}</button> ·
+        {{ appName() }} © {{ year }}
       </p>
     </div>
   `,

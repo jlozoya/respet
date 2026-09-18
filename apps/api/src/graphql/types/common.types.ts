@@ -47,7 +47,10 @@ export class PaginationMetaType implements PaginationMeta {
  * fábrica los fabrica todos iguales a partir del tipo que llevan dentro, en
  * lugar de repetir la misma clase veinte veces.
  */
-export function Paginated<T>(classRef: Type<T>, name: string): Type<{ data: T[]; meta: PaginationMeta }> {
+export function Paginated<T>(
+  classRef: Type<T>,
+  name: string,
+): Type<{ data: T[]; meta: PaginationMeta }> {
   @ObjectType(`${name}Page`, { description: `Página de ${name}.` })
   class PageType {
     @Field(() => [classRef])
@@ -75,7 +78,10 @@ export function CursorPaginated<T>(
     @Field(() => [classRef])
     data!: T[];
 
-    @Field(() => String, { nullable: true, description: 'Cursor del siguiente tramo; nulo al final.' })
+    @Field(() => String, {
+      nullable: true,
+      description: 'Cursor del siguiente tramo; nulo al final.',
+    })
     nextCursor!: string | null;
   }
 
@@ -138,12 +144,18 @@ export class MediaType implements Media {
   @Field(() => Int, { nullable: true })
   sizeBytes!: number | null;
 
-  @Field(() => Int, { nullable: true, description: 'Duración de vídeos y audios, en milisegundos.' })
+  @Field(() => Int, {
+    nullable: true,
+    description: 'Duración de vídeos y audios, en milisegundos.',
+  })
   durationMs!: number | null;
 
   @Field(() => String, { nullable: true, description: 'Fotograma de portada de un vídeo.' })
   posterUrl!: string | null;
 
-  @Field(() => String, { nullable: true, description: 'Nombre con el que se descarga un documento.' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Nombre con el que se descarga un documento.',
+  })
   fileName!: string | null;
 }

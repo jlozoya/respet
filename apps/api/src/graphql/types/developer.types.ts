@@ -139,7 +139,9 @@ export class OAuthAppPreviewType {
   inDevelopment!: boolean;
 }
 
-@ObjectType('OAuthAuthorizationPreview', { description: 'La pantalla de «¿Autorizar esta aplicación?».' })
+@ObjectType('OAuthAuthorizationPreview', {
+  description: 'La pantalla de «¿Autorizar esta aplicación?».',
+})
 export class OAuthAuthorizationPreviewType implements OAuthAuthorizationPreview {
   @Field(() => OAuthAppPreviewType)
   app!: OAuthAppPreviewType;

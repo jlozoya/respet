@@ -32,7 +32,10 @@ import { describeScopes, isKnownScope, parseScopes } from './scopes.js';
 const CODE_TTL_MS = 10 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-type LeanApp = OAuthApp & { _id: Types.ObjectId; icon?: (MediaDoc & { _id: Types.ObjectId }) | null };
+type LeanApp = OAuthApp & {
+  _id: Types.ObjectId;
+  icon?: (MediaDoc & { _id: Types.ObjectId }) | null;
+};
 
 /**
  * Un error de OAuth con el código que define RFC 6749.
@@ -101,10 +104,20 @@ export class OAuthService {
   ) {}
 
   /** Lo que se enseña en la pantalla de consentimiento, ya validado. */
-  async preview(userId: string, request: OAuthAuthorizeRequest): Promise<OAuthAuthorizationPreview> {
+  async preview(
+    userId: string,
+    request: OAuthAuthorizeRequest,
+  ): Promise<OAuthAuthorizationPreview> {
     const { app, scopes, redirectUri } = await this.validateRequest(userId, request);
-    const grant = await this.grants.findOne({ appId: app._id, userId, revokedAt: null }).select('scopes').lean();
-    const owner = await this.users.findById(app.ownerId).select('name firstName lastName avatarId verified').populate('avatar').lean();
+    const grant = await this.grants
+      .findOne({ appId: app._id, userId, revokedAt: null })
+      .select('scopes')
+      .lean();
+    const owner = await this.users
+      .findById(app.ownerId)
+      .select('name firstName lastName avatarId verified')
+      .populate('avatar')
+      .lean();
 
     return {
       app: {
@@ -123,11 +136,17 @@ export class OAuthService {
   }
 
   /** La persona aprueba: se guarda el consentimiento y se emite el código. */
-  async approve(userId: string, request: OAuthAuthorizeRequest, client: ClientInfo): Promise<OAuthAuthorizeResult> {
+  async approve(
+    userId: string,
+    request: OAuthAuthorizeRequest,
+    client: ClientInfo,
+  ): Promise<OAuthAuthorizeResult> {
     const { app, scopes, redirectUri } = await this.validateRequest(userId, request);
 
     const existing = await this.grants.findOne({ appId: app._id, userId }).lean();
-    const merged = [...new Set([...(existing && !existing.revokedAt ? existing.scopes : []), ...scopes])];
+    const merged = [
+      ...new Set([...(existing && !existing.revokedAt ? existing.scopes : []), ...scopes]),
+    ];
 
     await this.grants.updateOne(
       { appId: app._id, userId },
@@ -144,12 +163,16 @@ export class OAuthService {
       redirectUri,
       scopes,
       codeChallenge: request.codeChallenge ?? null,
-      codeChallengeMethod: request.codeChallenge ? ((request.codeChallengeMethod as 'S256' | 'plain') ?? 'plain') : null,
+      codeChallengeMethod: request.codeChallenge
+        ? ((request.codeChallengeMethod as 'S256' | 'plain') ?? 'plain')
+        : null,
       expiresAt: new Date(Date.now() + CODE_TTL_MS),
     });
 
     if (!existing || existing.revokedAt) {
-      await this.events.record(userId, SecurityEventType.AppAuthorized, client, { appName: app.name });
+      await this.events.record(userId, SecurityEventType.AppAuthorized, client, {
+        appName: app.name,
+      });
       await this.alerts.send(userId, 'app_authorized', client, [app.name]);
     }
 
@@ -177,7 +200,11 @@ export class OAuthService {
     redirectUri: string;
     codeVerifier?: string;
   }): Promise<OAuthTokenResponse> {
-    const app = await this.authenticateClient(params.clientId, params.clientSecret, Boolean(params.codeVerifier));
+    const app = await this.authenticateClient(
+      params.clientId,
+      params.clientSecret,
+      Boolean(params.codeVerifier),
+    );
 
     const record = await this.codes
       .findOneAndUpdate(
@@ -189,11 +216,17 @@ export class OAuthService {
       .lean();
 
     if (!record || record.expiresAt <= new Date() || String(record.appId) !== String(app._id)) {
-      throw new OAuthError('invalid_grant', 'The authorization code is invalid, expired or already used');
+      throw new OAuthError(
+        'invalid_grant',
+        'The authorization code is invalid, expired or already used',
+      );
     }
 
     if (record.redirectUri !== params.redirectUri) {
-      throw new OAuthError('invalid_grant', 'redirect_uri does not match the one used to authorize');
+      throw new OAuthError(
+        'invalid_grant',
+        'redirect_uri does not match the one used to authorize',
+      );
     }
 
     if (record.codeChallenge) {
@@ -202,7 +235,9 @@ export class OAuthService {
       }
 
       const computed =
-        record.codeChallengeMethod === 'S256' ? this.crypto.sha256Base64Url(params.codeVerifier) : params.codeVerifier;
+        record.codeChallengeMethod === 'S256'
+          ? this.crypto.sha256Base64Url(params.codeVerifier)
+          : params.codeVerifier;
 
       if (!this.crypto.safeEqual(computed, record.codeChallenge)) {
         throw new OAuthError('invalid_grant', 'code_verifier does not match the challenge');
@@ -211,7 +246,9 @@ export class OAuthService {
       throw new OAuthError('invalid_grant', 'Public clients must use PKCE');
     }
 
-    const grant = await this.grants.findOne({ appId: app._id, userId: record.userId, revokedAt: null }).lean();
+    const grant = await this.grants
+      .findOne({ appId: app._id, userId: record.userId, revokedAt: null })
+      .lean();
 
     if (!grant) {
       throw new OAuthError('invalid_grant', 'The authorization was revoked');
@@ -221,7 +258,11 @@ export class OAuthService {
   }
 
   /** Canjea un refresh token de aplicación. Rota en cada uso. */
-  async refresh(params: { clientId: string; clientSecret?: string; refreshToken: string }): Promise<OAuthTokenResponse> {
+  async refresh(params: {
+    clientId: string;
+    clientSecret?: string;
+    refreshToken: string;
+  }): Promise<OAuthTokenResponse> {
     const app = await this.authenticateClient(params.clientId, params.clientSecret, true);
     const hash = this.crypto.hashToken(params.refreshToken);
     const stored = await this.refreshTokens.findOne({ tokenHash: hash }).lean();
@@ -233,7 +274,10 @@ export class OAuthService {
     if (stored.revokedAt || stored.rotatedAt) {
       // Un refresh token ya canjeado que vuelve a aparecer: se cortan todos los
       // de ese consentimiento y la aplicación tendrá que volver a autorizarse.
-      await this.refreshTokens.updateMany({ grantId: stored.grantId, revokedAt: null }, { $set: { revokedAt: new Date() } });
+      await this.refreshTokens.updateMany(
+        { grantId: stored.grantId, revokedAt: null },
+        { $set: { revokedAt: new Date() } },
+      );
       throw new OAuthError('invalid_grant', 'The refresh token was already used');
     }
 
@@ -263,7 +307,11 @@ export class OAuthService {
   }
 
   /** RFC 7009: revocar un token. Responde igual exista o no. */
-  async revokeToken(params: { clientId: string; clientSecret?: string; token: string }): Promise<void> {
+  async revokeToken(params: {
+    clientId: string;
+    clientSecret?: string;
+    token: string;
+  }): Promise<void> {
     await this.authenticateClient(params.clientId, params.clientSecret, true);
     await this.refreshTokens.updateOne(
       { tokenHash: this.crypto.hashToken(params.token), revokedAt: null },
@@ -303,7 +351,10 @@ export class OAuthService {
     }
 
     const grant = await this.grants
-      .findOneAndUpdate({ _id: grantId, userId, revokedAt: null }, { $set: { revokedAt: new Date() } })
+      .findOneAndUpdate(
+        { _id: grantId, userId, revokedAt: null },
+        { $set: { revokedAt: new Date() } },
+      )
       .populate('app')
       .lean();
 
@@ -311,7 +362,10 @@ export class OAuthService {
       throw AppException.notFound('Authorization');
     }
 
-    await this.refreshTokens.updateMany({ grantId, revokedAt: null }, { $set: { revokedAt: new Date() } });
+    await this.refreshTokens.updateMany(
+      { grantId, revokedAt: null },
+      { $set: { revokedAt: new Date() } },
+    );
     await this.bus.publish(Topic.grantRevoked, { grantIds: [grantId] });
     await this.events.record(userId, SecurityEventType.AppRevoked, client, {
       appName: (grant as unknown as { app?: { name?: string } }).app?.name,
@@ -351,7 +405,9 @@ export class OAuthService {
       tokenHash: this.crypto.hashToken(refreshToken),
       grantId: grant._id,
       scopes,
-      expiresAt: new Date(Date.now() + this.config.getOrThrow<number>('oauth.refreshTtlDays') * DAY_MS),
+      expiresAt: new Date(
+        Date.now() + this.config.getOrThrow<number>('oauth.refreshTtlDays') * DAY_MS,
+      ),
     });
 
     await this.touchGrant(String(grant._id));
@@ -372,19 +428,39 @@ export class OAuthService {
    * secreto que presentar: su garantía es PKCE, que se comprueba al canjear el
    * código.
    */
-  private async authenticateClient(clientId: string, clientSecret: string | undefined, allowPublic: boolean): Promise<LeanApp> {
+  private async authenticateClient(
+    clientId: string,
+    clientSecret: string | undefined,
+    allowPublic: boolean,
+  ): Promise<LeanApp> {
     const app = (await this.apps.findOne({ clientId }).lean()) as unknown as LeanApp | null;
 
     if (!app || app.status === OAuthAppStatus.Suspended) {
-      throw new OAuthError('invalid_client', 'Unknown or suspended client', HttpStatus.UNAUTHORIZED);
+      throw new OAuthError(
+        'invalid_client',
+        'Unknown or suspended client',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (app.clientType === OAuthClientType.Confidential) {
-      if (!clientSecret || !app.clientSecretHash || !this.crypto.safeEqual(this.crypto.hashToken(clientSecret), app.clientSecretHash)) {
-        throw new OAuthError('invalid_client', 'Client authentication failed', HttpStatus.UNAUTHORIZED);
+      if (
+        !clientSecret ||
+        !app.clientSecretHash ||
+        !this.crypto.safeEqual(this.crypto.hashToken(clientSecret), app.clientSecretHash)
+      ) {
+        throw new OAuthError(
+          'invalid_client',
+          'Client authentication failed',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
     } else if (!allowPublic) {
-      throw new OAuthError('unauthorized_client', 'Public clients must use PKCE', HttpStatus.UNAUTHORIZED);
+      throw new OAuthError(
+        'unauthorized_client',
+        'Public clients must use PKCE',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     return app;
@@ -394,9 +470,10 @@ export class OAuthService {
     userId: string,
     request: OAuthAuthorizeRequest,
   ): Promise<{ app: LeanApp; scopes: string[]; redirectUri: string }> {
-    const app = (await this.apps.findOne({ clientId: request.clientId }).populate('icon').lean()) as unknown as
-      | LeanApp
-      | null;
+    const app = (await this.apps
+      .findOne({ clientId: request.clientId })
+      .populate('icon')
+      .lean()) as unknown as LeanApp | null;
 
     if (!app || app.status === OAuthAppStatus.Suspended) {
       throw new OAuthError('invalid_client', 'Unknown or suspended client');
@@ -406,7 +483,10 @@ export class OAuthService {
     // coincide, no se redirige a ningún sitio, porque redirigir a una dirección
     // no registrada es exactamente lo que buscaría quien intenta robar códigos.
     if (!app.redirectUris.includes(request.redirectUri)) {
-      throw AppException.badRequest(ErrorCode.InvalidRedirectUri, 'redirect_uri is not registered for this app');
+      throw AppException.badRequest(
+        ErrorCode.InvalidRedirectUri,
+        'redirect_uri is not registered for this app',
+      );
     }
 
     if (request.responseType && request.responseType !== 'code') {
@@ -415,10 +495,15 @@ export class OAuthService {
 
     const scopes = parseScopes(request.scope);
     const unknown = scopes.filter((scope) => !isKnownScope(scope));
-    const notAllowed = scopes.filter((scope) => !app.allowedScopes.includes(scope) && scope !== 'public_profile');
+    const notAllowed = scopes.filter(
+      (scope) => !app.allowedScopes.includes(scope) && scope !== 'public_profile',
+    );
 
     if (unknown.length > 0 || notAllowed.length > 0) {
-      throw new OAuthError('invalid_scope', `Scopes not allowed for this app: ${[...unknown, ...notAllowed].join(', ')}`);
+      throw new OAuthError(
+        'invalid_scope',
+        `Scopes not allowed for this app: ${[...unknown, ...notAllowed].join(', ')}`,
+      );
     }
 
     if (app.clientType === OAuthClientType.Public && !request.codeChallenge) {

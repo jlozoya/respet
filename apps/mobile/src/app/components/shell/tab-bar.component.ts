@@ -19,23 +19,52 @@ import { AvatarComponent } from '../../shared/components/avatar.component';
   imports: [RouterLink, RouterLinkActive, TranslatePipe, IonIcon, AvatarComponent],
   template: `
     <nav class="bar" [attr.aria-label]="'NAV.MENU' | translate">
-      <a class="tab" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [attr.aria-label]="'NAV.HOME' | translate">
+      <a
+        class="tab"
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [attr.aria-label]="'NAV.HOME' | translate"
+      >
         <ion-icon name="home-outline" class="off" /><ion-icon name="home" class="on" />
       </a>
-      <a class="tab" routerLink="/explore" routerLinkActive="active" [attr.aria-label]="'NAV.EXPLORE' | translate">
+      <a
+        class="tab"
+        routerLink="/explore"
+        routerLinkActive="active"
+        [attr.aria-label]="'NAV.EXPLORE' | translate"
+      >
         <ion-icon name="search-outline" class="off" /><ion-icon name="search" class="on" />
       </a>
-      <button type="button" class="tab create" (click)="create()" [attr.aria-label]="'CREATE.TITLE' | translate">
+      <button
+        type="button"
+        class="tab create"
+        (click)="create()"
+        [attr.aria-label]="'CREATE.TITLE' | translate"
+      >
         <ion-icon name="add-circle-outline" />
       </button>
-      <a class="tab" routerLink="/messages" routerLinkActive="active" [attr.aria-label]="'NAV.MESSAGES' | translate">
-        <ion-icon name="chatbubble-ellipses-outline" class="off" /><ion-icon name="chatbubble-ellipses" class="on" />
+      <a
+        class="tab"
+        routerLink="/messages"
+        routerLinkActive="active"
+        [attr.aria-label]="'NAV.MESSAGES' | translate"
+      >
+        <ion-icon name="chatbubble-ellipses-outline" class="off" /><ion-icon
+          name="chatbubble-ellipses"
+          class="on"
+        />
         @if (chat.unreadConversations() > 0) {
           <span class="rs-badge">{{ chat.unreadConversations() }}</span>
         }
       </a>
       @if (auth.user(); as user) {
-        <a class="tab" [routerLink]="['/profile', user.name]" routerLinkActive="active" [attr.aria-label]="'NAV.PROFILE' | translate">
+        <a
+          class="tab"
+          [routerLink]="['/profile', user.name]"
+          routerLinkActive="active"
+          [attr.aria-label]="'NAV.PROFILE' | translate"
+        >
           <app-avatar class="me" [user]="user" [size]="28" />
         </a>
       }

@@ -10,7 +10,13 @@ import type {
   TotpSetup,
 } from '@social-network/shared';
 
-import { DEVICE_FRAGMENTS, MEDIA_FRAGMENTS, PAGE_META_FRAGMENTS, SCOPE_FRAGMENTS, gql } from './fragments';
+import {
+  DEVICE_FRAGMENTS,
+  MEDIA_FRAGMENTS,
+  PAGE_META_FRAGMENTS,
+  SCOPE_FRAGMENTS,
+  gql,
+} from './fragments';
 import { GraphqlClientService } from './graphql-client.service';
 
 const MY_SESSIONS = gql(

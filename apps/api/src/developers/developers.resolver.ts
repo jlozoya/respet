@@ -63,7 +63,10 @@ export class DevelopersResolver {
   // --- Catálogo --------------------------------------------------------------
 
   @Public()
-  @Query(() => [OAuthScopeInfoType], { name: 'oauthScopes', description: 'Los permisos que puede pedir una aplicación.' })
+  @Query(() => [OAuthScopeInfoType], {
+    name: 'oauthScopes',
+    description: 'Los permisos que puede pedir una aplicación.',
+  })
   oauthScopes(): readonly OAuthScopeInfo[] {
     return SCOPE_CATALOG;
   }
@@ -84,7 +87,9 @@ export class DevelopersResolver {
   }
 
   @RateLimit({ limit: 10, windowSeconds: 3600 })
-  @Mutation(() => AppCredentialsType, { description: 'Registra una aplicación. El secreto sólo se ve ahora.' })
+  @Mutation(() => AppCredentialsType, {
+    description: 'Registra una aplicación. El secreto sólo se ve ahora.',
+  })
   async createDeveloperApp(
     @CurrentUser('id') userId: string,
     @Args('input') input: CreateAppDto,
@@ -111,7 +116,9 @@ export class DevelopersResolver {
   }
 
   @RateLimit({ limit: 10, windowSeconds: 3600 })
-  @Mutation(() => AppCredentialsType, { description: 'Genera un secreto nuevo; el anterior deja de valer.' })
+  @Mutation(() => AppCredentialsType, {
+    description: 'Genera un secreto nuevo; el anterior deja de valer.',
+  })
   async rotateDeveloperAppSecret(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -119,7 +126,9 @@ export class DevelopersResolver {
     return this.apps.rotateSecret(id, userId);
   }
 
-  @Mutation(() => DeveloperAppType, { description: 'Publica la aplicación o la devuelve a desarrollo.' })
+  @Mutation(() => DeveloperAppType, {
+    description: 'Publica la aplicación o la devuelve a desarrollo.',
+  })
   async setDeveloperAppStatus(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args('status', { type: () => OAuthAppStatus }) status: OAuthAppStatus,
@@ -156,7 +165,9 @@ export class DevelopersResolver {
     return this.apps.removeTester(id, userId, testerId);
   }
 
-  @Mutation(() => AppCredentialsType, { description: 'Configura el webhook. La primera vez devuelve el secreto de firma.' })
+  @Mutation(() => AppCredentialsType, {
+    description: 'Configura el webhook. La primera vez devuelve el secreto de firma.',
+  })
   async updateDeveloperAppWebhook(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args('input') input: UpdateWebhookDto,
@@ -174,7 +185,9 @@ export class DevelopersResolver {
   }
 
   @RateLimit({ limit: 20, windowSeconds: 3600 })
-  @Mutation(() => DeveloperAppType, { description: 'Verifica la dirección del webhook con un reto.' })
+  @Mutation(() => DeveloperAppType, {
+    description: 'Verifica la dirección del webhook con un reto.',
+  })
   async verifyDeveloperAppWebhook(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -204,7 +217,10 @@ export class DevelopersResolver {
     return this.apps.listDeliveries(id, userId, page, Math.min(perPage, 100));
   }
 
-  @Query(() => [ApiUsagePointType], { name: 'developerAppUsage', description: 'Peticiones por hora.' })
+  @Query(() => [ApiUsagePointType], {
+    name: 'developerAppUsage',
+    description: 'Peticiones por hora.',
+  })
   async usage(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -227,7 +243,9 @@ export class DevelopersResolver {
   }
 
   @RateLimit({ limit: 30, windowSeconds: 300 })
-  @Mutation(() => OAuthAuthorizeResultType, { description: 'Aprueba la autorización y devuelve adónde volver con el código.' })
+  @Mutation(() => OAuthAuthorizeResultType, {
+    description: 'Aprueba la autorización y devuelve adónde volver con el código.',
+  })
   async approveOAuthAuthorization(
     @CurrentUser('id') userId: string,
     @Args('input') input: OAuthAuthorizeDto,
@@ -247,7 +265,8 @@ export class DevelopersResolver {
   @Public()
   @RateLimit({ limit: 120, windowSeconds: 60 })
   @Mutation(() => OAuthTokenResponseType, {
-    description: 'Canjea un código de autorización. Equivale a `POST /oauth/token` con `authorization_code`.',
+    description:
+      'Canjea un código de autorización. Equivale a `POST /oauth/token` con `authorization_code`.',
   })
   async exchangeOAuthCode(@Args('input') input: OAuthCodeExchangeDto): Promise<OAuthTokenResponse> {
     return this.oauth.exchangeCode(input);
@@ -256,18 +275,24 @@ export class DevelopersResolver {
   @Public()
   @RateLimit({ limit: 120, windowSeconds: 60 })
   @Mutation(() => OAuthTokenResponseType, {
-    description: 'Renueva el token de una aplicación. Equivale a `POST /oauth/token` con `refresh_token`.',
+    description:
+      'Renueva el token de una aplicación. Equivale a `POST /oauth/token` con `refresh_token`.',
   })
   async refreshOAuthToken(@Args('input') input: OAuthRefreshDto): Promise<OAuthTokenResponse> {
     return this.oauth.refresh(input);
   }
 
-  @Query(() => [AuthorizedAppType], { name: 'authorizedApps', description: 'Aplicaciones que tienen acceso a tu cuenta.' })
+  @Query(() => [AuthorizedAppType], {
+    name: 'authorizedApps',
+    description: 'Aplicaciones que tienen acceso a tu cuenta.',
+  })
   async authorizedApps(@CurrentUser('id') userId: string): Promise<AuthorizedApp[]> {
     return this.oauth.authorizedApps(userId);
   }
 
-  @Mutation(() => Boolean, { description: 'Retira el acceso a una aplicación. Surte efecto en el acto.' })
+  @Mutation(() => Boolean, {
+    description: 'Retira el acceso a una aplicación. Surte efecto en el acto.',
+  })
   async revokeAuthorizedApp(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,

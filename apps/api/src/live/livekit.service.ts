@@ -81,13 +81,23 @@ export class LiveKitService {
   }
 
   async hostToken(room: string, identity: LiveKitIdentity): Promise<string> {
-    return this.token(room, identity, { canPublish: true, canSubscribe: true, canPublishData: true }, '6h');
+    return this.token(
+      room,
+      identity,
+      { canPublish: true, canSubscribe: true, canPublishData: true },
+      '6h',
+    );
   }
 
   async viewerToken(room: string, identity: LiveKitIdentity): Promise<string> {
     // Los comentarios y reacciones van por la API, no por el canal de datos de
     // LiveKit: así pasan por los bloqueos y los límites como todo lo demás.
-    return this.token(room, identity, { canPublish: false, canSubscribe: true, canPublishData: false }, '4h');
+    return this.token(
+      room,
+      identity,
+      { canPublish: false, canSubscribe: true, canPublishData: false },
+      '4h',
+    );
   }
 
   private async token(
@@ -99,7 +109,11 @@ export class LiveKitService {
     this.assertEnabled();
 
     const { apiKey, apiSecret } = this.settings();
-    const token = new AccessToken(apiKey, apiSecret, { identity: identity.id, name: identity.name, ttl });
+    const token = new AccessToken(apiKey, apiSecret, {
+      identity: identity.id,
+      name: identity.name,
+      ttl,
+    });
 
     token.addGrant({ room, roomJoin: true, ...grants });
 

@@ -153,7 +153,9 @@ export class PaymentType implements Payment {
   createdAt!: string;
 }
 
-@ObjectType('CheckoutSession', { description: 'Cobro recién abierto: la app lleva a `approvalUrl`.' })
+@ObjectType('CheckoutSession', {
+  description: 'Cobro recién abierto: la app lleva a `approvalUrl`.',
+})
 export class CheckoutSessionType implements CheckoutSession {
   @Field(() => ID)
   paymentId!: string;

@@ -1,5 +1,12 @@
 import { Args, ID, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Message, Paginated, Story, StoryGroup, StoryHighlight, StoryViewer } from '@social-network/shared';
+import type {
+  Message,
+  Paginated,
+  Story,
+  StoryGroup,
+  StoryHighlight,
+  StoryViewer,
+} from '@social-network/shared';
 
 import {
   CurrentUser,
@@ -43,7 +50,10 @@ export class StoriesResolver {
 
   @Public()
   @Scopes('user_stories')
-  @Query(() => [StoryType], { name: 'userStories', description: 'Las historias vigentes de una persona.' })
+  @Query(() => [StoryType], {
+    name: 'userStories',
+    description: 'Las historias vigentes de una persona.',
+  })
   async userStories(
     @Args('userId', { type: () => ID }, ParseObjectIdPipe) userId: string,
     @OptionalUser() viewer: AuthenticatedUser | null,
@@ -60,7 +70,10 @@ export class StoriesResolver {
     return this.stories.findOne(id, viewer?.id ?? null);
   }
 
-  @Query(() => StoryPage, { name: 'storyArchive', description: 'Todas las historias propias, caducadas incluidas.' })
+  @Query(() => StoryPage, {
+    name: 'storyArchive',
+    description: 'Todas las historias propias, caducadas incluidas.',
+  })
   async archive(
     @CurrentUser('id') userId: string,
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 }) page = 1,
@@ -69,7 +82,10 @@ export class StoriesResolver {
     return this.stories.archive(userId, page, Math.min(perPage, 60));
   }
 
-  @Query(() => StoryViewerPage, { name: 'storyViewers', description: 'Quién ha visto una historia propia.' })
+  @Query(() => StoryViewerPage, {
+    name: 'storyViewers',
+    description: 'Quién ha visto una historia propia.',
+  })
   async viewers(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @CurrentUser('id') userId: string,

@@ -82,7 +82,10 @@ export class AuthService {
     ]);
 
     if (emailTaken) {
-      throw AppException.conflict(ErrorCode.UserAlreadyExists, 'That email address is already registered');
+      throw AppException.conflict(
+        ErrorCode.UserAlreadyExists,
+        'That email address is already registered',
+      );
     }
 
     if (nameTaken) {
@@ -110,7 +113,11 @@ export class AuthService {
 
     await this.sendVerificationEmail(userId, created.email, created.name, created.lang);
 
-    const session = await this.openSession(userId, [AuthMethod.Registration, AuthMethod.Password], client);
+    const session = await this.openSession(
+      userId,
+      [AuthMethod.Registration, AuthMethod.Password],
+      client,
+    );
     await this.events.record(userId, SecurityEventType.Login, client, { method: 'registration' });
 
     return session;
@@ -128,7 +135,10 @@ export class AuthService {
 
     await this.throttle.assertNotLocked(throttleKey);
 
-    const user = await this.users.findOne({ email: dto.email }).select('passwordHash mfaEnabled').lean();
+    const user = await this.users
+      .findOne({ email: dto.email })
+      .select('passwordHash mfaEnabled')
+      .lean();
 
     if (!user?.passwordHash) {
       // Se gasta el mismo tiempo que en una verificación real para que no se
@@ -157,7 +167,13 @@ export class AuthService {
       );
     }
 
-    return this.afterFirstFactor(userId, user.mfaEnabled, AuthMethod.Password, dto.trustedDeviceToken, client);
+    return this.afterFirstFactor(
+      userId,
+      user.mfaEnabled,
+      AuthMethod.Password,
+      dto.trustedDeviceToken,
+      client,
+    );
   }
 
   async socialLogin(dto: SocialLoginDto, client: ClientInfo): Promise<LoginResult> {
@@ -176,7 +192,12 @@ export class AuthService {
 
   /** Segundo paso: el código de la app o uno de recuperación. */
   async completeMfaLogin(dto: CompleteMfaLoginDto, client: ClientInfo): Promise<MfaLoginResult> {
-    const completed = await this.mfa.completeChallenge(dto.challengeToken, dto.method, dto.code, client);
+    const completed = await this.mfa.completeChallenge(
+      dto.challengeToken,
+      dto.method,
+      dto.code,
+      client,
+    );
 
     const session = await this.openSession(
       completed.userId,
@@ -254,7 +275,10 @@ export class AuthService {
 
     // Sólo puede haber una solicitud viva a la vez: pedir un enlace nuevo
     // invalida el anterior.
-    await this.resets.updateMany({ userId: user._id, usedAt: null }, { $set: { usedAt: new Date() } });
+    await this.resets.updateMany(
+      { userId: user._id, usedAt: null },
+      { $set: { usedAt: new Date() } },
+    );
 
     const { token, hash } = createSingleUseToken();
 
@@ -296,7 +320,11 @@ export class AuthService {
     await this.alerts.send(userId, 'password_changed', client);
   }
 
-  async changePassword(actor: AuthenticatedUser, dto: ChangePasswordDto, client: ClientInfo): Promise<void> {
+  async changePassword(
+    actor: AuthenticatedUser,
+    dto: ChangePasswordDto,
+    client: ClientInfo,
+  ): Promise<void> {
     const user = await this.users.findById(actor.id).select('passwordHash').lean();
 
     if (!user) {
@@ -312,7 +340,11 @@ export class AuthService {
 
     if (!(await this.passwords.verify(user.passwordHash, dto.currentPassword))) {
       // 403: el token vale, lo que falla es la contraseña actual.
-      throw new AppException(ErrorCode.IncorrectUser, HttpStatus.FORBIDDEN, 'The current password is not correct');
+      throw new AppException(
+        ErrorCode.IncorrectUser,
+        HttpStatus.FORBIDDEN,
+        'The current password is not correct',
+      );
     }
 
     await this.users.updateOne(
@@ -321,7 +353,11 @@ export class AuthService {
     );
 
     if (dto.signOutOtherSessions !== false) {
-      await this.sessions.revokeAllForUser(actor.id, SessionEndReason.PasswordChanged, actor.sessionId);
+      await this.sessions.revokeAllForUser(
+        actor.id,
+        SessionEndReason.PasswordChanged,
+        actor.sessionId,
+      );
     }
 
     await this.events.record(actor.id, SecurityEventType.PasswordChanged, client);
@@ -330,7 +366,9 @@ export class AuthService {
 
   /** Confirma una dirección de correo a partir del token del enlace enviado. */
   async verifyEmail(token: string): Promise<void> {
-    const record = await this.verifications.findOne({ tokenHash: hashSingleUseToken(token) }).lean();
+    const record = await this.verifications
+      .findOne({ tokenHash: hashSingleUseToken(token) })
+      .lean();
 
     if (!record || record.usedAt || record.expiresAt <= new Date()) {
       throw AppException.badToken('The confirmation link is invalid or has expired');
@@ -339,7 +377,10 @@ export class AuthService {
     const taken = await this.users.exists({ email: record.email, _id: { $ne: record.userId } });
 
     if (taken) {
-      throw AppException.conflict(ErrorCode.UserAlreadyExists, 'That email address is already registered');
+      throw AppException.conflict(
+        ErrorCode.UserAlreadyExists,
+        'That email address is already registered',
+      );
     }
 
     await this.verifications.updateOne({ _id: record._id }, { $set: { usedAt: new Date() } });
@@ -375,7 +416,12 @@ export class AuthService {
    * aplicación, que confirma con la mutación `verifyEmail`: ya no hay una ruta
    * HTTP propia para esto.
    */
-  async sendVerificationEmail(userId: string, email: string, name: string, lang: string): Promise<void> {
+  async sendVerificationEmail(
+    userId: string,
+    email: string,
+    name: string,
+    lang: string,
+  ): Promise<void> {
     await this.verifications.updateMany({ userId, usedAt: null }, { $set: { usedAt: new Date() } });
 
     const { token, hash } = createSingleUseToken();
@@ -431,10 +477,17 @@ export class AuthService {
     }
   }
 
-  private async openSession(userId: string, methods: AuthMethod[], client: ClientInfo): Promise<AuthSession> {
+  private async openSession(
+    userId: string,
+    methods: AuthMethod[],
+    client: ClientInfo,
+  ): Promise<AuthSession> {
     const user = await this.findPublicUser(userId);
     const session = await this.sessions.create(userId, methods, client);
-    const access = await this.tokens.signSessionToken({ id: user.id, role: user.role }, session.sessionId);
+    const access = await this.tokens.signSessionToken(
+      { id: user.id, role: user.role },
+      session.sessionId,
+    );
 
     return {
       accessToken: access.token,
@@ -532,7 +585,12 @@ export class AuthService {
         .replace(/[̀-ͯ]/g, '')
         .toLowerCase()
         .replace(/[^a-z0-9]/g, '')
-        .slice(0, 20) || identity.email.split('@')[0]?.replace(/[^a-z0-9]/g, '').slice(0, 20) || 'user';
+        .slice(0, 20) ||
+      identity.email
+        .split('@')[0]
+        ?.replace(/[^a-z0-9]/g, '')
+        .slice(0, 20) ||
+      'user';
 
     let candidate = base.length >= 3 ? base : `${base}user`;
 

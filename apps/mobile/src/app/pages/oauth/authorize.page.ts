@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnInit, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnInit,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -27,7 +34,15 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
 @Component({
   selector: 'app-authorize',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonContent, IonButton, IonIcon, IonSpinner, AvatarComponent, FullNamePipe],
+  imports: [
+    TranslatePipe,
+    IonContent,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+    AvatarComponent,
+    FullNamePipe,
+  ],
   template: `
     <ion-content>
       <div class="wrapper">
@@ -54,7 +69,10 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
             <ul class="scopes">
               @for (scope of info.requestedScopes; track scope.scope) {
                 <li>
-                  <ion-icon [name]="scope.sensitive ? 'alert-circle' : 'checkmark-circle'" [class.sensitive]="scope.sensitive" />
+                  <ion-icon
+                    [name]="scope.sensitive ? 'alert-circle' : 'checkmark-circle'"
+                    [class.sensitive]="scope.sensitive"
+                  />
                   <span>
                     <span class="rs-strong">{{ scope.title }}</span>
                     <span class="rs-small rs-muted">{{ scope.description }}</span>
@@ -69,16 +87,25 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
             <p class="rs-small rs-muted legal">
               {{ 'OAUTH.LEGAL' | translate: { client: info.app.name } }}
               @if (info.app.privacyPolicyUrl) {
-                <a [href]="info.app.privacyPolicyUrl" target="_blank" rel="noopener noreferrer">{{ 'PRIVACY_POLICY' | translate }}</a>
+                <a [href]="info.app.privacyPolicyUrl" target="_blank" rel="noopener noreferrer">{{
+                  'PRIVACY_POLICY' | translate
+                }}</a>
               }
               @if (info.app.websiteUrl) {
-                · <a [href]="info.app.websiteUrl" target="_blank" rel="noopener noreferrer">{{ 'DEVELOPERS.WEBSITE' | translate }}</a>
+                ·
+                <a [href]="info.app.websiteUrl" target="_blank" rel="noopener noreferrer">{{
+                  'DEVELOPERS.WEBSITE' | translate
+                }}</a>
               }
             </p>
-            <p class="rs-small rs-muted owner">{{ 'OAUTH.OWNER' | translate: { name: ownerName(info) } }} · {{ redirectHost() }}</p>
+            <p class="rs-small rs-muted owner">
+              {{ 'OAUTH.OWNER' | translate: { name: ownerName(info) } }} · {{ redirectHost() }}
+            </p>
 
             <div class="buttons">
-              <ion-button class="rs-soft" [disabled]="busy()" (click)="decide(false)">{{ 'OAUTH.CANCEL' | translate }}</ion-button>
+              <ion-button class="rs-soft" [disabled]="busy()" (click)="decide(false)">{{
+                'OAUTH.CANCEL' | translate
+              }}</ion-button>
               <ion-button [disabled]="busy()" (click)="decide(true)">
                 @if (busy()) {
                   <ion-spinner name="crescent" />
@@ -246,7 +273,10 @@ export class AuthorizePage implements OnInit {
   }
 
   ownerName(info: OAuthAuthorizationPreview): string {
-    return [info.app.owner.firstName, info.app.owner.lastName].filter(Boolean).join(' ') || info.app.owner.name;
+    return (
+      [info.app.owner.firstName, info.app.owner.lastName].filter(Boolean).join(' ') ||
+      info.app.owner.name
+    );
   }
 
   redirectHost(): string {
@@ -267,7 +297,9 @@ export class AuthorizePage implements OnInit {
     this.busy.set(true);
 
     try {
-      const result = approve ? await this.developers.approve(request) : await this.developers.deny(request);
+      const result = approve
+        ? await this.developers.approve(request)
+        : await this.developers.deny(request);
 
       // Se sale de la aplicación hacia la dirección que indicó el servidor:
       // es la de la aplicación de terceros, ya validada contra las suyas.

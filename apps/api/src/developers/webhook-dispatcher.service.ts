@@ -120,7 +120,12 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
       }
 
       const apps = await this.apps
-        .find({ 'webhook.active': true, 'webhook.verifiedAt': { $ne: null }, 'webhook.events': event, status: { $ne: 'suspended' } })
+        .find({
+          'webhook.active': true,
+          'webhook.verifiedAt': { $ne: null },
+          'webhook.events': event,
+          status: { $ne: 'suspended' },
+        })
         .select('_id')
         .lean();
 
@@ -138,7 +143,9 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
         .select('appId userId')
         .lean();
 
-      const dedupeKey = createHash('sha256').update(`${event}:${JSON.stringify(payload)}`).digest('hex');
+      const dedupeKey = createHash('sha256')
+        .update(`${event}:${JSON.stringify(payload)}`)
+        .digest('hex');
       const byApp = new Map<string, Types.ObjectId[]>();
 
       for (const grant of grants) {
@@ -204,7 +211,9 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
     if (!app?.webhook?.url || !app.webhook.secretCiphertext) {
       await this.deliveries.updateOne(
         { _id: delivery._id },
-        { $set: { status: WebhookDeliveryStatus.Failed, lastError: 'Webhook no longer configured' } },
+        {
+          $set: { status: WebhookDeliveryStatus.Failed, lastError: 'Webhook no longer configured' },
+        },
       );
 
       return;
@@ -226,7 +235,10 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
     let error: string;
 
     try {
-      const url = await assertPublicUrl(app.webhook.url, !this.config.getOrThrow<boolean>('isProduction'));
+      const url = await assertPublicUrl(
+        app.webhook.url,
+        !this.config.getOrThrow<boolean>('isProduction'),
+      );
       const response = await fetch(url, {
         method: 'POST',
         redirect: 'manual',
@@ -247,7 +259,14 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
       if (response.ok) {
         await this.deliveries.updateOne(
           { _id: delivery._id },
-          { $set: { status: WebhookDeliveryStatus.Delivered, responseStatus: status, deliveredAt: new Date(), lastError: null } },
+          {
+            $set: {
+              status: WebhookDeliveryStatus.Delivered,
+              responseStatus: status,
+              deliveredAt: new Date(),
+              lastError: null,
+            },
+          },
         );
 
         return;
@@ -267,7 +286,9 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
           status: exhausted ? WebhookDeliveryStatus.Failed : WebhookDeliveryStatus.Pending,
           responseStatus: status,
           lastError: error,
-          nextAttemptAt: new Date(Date.now() + (BACKOFF_MS[delivery.attempts - 1] ?? BACKOFF_MS.at(-1) ?? 60_000)),
+          nextAttemptAt: new Date(
+            Date.now() + (BACKOFF_MS[delivery.attempts - 1] ?? BACKOFF_MS.at(-1) ?? 60_000),
+          ),
         },
       },
     );
@@ -284,7 +305,10 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
         }
 
         return (
-          await this.members.find({ conversationId: payload.conversationId, leftAt: null }).select('userId').lean()
+          await this.members
+            .find({ conversationId: payload.conversationId, leftAt: null })
+            .select('userId')
+            .lean()
         ).map((member) => String(member.userId));
       default:
         return payload.userId ? [payload.userId] : [];
@@ -295,7 +319,8 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
   private publicFields(payload: DomainPayload): Record<string, unknown> {
     return Object.fromEntries(
       Object.entries(payload).filter(
-        ([key, value]) => key !== 'memberIds' && (typeof value === 'string' || typeof value === 'number'),
+        ([key, value]) =>
+          key !== 'memberIds' && (typeof value === 'string' || typeof value === 'number'),
       ),
     );
   }

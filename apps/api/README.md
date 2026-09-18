@@ -72,8 +72,7 @@ sacar la petición de un sitio o del otro.
 
 **Los errores llevan una clave, no un mensaje.** Viajan dentro de `errors[]`
 con `extensions.code` —`SERVER.INCORRECT_USER`— y `extensions.statusCode`, que
-es lo que la aplicación traduce y lo que le permite distinguir un 401 de un
-403. Las rutas REST que quedan responden con el cuerpo de siempre. De describir
+es lo que la aplicación traduce y lo que le permite distinguir un 401 de un 403. Las rutas REST que quedan responden con el cuerpo de siempre. De describir
 el error se encarga un único sitio, `common/error-description.ts`.
 
 **El total de un pedido lo calcula el servidor.** El precio unitario se congela
@@ -113,16 +112,16 @@ y PayPal queda desactivado.
 
 ## Órdenes
 
-| Orden | Qué hace |
-| --- | --- |
-| `npm run start:dev` | Servidor con recarga automática |
-| `npm run build` | Compila a `dist/` |
-| `npm start` | Ejecuta lo compilado |
-| `npm run db:seed` | Datos de ejemplo |
+| Orden                   | Qué hace                               |
+| ----------------------- | -------------------------------------- |
+| `npm run start:dev`     | Servidor con recarga automática        |
+| `npm run build`         | Compila a `dist/`                      |
+| `npm start`             | Ejecuta lo compilado                   |
+| `npm run db:seed`       | Datos de ejemplo                       |
 | `npm run migrate:mongo` | Vuelca a Mongo una base MySQL anterior |
-| `npm run lint` | ESLint |
-| `npm test` | Pruebas con Vitest |
-| `npm run test:cov` | Pruebas con informe de cobertura |
+| `npm run lint`          | ESLint                                 |
+| `npm test`              | Pruebas con Vitest                     |
+| `npm run test:cov`      | Pruebas con informe de cobertura       |
 
 ## Mirar el esquema
 

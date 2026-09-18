@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, type OnInit, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  type OnInit,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -23,7 +33,14 @@ const PAGE_SIZE = 10;
 @Component({
   selector: 'app-post-feed',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonButton, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, PostCardComponent],
+  imports: [
+    TranslatePipe,
+    IonButton,
+    IonIcon,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    PostCardComponent,
+  ],
   template: `
     @for (post of posts(); track post.id) {
       <app-post-card [post]="post" (removed)="remove($event)" />
@@ -34,7 +51,10 @@ const PAGE_SIZE = 10;
         <div class="rs-card skeleton">
           <div class="row">
             <span class="rs-skeleton circle"></span>
-            <span class="lines"><span class="rs-skeleton line short"></span><span class="rs-skeleton line tiny"></span></span>
+            <span class="lines"
+              ><span class="rs-skeleton line short"></span
+              ><span class="rs-skeleton line tiny"></span
+            ></span>
           </div>
           <span class="rs-skeleton line"></span>
           <span class="rs-skeleton line medium"></span>
@@ -147,7 +167,10 @@ export class PostFeedComponent implements OnInit {
     this.postsService.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((change) => {
       if (change.type === 'created') {
         if (this.accepts(change.post)) {
-          this.posts.update((items) => [change.post, ...items.filter((item) => item.id !== change.post.id)]);
+          this.posts.update((items) => [
+            change.post,
+            ...items.filter((item) => item.id !== change.post.id),
+          ]);
         }
 
         return;
@@ -205,10 +228,17 @@ export class PostFeedComponent implements OnInit {
 
     try {
       const next = this.page + 1;
-      const result = await this.postsService.list({ ...this.query(), page: next, perPage: PAGE_SIZE });
+      const result = await this.postsService.list({
+        ...this.query(),
+        page: next,
+        perPage: PAGE_SIZE,
+      });
       const known = new Set(this.posts().map((item) => item.id));
 
-      this.posts.update((items) => [...items, ...result.data.filter((item) => !known.has(item.id))]);
+      this.posts.update((items) => [
+        ...items,
+        ...result.data.filter((item) => !known.has(item.id)),
+      ]);
       this.page = next;
       this.hasMore.set(result.meta.hasNextPage);
     } catch {

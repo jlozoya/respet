@@ -23,7 +23,12 @@ import { StoryViewerService } from './story-viewer.service';
   template: `
     <div class="tray" role="list">
       <div class="item" role="listitem">
-        <button type="button" class="circle" (click)="openOwn()" [attr.aria-label]="'STORIES.YOUR_STORY' | translate">
+        <button
+          type="button"
+          class="circle"
+          (click)="openOwn()"
+          [attr.aria-label]="'STORIES.YOUR_STORY' | translate"
+        >
           <app-avatar [user]="auth.user()" [size]="64" [ring]="ownRing()" />
           @if (!own()) {
             <span class="plus"><ion-icon name="add" /></span>
@@ -34,10 +39,21 @@ import { StoryViewerService } from './story-viewer.service';
 
       @for (group of others(); track group.user.id) {
         <div class="item" role="listitem">
-          <button type="button" class="circle" (click)="open(group)" [attr.aria-label]="group.user.firstName || group.user.name">
-            <app-avatar [user]="group.user" [size]="64" [ring]="group.hasUnseen ? 'unseen' : 'seen'" />
+          <button
+            type="button"
+            class="circle"
+            (click)="open(group)"
+            [attr.aria-label]="group.user.firstName || group.user.name"
+          >
+            <app-avatar
+              [user]="group.user"
+              [size]="64"
+              [ring]="group.hasUnseen ? 'unseen' : 'seen'"
+            />
           </button>
-          <span class="label" [class.seen]="!group.hasUnseen">{{ group.user.firstName || group.user.name }}</span>
+          <span class="label" [class.seen]="!group.hasUnseen">{{
+            group.user.firstName || group.user.name
+          }}</span>
         </div>
       }
 
@@ -131,13 +147,17 @@ export class StoriesTrayComponent {
   private readonly viewer = inject(StoryViewerService);
   private readonly creator = inject(CreateService);
 
-  readonly own = computed(() => this.stories.feed().find((group) => group.user.id === this.auth.user()?.id) ?? null);
+  readonly own = computed(
+    () => this.stories.feed().find((group) => group.user.id === this.auth.user()?.id) ?? null,
+  );
   readonly ownRing = computed(() => {
     const own = this.own();
 
     return own ? (own.hasUnseen ? 'unseen' : 'seen') : 'none';
   });
-  readonly others = computed(() => this.stories.feed().filter((group) => group.user.id !== this.auth.user()?.id));
+  readonly others = computed(() =>
+    this.stories.feed().filter((group) => group.user.id !== this.auth.user()?.id),
+  );
 
   async openOwn(): Promise<void> {
     const own = this.own();

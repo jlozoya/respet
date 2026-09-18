@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
@@ -43,10 +51,20 @@ import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
       <div class="main">
         @if (editing()) {
           <div class="edit">
-            <textarea rows="2" [value]="draft()" (input)="draft.set($any($event.target).value)" (keydown.escape)="editing.set(false)"></textarea>
+            <textarea
+              rows="2"
+              [value]="draft()"
+              (input)="draft.set($any($event.target).value)"
+              (keydown.escape)="editing.set(false)"
+            ></textarea>
             <span class="rs-small">
-              <button type="button" class="rs-text-btn" (click)="saveEdit()">{{ 'SAVE' | translate }}</button> ·
-              <button type="button" class="rs-text-btn" (click)="editing.set(false)">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="rs-text-btn" (click)="saveEdit()">
+                {{ 'SAVE' | translate }}
+              </button>
+              ·
+              <button type="button" class="rs-text-btn" (click)="editing.set(false)">
+                {{ 'CANCEL' | translate }}
+              </button>
             </span>
           </div>
         } @else {
@@ -60,10 +78,17 @@ import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
               }
             </div>
             @if (likeCount() > 0) {
-              <span class="likes"><span class="heart">👍</span>{{ likeCount() | compactNumber }}</span>
+              <span class="likes"
+                ><span class="heart">👍</span>{{ likeCount() | compactNumber }}</span
+              >
             }
             @if (!item.deleted) {
-              <button type="button" class="rs-icon-btn plain more" (click)="menu()" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+              <button
+                type="button"
+                class="rs-icon-btn plain more"
+                (click)="menu()"
+                [attr.aria-label]="'COMMON.OPTIONS' | translate"
+              >
                 <ion-icon name="ellipsis-horizontal" />
               </button>
             }
@@ -71,9 +96,18 @@ import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
 
           @if (!item.deleted) {
             <div class="actions">
-              <button type="button" class="rs-text-btn" [class.liked]="liked()" (click)="toggleLike()">{{ 'REACTIONS.LIKE' | translate }}</button>
+              <button
+                type="button"
+                class="rs-text-btn"
+                [class.liked]="liked()"
+                (click)="toggleLike()"
+              >
+                {{ 'REACTIONS.LIKE' | translate }}
+              </button>
               @if (canReply()) {
-                <button type="button" class="rs-text-btn" (click)="reply.emit(item)">{{ 'COMMENTS_SECTION.REPLY' | translate }}</button>
+                <button type="button" class="rs-text-btn" (click)="reply.emit(item)">
+                  {{ 'COMMENTS_SECTION.REPLY' | translate }}
+                </button>
               }
               <span class="time">{{ item.createdAt | relativeTime }}</span>
               @if (item.editedAt) {
@@ -232,7 +266,9 @@ export class CommentItemComponent {
     this.likeOverride.set({ liked: !liked, count: count + (liked ? -1 : 1) });
 
     try {
-      const result = liked ? await this.posts.unlikeComment(this.comment().id) : await this.posts.likeComment(this.comment().id);
+      const result = liked
+        ? await this.posts.unlikeComment(this.comment().id)
+        : await this.posts.likeComment(this.comment().id);
       this.likeOverride.set({ liked: result.likedByMe, count: result.likeCount });
     } catch (error) {
       this.likeOverride.set({ liked, count });
@@ -250,7 +286,9 @@ export class CommentItemComponent {
     const sheet = await this.actionSheetCtrl.create({
       buttons: [
         ...(own ? [{ text: t('EDIT'), icon: 'create-outline', data: 'edit' }] : []),
-        ...(canDelete ? [{ text: t('DELETE'), icon: 'trash-outline', role: 'destructive', data: 'delete' }] : []),
+        ...(canDelete
+          ? [{ text: t('DELETE'), icon: 'trash-outline', role: 'destructive', data: 'delete' }]
+          : []),
         ...(!own ? [{ text: t('REPORT'), icon: 'flag-outline', data: 'report' }] : []),
         { text: t('CANCEL'), role: 'cancel' },
       ],

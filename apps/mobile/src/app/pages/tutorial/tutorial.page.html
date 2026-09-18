@@ -14,13 +14,7 @@
     su sustituto recomendado, Swiper, sería una dependencia entera para cuatro
     diapositivas.
   -->
-  <div
-    #track
-    class="track"
-    tabindex="0"
-    (scroll)="onScroll($event)"
-    (keydown)="onKeydown($event)"
-  >
+  <div #track class="track" tabindex="0" (scroll)="onScroll($event)" (keydown)="onKeydown($event)">
     @for (slide of slides; track slide.title) {
       <section class="slide">
         <img [src]="slide.image" alt="" />

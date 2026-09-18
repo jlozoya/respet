@@ -83,10 +83,13 @@ export class PushService {
       void this.notifications.registerPushDevice(token.value, platform).catch(() => undefined);
     });
 
-    void PushNotifications.addListener('pushNotificationActionPerformed', (action: ActionPerformed) => {
-      const link = linkOf(action.notification.data as Record<string, string> | undefined);
-      this.zone.run(() => void this.router.navigateByUrl(link));
-    });
+    void PushNotifications.addListener(
+      'pushNotificationActionPerformed',
+      (action: ActionPerformed) => {
+        const link = linkOf(action.notification.data as Record<string, string> | undefined);
+        this.zone.run(() => void this.router.navigateByUrl(link));
+      },
+    );
   }
 }
 

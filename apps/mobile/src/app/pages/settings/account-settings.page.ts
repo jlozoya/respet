@@ -47,27 +47,48 @@ import { SettingsLayoutComponent } from './settings-layout.component';
               <span class="title">{{ user.email }}</span>
               <span class="meta">
                 @if (user.emailVerified) {
-                  <span class="status on"><ion-icon name="checkmark-circle" /> {{ 'ACCOUNT_SETTINGS.VERIFIED' | translate }}</span>
+                  <span class="status on"
+                    ><ion-icon name="checkmark-circle" />
+                    {{ 'ACCOUNT_SETTINGS.VERIFIED' | translate }}</span
+                  >
                 } @else {
                   <span class="status off">{{ 'ACCOUNT_SETTINGS.NOT_VERIFIED' | translate }}</span>
                 }
               </span>
             </span>
             @if (!user.emailVerified) {
-              <ion-button size="small" class="rs-tinted" (click)="resend()">{{ 'ACCOUNT_SETTINGS.RESEND' | translate }}</ion-button>
+              <ion-button size="small" class="rs-tinted" (click)="resend()">{{
+                'ACCOUNT_SETTINGS.RESEND' | translate
+              }}</ion-button>
             }
           </div>
 
           <form class="form" [formGroup]="emailForm" (ngSubmit)="changeEmail()">
-            <ion-input fill="outline" labelPlacement="floating" [label]="'ACCOUNT_SETTINGS.NEW_EMAIL' | translate" formControlName="email" type="email" inputmode="email" />
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'ACCOUNT_SETTINGS.NEW_EMAIL' | translate"
+              formControlName="email"
+              type="email"
+              inputmode="email"
+            />
             <app-control-messages [control]="emailForm.controls.email" />
             @if (user.provider === 'password') {
-              <ion-input fill="outline" labelPlacement="floating" [label]="'CURRENT_PASSWORD' | translate" formControlName="password" type="password" autocomplete="current-password">
+              <ion-input
+                fill="outline"
+                labelPlacement="floating"
+                [label]="'CURRENT_PASSWORD' | translate"
+                formControlName="password"
+                type="password"
+                autocomplete="current-password"
+              >
                 <ion-input-password-toggle slot="end" />
               </ion-input>
             }
             <div class="actions">
-              <ion-button type="submit" [disabled]="busy() === 'email' || emailForm.pristine">{{ 'CHANGE_EMAIL' | translate }}</ion-button>
+              <ion-button type="submit" [disabled]="busy() === 'email' || emailForm.pristine">{{
+                'CHANGE_EMAIL' | translate
+              }}</ion-button>
             </div>
           </form>
         </section>
@@ -75,15 +96,36 @@ import { SettingsLayoutComponent } from './settings-layout.component';
         @if (user.provider === 'password') {
           <form class="rs-card block form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
             <h3>{{ 'CHANGE_PASSWORD' | translate }}</h3>
-            <ion-input fill="outline" labelPlacement="floating" [label]="'CURRENT_PASSWORD' | translate" formControlName="currentPassword" type="password" autocomplete="current-password">
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'CURRENT_PASSWORD' | translate"
+              formControlName="currentPassword"
+              type="password"
+              autocomplete="current-password"
+            >
               <ion-input-password-toggle slot="end" />
             </ion-input>
             <app-control-messages [control]="passwordForm.controls.currentPassword" />
-            <ion-input fill="outline" labelPlacement="floating" [label]="'NEW_PASSWORD' | translate" formControlName="newPassword" type="password" autocomplete="new-password">
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'NEW_PASSWORD' | translate"
+              formControlName="newPassword"
+              type="password"
+              autocomplete="new-password"
+            >
               <ion-input-password-toggle slot="end" />
             </ion-input>
             <app-control-messages [control]="passwordForm.controls.newPassword" />
-            <ion-input fill="outline" labelPlacement="floating" [label]="'PASSWORD_CONFIRMATION' | translate" formControlName="confirmation" type="password" autocomplete="new-password">
+            <ion-input
+              fill="outline"
+              labelPlacement="floating"
+              [label]="'PASSWORD_CONFIRMATION' | translate"
+              formControlName="confirmation"
+              type="password"
+              autocomplete="new-password"
+            >
               <ion-input-password-toggle slot="end" />
             </ion-input>
             <app-control-messages [control]="passwordForm.controls.confirmation" />
@@ -92,7 +134,10 @@ import { SettingsLayoutComponent } from './settings-layout.component';
                 <span class="label">{{ 'ACCOUNT_SETTINGS.SIGN_OUT_OTHERS' | translate }}</span>
                 <span class="hint">{{ 'ACCOUNT_SETTINGS.SIGN_OUT_OTHERS_HINT' | translate }}</span>
               </span>
-              <ion-toggle formControlName="signOutOtherSessions" [attr.aria-label]="'ACCOUNT_SETTINGS.SIGN_OUT_OTHERS' | translate" />
+              <ion-toggle
+                formControlName="signOutOtherSessions"
+                [attr.aria-label]="'ACCOUNT_SETTINGS.SIGN_OUT_OTHERS' | translate"
+              />
             </div>
             <div class="actions">
               <ion-button type="submit" [disabled]="busy() === 'password'">
@@ -112,8 +157,12 @@ import { SettingsLayoutComponent } from './settings-layout.component';
             @for (link of user.socialLinks; track link.id) {
               <div class="item">
                 <span class="icon"><ion-icon [name]="'logo-' + link.provider" /></span>
-                <span class="text"><span class="title">{{ providerName(link) }}</span></span>
-                <ion-button size="small" class="rs-soft" (click)="unlink(link)">{{ 'UNLINK' | translate }}</ion-button>
+                <span class="text"
+                  ><span class="title">{{ providerName(link) }}</span></span
+                >
+                <ion-button size="small" class="rs-soft" (click)="unlink(link)">{{
+                  'UNLINK' | translate
+                }}</ion-button>
               </div>
             }
           </section>
@@ -123,7 +172,9 @@ import { SettingsLayoutComponent } from './settings-layout.component';
           <h3>{{ 'DELETE_ACCOUNT' | translate }}</h3>
           <p class="rs-muted">{{ 'ACCOUNT_SETTINGS.DELETE_HINT' | translate }}</p>
           <div class="actions">
-            <ion-button color="danger" fill="outline" (click)="deleteAccount()">{{ 'DELETE_MY_ACCOUNT' | translate }}</ion-button>
+            <ion-button color="danger" fill="outline" (click)="deleteAccount()">{{
+              'DELETE_MY_ACCOUNT' | translate
+            }}</ion-button>
           </div>
         </section>
       }
@@ -177,7 +228,10 @@ export class AccountSettingsPage {
     const value = this.emailForm.getRawValue();
 
     await this.guard(async () => {
-      await this.users.requestEmailChange({ email: value.email.trim(), password: value.password || undefined });
+      await this.users.requestEmailChange({
+        email: value.email.trim(),
+        password: value.password || undefined,
+      });
       this.emailForm.reset();
       await this.feedback.toast('EMAIL_CHANGE_REQUESTED', { color: 'success', duration: 6000 });
     });
@@ -201,7 +255,12 @@ export class AccountSettingsPage {
         newPassword: value.newPassword,
         signOutOtherSessions: value.signOutOtherSessions,
       });
-      this.passwordForm.reset({ currentPassword: '', newPassword: '', confirmation: '', signOutOtherSessions: true });
+      this.passwordForm.reset({
+        currentPassword: '',
+        newPassword: '',
+        confirmation: '',
+        signOutOtherSessions: true,
+      });
       await this.feedback.toast('PASSWORD_CHANGED', { color: 'success' });
     });
 

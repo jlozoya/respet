@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, type OnDestroy, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnDestroy,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
@@ -31,7 +38,12 @@ type Mode = 'choose' | 'text' | 'media';
     <ion-content [fullscreen]="true" [scrollY]="false" class="creator">
       <div class="layout">
         <header class="top">
-          <button type="button" class="icon" (click)="mode() === 'choose' ? close() : reset()" [attr.aria-label]="'CLOSE' | translate">
+          <button
+            type="button"
+            class="icon"
+            (click)="mode() === 'choose' ? close() : reset()"
+            [attr.aria-label]="'CLOSE' | translate"
+          >
             <ion-icon [name]="mode() === 'choose' ? 'close' : 'arrow-back'" />
           </button>
           <h2>{{ 'STORIES.CREATE' | translate }}</h2>
@@ -45,7 +57,9 @@ type Mode = 'choose' | 'text' | 'media';
               [attr.aria-label]="'AUDIENCE.TITLE' | translate"
             >
               @for (option of audiences; track option.value) {
-                <ion-select-option [value]="option.value">{{ option.label | translate }}</ion-select-option>
+                <ion-select-option [value]="option.value">{{
+                  option.label | translate
+                }}</ion-select-option>
               }
             </ion-select>
           }
@@ -93,7 +107,13 @@ type Mode = 'choose' | 'text' | 'media';
               </div>
               <div class="fonts">
                 @for (name of fonts; track name) {
-                  <button type="button" class="font" [class.active]="font() === name" [style.font-family]="familyOf(name)" (click)="font.set(name)">
+                  <button
+                    type="button"
+                    class="font"
+                    [class.active]="font() === name"
+                    [style.font-family]="familyOf(name)"
+                    (click)="font.set(name)"
+                  >
                     Aa
                   </button>
                 }
@@ -124,7 +144,12 @@ type Mode = 'choose' | 'text' | 'media';
 
         @if (mode() !== 'choose') {
           <footer class="bottom">
-            <ion-button class="share" shape="round" [disabled]="!canShare() || busy()" (click)="share()">
+            <ion-button
+              class="share"
+              shape="round"
+              [disabled]="!canShare() || busy()"
+              (click)="share()"
+            >
               @if (busy()) {
                 <ion-spinner name="crescent" />
               } @else {
@@ -162,7 +187,9 @@ export class StoryCreatorComponent implements OnDestroy {
   readonly gradient = computed(() => storyBackground(this.background()));
   readonly fontFamily = computed(() => storyFont(this.font()));
   readonly isVideo = computed(() => this.file()?.type.startsWith('video/') ?? false);
-  readonly canShare = computed(() => (this.mode() === 'text' ? this.text().trim().length > 0 : !!this.file()));
+  readonly canShare = computed(() =>
+    this.mode() === 'text' ? this.text().trim().length > 0 : !!this.file(),
+  );
 
   ngOnDestroy(): void {
     this.releasePreview();
@@ -207,8 +234,20 @@ export class StoryCreatorComponent implements OnDestroy {
 
       await this.stories.create(
         file
-          ? { text, audience: this.audience(), durationMs: file.type.startsWith('video/') ? await videoDuration(this.preview()) : undefined }
-          : { kind: 'text', text, background: this.background(), font: this.font(), audience: this.audience() },
+          ? {
+              text,
+              audience: this.audience(),
+              durationMs: file.type.startsWith('video/')
+                ? await videoDuration(this.preview())
+                : undefined,
+            }
+          : {
+              kind: 'text',
+              text,
+              background: this.background(),
+              font: this.font(),
+              audience: this.audience(),
+            },
         file,
       );
 
@@ -244,7 +283,8 @@ function videoDuration(url: string | null): Promise<number | undefined> {
   return new Promise((resolve) => {
     const video = document.createElement('video');
     video.preload = 'metadata';
-    video.onloadedmetadata = () => resolve(Number.isFinite(video.duration) ? Math.round(video.duration * 1000) : undefined);
+    video.onloadedmetadata = () =>
+      resolve(Number.isFinite(video.duration) ? Math.round(video.duration * 1000) : undefined);
     video.onerror = () => resolve(undefined);
     video.src = url;
   });

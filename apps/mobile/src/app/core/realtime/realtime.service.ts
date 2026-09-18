@@ -143,7 +143,10 @@ export class RealtimeService {
           });
         },
         error: (error: unknown) => {
-          if (isCloseEvent(error) && (error.code === CLOSE_UNAUTHORIZED || error.code === CLOSE_FORBIDDEN)) {
+          if (
+            isCloseEvent(error) &&
+            (error.code === CLOSE_UNAUTHORIZED || error.code === CLOSE_FORBIDDEN)
+          ) {
             void this.recover();
 
             return;
@@ -227,7 +230,10 @@ export class RealtimeService {
         },
       },
       onNonLazyError: (error) => {
-        if (isCloseEvent(error) && (error.code === CLOSE_UNAUTHORIZED || error.code === CLOSE_FORBIDDEN)) {
+        if (
+          isCloseEvent(error) &&
+          (error.code === CLOSE_UNAUTHORIZED || error.code === CLOSE_FORBIDDEN)
+        ) {
           void this.recover();
         }
       },
@@ -236,5 +242,7 @@ export class RealtimeService {
 }
 
 function isCloseEvent(value: unknown): value is { code: number; reason: string } {
-  return typeof value === 'object' && value !== null && 'code' in value && typeof value.code === 'number';
+  return (
+    typeof value === 'object' && value !== null && 'code' in value && typeof value.code === 'number'
+  );
 }

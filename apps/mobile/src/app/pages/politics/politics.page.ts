@@ -17,14 +17,7 @@ type Section = (typeof SECTIONS)[number];
   templateUrl: 'politics.page.html',
   styleUrls: ['politics.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslatePipe,
-    PageHeaderComponent,
-    IonContent,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-  ],
+  imports: [TranslatePipe, PageHeaderComponent, IonContent, IonSegment, IonSegmentButton, IonLabel],
 })
 export class PoliticsPage {
   /** Apartado inicial, tomado del parámetro `:segment` de la ruta. */

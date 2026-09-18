@@ -44,7 +44,9 @@ export class ProductsResolver {
   }
 
   @Roles('supervisor')
-  @Mutation(() => MediaType, { description: 'Añade una foto al producto, subida en la propia operación.' })
+  @Mutation(() => MediaType, {
+    description: 'Añade una foto al producto, subida en la propia operación.',
+  })
   async addProductMedia(
     @Args('id', { type: () => ID }, ParseObjectIdPipe) id: string,
     @Args({ name: 'file', type: () => GraphQLUpload }) file: PendingUpload,

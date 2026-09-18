@@ -35,9 +35,12 @@ export class VoiceRecorder {
   async start(): Promise<void> {
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'].find((type) =>
-      MediaRecorder.isTypeSupported(type),
-    );
+    const mimeType = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/mp4',
+      'audio/ogg;codecs=opus',
+    ].find((type) => MediaRecorder.isTypeSupported(type));
 
     this.chunks = [];
     this.recorder = new MediaRecorder(this.stream, mimeType ? { mimeType } : undefined);

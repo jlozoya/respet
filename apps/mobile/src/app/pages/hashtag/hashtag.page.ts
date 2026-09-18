@@ -14,7 +14,14 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
 @Component({
   selector: 'app-hashtag',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, IonContent, IonIcon, PageHeaderComponent, PostFeedComponent, PostGridComponent],
+  imports: [
+    TranslatePipe,
+    IonContent,
+    IonIcon,
+    PageHeaderComponent,
+    PostFeedComponent,
+    PostGridComponent,
+  ],
   template: `
     <app-page-header [title]="'#' + tag()" [translateTitle]="false" backTo="/explore" />
 
@@ -29,10 +36,20 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
         </header>
 
         <nav class="rs-tabs tabs">
-          <button type="button" class="rs-tab" [class.active]="view() === 'grid'" (click)="view.set('grid')">
+          <button
+            type="button"
+            class="rs-tab"
+            [class.active]="view() === 'grid'"
+            (click)="view.set('grid')"
+          >
             <ion-icon name="grid" /> {{ 'HASHTAG.TOP' | translate }}
           </button>
-          <button type="button" class="rs-tab" [class.active]="view() === 'list'" (click)="view.set('list')">
+          <button
+            type="button"
+            class="rs-tab"
+            [class.active]="view() === 'list'"
+            (click)="view.set('list')"
+          >
             <ion-icon name="list" /> {{ 'HASHTAG.RECENT' | translate }}
           </button>
         </nav>
@@ -40,7 +57,11 @@ import { PageHeaderComponent } from '../../shared/components/page-header.compone
         @if (view() === 'grid') {
           <app-post-grid [query]="query()" emptyText="HASHTAG.EMPTY" />
         } @else {
-          <app-post-feed [query]="query()" emptyTitle="HASHTAG.EMPTY" emptyIcon="pricetag-outline" />
+          <app-post-feed
+            [query]="query()"
+            emptyTitle="HASHTAG.EMPTY"
+            emptyIcon="pricetag-outline"
+          />
         }
       </div>
     </ion-content>

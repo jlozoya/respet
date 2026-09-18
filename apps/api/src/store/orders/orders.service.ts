@@ -443,7 +443,12 @@ export class OrdersService {
       this.orders.countDocuments(where),
     ]);
 
-    return paginate(docs.map((doc) => toOrder(doc as never)), total, page, perPage);
+    return paginate(
+      docs.map((doc) => toOrder(doc as never)),
+      total,
+      page,
+      perPage,
+    );
   }
 
   private async findOrFail(id: string): Promise<OrderDto> {

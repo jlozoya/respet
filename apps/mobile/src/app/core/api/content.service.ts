@@ -229,7 +229,9 @@ mutation ResolveReport($id: ID!, $status: ReportStatus!) {
 export class ModerationService {
   private readonly gql = inject(GraphqlClientService);
 
-  async reports(query: { status?: ReportStatus; page?: number; perPage?: number } = {}): Promise<Paginated<Report>> {
+  async reports(
+    query: { status?: ReportStatus; page?: number; perPage?: number } = {},
+  ): Promise<Paginated<Report>> {
     const { reports } = await this.gql.request<{ reports: Paginated<Report> }>(REPORTS, query);
 
     return reports;

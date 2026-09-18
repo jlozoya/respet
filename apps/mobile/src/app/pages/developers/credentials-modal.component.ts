@@ -44,18 +44,24 @@ import { FeedbackService } from '../../core/ui/feedback.service';
       @if (credentials().clientSecret; as secret) {
         <div class="field">
           <span class="rs-small rs-muted">client_secret</span>
-          <button type="button" class="value" (click)="copy(secret)">{{ secret }} <ion-icon name="copy-outline" /></button>
+          <button type="button" class="value" (click)="copy(secret)">
+            {{ secret }} <ion-icon name="copy-outline" />
+          </button>
         </div>
       }
 
       @if (credentials().webhookSecret; as secret) {
         <div class="field">
           <span class="rs-small rs-muted">webhook_secret</span>
-          <button type="button" class="value" (click)="copy(secret)">{{ secret }} <ion-icon name="copy-outline" /></button>
+          <button type="button" class="value" (click)="copy(secret)">
+            {{ secret }} <ion-icon name="copy-outline" />
+          </button>
         </div>
       }
 
-      <ion-button expand="block" (click)="close()">{{ 'DEVELOPERS.SAVED_THEM' | translate }}</ion-button>
+      <ion-button expand="block" (click)="close()">{{
+        'DEVELOPERS.SAVED_THEM' | translate
+      }}</ion-button>
     </ion-content>
   `,
   styles: `

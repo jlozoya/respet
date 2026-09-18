@@ -22,7 +22,17 @@ import { AuthLayoutComponent } from './auth-layout.component';
 @Component({
   selector: 'app-reset-password',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, AuthLayoutComponent, ControlMessagesComponent, IonInput, IonInputPasswordToggle, IonButton, IonSpinner],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    AuthLayoutComponent,
+    ControlMessagesComponent,
+    IonInput,
+    IonInputPasswordToggle,
+    IonButton,
+    IonSpinner,
+  ],
   template: `
     <app-auth-layout [showPitch]="false">
       @if (token()) {
@@ -30,12 +40,26 @@ import { AuthLayoutComponent } from './auth-layout.component';
           <h2>{{ 'AUTH.NEW_PASSWORD_TITLE' | translate }}</h2>
           <p class="rs-muted">{{ 'AUTH.NEW_PASSWORD_HINT' | translate }}</p>
 
-          <ion-input fill="outline" formControlName="password" type="password" autocomplete="new-password" [placeholder]="'NEW_PASSWORD' | translate" [attr.aria-label]="'NEW_PASSWORD' | translate">
+          <ion-input
+            fill="outline"
+            formControlName="password"
+            type="password"
+            autocomplete="new-password"
+            [placeholder]="'NEW_PASSWORD' | translate"
+            [attr.aria-label]="'NEW_PASSWORD' | translate"
+          >
             <ion-input-password-toggle slot="end" />
           </ion-input>
           <app-control-messages [control]="form.controls.password" />
 
-          <ion-input fill="outline" formControlName="confirmation" type="password" autocomplete="new-password" [placeholder]="'PASSWORD_CONFIRMATION' | translate" [attr.aria-label]="'PASSWORD_CONFIRMATION' | translate">
+          <ion-input
+            fill="outline"
+            formControlName="confirmation"
+            type="password"
+            autocomplete="new-password"
+            [placeholder]="'PASSWORD_CONFIRMATION' | translate"
+            [attr.aria-label]="'PASSWORD_CONFIRMATION' | translate"
+          >
             <ion-input-password-toggle slot="end" />
           </ion-input>
           <app-control-messages [control]="form.controls.confirmation" />
@@ -52,7 +76,9 @@ import { AuthLayoutComponent } from './auth-layout.component';
         <div class="form">
           <h2>{{ 'AUTH.LINK_INVALID' | translate }}</h2>
           <p class="rs-muted">{{ 'AUTH.LINK_INVALID_HINT' | translate }}</p>
-          <ion-button routerLink="/forgot-password" expand="block">{{ 'AUTH.REQUEST_NEW_LINK' | translate }}</ion-button>
+          <ion-button routerLink="/forgot-password" expand="block">{{
+            'AUTH.REQUEST_NEW_LINK' | translate
+          }}</ion-button>
         </div>
       }
     </app-auth-layout>

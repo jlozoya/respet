@@ -1,9 +1,22 @@
-import { ChangeDetectionStrategy, Component, type OnDestroy, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  type OnDestroy,
+  computed,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import type { ReactionType } from '@social-network/shared';
 
-import { REACTIONS, reactionColor, reactionEmoji, reactionLabel } from '../../shared/utils/reactions';
+import {
+  REACTIONS,
+  reactionColor,
+  reactionEmoji,
+  reactionLabel,
+} from '../../shared/utils/reactions';
 
 /** Lo que tarda en abrirse el selector al pasar por encima o mantener pulsado. */
 const OPEN_DELAY_MS = 450;
@@ -27,7 +40,13 @@ const OPEN_DELAY_MS = 450;
     @if (open()) {
       <div class="picker" role="menu" (mouseenter)="cancelClose()">
         @for (type of reactions; track type) {
-          <button type="button" class="option" role="menuitem" [title]="label(type) | translate" (click)="choose(type, $event)">
+          <button
+            type="button"
+            class="option"
+            role="menuitem"
+            [title]="label(type) | translate"
+            (click)="choose(type, $event)"
+          >
             <span class="emoji">{{ emoji(type) }}</span>
           </button>
         }

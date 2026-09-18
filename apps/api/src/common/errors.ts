@@ -105,7 +105,11 @@ export class AppException extends HttpException {
     return new AppException(code, HttpStatus.CONFLICT, message);
   }
 
-  static badRequest(code: ErrorCode, message: string, errors?: Record<string, string[]>): AppException {
+  static badRequest(
+    code: ErrorCode,
+    message: string,
+    errors?: Record<string, string[]>,
+  ): AppException {
     return new AppException(code, HttpStatus.BAD_REQUEST, message, errors);
   }
 

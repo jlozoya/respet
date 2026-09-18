@@ -36,9 +36,11 @@ export function roleGuard(minimum: UserRole): CanActivateFn {
       return router.createUrlTree(['/login'], { queryParams: { redirectTo: state.url } });
     }
 
-    return auth.hasRole(minimum) ? true : router.createUrlTree(['/error'], {
-      queryParams: { reason: 'forbidden' },
-    });
+    return auth.hasRole(minimum)
+      ? true
+      : router.createUrlTree(['/error'], {
+          queryParams: { reason: 'forbidden' },
+        });
   };
 }
 

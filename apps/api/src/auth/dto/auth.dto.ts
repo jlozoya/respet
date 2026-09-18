@@ -108,7 +108,10 @@ export class CompleteMfaLoginDto implements CompleteMfaLoginRequest {
   @Length(6, 20)
   code!: string;
 
-  @Field(() => Boolean, { nullable: true, description: 'No volver a pedir el código en este dispositivo.' })
+  @Field(() => Boolean, {
+    nullable: true,
+    description: 'No volver a pedir el código en este dispositivo.',
+  })
   @IsOptional()
   @IsBoolean()
   trustDevice?: boolean;
@@ -216,7 +219,8 @@ export class ChangePasswordDto implements ChangePasswordRequest {
 }
 
 @InputType('ReauthInput', {
-  description: 'Confirmación de identidad: la contraseña o, sin ella, el código del segundo factor.',
+  description:
+    'Confirmación de identidad: la contraseña o, sin ella, el código del segundo factor.',
 })
 export class ReauthDto implements ReauthRequest {
   @Field(() => String, { nullable: true })

@@ -135,7 +135,9 @@ export class UpdateWebhookDto implements UpdateWebhookRequest {
   active!: boolean;
 }
 
-@InputType('OAuthAuthorizeInput', { description: 'Los parámetros de `/oauth/authorize`, tal cual llegan en la URL.' })
+@InputType('OAuthAuthorizeInput', {
+  description: 'Los parámetros de `/oauth/authorize`, tal cual llegan en la URL.',
+})
 export class OAuthAuthorizeDto implements OAuthAuthorizeRequest {
   @Field()
   @IsString()

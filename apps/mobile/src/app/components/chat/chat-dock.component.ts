@@ -21,14 +21,24 @@ import { ChatThreadComponent } from './chat-thread.component';
     <div class="windows">
       @for (id of open(); track id) {
         <section class="window">
-          <app-chat-thread [conversationId]="id" mode="dock" (closed)="chat.closeWindow(id)" (minimize)="chat.toggleMinimized(id)" />
+          <app-chat-thread
+            [conversationId]="id"
+            mode="dock"
+            (closed)="chat.closeWindow(id)"
+            (minimize)="chat.toggleMinimized(id)"
+          />
         </section>
       }
     </div>
 
     <div class="bubbles">
       @for (conversation of minimized(); track conversation.id) {
-        <button type="button" class="bubble" [title]="titleOf(conversation)" (click)="chat.toggleMinimized(conversation.id)">
+        <button
+          type="button"
+          class="bubble"
+          [title]="titleOf(conversation)"
+          (click)="chat.toggleMinimized(conversation.id)"
+        >
           <app-conversation-avatar [conversation]="conversation" [size]="48" />
           @if (conversation.unreadCount > 0) {
             <span class="rs-badge">{{ conversation.unreadCount }}</span>

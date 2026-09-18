@@ -17,10 +17,4 @@ export const { isValidObjectId, SchemaTypes, MongooseError } = mongoose;
 /** El constructor de identificadores, para `new ObjectId(...)`. */
 export const ObjectId = mongoose.Types.ObjectId;
 
-export type {
-  ClientSession,
-  Connection,
-  HydratedDocument,
-  Model,
-  Types,
-} from 'mongoose';
+export type { ClientSession, Connection, HydratedDocument, Model, Types } from 'mongoose';

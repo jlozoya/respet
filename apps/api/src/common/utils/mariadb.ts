@@ -35,7 +35,8 @@ export function mariadbOptions(url: string, overrides: PoolConfig = {}): PoolCon
     database: decodeURIComponent(parsed.pathname.replace(/^\//, '')),
     ...(ssl === undefined ? {} : { ssl }),
     ...(cachingRsaPublicKey === undefined ? {} : { cachingRsaPublicKey }),
-    allowPublicKeyRetrieval: parseBoolean(params.get('allowPublicKeyRetrieval')) ?? isLoopback(host),
+    allowPublicKeyRetrieval:
+      parseBoolean(params.get('allowPublicKeyRetrieval')) ?? isLoopback(host),
     ...overrides,
   };
 }

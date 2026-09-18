@@ -1,7 +1,15 @@
 import { REACTION_EMOJI, type ReactionType } from '@social-network/shared';
 
 /** Las reacciones en el orden en que se ofrecen, como en Facebook. */
-export const REACTIONS: readonly ReactionType[] = ['like', 'love', 'care', 'haha', 'wow', 'sad', 'angry'];
+export const REACTIONS: readonly ReactionType[] = [
+  'like',
+  'love',
+  'care',
+  'haha',
+  'wow',
+  'sad',
+  'angry',
+];
 
 export function reactionEmoji(type: ReactionType): string {
   return REACTION_EMOJI[type];

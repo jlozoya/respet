@@ -27,7 +27,10 @@ import { SendToChatModalComponent } from '../chat/send-to-chat-modal.component';
 import { AvatarComponent } from '../../shared/components/avatar.component';
 import { MediaGridComponent } from '../../shared/components/media-grid.component';
 import { RichTextComponent } from '../../shared/components/rich-text.component';
-import { UserListModalComponent, type UserListPage } from '../../shared/components/user-list-modal.component';
+import {
+  UserListModalComponent,
+  type UserListPage,
+} from '../../shared/components/user-list-modal.component';
 import { UserNameComponent } from '../../shared/components/user-name.component';
 import { describeLocation } from '../../shared/location-text';
 import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';
@@ -81,11 +84,16 @@ import { SharedPostPreviewComponent } from './shared-post-preview.component';
               <span class="rs-muted">{{ 'POST.SHARED_A_POST' | translate }}</span>
             }
             @if (item.authorFollowState === 'none' && !isOwn()) {
-              · <button type="button" class="follow" (click)="follow()">{{ 'FOLLOW.FOLLOW' | translate }}</button>
+              ·
+              <button type="button" class="follow" (click)="follow()">
+                {{ 'FOLLOW.FOLLOW' | translate }}
+              </button>
             }
           </span>
           <span class="sub">
-            <a [routerLink]="['/post', item.id]" class="date">{{ item.createdAt | relativeTime }}</a>
+            <a [routerLink]="['/post', item.id]" class="date">{{
+              item.createdAt | relativeTime
+            }}</a>
             @if (item.editedAt) {
               · <span>{{ 'POST.EDITED' | translate }}</span>
             }
@@ -95,13 +103,23 @@ import { SharedPostPreviewComponent } from './shared-post-preview.component';
             }
           </span>
         </div>
-        <button type="button" class="rs-icon-btn plain" (click)="menu()" [attr.aria-label]="'COMMON.OPTIONS' | translate">
+        <button
+          type="button"
+          class="rs-icon-btn plain"
+          (click)="menu()"
+          [attr.aria-label]="'COMMON.OPTIONS' | translate"
+        >
           <ion-icon name="ellipsis-horizontal" />
         </button>
       </header>
 
       @if (item.description) {
-        <app-rich-text class="text" [class.big]="bigText()" [text]="item.description" [clamp]="detail() ? 0 : 480" />
+        <app-rich-text
+          class="text"
+          [class.big]="bigText()"
+          [text]="item.description"
+          [clamp]="detail() ? 0 : 480"
+        />
       }
 
       @if (item.location; as place) {
@@ -132,10 +150,16 @@ import { SharedPostPreviewComponent } from './shared-post-preview.component';
           }
           <span class="counts">
             @if (item.commentCount) {
-              <button type="button" (click)="openComments()">{{ 'POST.COMMENT_COUNT' | translate: { count: (item.commentCount | compactNumber) } }}</button>
+              <button type="button" (click)="openComments()">
+                {{
+                  'POST.COMMENT_COUNT' | translate: { count: (item.commentCount | compactNumber) }
+                }}
+              </button>
             }
             @if (item.shareCount) {
-              <span>{{ 'POST.SHARE_COUNT' | translate: { count: (item.shareCount | compactNumber) } }}</span>
+              <span>{{
+                'POST.SHARE_COUNT' | translate: { count: (item.shareCount | compactNumber) }
+              }}</span>
             }
           </span>
         </div>
@@ -143,7 +167,12 @@ import { SharedPostPreviewComponent } from './shared-post-preview.component';
 
       <div class="actions">
         <app-reaction-button [reaction]="item.myReaction" (react)="react($event)" />
-        <button type="button" class="action" (click)="openComments()" [disabled]="item.commentsDisabled && !item.commentCount">
+        <button
+          type="button"
+          class="action"
+          (click)="openComments()"
+          [disabled]="item.commentsDisabled && !item.commentCount"
+        >
           <ion-icon name="chatbubble-outline" /> {{ 'POST.COMMENT' | translate }}
         </button>
         <button type="button" class="action" (click)="share()">
@@ -185,7 +214,10 @@ export class PostCardComponent {
    * ya viene en ella—, para que una reacción hecha en otra pantalla no quede
    * tapada por una hecha aquí antes.
    */
-  private readonly overrides = linkedSignal<Post, Partial<Post>>({ source: this.post, computation: () => ({}) });
+  private readonly overrides = linkedSignal<Post, Partial<Post>>({
+    source: this.post,
+    computation: () => ({}),
+  });
   private readonly commentsOpen = signal(false);
   private readonly comments = viewChild<CommentsSectionComponent>('comments');
 
@@ -228,7 +260,9 @@ export class PostCardComponent {
     this.overrides.update((current) => ({ ...current, ...optimisticReaction(before, type) }));
 
     try {
-      const result = type ? await this.posts.react(before.id, type) : await this.posts.unreact(before.id);
+      const result = type
+        ? await this.posts.react(before.id, type)
+        : await this.posts.unreact(before.id);
       this.overrides.update((current) => ({ ...current, ...result }));
     } catch (error) {
       this.overrides.update((current) => ({
@@ -267,7 +301,11 @@ export class PostCardComponent {
       const result = await this.posts.reactors(id, { page, perPage: 30 });
 
       return {
-        entries: result.data.map((entry) => ({ user: entry.user, badge: reactionEmoji(entry.type), followState: entry.followState })),
+        entries: result.data.map((entry) => ({
+          user: entry.user,
+          badge: reactionEmoji(entry.type),
+          followState: entry.followState,
+        })),
         hasMore: result.meta.hasNextPage,
       };
     };
@@ -290,7 +328,11 @@ export class PostCardComponent {
       buttons: [
         { text: t('SHARE_MENU.SHARE_NOW'), icon: 'arrow-redo-outline', data: 'now' },
         { text: t('SHARE_MENU.WRITE_POST'), icon: 'create-outline', data: 'write' },
-        { text: t('SHARE_MENU.SEND_IN_MESSENGER'), icon: 'chatbubble-ellipses-outline', data: 'messenger' },
+        {
+          text: t('SHARE_MENU.SEND_IN_MESSENGER'),
+          icon: 'chatbubble-ellipses-outline',
+          data: 'messenger',
+        },
         { text: t('SHARE_MENU.MORE_OPTIONS'), icon: 'share-social-outline', data: 'external' },
         { text: t('CANCEL'), role: 'cancel' },
       ],
@@ -303,12 +345,18 @@ export class PostCardComponent {
       switch (data) {
         case 'now':
           await this.posts.create({ sharedPostId: target.id, audience: 'public' });
-          this.overrides.update((current) => ({ ...current, shareCount: this.view().shareCount + 1 }));
+          this.overrides.update((current) => ({
+            ...current,
+            shareCount: this.view().shareCount + 1,
+          }));
           await this.feedback.toast('SHARE_MENU.SHARED', { color: 'success' });
           break;
         case 'write':
           if (await this.creator.post({ share: target })) {
-            this.overrides.update((current) => ({ ...current, shareCount: this.view().shareCount + 1 }));
+            this.overrides.update((current) => ({
+              ...current,
+              shareCount: this.view().shareCount + 1,
+            }));
           }
           break;
         case 'messenger': {
@@ -335,9 +383,14 @@ export class PostCardComponent {
 
   async menu(): Promise<void> {
     const item = this.view();
-    const t = (key: string, params?: Record<string, unknown>) => this.translate.instant(key, params) as string;
+    const t = (key: string, params?: Record<string, unknown>) =>
+      this.translate.instant(key, params) as string;
     const buttons = [
-      { text: t(item.saved ? 'POST.UNSAVE' : 'POST.SAVE'), icon: item.saved ? 'bookmark' : 'bookmark-outline', data: 'save' },
+      {
+        text: t(item.saved ? 'POST.UNSAVE' : 'POST.SAVE'),
+        icon: item.saved ? 'bookmark' : 'bookmark-outline',
+        data: 'save',
+      },
       { text: t('POST.COPY_LINK'), icon: 'link-outline', data: 'link' },
       ...(this.isOwn()
         ? [
@@ -346,12 +399,27 @@ export class PostCardComponent {
           ]
         : [
             ...(item.authorFollowState === 'following'
-              ? [{ text: t('FOLLOW.UNFOLLOW_NAME', { name: item.author.firstName || item.author.name }), icon: 'person-remove-outline', data: 'unfollow' }]
+              ? [
+                  {
+                    text: t('FOLLOW.UNFOLLOW_NAME', {
+                      name: item.author.firstName || item.author.name,
+                    }),
+                    icon: 'person-remove-outline',
+                    data: 'unfollow',
+                  },
+                ]
               : []),
             { text: t('POST.REPORT'), icon: 'flag-outline', data: 'report' },
-            { text: t('PROFILE.BLOCK_NAME', { name: item.author.firstName || item.author.name }), icon: 'ban-outline', role: 'destructive', data: 'block' },
+            {
+              text: t('PROFILE.BLOCK_NAME', { name: item.author.firstName || item.author.name }),
+              icon: 'ban-outline',
+              role: 'destructive',
+              data: 'block',
+            },
           ]),
-      ...(this.auth.isAdmin() && !this.isOwn() ? [{ text: t('POST.DELETE'), icon: 'trash-outline', role: 'destructive', data: 'delete' }] : []),
+      ...(this.auth.isAdmin() && !this.isOwn()
+        ? [{ text: t('POST.DELETE'), icon: 'trash-outline', role: 'destructive', data: 'delete' }]
+        : []),
       { text: t('CANCEL'), role: 'cancel' },
     ];
 
@@ -362,7 +430,9 @@ export class PostCardComponent {
     try {
       switch (data) {
         case 'save': {
-          const saved = item.saved ? await this.posts.unsave(item.id) : await this.posts.save(item.id);
+          const saved = item.saved
+            ? await this.posts.unsave(item.id)
+            : await this.posts.save(item.id);
           this.overrides.update((current) => ({ ...current, saved }));
           await this.feedback.toast(saved ? 'POST.SAVED' : 'POST.UNSAVED');
           break;
@@ -381,7 +451,12 @@ export class PostCardComponent {
         }
         case 'delete':
           if (
-            await this.feedback.confirm({ header: 'POST.DELETE_TITLE', message: 'POST.DELETE_MESSAGE', confirmText: 'DELETE', danger: true })
+            await this.feedback.confirm({
+              header: 'POST.DELETE_TITLE',
+              message: 'POST.DELETE_MESSAGE',
+              confirmText: 'DELETE',
+              danger: true,
+            })
           ) {
             await this.posts.remove(item.id);
             this.removed.emit(item.id);
@@ -393,7 +468,10 @@ export class PostCardComponent {
           break;
         case 'unfollow': {
           const result = await this.users.unfollow(item.author.id);
-          this.overrides.update((current) => ({ ...current, authorFollowState: result.followState }));
+          this.overrides.update((current) => ({
+            ...current,
+            authorFollowState: result.followState,
+          }));
           break;
         }
         case 'report':
@@ -401,7 +479,12 @@ export class PostCardComponent {
           break;
         case 'block':
           if (
-            await this.feedback.confirm({ header: 'PROFILE.BLOCK', message: 'PROFILE.BLOCK_MESSAGE', confirmText: 'PROFILE.BLOCK', danger: true })
+            await this.feedback.confirm({
+              header: 'PROFILE.BLOCK',
+              message: 'PROFILE.BLOCK_MESSAGE',
+              confirmText: 'PROFILE.BLOCK',
+              danger: true,
+            })
           ) {
             await this.social.block(item.author.id);
             this.removed.emit(item.id);

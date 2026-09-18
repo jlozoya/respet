@@ -85,10 +85,16 @@ export class SecurityResolver {
     @CurrentUser() actor: AuthenticatedUser,
     @Client() client: ClientInfo,
   ): Promise<number> {
-    const count = await this.sessions.revokeAllForUser(actor.id, SessionEndReason.RevokedByUser, actor.sessionId);
+    const count = await this.sessions.revokeAllForUser(
+      actor.id,
+      SessionEndReason.RevokedByUser,
+      actor.sessionId,
+    );
 
     if (count > 0) {
-      await this.events.record(actor.id, SecurityEventType.SessionRevoked, client, { reason: 'others' });
+      await this.events.record(actor.id, SecurityEventType.SessionRevoked, client, {
+        reason: 'others',
+      });
     }
 
     return count;
@@ -117,7 +123,8 @@ export class SecurityResolver {
 
   @RateLimit({ limit: 10, windowSeconds: 900 })
   @Mutation(() => RecoveryCodesType, {
-    description: 'Confirma la app con un código y activa la verificación. Devuelve los códigos de recuperación.',
+    description:
+      'Confirma la app con un código y activa la verificación. Devuelve los códigos de recuperación.',
   })
   async confirmTotpSetup(
     @CurrentUser() actor: AuthenticatedUser,
@@ -149,7 +156,9 @@ export class SecurityResolver {
   }
 
   @RateLimit({ limit: 5, windowSeconds: 900 })
-  @Mutation(() => RecoveryCodesType, { description: 'Genera códigos de recuperación nuevos; los anteriores dejan de valer.' })
+  @Mutation(() => RecoveryCodesType, {
+    description: 'Genera códigos de recuperación nuevos; los anteriores dejan de valer.',
+  })
   async regenerateRecoveryCodes(
     @CurrentUser() actor: AuthenticatedUser,
     @Args('reauth') reauth: ReauthDto,

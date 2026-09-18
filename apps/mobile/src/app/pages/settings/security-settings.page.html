@@ -39,7 +39,9 @@
           />
 
           <div class="actions">
-            <ion-button class="rs-soft" (click)="cancelSetup()">{{ 'CANCEL' | translate }}</ion-button>
+            <ion-button class="rs-soft" (click)="cancelSetup()">{{
+              'CANCEL' | translate
+            }}</ion-button>
             <ion-button [disabled]="busy() || code().length < 6" (click)="confirmSetup()">
               @if (busy()) {
                 <ion-spinner name="crescent" />
@@ -52,7 +54,9 @@
       }
 
       @case ('codes') {
-        <p><b>{{ 'SECURITY.CODES_TITLE' | translate }}</b></p>
+        <p>
+          <b>{{ 'SECURITY.CODES_TITLE' | translate }}</b>
+        </p>
         <p class="rs-small rs-muted">{{ 'SECURITY.CODES_HINT' | translate }}</p>
         <div class="codes">
           @for (item of recoveryCodes(); track item) {
@@ -60,8 +64,14 @@
           }
         </div>
         <div class="actions">
-          <ion-button class="rs-soft" (click)="copyCodes()"><ion-icon slot="start" name="copy-outline" /> {{ 'SECURITY.COPY' | translate }}</ion-button>
-          <ion-button class="rs-soft" (click)="downloadCodes()"><ion-icon slot="start" name="download-outline" /> {{ 'SECURITY.DOWNLOAD' | translate }}</ion-button>
+          <ion-button class="rs-soft" (click)="copyCodes()"
+            ><ion-icon slot="start" name="copy-outline" />
+            {{ 'SECURITY.COPY' | translate }}</ion-button
+          >
+          <ion-button class="rs-soft" (click)="downloadCodes()"
+            ><ion-icon slot="start" name="download-outline" />
+            {{ 'SECURITY.DOWNLOAD' | translate }}</ion-button
+          >
           <ion-button (click)="finishSetup()">{{ 'SECURITY.SAVED_THEM' | translate }}</ion-button>
         </div>
       }
@@ -74,7 +84,9 @@
               <span class="text">
                 <span class="title">{{ 'SECURITY.AUTH_APP' | translate }}</span>
                 @if (status.enabledAt) {
-                  <span class="meta">{{ 'SECURITY.ENABLED_AGO' | translate: { time: (status.enabledAt | relativeTime) } }}</span>
+                  <span class="meta">{{
+                    'SECURITY.ENABLED_AGO' | translate: { time: (status.enabledAt | relativeTime) }
+                  }}</span>
                 }
               </span>
             </div>
@@ -82,9 +94,13 @@
               <span class="icon"><ion-icon name="document-lock-outline" /></span>
               <span class="text">
                 <span class="title">{{ 'SECURITY.RECOVERY_CODES' | translate }}</span>
-                <span class="meta">{{ 'SECURITY.CODES_LEFT' | translate: { count: status.recoveryCodesRemaining } }}</span>
+                <span class="meta">{{
+                  'SECURITY.CODES_LEFT' | translate: { count: status.recoveryCodesRemaining }
+                }}</span>
               </span>
-              <ion-button size="small" class="rs-soft" (click)="regenerateCodes()">{{ 'SECURITY.REGENERATE' | translate }}</ion-button>
+              <ion-button size="small" class="rs-soft" (click)="regenerateCodes()">{{
+                'SECURITY.REGENERATE' | translate
+              }}</ion-button>
             </div>
 
             @if (status.trustedDevices.length) {
@@ -94,23 +110,33 @@
                   <span class="icon"><ion-icon [name]="deviceIcon(device.device)" /></span>
                   <span class="text">
                     <span class="title">{{ device.device.name }}</span>
-                    <span class="meta">{{ deviceLabel(device.device) }} · {{ (device.lastUsedAt ?? device.createdAt) | relativeTime }}</span>
+                    <span class="meta"
+                      >{{ deviceLabel(device.device) }} ·
+                      {{ device.lastUsedAt ?? device.createdAt | relativeTime }}</span
+                    >
                   </span>
-                  <ion-button size="small" class="rs-soft" (click)="revokeTrusted(device.id)">{{ 'SECURITY.FORGET' | translate }}</ion-button>
+                  <ion-button size="small" class="rs-soft" (click)="revokeTrusted(device.id)">{{
+                    'SECURITY.FORGET' | translate
+                  }}</ion-button>
                 </div>
               }
               <div class="actions">
-                <ion-button size="small" fill="clear" (click)="revokeTrusted()">{{ 'SECURITY.FORGET_ALL' | translate }}</ion-button>
+                <ion-button size="small" fill="clear" (click)="revokeTrusted()">{{
+                  'SECURITY.FORGET_ALL' | translate
+                }}</ion-button>
               </div>
             }
 
             <div class="actions">
-              <ion-button color="danger" fill="outline" (click)="disable()">{{ 'SECURITY.DISABLE' | translate }}</ion-button>
+              <ion-button color="danger" fill="outline" (click)="disable()">{{
+                'SECURITY.DISABLE' | translate
+              }}</ion-button>
             </div>
           } @else {
             <div class="actions">
               <ion-button (click)="beginSetup()" [disabled]="busy()">
-                <ion-icon slot="start" name="shield-checkmark" /> {{ 'SECURITY.ENABLE' | translate }}
+                <ion-icon slot="start" name="shield-checkmark" />
+                {{ 'SECURITY.ENABLE' | translate }}
               </ion-button>
             </div>
           }
@@ -128,7 +154,11 @@
         <span class="label">{{ 'SECURITY.LOGIN_ALERTS' | translate }}</span>
         <span class="hint">{{ 'SECURITY.LOGIN_ALERTS_HINT' | translate }}</span>
       </span>
-      <ion-toggle [checked]="loginAlerts()" (ionChange)="setLoginAlerts($event.detail.checked)" [attr.aria-label]="'SECURITY.LOGIN_ALERTS' | translate" />
+      <ion-toggle
+        [checked]="loginAlerts()"
+        (ionChange)="setLoginAlerts($event.detail.checked)"
+        [attr.aria-label]="'SECURITY.LOGIN_ALERTS' | translate"
+      />
     </div>
     @if (auth.user()?.provider === 'password') {
       <div class="setting">
@@ -136,7 +166,9 @@
           <span class="label">{{ 'CHANGE_PASSWORD' | translate }}</span>
           <span class="hint">{{ 'SECURITY.PASSWORD_HINT' | translate }}</span>
         </span>
-        <ion-button size="small" class="rs-soft" routerLink="/settings/account">{{ 'CHANGE' | translate }}</ion-button>
+        <ion-button size="small" class="rs-soft" routerLink="/settings/account">{{
+          'CHANGE' | translate
+        }}</ion-button>
       </div>
     }
   </section>
@@ -149,7 +181,9 @@
         <p class="rs-small rs-muted">{{ 'SECURITY.SESSIONS_HINT' | translate }}</p>
       </div>
       @if (sessions().length > 1) {
-        <ion-button size="small" class="rs-soft" (click)="revokeOthers()">{{ 'SECURITY.REVOKE_OTHERS' | translate }}</ion-button>
+        <ion-button size="small" class="rs-soft" (click)="revokeOthers()">{{
+          'SECURITY.REVOKE_OTHERS' | translate
+        }}</ion-button>
       }
     </div>
 
@@ -168,12 +202,16 @@
             @if (session.current) {
               <span class="current">{{ 'SECURITY.THIS_DEVICE' | translate }}</span>
             } @else {
-              {{ 'SECURITY.LAST_ACTIVE' | translate: { time: (session.lastUsedAt | relativeTime) } }}
+              {{
+                'SECURITY.LAST_ACTIVE' | translate: { time: (session.lastUsedAt | relativeTime) }
+              }}
             }
           </span>
         </span>
         @if (!session.current) {
-          <ion-button size="small" class="rs-soft" (click)="revokeSession(session)">{{ 'SECURITY.REVOKE' | translate }}</ion-button>
+          <ion-button size="small" class="rs-soft" (click)="revokeSession(session)">{{
+            'SECURITY.REVOKE' | translate
+          }}</ion-button>
         }
       </div>
     }
@@ -206,7 +244,9 @@
     }
     @if (hasMoreEvents()) {
       <div class="actions">
-        <ion-button size="small" fill="clear" (click)="moreEvents()">{{ 'COMMON.SEE_MORE' | translate }}</ion-button>
+        <ion-button size="small" fill="clear" (click)="moreEvents()">{{
+          'COMMON.SEE_MORE' | translate
+        }}</ion-button>
       </div>
     }
   </section>

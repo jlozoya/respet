@@ -20,19 +20,21 @@ const bruno = { token: '', id: '' };
 let postId = '';
 let conversationId = '';
 
-async function register(name: string, password: string): Promise<{ token: string; refresh: string; id: string }> {
-  const result = await h.gql<{ register: { accessToken: string; refreshToken: string; user: { id: string } } }>(
-    `mutation($input: RegisterInput!) { register(input: $input) { ${SESSION} } }`,
-    {
-      input: {
-        name,
-        firstName: name,
-        lastName: 'Prueba',
-        email: `${name}@social-network.test`,
-        password,
-      },
+async function register(
+  name: string,
+  password: string,
+): Promise<{ token: string; refresh: string; id: string }> {
+  const result = await h.gql<{
+    register: { accessToken: string; refreshToken: string; user: { id: string } };
+  }>(`mutation($input: RegisterInput!) { register(input: $input) { ${SESSION} } }`, {
+    input: {
+      name,
+      firstName: name,
+      lastName: 'Prueba',
+      email: `${name}@social-network.test`,
+      password,
     },
-  );
+  });
 
   expect(result.errors).toBeUndefined();
 
@@ -56,7 +58,11 @@ describe('sesiones', () => {
     Object.assign(ana, await register('ana', ana.password));
     Object.assign(bruno, await register('bruno', 'bruno-password-1'));
 
-    const me = await h.gql<{ me: { id: string; mfaEnabled: boolean } }>('{ me { id mfaEnabled } }', {}, ana.token);
+    const me = await h.gql<{ me: { id: string; mfaEnabled: boolean } }>(
+      '{ me { id mfaEnabled } }',
+      {},
+      ana.token,
+    );
 
     expect(me.data?.me).toEqual({ id: ana.id, mfaEnabled: false });
   });
@@ -71,9 +77,12 @@ describe('sesiones', () => {
 
     // Reutilizar el token viejo pasado el margen de carrera se interpreta como
     // robo. Dentro del margen, en cambio, sólo se pide reintentar.
-    const race = await h.gql('mutation($t: String!) { refreshTokens(refreshToken: $t) { accessToken } }', {
-      t: ana.refresh,
-    });
+    const race = await h.gql(
+      'mutation($t: String!) { refreshTokens(refreshToken: $t) { accessToken } }',
+      {
+        t: ana.refresh,
+      },
+    );
 
     expect(race.errors?.[0]?.extensions?.code).toBe('SERVER.REFRESH_RACE');
 
@@ -95,7 +104,11 @@ describe('sesiones', () => {
 
     expect(sessions.data!.mySessions.length).toBeGreaterThanOrEqual(2);
 
-    await h.gql('mutation($id: ID!) { revokeSession(id: $id) }', { id: other.sessionId }, ana.token);
+    await h.gql(
+      'mutation($id: ID!) { revokeSession(id: $id) }',
+      { id: other.sessionId },
+      ana.token,
+    );
 
     const rejected = await h.gql('{ me { id } }', {}, other.accessToken);
 
@@ -146,7 +159,9 @@ describe('verificación en dos pasos', () => {
   });
 
   it('pide el segundo factor al entrar y lo completa con un código de recuperación', async () => {
-    const login = await h.gql<{ login: { status: string; session: null; challenge: { token: string } } }>(
+    const login = await h.gql<{
+      login: { status: string; session: null; challenge: { token: string } };
+    }>(
       `mutation { login(input: { email: "ana@social-network.test", password: "${ana.password}" }) { status session { accessToken } challenge { token } } }`,
     );
 
@@ -160,7 +175,9 @@ describe('verificación en dos pasos', () => {
 
     expect(wrong.errors?.[0]?.extensions?.code).toBe('SERVER.INVALID_MFA_CODE');
 
-    const done = await h.gql<{ completeMfaLogin: { accessToken: string; trustedDeviceToken: string } }>(
+    const done = await h.gql<{
+      completeMfaLogin: { accessToken: string; trustedDeviceToken: string };
+    }>(
       'mutation($t: String!, $c: String!) { completeMfaLogin(input: { challengeToken: $t, method: recovery_code, code: $c, trustDevice: true }) { accessToken trustedDeviceToken } }',
       { t: login.data!.login.challenge.token, c: recoveryCodes[0] },
     );
@@ -182,9 +199,14 @@ describe('verificación en dos pasos', () => {
 describe('publicaciones, reacciones y avisos', () => {
   it('publica con una foto subida en la propia mutación', async () => {
     const png = await tinyPng();
-    const result = await h.upload<{ createPost: { id: string; media: { type: string; url: string }[]; hashtags: string[] } }>(
+    const result = await h.upload<{
+      createPost: { id: string; media: { type: string; url: string }[]; hashtags: string[] };
+    }>(
       'mutation($input: CreatePostInput!, $files: [Upload!]) { createPost(input: $input, files: $files) { id media { type url } hashtags } }',
-      { input: { description: 'Hola #EnPruebas desde las pruebas', audience: 'public' }, files: [null] },
+      {
+        input: { description: 'Hola #EnPruebas desde las pruebas', audience: 'public' },
+        files: [null],
+      },
       { 'files.0': { name: 'foto.png', type: 'image/png', data: png } },
       ana.token,
     );
@@ -200,7 +222,13 @@ describe('publicaciones, reacciones y avisos', () => {
     const result = await h.upload(
       'mutation($file: Upload!) { updateMyAvatar(file: $file) { id } }',
       { file: null },
-      { file: { name: 'foto.png', type: 'image/png', data: Buffer.from('<html><script>alert(1)</script></html>') } },
+      {
+        file: {
+          name: 'foto.png',
+          type: 'image/png',
+          data: Buffer.from('<html><script>alert(1)</script></html>'),
+        },
+      },
       ana.token,
     );
 
@@ -209,7 +237,9 @@ describe('publicaciones, reacciones y avisos', () => {
 
   it('avisa en vivo a la autora cuando alguien reacciona', async () => {
     const client = h.ws(ana.token);
-    const event = nextEvent<{ notificationEvents: { notification: { type: string; actors: { id: string }[] } } }>(
+    const event = nextEvent<{
+      notificationEvents: { notification: { type: string; actors: { id: string }[] } };
+    }>(
       client,
       'subscription { notificationEvents { type unreadCount notification { type actors { id } } } }',
       {},
@@ -244,7 +274,9 @@ describe('publicaciones, reacciones y avisos', () => {
       ana.token,
     );
 
-    const post = await h.gql<{ post: { commentCount: number; commentPreview: { replyCount: number }[] } }>(
+    const post = await h.gql<{
+      post: { commentCount: number; commentPreview: { replyCount: number }[] };
+    }>(
       'query($id: ID!) { post(id: $id) { commentCount commentPreview { replyCount } } }',
       { id: postId },
       bruno.token,
@@ -255,9 +287,17 @@ describe('publicaciones, reacciones y avisos', () => {
   });
 
   it('respeta la privacidad: con el perfil privado sólo lo ven los seguidores', async () => {
-    await h.gql('mutation { updatePermissions(input: { privateProfile: true }) { privateProfile } }', {}, ana.token);
+    await h.gql(
+      'mutation { updatePermissions(input: { privateProfile: true }) { privateProfile } }',
+      {},
+      ana.token,
+    );
 
-    const hidden = await h.gql('query($id: ID!) { post(id: $id) { id } }', { id: postId }, bruno.token);
+    const hidden = await h.gql(
+      'query($id: ID!) { post(id: $id) { id } }',
+      { id: postId },
+      bruno.token,
+    );
 
     expect(hidden.errors?.[0]?.extensions?.code).toBe('SERVER.NOT_FOUND');
 
@@ -281,7 +321,11 @@ describe('publicaciones, reacciones y avisos', () => {
       ana.token,
     );
 
-    const visible = await h.gql('query($id: ID!) { post(id: $id) { id } }', { id: postId }, bruno.token);
+    const visible = await h.gql(
+      'query($id: ID!) { post(id: $id) { id } }',
+      { id: postId },
+      bruno.token,
+    );
 
     expect(visible.errors).toBeUndefined();
   });
@@ -298,7 +342,9 @@ describe('chat', () => {
     conversationId = start.data!.startConversation.id;
 
     const client = h.ws(ana.token);
-    const event = nextEvent<{ chatEvents: { type: string; message: { body: string; status: string | null } } }>(
+    const event = nextEvent<{
+      chatEvents: { type: string; message: { body: string; status: string | null } };
+    }>(
       client,
       'subscription { chatEvents { type message { body status } } }',
       {},
@@ -327,7 +373,11 @@ describe('chat', () => {
   });
 
   it('marca el mensaje como leído para quien lo envió', async () => {
-    await h.gql('mutation($c: ID!) { markConversationRead(id: $c) }', { c: conversationId }, ana.token);
+    await h.gql(
+      'mutation($c: ID!) { markConversationRead(id: $c) }',
+      { c: conversationId },
+      ana.token,
+    );
 
     const messages = await h.gql<{ messages: { data: { status: string }[] } }>(
       'query($c: ID!) { messages(conversationId: $c) { data { status } } }',
@@ -357,7 +407,11 @@ describe('historias', () => {
 
     expect(feed.data!.storyFeed).toContainEqual({ user: { id: ana.id }, hasUnseen: true });
 
-    await h.gql('mutation($id: ID!) { markStoryViewed(id: $id) }', { id: created.data!.createStory.id }, bruno.token);
+    await h.gql(
+      'mutation($id: ID!) { markStoryViewed(id: $id) }',
+      { id: created.data!.createStory.id },
+      bruno.token,
+    );
 
     const viewers = await h.gql<{ storyViewers: { meta: { total: number } } }>(
       'query($id: ID!) { storyViewers(id: $id) { meta { total } } }',
@@ -371,7 +425,9 @@ describe('historias', () => {
 
 describe('API para terceros', () => {
   it('autoriza una aplicación con OAuth y limita lo que puede hacer a sus permisos', async () => {
-    const created = await h.gql<{ createDeveloperApp: { app: { id: string; clientId: string }; clientSecret: string } }>(
+    const created = await h.gql<{
+      createDeveloperApp: { app: { id: string; clientId: string }; clientSecret: string };
+    }>(
       'mutation { createDeveloperApp(input: { name: "Mi app", redirectUris: ["https://example.com/callback"], allowedScopes: ["user_posts"] }) { app { id clientId } clientSecret } }',
       {},
       bruno.token,
@@ -381,7 +437,13 @@ describe('API para terceros', () => {
     // En desarrollo, sólo su dueño puede autorizarla.
     const foreign = await h.gql(
       'mutation($i: OAuthAuthorizeInput!) { approveOAuthAuthorization(input: $i) { redirectTo } }',
-      { i: { clientId: app.clientId, redirectUri: 'https://example.com/callback', scope: 'user_posts' } },
+      {
+        i: {
+          clientId: app.clientId,
+          redirectUri: 'https://example.com/callback',
+          scope: 'user_posts',
+        },
+      },
       ana.token,
     );
 
@@ -389,7 +451,14 @@ describe('API para terceros', () => {
 
     const approved = await h.gql<{ approveOAuthAuthorization: { redirectTo: string } }>(
       'mutation($i: OAuthAuthorizeInput!) { approveOAuthAuthorization(input: $i) { redirectTo } }',
-      { i: { clientId: app.clientId, redirectUri: 'https://example.com/callback', scope: 'user_posts', state: 'xyz' } },
+      {
+        i: {
+          clientId: app.clientId,
+          redirectUri: 'https://example.com/callback',
+          scope: 'user_posts',
+          state: 'xyz',
+        },
+      },
       bruno.token,
     );
     const redirect = new URL(approved.data!.approveOAuthAuthorization.redirectTo);
@@ -420,9 +489,17 @@ describe('API para terceros', () => {
 
     expect(forbidden.errors?.[0]?.extensions?.code).toBe('SERVER.INSUFFICIENT_SCOPE');
 
-    const authorized = await h.gql<{ authorizedApps: { id: string }[] }>('{ authorizedApps { id } }', {}, bruno.token);
+    const authorized = await h.gql<{ authorizedApps: { id: string }[] }>(
+      '{ authorizedApps { id } }',
+      {},
+      bruno.token,
+    );
 
-    await h.gql('mutation($id: ID!) { revokeAuthorizedApp(id: $id) }', { id: authorized.data!.authorizedApps[0].id }, bruno.token);
+    await h.gql(
+      'mutation($id: ID!) { revokeAuthorizedApp(id: $id) }',
+      { id: authorized.data!.authorizedApps[0].id },
+      bruno.token,
+    );
 
     const revoked = await h.gql('{ me { id } }', {}, tokens.access_token);
 
