@@ -92,7 +92,9 @@ El seed deja una cuenta por rol (`admin@social-network.test`, `supervisor@social
 | ------------------------ | ------------------------------------------- |
 | `npm run dev`            | Levanta API y aplicación en paralelo        |
 | `npm run build`          | Compila los tres paquetes en orden          |
-| `npm run lint`           | ESLint en todo el monorepo                  |
+| `npm run lint`           | ESLint, Stylelint, traducciones y formato   |
+| `npm run lint:infra`     | Flujos, Dockerfile y guiones (con Docker)   |
+| `npm run format`         | Da formato a todo con Prettier              |
 | `npm test`               | Pruebas unitarias                           |
 | `npm run db:seed`        | Carga datos de ejemplo                      |
 | `npm run migrate:mongo`  | Vuelca en Mongo la base MySQL anterior      |
@@ -100,6 +102,21 @@ El seed deja una cuenta por rol (`admin@social-network.test`, `supervisor@social
 | `npm run test:e2e`       | Pruebas de extremo a extremo de la API      |
 | `docker compose up -d`   | Levanta MongoDB para desarrollo             |
 | `docker compose down -v` | Lo para y borra sus datos                   |
+
+### Qué revisa el lint
+
+- **ESLint**, con las reglas que usan los tipos del proyecto, en la API, la
+  aplicación —plantillas incluidas, con `angular-eslint`— y los contratos
+  compartidos.
+- **Stylelint** en el SCSS de la aplicación.
+- **Las traducciones**: `es.json` y `en.json` con las mismas claves y los mismos
+  huecos `{{…}}`, sin textos vacíos.
+- **Prettier**, que da el mismo formato a todo el monorepo.
+- **actionlint, hadolint y shellcheck** para los flujos de GitHub, los
+  Dockerfile y los guiones de shell, en su propio trabajo del CI; en local
+  necesitan Docker.
+
+Si el lint se queja del formato, `npm run format` lo arregla.
 
 ## Migrar los datos de la versión anterior
 
