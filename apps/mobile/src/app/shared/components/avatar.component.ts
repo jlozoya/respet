@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import type { Media } from '@respet/shared';
+import type { Media } from '@social-network/shared';
 
 interface AvatarUser {
   id?: string;

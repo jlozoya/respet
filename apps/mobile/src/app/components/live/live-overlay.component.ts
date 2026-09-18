@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LiveComment } from '@respet/shared';
+import type { LiveComment } from '@social-network/shared';
 
 import { AvatarComponent } from '../../shared/components/avatar.component';
 import { FullNamePipe } from '../../shared/pipes/full-name.pipe';

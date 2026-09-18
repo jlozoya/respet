@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import type { CreateSupportRequest } from '@respet/shared';
+import type { CreateSupportRequest } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsOptional, IsString, Length, Matches, MaxLength } from 'class-validator';
 

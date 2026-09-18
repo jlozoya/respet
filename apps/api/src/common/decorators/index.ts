@@ -1,13 +1,13 @@
 import { SetMetadata, createParamDecorator, type ExecutionContext } from '@nestjs/common';
-import type { UserRole } from '@respet/shared';
+import type { UserRole } from '@social-network/shared';
 
 import { AppException } from '../errors.js';
 import { requestOf } from '../execution-context.js';
 
-export const IS_PUBLIC_KEY = 'respet:isPublic';
-export const ROLES_KEY = 'respet:roles';
-export const RATE_LIMIT_KEY = 'respet:rateLimit';
-export const SCOPES_KEY = 'respet:scopes';
+export const IS_PUBLIC_KEY = 'app:isPublic';
+export const ROLES_KEY = 'app:roles';
+export const RATE_LIMIT_KEY = 'app:rateLimit';
+export const SCOPES_KEY = 'app:scopes';
 
 /** Marca una ruta como accesible sin sesión. */
 export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(IS_PUBLIC_KEY, true);

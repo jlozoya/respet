@@ -1,5 +1,5 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Order, Paginated } from '@respet/shared';
+import type { Order, Paginated } from '@social-network/shared';
 
 import { CurrentUser, Roles, type AuthenticatedUser } from '../../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';

@@ -5,7 +5,7 @@ import { IonDatetime } from '@ionic/angular/ion-datetime';
 import { IonItem } from '@ionic/angular/ion-item';
 import { IonLabel } from '@ionic/angular/ion-label';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LocationInput, Order } from '@respet/shared';
+import type { LocationInput, Order } from '@social-network/shared';
 
 import { OrdersService } from '../../../core/api/store.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';

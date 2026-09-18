@@ -6,7 +6,7 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { AppCredentials, DeveloperApp, OAuthScopeInfo } from '@respet/shared';
+import type { AppCredentials, DeveloperApp, OAuthScopeInfo } from '@social-network/shared';
 
 import { environment } from '../../../environments/environment';
 import { DevelopersService } from '../../core/api/developers.service';
@@ -17,7 +17,7 @@ import { AppFormModalComponent } from './app-form-modal.component';
 import { CredentialsModalComponent } from './credentials-modal.component';
 
 /**
- * Respet para desarrolladores: la documentación esencial de la API y las
+ * La plataforma para desarrolladores: la documentación esencial de la API y las
  * aplicaciones propias.
  *
  * Como en Facebook, una aplicación nace en desarrollo —sólo la usan su dueño y

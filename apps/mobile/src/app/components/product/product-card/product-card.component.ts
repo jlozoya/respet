@@ -14,7 +14,7 @@ import { IonText } from '@ionic/angular/ion-text';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { PopoverController } from '@ionic/angular/popover-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Product } from '@respet/shared';
+import type { Product } from '@social-network/shared';
 
 import { ProductsService } from '../../../core/api/store.service';
 import { OrdersService } from '../../../core/api/store.service';

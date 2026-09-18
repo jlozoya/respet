@@ -7,8 +7,8 @@
  * se afina; eso sí, vacía las colecciones de destino antes de escribir.
  *
  * Uso:
- *   npm run migrate:mongo -w @respet/api
- *   npm run migrate:mongo -w @respet/api -- --dry
+ *   npm run migrate:mongo -w @social-network/api
+ *   npm run migrate:mongo -w @social-network/api -- --dry
  *
  * Tres cosas cambian de forma, por obligación del motor:
  *

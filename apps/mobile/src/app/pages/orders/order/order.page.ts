@@ -19,7 +19,7 @@ import { IonNote } from '@ionic/angular/ion-note';
 import { IonRow } from '@ionic/angular/ion-row';
 import { IonThumbnail } from '@ionic/angular/ion-thumbnail';
 import { TranslatePipe } from '@ngx-translate/core';
-import { OrderState, type Order, type OrderItem } from '@respet/shared';
+import { OrderState, type Order, type OrderItem } from '@social-network/shared';
 
 import { OrdersService } from '../../../core/api/store.service';
 import { AuthService } from '../../../core/auth/auth.service';

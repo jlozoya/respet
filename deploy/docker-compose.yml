@@ -13,7 +13,7 @@
 # Las variables salen de `.env` junto a este archivo; `.env.example` las
 # describe todas.
 
-name: respet
+name: social-network
 
 services:
   caddy:
@@ -37,12 +37,12 @@ services:
       - web
 
   api:
-    image: ${API_IMAGE:-ghcr.io/jlozoya/respet-api:latest}
+    image: ${API_IMAGE:-ghcr.io/jlozoya/social-network-api:latest}
     restart: unless-stopped
     env_file: .env
     environment:
       NODE_ENV: production
-      DATABASE_URL: mongodb://mongo:27017/respet?replicaSet=rs0
+      DATABASE_URL: mongodb://mongo:27017/social_network?replicaSet=rs0
       REDIS_URL: redis://redis:6379
       APP_URL: https://${API_DOMAIN}
       CLIENT_URL: https://${DOMAIN}
@@ -59,14 +59,29 @@ services:
         condition: service_healthy
 
   web:
-    image: ${WEB_IMAGE:-ghcr.io/jlozoya/respet-web:latest}
+    image: ${WEB_IMAGE:-ghcr.io/jlozoya/social-network-web:latest}
     restart: unless-stopped
     environment:
-      RESPET_API_URL: https://${API_DOMAIN}
-      RESPET_GRAPHQL_URL: https://${API_DOMAIN}/graphql
-      RESPET_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      RESPET_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
-      RESPET_FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-}
+      APP_API_URL: https://${API_DOMAIN}
+      APP_GRAPHQL_URL: https://${API_DOMAIN}/graphql
+      APP_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      APP_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+      APP_FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-}
+      # La marca, para que la primera pantalla salga ya con su nombre y su
+      # color. La API sirve estos mismos valores en la consulta `branding`.
+      APP_NAME: ${APP_NAME:-}
+      APP_TAGLINE: ${APP_TAGLINE:-}
+      APP_DESCRIPTION: ${APP_DESCRIPTION:-}
+      APP_LOGO_URL: ${APP_LOGO_URL:-}
+      APP_ICON_URL: ${APP_ICON_URL:-}
+      APP_BRAND_COLOR: ${APP_BRAND_COLOR:-}
+      APP_BRAND_GRADIENT: ${APP_BRAND_GRADIENT:-}
+      APP_WEBSITE: ${APP_WEBSITE:-}
+      APP_PUBLIC_MAIL: ${APP_PUBLIC_MAIL:-}
+      APP_PHONE: ${APP_PHONE:-}
+      APP_ADDRESS: ${APP_ADDRESS:-}
+      APP_FACEBOOK: ${APP_FACEBOOK:-}
+      APP_INSTAGRAM: ${APP_INSTAGRAM:-}
 
   mongo:
     image: mongo:8

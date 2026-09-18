@@ -11,7 +11,7 @@ import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { IonSelect } from '@ionic/angular/ion-select';
 import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UserRole, type User } from '@respet/shared';
+import { UserRole, type User } from '@social-network/shared';
 
 import { UsersService } from '../../../core/api/users.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';

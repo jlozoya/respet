@@ -14,7 +14,7 @@ import type {
   ReactionType,
   UpdateCommentRequest,
   UpdatePostRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Subject } from 'rxjs';
 
 import {

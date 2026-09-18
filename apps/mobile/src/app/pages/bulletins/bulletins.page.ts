@@ -17,7 +17,7 @@ import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { PopoverController } from '@ionic/angular/popover-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Bulletin } from '@respet/shared';
+import type { Bulletin } from '@social-network/shared';
 
 import { BulletinsService } from '../../core/api/content.service';
 import { AuthService } from '../../core/auth/auth.service';

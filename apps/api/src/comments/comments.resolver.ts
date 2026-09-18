@@ -1,5 +1,5 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Comment, CommentLikeResult, Paginated } from '@respet/shared';
+import type { Comment, CommentLikeResult, Paginated } from '@social-network/shared';
 
 import {
   CurrentUser,

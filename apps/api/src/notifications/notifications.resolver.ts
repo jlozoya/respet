@@ -1,5 +1,5 @@
 import { Args, ID, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import type { NotificationEvent, NotificationPage } from '@respet/shared';
+import type { NotificationEvent, NotificationPage } from '@social-network/shared';
 import { IsIn, IsString, Length } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 

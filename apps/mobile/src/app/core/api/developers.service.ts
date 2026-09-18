@@ -13,7 +13,7 @@ import type {
   UpdateAppRequest,
   UpdateWebhookRequest,
   WebhookDelivery,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   DEVELOPER_APP_FRAGMENTS,

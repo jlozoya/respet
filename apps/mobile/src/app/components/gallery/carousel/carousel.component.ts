@@ -11,7 +11,7 @@ import {
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Media } from '@respet/shared';
+import type { Media } from '@social-network/shared';
 
 /**
  * Carrusel de imágenes a pantalla completa.

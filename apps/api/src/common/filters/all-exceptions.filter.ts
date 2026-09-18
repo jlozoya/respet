@@ -1,6 +1,6 @@
 import { Catch, HttpStatus, Logger, type ArgumentsHost, type ExceptionFilter } from '@nestjs/common';
 import type { GqlContextType } from '@nestjs/graphql';
-import type { ApiErrorBody } from '@respet/shared';
+import type { ApiErrorBody } from '@social-network/shared';
 import type { Request, Response } from 'express';
 
 import { describeException } from '../error-description.js';

@@ -4,7 +4,7 @@ import type {
   CreateGroupRequest,
   MessageListQuery,
   SendMessageRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,

@@ -1,11 +1,11 @@
 import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
-import type { Location, Media, PaginationMeta } from '@respet/shared';
+import type { Location, Media, PaginationMeta } from '@social-network/shared';
 import type { Type } from '@nestjs/common';
 
 import { MediaType as MediaKind } from '../enums.js';
 
 /**
- * Los tipos que ve la aplicación, uno por interfaz de `@respet/shared`.
+ * Los tipos que ve la aplicación, uno por interfaz de `@social-network/shared`.
  *
  * Las clases no llevan lógica: existen porque el esquema se construye a partir
  * de ellas —enfoque «code first»— y una interfaz de TypeScript se borra al

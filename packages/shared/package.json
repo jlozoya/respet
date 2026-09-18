@@ -1,5 +1,5 @@
 {
-  "name": "@respet/shared",
+  "name": "@social-network/shared",
   "version": "2.0.0",
   "private": true,
   "description": "Contratos de dominio compartidos entre la API NestJS y la app Ionic/Angular.",

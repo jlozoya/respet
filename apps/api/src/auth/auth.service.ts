@@ -7,7 +7,7 @@ import type {
   LoginResult,
   MfaLoginResult,
   User as PublicUser,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import type { AuthenticatedUser, ClientInfo } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';
@@ -467,7 +467,7 @@ export class AuthService {
     if (byEmail) {
       // Sólo se enlaza automáticamente si el proveedor garantiza que el correo
       // está verificado; si no, cualquiera podría abrir una cuenta con el
-      // correo ajeno en un proveedor laxo y quedarse con la cuenta de Respet.
+      // correo ajeno en un proveedor laxo y quedarse con la cuenta de aquí.
       if (!identity.emailVerified) {
         throw AppException.conflict(
           ErrorCode.UserSocialAlreadyUsed,

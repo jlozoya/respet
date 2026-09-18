@@ -1,5 +1,5 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import type { CreateWarehouseRequest } from '@respet/shared';
+import type { CreateWarehouseRequest } from '@social-network/shared';
 import { Transform, Type } from 'class-transformer';
 import { IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 

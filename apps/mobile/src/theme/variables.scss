@@ -1,8 +1,8 @@
 /**
- * Tema de Respet.
+ * Tema de la aplicación.
  *
  * Superficies neutras como las de Facebook —gris muy claro de fondo, tarjetas
- * blancas— con el naranja de Respet como acento, y en oscuro los grises de su
+ * blancas— con el color de la marca como acento, y en oscuro los grises de su
  * modo nocturno. El claro es el de partida y el oscuro se activa con la clase
  * `ion-palette-dark` en `<html>`, que pone `ThemeService` y, antes aún, el
  * guion de `index.html` para que la aplicación no destelle al arrancar.
@@ -15,7 +15,7 @@
 :root {
   // --- Marca ---------------------------------------------------------------
 
-  /** primary — el naranja de Respet, algo más hondo para leer bien en blanco */
+  /** primary — el color de la marca; `BrandingService` lo sustituye al arrancar */
   --ion-color-primary: #f05a22;
   --ion-color-primary-rgb: 240, 90, 34;
   --ion-color-primary-contrast: #ffffff;

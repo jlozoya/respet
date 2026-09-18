@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import type { Notification, NotificationEvent, NotificationPage } from '@respet/shared';
+import type { Notification, NotificationEvent, NotificationPage } from '@social-network/shared';
 import { Subject, type Subscription } from 'rxjs';
 
 import { RealtimeService } from '../realtime/realtime.service';

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, type OnInit, inject, signal } from 
 import { RouterLink } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Bulletin, Hashtag, LiveStream, UserSuggestion } from '@respet/shared';
+import type { Bulletin, Hashtag, LiveStream, UserSuggestion } from '@social-network/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { BulletinsService } from '../../core/api/content.service';

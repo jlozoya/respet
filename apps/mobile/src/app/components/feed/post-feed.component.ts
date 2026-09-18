@@ -5,7 +5,7 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonInfiniteScroll } from '@ionic/angular/ion-infinite-scroll';
 import { IonInfiniteScrollContent } from '@ionic/angular/ion-infinite-scroll-content';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Post, PostListQuery } from '@respet/shared';
+import type { Post, PostListQuery } from '@social-network/shared';
 
 import { PostsService, applyPostChange } from '../../core/api/posts.service';
 import { AuthService } from '../../core/auth/auth.service';

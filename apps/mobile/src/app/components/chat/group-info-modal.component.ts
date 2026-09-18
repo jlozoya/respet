@@ -12,7 +12,7 @@ import { IonToggle } from '@ionic/angular/ion-toggle';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { ConversationMember, Message } from '@respet/shared';
+import type { ConversationMember, Message } from '@social-network/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { SocialService } from '../../core/api/social.service';

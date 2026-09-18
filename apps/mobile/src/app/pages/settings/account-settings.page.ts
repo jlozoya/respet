@@ -7,7 +7,7 @@ import { IonInputPasswordToggle } from '@ionic/angular/ion-input-password-toggle
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { IonToggle } from '@ionic/angular/ion-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { SocialLink } from '@respet/shared';
+import type { SocialLink } from '@social-network/shared';
 
 import { UsersService } from '../../core/api/users.service';
 import { AuthService } from '../../core/auth/auth.service';

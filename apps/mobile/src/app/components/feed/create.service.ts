@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular/modal-controller';
-import type { Post } from '@respet/shared';
+import type { Post } from '@social-network/shared';
 
 import { StoryCreatorComponent } from '../stories/story-creator.component';
 import { PostComposerComponent } from './post-composer.component';

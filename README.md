@@ -1,4 +1,4 @@
-# Respet
+# Social Network
 
 Red social completa: muro con reacciones y comentarios, historias que duran un
 día, vídeo en directo, mensajería con adjuntos y notas de voz, perfiles
@@ -6,12 +6,16 @@ públicos o privados, buscador con etiquetas, avisos en tiempo real y una
 plataforma para que otras aplicaciones entren con OAuth 2.0, como la de
 Facebook.
 
-El proyecto es ahora un **monorepo** con la aplicación y su API en el mismo
-repositorio. La API en Lumen (PHP), que antes vivía aparte en `respetv2_back`,
-se ha reescrito en TypeScript con NestJS.
+El nombre, los colores, el logotipo y los enlaces **se configuran al
+desplegar**, no al compilar: lo que se ve arriba es sólo la marca por defecto.
+Ver [La marca](#la-marca).
+
+El proyecto es un **monorepo** con la aplicación y su API en el mismo
+repositorio. La API, que antes vivía aparte escrita en Lumen (PHP), se ha
+reescrito en TypeScript con NestJS.
 
 ```
-respet/
+social-network/
 ├── apps/
 │   ├── api/          API GraphQL — NestJS 12 + Mongoose 9 + MongoDB
 │   └── mobile/       Aplicación — Ionic 9 + Angular 22 + Capacitor 8
@@ -78,9 +82,9 @@ npm run dev
   abre GraphiQL con el esquema y un editor de consultas
 - Aplicación: <http://localhost:8100>
 
-El seed deja una cuenta por rol (`admin@respet.test`, `supervisor@respet.test`,
-`repartidor@respet.test`, `usuario@respet.test`), todas con la contraseña
-`respet1234`.
+El seed deja una cuenta por rol (`admin@social-network.test`, `supervisor@social-network.test`,
+`repartidor@social-network.test`, `usuario@social-network.test`), todas con la contraseña
+`social1234`.
 
 ## Órdenes disponibles
 
@@ -105,13 +109,27 @@ columnas a `camelCase`. Apunta `MYSQL_URL` a la base antigua en `apps/api/.env`
 y prueba primero en seco:
 
 ```bash
-npm run migrate:mongo -w @respet/api -- --dry
+npm run migrate:mongo -w @social-network/api -- --dry
 npm run migrate:mongo
 ```
 
 Las contraseñas se conservan como los hashes bcrypt que generaba Laravel: el
 servidor sabe verificarlas y las reescribe como Argon2id la primera vez que
 cada persona inicia sesión, así que nadie tiene que restablecer nada.
+
+### Si vienes de la base `respet`
+
+La base pasó a llamarse `social_network`. Mongo no sabe renombrar una base, así
+que se copia con las herramientas de siempre —con la API parada— y se borra la
+vieja cuando se haya comprobado que está todo:
+
+```bash
+mongodump --uri="$DATABASE_URL" --archive=/tmp/copia.archive --db=respet
+mongorestore --uri="$DATABASE_URL" --archive=/tmp/copia.archive --nsFrom='respet.*' --nsTo='social_network.*'
+```
+
+Después hay que apuntar `DATABASE_URL` a `.../social_network` y arrancar. En el
+contenedor de desarrollo, lo mismo con `docker compose exec mongo sh -c '…'`.
 
 ## Qué ha cambiado respecto a la versión anterior
 
@@ -210,6 +228,44 @@ El acceso es OAuth 2.0 con código de autorización y PKCE: la pantalla de
 «¿Autorizar esta aplicación?» vive en `/oauth/authorize`, y los extremos de
 token, revocación y descubrimiento son HTTP estándar.
 
+## La marca
+
+Nada de lo que se ve lleva un nombre escrito en el código. El nombre, el
+eslogan, la descripción, el logotipo, los colores y los enlaces salen de
+variables de entorno de la API, que los sirve en la consulta pública
+`branding`; la aplicación los pide al arrancar y los aplica: variables CSS,
+título de la pestaña, etiquetas `og:`, icono y el hueco `{{app}}` que llevan
+todas las traducciones.
+
+```bash
+APP_NAME="Mi Red"
+APP_TAGLINE="Lo que pasa cerca de ti"
+APP_LOGO_URL=https://midominio.com/logo.svg
+APP_ICON_URL=https://midominio.com/icono.png
+APP_BRAND_COLOR="#2f6df6"
+APP_BRAND_GRADIENT="linear-gradient(135deg, #2f6df6 0%, #7c3aed 100%)"
+APP_WEBSITE=https://midominio.com
+APP_PUBLIC_MAIL=hola@midominio.com
+APP_PHONE="+34 600 000 000"
+APP_ADDRESS="Calle de ejemplo 1, Ciudad"
+APP_FACEBOOK=https://www.facebook.com/tupagina
+APP_INSTAGRAM=https://www.instagram.com/tupagina
+```
+
+Todas son opcionales: lo que no se ponga usa el valor por defecto de
+`packages/shared/src/branding.ts`. Del color principal salen solos el tono de
+pulsado, el de fondo y el del texto que va encima, así que basta con uno.
+Sin logotipo se dibuja la inicial del nombre sobre el degradado.
+
+El contenedor de la web quiere esas mismas variables —`deploy/docker-compose.yml`
+ya se las pasa— para pintar la primera pantalla con la marca correcta antes de
+que responda la API. En la aplicación nativa vale la marca compilada hasta que
+la API contesta.
+
+Los correos también salen con el nombre, el color y el icono configurados, y
+`MFA_ISSUER` —el nombre que aparece en la aplicación de códigos— y `MAIL_FROM`
+se deducen del nombre si no se declaran.
+
 ## Temas
 
 El tema claro es el de partida, como en Facebook e Instagram; el oscuro y la
@@ -223,7 +279,7 @@ aplica el guardado antes de que arranque Angular. La paleta está en
 `.github/workflows/ci.yml` comprueba tipos, estilo, pruebas unitarias y de
 extremo a extremo —con MongoDB de verdad— y que el esquema publicado coincide
 con el código. Al pasar en `master`, `deploy.yml` construye las imágenes de
-Docker de la API y de la web, las sube a GHCR y, si el servidor está
+Docker de la API y de la web —`social-network-api` y `social-network-web`—, las sube a GHCR y, si el servidor está
 configurado, las despliega por SSH con `docker compose` y comprueba la salud.
 `android.yml` compila el APK y el paquete de Android.
 

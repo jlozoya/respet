@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { CheckoutSession, Payment } from '@respet/shared';
+import type { Branding, CheckoutSession, Payment } from '@social-network/shared';
 
 import type { AuthenticatedUser } from '../../common/decorators/index.js';
 import { AppException, ErrorCode } from '../../common/errors.js';
@@ -78,7 +78,7 @@ export class PaymentsService {
       amount: fromCents(order.total).toFixed(2),
       currency,
       referenceId: orderId,
-      description: `Respet · pedido n.º ${orderId}`,
+      description: `${this.config.getOrThrow<Branding>('branding').name} · pedido n.º ${orderId}`,
       returnUrl: `${clientUrl}/orders/${orderId}?payment=success`,
       cancelUrl: `${clientUrl}/orders/${orderId}?payment=cancelled`,
     });

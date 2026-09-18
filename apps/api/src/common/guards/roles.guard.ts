@@ -1,6 +1,6 @@
 import { Injectable, type CanActivate, type ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLE_HIERARCHY, type UserRole } from '@respet/shared';
+import { ROLE_HIERARCHY, type UserRole } from '@social-network/shared';
 
 import { ROLES_KEY } from '../decorators/index.js';
 import { AppException } from '../errors.js';

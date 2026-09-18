@@ -10,7 +10,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LocationInput } from '@respet/shared';
+import type { LocationInput } from '@social-network/shared';
 
 import { GoogleMapsService, type PlaceSuggestion } from '../../core/maps/google-maps.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

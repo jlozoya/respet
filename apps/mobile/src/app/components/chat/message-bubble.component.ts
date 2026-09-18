@@ -4,7 +4,7 @@ import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Media, UserSummary } from '@respet/shared';
+import type { Media, UserSummary } from '@social-network/shared';
 
 import type { ChatMessage } from '../../core/api/chat.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';

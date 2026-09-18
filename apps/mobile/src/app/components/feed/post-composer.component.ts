@@ -24,7 +24,7 @@ import { IonToggle } from '@ionic/angular/ion-toggle';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Audience, LocationInput, Media, Post, PostKind } from '@respet/shared';
+import type { Audience, LocationInput, Media, Post, PostKind } from '@social-network/shared';
 
 import { PostsService } from '../../core/api/posts.service';
 import { AuthService } from '../../core/auth/auth.service';

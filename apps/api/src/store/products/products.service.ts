@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Media, Paginated, Product as ProductDto } from '@respet/shared';
+import type { Media, Paginated, Product as ProductDto } from '@social-network/shared';
 import { isValidObjectId } from '../../database/mongoose.js';
 import type { Model } from '../../database/mongoose.js';
 

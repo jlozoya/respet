@@ -14,14 +14,16 @@ import {
   withPreloading,
 } from '@angular/router';
 import { provideIonicAngular } from '@ionic/angular/provide';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateParser, provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
+import { BrandingService } from './core/branding/branding.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { AuthService } from './core/auth/auth.service';
+import { AppNameParser } from './core/i18n/app-name.parser';
 import { LanguageService } from './core/i18n/language.service';
 import { ThemeService } from './core/ui/theme.service';
 
@@ -56,6 +58,9 @@ export const appConfig: ApplicationConfig = {
       fallbackLang: environment.defaultLanguage,
       lang: environment.defaultLanguage,
       loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
+      // Las traducciones dejan el hueco `{{app}}` donde va el nombre de la
+      // marca; este analizador lo rellena en todas sin pasarlo a mano.
+      parser: provideTranslateParser(AppNameParser),
     }),
 
     // El arranque espera a que estén resueltos la sesión y el idioma: así
@@ -63,12 +68,16 @@ export const appConfig: ApplicationConfig = {
     // lo hay, ni parpadea con las claves de traducción sin traducir.
     provideAppInitializer(async () => {
       const theme = inject(ThemeService);
+      const branding = inject(BrandingService);
       const language = inject(LanguageService);
       const auth = inject(AuthService);
 
       // El tema primero: así la primera pantalla ya se pinta con los colores
       // definitivos en lugar de cambiar a la vista.
       await theme.restore();
+      // La marca antes que los textos: el nombre se interpola en las
+      // traducciones y no debe cambiar a media frase.
+      await branding.restore();
       await language.restore();
       await auth.restore();
     }),

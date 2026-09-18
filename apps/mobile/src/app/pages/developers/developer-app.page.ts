@@ -17,7 +17,7 @@ import {
   type DeveloperApp,
   type OAuthScopeInfo,
   type WebhookDelivery,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { DevelopersService } from '../../core/api/developers.service';
 import { ImagePickerService } from '../../core/media/image-picker.service';

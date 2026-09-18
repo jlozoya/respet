@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import type { Notification, NotificationEvent, NotificationPage } from '@respet/shared';
+import type { Notification, NotificationEvent, NotificationPage } from '@social-network/shared';
 
 import { NotificationEventType, NotificationType } from '../enums.js';
 import { MediaType } from './common.types.js';

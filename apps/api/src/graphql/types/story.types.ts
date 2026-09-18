@@ -9,7 +9,7 @@ import type {
   StoryHighlight,
   StoryStyle,
   StoryViewer,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { Audience, LiveEventType, LiveStatus, StoryKind } from '../enums.js';
 import { CursorPaginated, MediaType, Paginated } from './common.types.js';

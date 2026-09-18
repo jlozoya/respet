@@ -9,7 +9,7 @@ import type {
   ReactionResult,
   Report,
   SearchResults,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { Audience, FollowState, PostKind, ReactionType, ReportStatus, ReportTarget } from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';

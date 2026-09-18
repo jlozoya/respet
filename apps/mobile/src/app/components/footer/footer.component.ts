@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/ion-button';
@@ -12,12 +12,13 @@ import { IonTextarea } from '@ionic/angular/ion-textarea';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { environment } from '../../../environments/environment';
 import { SupportService } from '../../core/api/content.service';
+import { BrandingService } from '../../core/branding/branding.service';
 import { LanguageService } from '../../core/i18n/language.service';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { ControlMessagesComponent } from '../../shared/components/control-messages.component';
 import { phoneValidator } from '../../shared/validators/form-validators';
+import { BrandComponent } from '../shell/brand.component';
 
 @Component({
   selector: 'app-footer',
@@ -28,6 +29,7 @@ import { phoneValidator } from '../../shared/validators/form-validators';
     ReactiveFormsModule,
     TranslatePipe,
     ControlMessagesComponent,
+    BrandComponent,
     IonToolbar,
     IonRow,
     IonCol,
@@ -45,11 +47,11 @@ export class FooterComponent {
   private readonly feedback = inject(FeedbackService);
   private readonly router = inject(Router);
 
-  readonly links = {
-    facebook: environment.facebookPageLink,
-    instagram: environment.instagramPageLink,
-    mail: `mailto:${environment.publicMail}`,
-  };
+  private readonly branding = inject(BrandingService);
+
+  /** Enlaces y contacto de la instalación; lo que no esté configurado no se pinta. */
+  readonly links = this.branding.links;
+  readonly address = computed(() => this.branding.branding().address);
 
   readonly submitting = signal(false);
 

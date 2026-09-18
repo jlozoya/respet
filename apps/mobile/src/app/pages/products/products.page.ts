@@ -20,7 +20,7 @@ import { IonRow } from '@ionic/angular/ion-row';
 import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Product } from '@respet/shared';
+import type { Product } from '@social-network/shared';
 
 import { ProductsService } from '../../core/api/store.service';
 import { AuthService } from '../../core/auth/auth.service';

@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 
 import { AnalyticsModule } from './analytics/analytics.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { BrandingModule } from './branding/branding.module.js';
 import { BulletinsModule } from './bulletins/bulletins.module.js';
 import { ChatModule } from './chat/chat.module.js';
 import { CommentsModule } from './comments/comments.module.js';
@@ -43,6 +44,7 @@ import { UsersModule } from './users/users.module.js';
       load: [buildConfig],
     }),
     DatabaseModule,
+    BrandingModule,
     RealtimeModule,
     MailModule,
     MediaModule,

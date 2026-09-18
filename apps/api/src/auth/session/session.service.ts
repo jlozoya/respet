@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import type { DeviceSession } from '@respet/shared';
+import type { DeviceSession } from '@social-network/shared';
 
 import type { ClientInfo } from '../../common/decorators/index.js';
 import { AppException, ErrorCode } from '../../common/errors.js';

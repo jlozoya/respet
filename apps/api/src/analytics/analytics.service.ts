@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Analytics, UsersRegistrationPoint } from '@respet/shared';
+import type { Analytics, UsersRegistrationPoint } from '@social-network/shared';
 
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from '../database/mongoose.js';

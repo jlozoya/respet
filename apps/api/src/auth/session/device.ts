@@ -12,7 +12,7 @@ export interface ParsedDevice {
  *
  * No pretende identificar el modelo exacto —para eso harían falta bases de
  * datos enormes que envejecen cada mes—, sino que la lista de sesiones se lea
- * como «Chrome en Windows» o «App de Respet en Android» y no como una cadena
+ * como «Chrome en Windows» o «App · Android» y no como una cadena
  * de agente de usuario de doscientos caracteres.
  */
 export function parseUserAgent(userAgent: string | null | undefined): ParsedDevice {
@@ -28,12 +28,12 @@ export function parseUserAgent(userAgent: string | null | undefined): ParsedDevi
 
   // La aplicación nativa corre en un WebView: el navegador no dice nada a
   // quien mira la lista, la plataforma sí.
-  const isApp = /RespetApp|; wv\)|Capacitor/i.test(ua);
+  const isApp = /; wv\)|Capacitor/i.test(ua);
   const name = isApp
-    ? `Respet app${os ? ` · ${os}` : ''}`
+    ? `App${os ? ` · ${os}` : ''}`
     : [browser, os].filter(Boolean).join(' · ') || 'Unknown device';
 
-  return { type, name, browser: isApp ? 'Respet app' : browser, os };
+  return { type, name, browser: isApp ? 'App' : browser, os };
 }
 
 function detectOs(ua: string): string | null {

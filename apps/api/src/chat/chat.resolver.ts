@@ -1,5 +1,5 @@
 import { Args, ID, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import type { ChatEvent, Conversation, Message, MessagePage } from '@respet/shared';
+import type { ChatEvent, Conversation, Message, MessagePage } from '@social-network/shared';
 
 import { CurrentUser, RateLimit, Scopes } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';

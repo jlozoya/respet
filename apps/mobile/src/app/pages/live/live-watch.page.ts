@@ -18,7 +18,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LiveComment, LiveStream } from '@respet/shared';
+import type { LiveComment, LiveStream } from '@social-network/shared';
 import type { RemoteTrack, Room } from 'livekit-client';
 import type { Subscription } from 'rxjs';
 

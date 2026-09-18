@@ -6,7 +6,7 @@ import type {
   Post as PostDto,
   PostReactor,
   ReactionResult,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import type { AuthenticatedUser } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';

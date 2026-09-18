@@ -1,5 +1,5 @@
 import { Args, Field, ID, InputType, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import type { LiveComment, LiveConnection, LiveEvent, LiveStream } from '@respet/shared';
+import type { LiveComment, LiveConnection, LiveEvent, LiveStream } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 

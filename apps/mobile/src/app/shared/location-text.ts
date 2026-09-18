@@ -1,4 +1,4 @@
-import type { Location, LocationInput } from '@respet/shared';
+import type { Location, LocationInput } from '@social-network/shared';
 
 /**
  * Escribe una ubicación como se escribe una dirección.

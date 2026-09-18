@@ -4,7 +4,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { OAuthAuthorizationPreview, OAuthAuthorizeRequest } from '@respet/shared';
+import type { OAuthAuthorizationPreview, OAuthAuthorizeRequest } from '@social-network/shared';
 
 import { ApiError } from '../../core/api/api-error';
 import { DevelopersService } from '../../core/api/developers.service';
@@ -35,8 +35,8 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
           @if (preview(); as info) {
             <header class="head">
               <app-avatar [src]="info.app.icon?.url" [label]="info.app.name" [size]="72" />
-              <h1>{{ 'OAUTH.TITLE' | translate: { app: info.app.name } }}</h1>
-              <p class="rs-muted">{{ 'OAUTH.SUBTITLE' | translate: { app: info.app.name } }}</p>
+              <h1>{{ 'OAUTH.TITLE' | translate: { client: info.app.name } }}</h1>
+              <p class="rs-muted">{{ 'OAUTH.SUBTITLE' | translate: { client: info.app.name } }}</p>
               @if (info.app.inDevelopment) {
                 <span class="dev">{{ 'OAUTH.IN_DEVELOPMENT' | translate }}</span>
               }
@@ -67,7 +67,7 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
             </ul>
 
             <p class="rs-small rs-muted legal">
-              {{ 'OAUTH.LEGAL' | translate: { app: info.app.name } }}
+              {{ 'OAUTH.LEGAL' | translate: { client: info.app.name } }}
               @if (info.app.privacyPolicyUrl) {
                 <a [href]="info.app.privacyPolicyUrl" target="_blank" rel="noopener noreferrer">{{ 'PRIVACY_POLICY' | translate }}</a>
               }

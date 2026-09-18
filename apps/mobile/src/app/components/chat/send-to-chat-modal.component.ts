@@ -8,7 +8,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Conversation, Post } from '@respet/shared';
+import type { Conversation, Post } from '@social-network/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { AuthService } from '../../core/auth/auth.service';

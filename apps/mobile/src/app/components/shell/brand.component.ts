@@ -1,32 +1,27 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+
+import { BrandingService } from '../../core/branding/branding.service';
 
 /**
- * La marca: la huella en un círculo con el degradado y el nombre al lado.
+ * La marca: el logotipo de la instalación y, si se pide, su nombre al lado.
  *
- * Dibujada en SVG en lugar de con una imagen para que se vea nítida a
- * cualquier tamaño y cambie con el tema sin tener dos versiones.
+ * Con `APP_LOGO_URL` configurado se pinta esa imagen. Sin ella se dibuja una
+ * marca genérica —la inicial del nombre sobre el degradado— que sirve para
+ * cualquier nombre y cambia sola con los colores: así una instalación recién
+ * levantada, sin logotipo propio, no se ve a medio hacer.
  */
 @Component({
   selector: 'app-brand',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
-      <defs>
-        <linearGradient id="respet-brand" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#f7931e" />
-          <stop offset="0.55" stop-color="#f05a22" />
-          <stop offset="1" stop-color="#e1306c" />
-        </linearGradient>
-      </defs>
-      <circle cx="20" cy="20" r="20" fill="url(#respet-brand)" />
-      <ellipse cx="20" cy="25" rx="7" ry="6" fill="#fff" />
-      <ellipse cx="11.5" cy="17" rx="3" ry="3.8" fill="#fff" />
-      <ellipse cx="17" cy="11.5" rx="3" ry="3.8" fill="#fff" />
-      <ellipse cx="23" cy="11.5" rx="3" ry="3.8" fill="#fff" />
-      <ellipse cx="28.5" cy="17" rx="3" ry="3.8" fill="#fff" />
-    </svg>
+    @if (logo(); as url) {
+      <img class="logo" [src]="url" [alt]="name()" />
+    } @else {
+      <span class="mark" aria-hidden="true">{{ initial() }}</span>
+    }
+
     @if (wordmark()) {
-      <span class="word">respet</span>
+      <span class="word">{{ name() }}</span>
     }
   `,
   styles: `
@@ -36,9 +31,25 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       gap: 8px;
     }
 
-    .mark {
+    .logo {
       display: block;
       height: 40px;
+      object-fit: contain;
+      max-width: 160px;
+      width: auto;
+    }
+
+    .mark {
+      align-items: center;
+      background: var(--rs-brand-gradient);
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      font-size: 1.35rem;
+      font-weight: 800;
+      height: 40px;
+      justify-content: center;
+      line-height: 1;
       width: 40px;
     }
 
@@ -55,5 +66,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   `,
 })
 export class BrandComponent {
+  private readonly branding = inject(BrandingService);
+
   readonly wordmark = input(false);
+
+  readonly name = this.branding.name;
+  readonly logo = computed(() => this.branding.branding().logoUrl);
+  readonly initial = computed(() => this.name().trim().charAt(0).toUpperCase() || '·');
 }

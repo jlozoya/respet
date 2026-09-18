@@ -8,7 +8,7 @@
 #
 #   Variables:  DEPLOY_HOST      IP o nombre del servidor
 #               DEPLOY_USER      usuario SSH con permiso para usar Docker
-#               DEPLOY_PATH      carpeta del despliegue, p. ej. /opt/respet
+#               DEPLOY_PATH      carpeta del despliegue, p. ej. /opt/social-network
 #               API_DOMAIN       para comprobar que la API responde tras desplegar
 #   Secretos:   DEPLOY_SSH_KEY   clave privada SSH de ese usuario
 #               GHCR_READ_TOKEN  token con `read:packages`, si los paquetes son privados
@@ -41,9 +41,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: respet-api
+          - image: social-network-api
             dockerfile: apps/api/Dockerfile
-          - image: respet-web
+          - image: social-network-web
             dockerfile: apps/mobile/Dockerfile
     steps:
       - uses: actions/checkout@v7
@@ -120,8 +120,8 @@ jobs:
             if [ -n "$GHCR_READ_TOKEN" ]; then
               echo "$GHCR_READ_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             fi
-            export API_IMAGE="ghcr.io/$OWNER/respet-api:$TAG"
-            export WEB_IMAGE="ghcr.io/$OWNER/respet-web:$TAG"
+            export API_IMAGE="ghcr.io/$OWNER/social-network-api:$TAG"
+            export WEB_IMAGE="ghcr.io/$OWNER/social-network-web:$TAG"
             docker compose pull api web
             docker compose up -d --remove-orphans
             docker image prune -f

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { PublicProfile } from '@respet/shared';
+import type { PublicProfile } from '@social-network/shared';
 
 import { AppException } from '../common/errors.js';
 import { toPublicProfile, type MediaDoc } from '../common/mappers.js';

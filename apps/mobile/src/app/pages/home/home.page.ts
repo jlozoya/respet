@@ -8,7 +8,7 @@ import { IonRefresher } from '@ionic/angular/ion-refresher';
 import { IonRefresherContent } from '@ionic/angular/ion-refresher-content';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { PostFeed } from '@respet/shared';
+import type { PostFeed } from '@social-network/shared';
 
 import { ComposerCardComponent } from '../../components/feed/composer-card.component';
 import { PostFeedComponent } from '../../components/feed/post-feed.component';

@@ -7,7 +7,7 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonInfiniteScroll } from '@ionic/angular/ion-infinite-scroll';
 import { IonInfiniteScrollContent } from '@ionic/angular/ion-infinite-scroll-content';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Story, StoryHighlight } from '@respet/shared';
+import type { Story, StoryHighlight } from '@social-network/shared';
 
 import { StoryViewerService } from '../../components/stories/story-viewer.service';
 import { storyBackground, storyFont } from '../../components/stories/story-style';

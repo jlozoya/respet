@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEFAULT_BRANDING, type Branding } from '@social-network/shared';
 
 /** Lee `true`/`false` de una variable de entorno, que siempre llega como texto. */
 const bool = (fallback: 'true' | 'false') =>
@@ -41,6 +42,36 @@ const envSchema = z
     /** Orígenes permitidos por CORS, separados por comas. */
     CORS_ORIGINS: z.string().default('http://localhost:8100'),
 
+    /**
+     * La marca.
+     *
+     * Nada de esto está escrito en el código: el nombre, el eslogan, el
+     * logotipo, los colores y los enlaces se deciden aquí y la aplicación los
+     * pide en la consulta pública `branding`. Quien despliegue esto le pone su
+     * nombre sin recompilar nada.
+     */
+    APP_NAME: z.string().min(1).default(DEFAULT_BRANDING.name),
+    APP_TAGLINE: z.string().default(DEFAULT_BRANDING.tagline),
+    APP_DESCRIPTION: z.string().default(DEFAULT_BRANDING.description),
+    /** Logotipo horizontal para la cabecera; sin él se dibuja la marca por defecto. */
+    APP_LOGO_URL: z.string().optional(),
+    /** Icono cuadrado para la pestaña del navegador y los correos. */
+    APP_ICON_URL: z.string().optional(),
+    /** Color principal, en hexadecimal. */
+    APP_BRAND_COLOR: z
+      .string()
+      .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'APP_BRAND_COLOR debe ser un color hexadecimal')
+      .default(DEFAULT_BRANDING.brandColor),
+    /** Degradado de los adornos: el aro de las historias, los botones grandes. */
+    APP_BRAND_GRADIENT: z.string().default(DEFAULT_BRANDING.brandGradient),
+    APP_WEBSITE: z.string().optional(),
+    /** Buzón de contacto que se enseña en la aplicación. */
+    APP_PUBLIC_MAIL: z.string().optional(),
+    APP_PHONE: z.string().optional(),
+    APP_ADDRESS: z.string().optional(),
+    APP_FACEBOOK: z.string().optional(),
+    APP_INSTAGRAM: z.string().optional(),
+
     JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET debe tener al menos 32 caracteres'),
     /**
      * Clave con la que se firman los hash de los tokens opacos: refresh
@@ -64,8 +95,8 @@ const envSchema = z
      * los segundos factores ya configurados.
      */
     MFA_ENCRYPTION_KEY: z.string().optional(),
-    /** Nombre con el que aparece la cuenta en la app de autenticación. */
-    MFA_ISSUER: z.string().default('Respet'),
+    /** Nombre con el que aparece la cuenta en la app de autenticación; por defecto, el de la marca. */
+    MFA_ISSUER: z.string().optional(),
     /** Días que un dispositivo marcado como de confianza se salta el segundo factor. */
     TRUSTED_DEVICE_TTL_DAYS: z.coerce.number().int().positive().default(30),
 
@@ -95,7 +126,8 @@ const envSchema = z
     MAIL_SECURE: bool('false'),
     MAIL_USER: z.string().optional(),
     MAIL_PASSWORD: z.string().optional(),
-    MAIL_FROM: z.string().default('Respet <no-reply@respet.app>'),
+    /** Remitente de los correos; por defecto, la marca en el dominio de la API. */
+    MAIL_FROM: z.string().optional(),
     /** Buzón que recibe copia de los mensajes del formulario de contacto. */
     SUPPORT_MAIL: z.string().optional(),
 
@@ -180,6 +212,8 @@ export type Env = z.infer<typeof envSchema>;
  */
 export interface AppConfig {
   env: Env['NODE_ENV'];
+  /** Nombre, colores, logotipo y enlaces; lo que la aplicación pinta. */
+  branding: Branding;
   isProduction: boolean;
   port: number;
   apiPrefix: string;
@@ -249,6 +283,50 @@ export function validateEnv(raw: Record<string, unknown>): Env {
   return parsed.data;
 }
 
+/** Lo que llegue vacío no cuenta: vale más el valor por defecto que una cadena en blanco. */
+const text = (value: string | undefined): string | null => {
+  const trimmed = value?.trim();
+
+  return trimmed ? trimmed : null;
+};
+
+/** La marca tal y como la verá la aplicación, con los valores por defecto donde no haya nada. */
+function brandingOf(env: Env): Branding {
+  return {
+    name: env.APP_NAME.trim(),
+    tagline: env.APP_TAGLINE.trim(),
+    description: env.APP_DESCRIPTION.trim(),
+    logoUrl: text(env.APP_LOGO_URL),
+    iconUrl: text(env.APP_ICON_URL),
+    brandColor: env.APP_BRAND_COLOR,
+    brandGradient: env.APP_BRAND_GRADIENT,
+    website: text(env.APP_WEBSITE),
+    publicMail: text(env.APP_PUBLIC_MAIL),
+    phone: text(env.APP_PHONE),
+    address: text(env.APP_ADDRESS),
+    facebook: text(env.APP_FACEBOOK),
+    instagram: text(env.APP_INSTAGRAM),
+  };
+}
+
+/**
+ * Remitente por defecto: la marca en el dominio de la propia API.
+ *
+ * Sirve para desarrollo y para que un despliegue pequeño funcione sin
+ * configurar nada; con un dominio propio conviene poner `MAIL_FROM`.
+ */
+function defaultMailFrom(name: string, appUrl: string): string {
+  let host = 'localhost';
+
+  try {
+    host = new URL(appUrl).hostname;
+  } catch {
+    // Con una dirección rara se queda en localhost, que es lo que había antes.
+  }
+
+  return `${name} <no-reply@${host}>`;
+}
+
 const megabytes = (value: number): number => Math.round(value * 1024 * 1024);
 
 /** De `wss://host` a `https://host`: la API de LiveKit escucha en el mismo sitio. */
@@ -259,8 +337,11 @@ function httpUrlOf(websocketUrl: string | undefined): string | undefined {
 export function buildConfig(): AppConfig {
   const env = validateEnv(process.env);
 
+  const branding = brandingOf(env);
+
   return {
     env: env.NODE_ENV,
+    branding,
     isProduction: env.NODE_ENV === 'production',
     port: env.PORT,
     apiPrefix: env.API_PREFIX,
@@ -283,7 +364,7 @@ export function buildConfig(): AppConfig {
     },
     mfa: {
       encryptionKey: env.MFA_ENCRYPTION_KEY,
-      issuer: env.MFA_ISSUER,
+      issuer: env.MFA_ISSUER || branding.name,
       trustedDeviceTtlDays: env.TRUSTED_DEVICE_TTL_DAYS,
     },
     social: {
@@ -307,7 +388,7 @@ export function buildConfig(): AppConfig {
       secure: env.MAIL_SECURE,
       user: env.MAIL_USER,
       password: env.MAIL_PASSWORD,
-      from: env.MAIL_FROM,
+      from: env.MAIL_FROM || defaultMailFrom(branding.name, env.APP_URL),
       supportMail: env.SUPPORT_MAIL,
     },
     paypal: {

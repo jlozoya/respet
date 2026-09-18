@@ -1,5 +1,5 @@
 import { Args, ID, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Message, Paginated, Story, StoryGroup, StoryHighlight, StoryViewer } from '@respet/shared';
+import type { Message, Paginated, Story, StoryGroup, StoryHighlight, StoryViewer } from '@social-network/shared';
 
 import {
   CurrentUser,

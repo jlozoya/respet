@@ -43,7 +43,7 @@ jobs:
       - name: Compilar la aplicación
         run: |
           npm run build:shared
-          npm run build:prod --workspace @respet/mobile
+          npm run build:prod --workspace @social-network/mobile
 
       - name: Generar el proyecto de Android
         working-directory: apps/mobile
@@ -71,7 +71,7 @@ jobs:
           "$BUILD_TOOLS/apksigner" sign \
             --ks "$RUNNER_TEMP/release.jks" --ks-pass env:STORE_PASSWORD \
             --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASSWORD \
-            --out apk/release/respet-release.apk apk/release/app-release-aligned.apk
+            --out apk/release/social-network-release.apk apk/release/app-release-aligned.apk
 
           jarsigner -keystore "$RUNNER_TEMP/release.jks" -storepass "$STORE_PASSWORD" -keypass "$KEY_PASSWORD" \
             bundle/release/app-release.aab "$KEY_ALIAS"
@@ -80,9 +80,9 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: respet-android
+          name: social-network-android
           path: |
             apps/mobile/android/app/build/outputs/apk/debug/*.apk
-            apps/mobile/android/app/build/outputs/apk/release/respet-release.apk
+            apps/mobile/android/app/build/outputs/apk/release/social-network-release.apk
             apps/mobile/android/app/build/outputs/bundle/release/*.aab
           if-no-files-found: warn

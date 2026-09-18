@@ -11,7 +11,7 @@ import { IonLabel } from '@ionic/angular/ion-label';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { PopoverController } from '@ionic/angular/popover-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Warehouse } from '@respet/shared';
+import type { Warehouse } from '@social-network/shared';
 
 import { WarehousesService } from '../../../core/api/store.service';
 import { AuthService } from '../../../core/auth/auth.service';

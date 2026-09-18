@@ -18,7 +18,7 @@ import { IonInput } from '@ionic/angular/ion-input';
 import { IonItem } from '@ionic/angular/ion-item';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LocationInput } from '@respet/shared';
+import type { LocationInput } from '@social-network/shared';
 
 import { GoogleMapsService } from '../../core/maps/google-maps.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

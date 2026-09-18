@@ -7,7 +7,7 @@ import type {
   RecoveryCodes,
   TotpSetup,
   TrustedDeviceInfo,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { randomInt } from 'node:crypto';
 import QRCode from 'qrcode';
 

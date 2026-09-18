@@ -6,7 +6,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Post } from '@respet/shared';
+import type { Post } from '@social-network/shared';
 
 import { PostCardComponent } from '../../components/feed/post-card.component';
 import { ApiError } from '../../core/api/api-error';

@@ -1,7 +1,7 @@
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { WEBHOOK_EVENTS, type WebhookEvent } from '@respet/shared';
+import { WEBHOOK_EVENTS, type Branding, type WebhookEvent } from '@social-network/shared';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
 
 import { CryptoService } from '../auth/crypto.service.js';
@@ -72,6 +72,11 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
     private readonly config: ConfigService,
   ) {}
 
+  /** El nombre de la instalación, que viaja en la cabecera y en la entrega de prueba. */
+  private brandName(): string {
+    return this.config.getOrThrow<Branding>('branding').name;
+  }
+
   onModuleInit(): void {
     for (const event of WEBHOOK_EVENTS) {
       this.unsubscribers.push(
@@ -101,7 +106,7 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
       appId,
       event: 'test',
       dedupeKey: randomUUID(),
-      payload: { message: 'This is a test delivery from Respet' },
+      payload: { message: `This is a test delivery from ${this.brandName()}` },
       nextAttemptAt: new Date(),
     });
   }
@@ -228,11 +233,11 @@ export class WebhookDispatcherService implements OnModuleInit, OnModuleDestroy {
         signal: AbortSignal.timeout(10_000),
         headers: {
           'content-type': 'application/json',
-          'user-agent': 'Respet-Webhooks/1.0',
-          'x-respet-event': delivery.event,
-          'x-respet-delivery': String(delivery._id),
-          'x-respet-timestamp': String(timestamp),
-          'x-respet-signature-256': `sha256=${signature}`,
+          'user-agent': `${this.brandName().replace(/\s+/g, '-')}-Webhooks/1.0`,
+          'x-webhook-event': delivery.event,
+          'x-webhook-delivery': String(delivery._id),
+          'x-webhook-timestamp': String(timestamp),
+          'x-webhook-signature-256': `sha256=${signature}`,
         },
         body,
       });

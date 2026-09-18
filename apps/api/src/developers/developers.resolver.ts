@@ -10,7 +10,7 @@ import type {
   OAuthTokenResponse,
   Paginated,
   WebhookDelivery,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   Client,

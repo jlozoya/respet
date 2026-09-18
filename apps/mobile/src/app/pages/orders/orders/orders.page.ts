@@ -11,7 +11,7 @@ import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { IonSegment } from '@ionic/angular/ion-segment';
 import { IonSegmentButton } from '@ionic/angular/ion-segment-button';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Order } from '@respet/shared';
+import type { Order } from '@social-network/shared';
 
 import { OrdersService } from '../../../core/api/store.service';
 import { AuthService } from '../../../core/auth/auth.service';

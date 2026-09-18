@@ -6,7 +6,7 @@
  * usan para validar. Los valores son exactamente los mismos que había en SQL,
  * así que los documentos volcados siguen siendo válidos.
  *
- * Se mantienen alineados con los de `@respet/shared`, que es lo que ve la
+ * Se mantienen alineados con los de `@social-network/shared`, que es lo que ve la
  * aplicación; aquí no se importan de allí para que el esquema de la base no
  * dependa del paquete de contratos públicos.
  */

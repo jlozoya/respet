@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Paginated, Report as ReportDto } from '@respet/shared';
+import type { Paginated, Report as ReportDto } from '@social-network/shared';
 
 import { AppException, ErrorCode } from '../common/errors.js';
 import { toIso, toUserSummary } from '../common/mappers.js';

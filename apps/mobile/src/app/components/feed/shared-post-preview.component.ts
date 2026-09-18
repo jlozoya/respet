@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Post } from '@respet/shared';
+import type { Post } from '@social-network/shared';
 
 import { AvatarComponent } from '../../shared/components/avatar.component';
 import { MediaGridComponent } from '../../shared/components/media-grid.component';

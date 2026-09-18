@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Notification as NotificationDto, NotificationPage } from '@respet/shared';
+import type { Branding, Notification as NotificationDto, NotificationPage } from '@social-network/shared';
 
 import { toId, toIso, toMediaOrNull, toUserSummary, type MediaDoc } from '../common/mappers.js';
 import { isValidObjectId, ObjectId, type Model, type Types } from '../database/mongoose.js';
@@ -51,6 +52,7 @@ export class NotificationsService {
     private readonly bus: EventBusService,
     private readonly presence: PresenceService,
     private readonly push: PushService,
+    private readonly config: ConfigService,
   ) {}
 
   /** Crea o engorda un aviso. Nunca hace fallar la acción que lo provoca. */
@@ -305,7 +307,7 @@ export class NotificationsService {
     const lang = recipient.lang?.startsWith('en') ? 'en' : 'es';
 
     await this.push.sendToUsers([recipientId], {
-      title: 'Respet',
+      title: this.config.getOrThrow<Branding>('branding').name,
       body: `${name} ${PUSH_COPY[lang][input.type]}${input.preview ? `: ${input.preview}` : ''}`,
       data: {
         type: input.type,

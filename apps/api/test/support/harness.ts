@@ -39,7 +39,7 @@ export interface GraphqlResult<T> {
 }
 
 export async function startHarness(): Promise<Harness> {
-  const databaseUrl = process.env['E2E_DATABASE_URL'] ?? 'mongodb://127.0.0.1:27019/respet_e2e?directConnection=true';
+  const databaseUrl = process.env['E2E_DATABASE_URL'] ?? 'mongodb://127.0.0.1:27019/social_network_e2e?directConnection=true';
 
   process.env['NODE_ENV'] = 'test';
   process.env['DATABASE_URL'] = databaseUrl;

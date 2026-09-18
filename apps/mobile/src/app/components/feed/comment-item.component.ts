@@ -3,7 +3,7 @@ import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Comment } from '@respet/shared';
+import type { Comment } from '@social-network/shared';
 
 import { PostsService } from '../../core/api/posts.service';
 import { AuthService } from '../../core/auth/auth.service';

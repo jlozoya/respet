@@ -9,7 +9,7 @@ import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { IonToggle } from '@ionic/angular/ion-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UserRole, type User } from '@respet/shared';
+import { UserRole, type User } from '@social-network/shared';
 
 import { UsersService } from '../../../core/api/users.service';
 import { AuthService } from '../../../core/auth/auth.service';

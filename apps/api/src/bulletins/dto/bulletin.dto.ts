@@ -1,5 +1,5 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import type { CreateBulletinRequest } from '@respet/shared';
+import type { CreateBulletinRequest } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsDateString, IsString, Length } from 'class-validator';
 

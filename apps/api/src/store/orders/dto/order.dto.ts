@@ -5,7 +5,7 @@ import type {
   UpdateOrderItemRequest,
   UpdateOrderRequest,
   UpdateOrderStateRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Type } from 'class-transformer';
 import {
   IsDateString,

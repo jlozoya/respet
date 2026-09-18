@@ -8,7 +8,7 @@ import { requestOf } from '../execution-context.js';
 /**
  * Lo que una aplicación de terceros puede hacer con su token.
  *
- * La propia aplicación de Respet no tiene permisos: puede hacerlo todo lo que
+ * La propia aplicación oficial no tiene permisos: puede hacerlo todo lo que
  * su rol le deje. Una aplicación de terceros sólo puede usar las operaciones
  * marcadas con `@Scopes(...)` y sólo si la persona le concedió esos permisos.
  * Lo que no está marcado le queda cerrado, de modo que añadir una operación

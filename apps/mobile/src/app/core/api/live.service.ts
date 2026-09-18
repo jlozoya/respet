@@ -5,7 +5,7 @@ import type {
   LiveEvent,
   LiveStream,
   StartLiveRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { map, type Observable } from 'rxjs';
 
 import { RealtimeService } from '../realtime/realtime.service';

@@ -7,7 +7,7 @@ import type {
   PublicProfile,
   SearchResults,
   UserSuggestion,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import {

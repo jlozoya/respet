@@ -1,5 +1,5 @@
 import { Field, Float, ID, InputType, Int, PartialType } from '@nestjs/graphql';
-import type { CreateProductRequest } from '@respet/shared';
+import type { CreateProductRequest } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsInt, IsMongoId, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 

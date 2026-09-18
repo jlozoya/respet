@@ -7,7 +7,7 @@ import type {
   OAuthAuthorizeRequest,
   OAuthAuthorizeResult,
   OAuthTokenResponse,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { CryptoService } from '../auth/crypto.service.js';
 import { SecurityAlertsService } from '../auth/security/security-alerts.service.js';
@@ -74,8 +74,8 @@ export class OAuthError extends AppException {
  * El flujo es el de código de autorización (RFC 6749) con PKCE (RFC 7636):
  *
  * 1. La aplicación manda a la persona a `/oauth/authorize` de la web de
- *    Respet con su `client_id`, la dirección de vuelta y los permisos.
- * 2. La persona ve qué pide y aprueba. Respet la devuelve a la aplicación con
+ *    la red con su `client_id`, la dirección de vuelta y los permisos.
+ * 2. La persona ve qué pide y aprueba. La red la devuelve a la aplicación con
  *    un código de un solo uso que caduca en diez minutos.
  * 3. La aplicación canjea el código —con su secreto, o con el verificador PKCE
  *    si es una app móvil que no puede guardar secretos— por un access token de

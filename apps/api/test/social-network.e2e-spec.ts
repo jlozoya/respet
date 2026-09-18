@@ -28,7 +28,7 @@ async function register(name: string, password: string): Promise<{ token: string
         name,
         firstName: name,
         lastName: 'Prueba',
-        email: `${name}@respet.test`,
+        email: `${name}@social-network.test`,
         password,
       },
     },
@@ -83,7 +83,7 @@ describe('sesiones', () => {
 
   it('cierra una sesión en el acto: el access token deja de valer sin esperar a que caduque', async () => {
     const login = await h.gql<{ login: { session: { accessToken: string; sessionId: string } } }>(
-      `mutation { login(input: { email: "ana@respet.test", password: "${ana.password}" }) { session { accessToken sessionId } } }`,
+      `mutation { login(input: { email: "ana@social-network.test", password: "${ana.password}" }) { session { accessToken sessionId } } }`,
     );
     const other = login.data!.login.session;
 
@@ -107,7 +107,7 @@ describe('sesiones', () => {
 
     for (let attempt = 0; attempt < 7; attempt += 1) {
       const result = await h.gql(
-        'mutation { login(input: { email: "nadie@respet.test", password: "incorrecta1" }) { status } }',
+        'mutation { login(input: { email: "nadie@social-network.test", password: "incorrecta1" }) { status } }',
       );
       last = result.errors?.[0]?.extensions?.code;
     }
@@ -147,7 +147,7 @@ describe('verificación en dos pasos', () => {
 
   it('pide el segundo factor al entrar y lo completa con un código de recuperación', async () => {
     const login = await h.gql<{ login: { status: string; session: null; challenge: { token: string } } }>(
-      `mutation { login(input: { email: "ana@respet.test", password: "${ana.password}" }) { status session { accessToken } challenge { token } } }`,
+      `mutation { login(input: { email: "ana@social-network.test", password: "${ana.password}" }) { status session { accessToken } challenge { token } } }`,
     );
 
     expect(login.data!.login.status).toBe('mfa_required');
@@ -170,7 +170,7 @@ describe('verificación en dos pasos', () => {
 
     // Con el dispositivo de confianza ya no se pregunta.
     const trusted = await h.gql<{ login: { status: string; session: { accessToken: string } } }>(
-      'mutation($d: String!) { login(input: { email: "ana@respet.test", password: "ana-password-1", trustedDeviceToken: $d }) { status session { accessToken } } }',
+      'mutation($d: String!) { login(input: { email: "ana@social-network.test", password: "ana-password-1", trustedDeviceToken: $d }) { status session { accessToken } } }',
       { d: done.data!.completeMfaLogin.trustedDeviceToken },
     );
 
@@ -184,7 +184,7 @@ describe('publicaciones, reacciones y avisos', () => {
     const png = await tinyPng();
     const result = await h.upload<{ createPost: { id: string; media: { type: string; url: string }[]; hashtags: string[] } }>(
       'mutation($input: CreatePostInput!, $files: [Upload!]) { createPost(input: $input, files: $files) { id media { type url } hashtags } }',
-      { input: { description: 'Hola #Respet desde las pruebas', audience: 'public' }, files: [null] },
+      { input: { description: 'Hola #EnPruebas desde las pruebas', audience: 'public' }, files: [null] },
       { 'files.0': { name: 'foto.png', type: 'image/png', data: png } },
       ana.token,
     );
@@ -193,7 +193,7 @@ describe('publicaciones, reacciones y avisos', () => {
     postId = result.data!.createPost.id;
     expect(result.data!.createPost.media).toHaveLength(1);
     expect(result.data!.createPost.media[0].url).toMatch(/\.webp$/);
-    expect(result.data!.createPost.hashtags).toEqual(['respet']);
+    expect(result.data!.createPost.hashtags).toEqual(['enpruebas']);
   });
 
   it('rechaza un archivo que no es lo que dice ser', async () => {

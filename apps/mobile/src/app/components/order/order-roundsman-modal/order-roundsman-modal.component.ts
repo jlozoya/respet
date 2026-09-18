@@ -15,7 +15,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UserRole, type User } from '@respet/shared';
+import { UserRole, type User } from '@social-network/shared';
 
 import { UsersService } from '../../../core/api/users.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';

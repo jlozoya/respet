@@ -9,6 +9,7 @@ import { NavigationService } from '../../core/ui/navigation.service';
 import { ThemeService } from '../../core/ui/theme.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';
 import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
+import { BrandingService } from '../../core/branding/branding.service';
 
 /**
  * El desplegable de la cuenta: el perfil, la configuración, el tema, el idioma
@@ -85,7 +86,7 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
       <p class="legal rs-small rs-muted">
         <button type="button" (click)="go(['/politics', 'privacy'])">{{ 'PRIVACY_POLICY' | translate }}</button> ·
         <button type="button" (click)="go(['/politics', 'end_user_agreement'])">{{ 'TERMS_AND_CONDITIONS' | translate }}</button> ·
-        <button type="button" (click)="go(['/about'])">{{ 'NAV.ABOUT_US' | translate }}</button> · Respet © {{ year }}
+        <button type="button" (click)="go(['/about'])">{{ 'NAV.ABOUT_US' | translate }}</button> · {{ appName() }} © {{ year }}
       </p>
     </div>
   `,
@@ -134,6 +135,9 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
   `,
 })
 export class AccountMenuComponent {
+  /** El nombre de la instalación, para el aviso de copyright. */
+  readonly appName = inject(BrandingService).name;
+
   readonly auth = inject(AuthService);
   readonly theme = inject(ThemeService);
   readonly language = inject(LanguageService);

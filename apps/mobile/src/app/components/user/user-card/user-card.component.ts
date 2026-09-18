@@ -6,7 +6,7 @@ import { IonItem } from '@ionic/angular/ion-item';
 import { IonSelect } from '@ionic/angular/ion-select';
 import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UserRole, type User } from '@respet/shared';
+import { UserRole, type User } from '@social-network/shared';
 
 import { UsersService } from '../../../core/api/users.service';
 import { AuthService } from '../../../core/auth/auth.service';

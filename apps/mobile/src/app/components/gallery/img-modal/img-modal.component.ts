@@ -8,7 +8,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Media } from '@respet/shared';
+import type { Media } from '@social-network/shared';
 
 import { CarouselComponent } from '../carousel/carousel.component';
 

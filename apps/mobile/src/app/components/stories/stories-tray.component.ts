@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { StoryGroup } from '@respet/shared';
+import type { StoryGroup } from '@social-network/shared';
 
 import { StoriesService } from '../../core/api/stories.service';
 import { AuthService } from '../../core/auth/auth.service';

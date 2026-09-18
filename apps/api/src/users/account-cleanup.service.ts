@@ -39,7 +39,7 @@ import { MediaService } from '../media/media.service.js';
  * vive aparte y se lee de un tirón.
  *
  * Sus mensajes en conversaciones ajenas se quedan —sin nombre, como «usuario
- * de Respet»— para no dejar huecos en el hilo de los demás, igual que hace
+ * eliminada»— para no dejar huecos en el hilo de los demás, igual que hace
  * cualquier aplicación de mensajería.
  */
 @Injectable()

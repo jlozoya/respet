@@ -15,7 +15,7 @@ import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonText } from '@ionic/angular/ion-text';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import { OrderState, type Order, type UserSummary } from '@respet/shared';
+import { OrderState, type Order, type UserSummary } from '@social-network/shared';
 
 import { OrdersService } from '../../../core/api/store.service';
 import { AuthService } from '../../../core/auth/auth.service';

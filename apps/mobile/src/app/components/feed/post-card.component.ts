@@ -14,7 +14,7 @@ import { ActionSheetController } from '@ionic/angular/action-sheet-controller';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Post, ReactionType } from '@respet/shared';
+import type { Post, ReactionType } from '@social-network/shared';
 
 import { PostsService } from '../../core/api/posts.service';
 import { SocialService } from '../../core/api/social.service';

@@ -18,7 +18,7 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Message, UserSummary } from '@respet/shared';
+import type { Message, UserSummary } from '@social-network/shared';
 
 import { ChatService, type ChatMessage, type OutgoingMessage } from '../../core/api/chat.service';
 import { AuthService } from '../../core/auth/auth.service';

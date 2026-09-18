@@ -5,7 +5,7 @@ import type {
   LiveConnection,
   LiveEvent,
   LiveStream as LiveStreamDto,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { randomUUID } from 'node:crypto';
 
 import type { AuthenticatedUser } from '../common/decorators/index.js';

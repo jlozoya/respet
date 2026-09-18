@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Conversation } from '@respet/shared';
+import type { Conversation } from '@social-network/shared';
 
 import { ChatThreadComponent } from '../../components/chat/chat-thread.component';
 import { ConversationListComponent } from '../../components/chat/conversation-list.component';

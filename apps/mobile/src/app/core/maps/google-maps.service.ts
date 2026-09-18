@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { LocationInput } from '@respet/shared';
+import type { LocationInput } from '@social-network/shared';
 
 import { environment } from '../../../environments/environment';
 import { MapStyle } from './map-style';
@@ -61,9 +61,9 @@ export class GoogleMapsService {
       streetViewControl: false,
     });
 
-    const styled = new google.maps.StyledMapType(MapStyle, { name: 'Respet' });
-    map.mapTypes.set('respet', styled);
-    map.setMapTypeId('respet');
+    const styled = new google.maps.StyledMapType(MapStyle, { name: 'App' });
+    map.mapTypes.set('app', styled);
+    map.setMapTypeId('app');
 
     // La clase se añade cuando el mapa termina de dibujarse, para poder
     // aparecerlo con una transición en lugar de mostrar el lienzo a medias.

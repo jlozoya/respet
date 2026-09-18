@@ -8,7 +8,7 @@ import type {
   RegisterRequest,
   ResetPasswordRequest,
   SocialLoginRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,

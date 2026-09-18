@@ -1,4 +1,4 @@
-import { REACTION_EMOJI, type ReactionType } from '@respet/shared';
+import { REACTION_EMOJI, type ReactionType } from '@social-network/shared';
 
 /** Las reacciones en el orden en que se ofrecen, como en Facebook. */
 export const REACTIONS: readonly ReactionType[] = ['like', 'love', 'care', 'haha', 'wow', 'sad', 'angry'];

@@ -1,4 +1,6 @@
-import { runtimeEnvironment, type Environment } from './environment.model';
+import { DEFAULT_BRANDING } from '@social-network/shared';
+
+import { withRuntime, type Environment } from './environment.model';
 
 /**
  * Configuración de desarrollo.
@@ -9,7 +11,7 @@ import { runtimeEnvironment, type Environment } from './environment.model';
  * La aplicación no guarda ningún secreto: la autenticación va con tokens que
  * emite la API al iniciar sesión.
  */
-export const environment: Environment = {
+export const environment: Environment = withRuntime({
   production: false,
   mainUrl: '/',
   apiUrl: 'http://localhost:3000',
@@ -17,10 +19,7 @@ export const environment: Environment = {
   googleMapsApiKey: '',
   googleClientId: '',
   facebookAppId: '',
-  facebookPageLink: 'https://www.facebook.com/respet/',
-  instagramPageLink: 'https://www.instagram.com/respet/',
-  publicMail: 'jlozoya1995@gmail.com',
+  branding: DEFAULT_BRANDING,
   defaultLanguage: 'es',
   supportedLanguages: ['es', 'en'],
-  ...runtimeEnvironment(),
-};
+});

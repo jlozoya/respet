@@ -7,8 +7,8 @@ import type {
   DeveloperApp,
   Paginated,
   WebhookDelivery as WebhookDeliveryDto,
-} from '@respet/shared';
-import { WEBHOOK_EVENTS } from '@respet/shared';
+} from '@social-network/shared';
+import { WEBHOOK_EVENTS } from '@social-network/shared';
 
 import { CryptoService } from '../auth/crypto.service.js';
 import { AppException, ErrorCode } from '../common/errors.js';

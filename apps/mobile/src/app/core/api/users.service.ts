@@ -21,7 +21,7 @@ import type {
   UserPhone,
   UserRole,
   UserSummary,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   MEDIA_FRAGMENTS,

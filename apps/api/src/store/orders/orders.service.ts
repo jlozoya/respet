@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import type { Order as OrderDto, Paginated } from '@respet/shared';
+import type { Order as OrderDto, Paginated } from '@social-network/shared';
 import { isValidObjectId } from '../../database/mongoose.js';
 import type { ClientSession, Connection, Model } from '../../database/mongoose.js';
 

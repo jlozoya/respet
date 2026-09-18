@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { FollowResult, FollowState } from '@respet/shared';
+import type { FollowResult, FollowState } from '@social-network/shared';
 
 import { UsersService } from '../../core/api/users.service';
 import { AuthService } from '../../core/auth/auth.service';

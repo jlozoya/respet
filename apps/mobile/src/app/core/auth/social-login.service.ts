@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SocialLogin } from '@capgo/capacitor-social-login';
-import type { SocialLoginRequest } from '@respet/shared';
+import type { SocialLoginRequest } from '@social-network/shared';
 
 import { environment } from '../../../environments/environment';
 import { AuthService, type LoginOutcome } from './auth.service';
@@ -39,7 +39,7 @@ export class SocialLoginService {
     return this.auth.loginWithProvider({ provider, token, lang });
   }
 
-  /** Cierra también la sesión del proveedor, no sólo la de Respet. */
+  /** Cierra también la sesión del proveedor, no sólo la de aquí. */
   async signOut(provider: SocialProvider): Promise<void> {
     try {
       await this.initialize();

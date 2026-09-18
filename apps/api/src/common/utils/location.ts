@@ -1,4 +1,4 @@
-import type { LocationInput } from '@respet/shared';
+import type { LocationInput } from '@social-network/shared';
 import type { Model } from '../../database/mongoose.js';
 
 import type { Location } from '../../database/schemas/content.schema.js';

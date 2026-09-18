@@ -6,7 +6,7 @@ import { IonInput } from '@ionic/angular/ion-input';
 import { IonInputPasswordToggle } from '@ionic/angular/ion-input-password-toggle';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Gender } from '@respet/shared';
+import type { Gender } from '@social-network/shared';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';

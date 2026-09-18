@@ -12,7 +12,7 @@
  * con contraseñas conocidas.
  *
  * Uso:
- *   npm run db:seed -w @respet/api
+ *   npm run db:seed -w @social-network/api
  */
 import * as argon2 from 'argon2';
 import { randomUUID } from 'node:crypto';
@@ -30,7 +30,7 @@ if (existsSync(envFile)) {
   process.loadEnvFile(envFile);
 }
 
-const SEED_PASSWORD = 'respet1234';
+const SEED_PASSWORD = 'social1234';
 
 /**
  * De dónde salen las fotos de ejemplo.
@@ -159,12 +159,12 @@ async function main(): Promise<void> {
     // Los nombres de usuario van en minúsculas: son los que viajan en la
     // dirección del perfil, y es lo que exige el alta de verdad.
     const gente = [
-      { email: 'admin@respet.test', name: 'admin', firstName: 'Ana', lastName: 'Ruiz', role: 'admin' },
-      { email: 'supervisor@respet.test', name: 'supervisor', firstName: 'Sara', lastName: 'Gil', role: 'supervisor' },
-      { email: 'repartidor@respet.test', name: 'repartidor', firstName: 'Raúl', lastName: 'Mena', role: 'roundsman' },
-      { email: 'usuario@respet.test', name: 'usuario', firstName: 'Uxía', lastName: 'Soto', role: 'user' },
-      { email: 'marta@respet.test', name: 'marta', firstName: 'Marta', lastName: 'Bravo', role: 'user' },
-      { email: 'kike@respet.test', name: 'kike', firstName: 'Enrique', lastName: 'Nava', role: 'user' },
+      { email: 'admin@social-network.test', name: 'admin', firstName: 'Ana', lastName: 'Ruiz', role: 'admin' },
+      { email: 'supervisor@social-network.test', name: 'supervisor', firstName: 'Sara', lastName: 'Gil', role: 'supervisor' },
+      { email: 'repartidor@social-network.test', name: 'repartidor', firstName: 'Raúl', lastName: 'Mena', role: 'roundsman' },
+      { email: 'usuario@social-network.test', name: 'usuario', firstName: 'Uxía', lastName: 'Soto', role: 'user' },
+      { email: 'marta@social-network.test', name: 'marta', firstName: 'Marta', lastName: 'Bravo', role: 'user' },
+      { email: 'kike@social-network.test', name: 'kike', firstName: 'Enrique', lastName: 'Nava', role: 'user' },
     ] as const;
 
     const ids = new Map<string, Id>();
@@ -241,10 +241,10 @@ async function main(): Promise<void> {
 
     console.log(`  ${avatares} avatares`);
 
-    const usuario = ids.get('usuario@respet.test')!;
-    const marta = ids.get('marta@respet.test')!;
-    const kike = ids.get('kike@respet.test')!;
-    const admin = ids.get('admin@respet.test')!;
+    const usuario = ids.get('usuario@social-network.test')!;
+    const marta = ids.get('marta@social-network.test')!;
+    const kike = ids.get('kike@social-network.test')!;
+    const admin = ids.get('admin@social-network.test')!;
 
     // --- Quién sigue a quién ------------------------------------------------
     // Un puñado de relaciones cruzadas, para que el muro «siguiendo» enseñe

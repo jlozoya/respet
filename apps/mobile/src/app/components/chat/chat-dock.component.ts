@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import type { Conversation } from '@respet/shared';
+import type { Conversation } from '@social-network/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { AuthService } from '../../core/auth/auth.service';

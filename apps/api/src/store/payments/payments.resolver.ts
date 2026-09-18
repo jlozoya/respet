@@ -1,5 +1,5 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { CheckoutSession, Payment } from '@respet/shared';
+import type { CheckoutSession, Payment } from '@social-network/shared';
 
 import { CurrentUser, type AuthenticatedUser } from '../../common/decorators/index.js';
 import { ParseObjectIdPipe } from '../../common/pipes/parse-object-id.pipe.js';

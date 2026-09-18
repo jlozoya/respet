@@ -8,7 +8,7 @@ import type {
   StoryGroup,
   StoryHighlight as StoryHighlightDto,
   StoryViewer,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { ChatService } from '../chat/chat.service.js';
 import type { AuthenticatedUser } from '../common/decorators/index.js';

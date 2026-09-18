@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import type { Analytics, Bulletin, SupportTicket, UsersRegistrationPoint } from '@respet/shared';
+import type { Analytics, Bulletin, SupportTicket, UsersRegistrationPoint } from '@social-network/shared';
 
 import { MediaType, Paginated } from './common.types.js';
 

@@ -7,6 +7,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { NavigationService } from '../../core/ui/navigation.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';
 import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
+import { BrandingService } from '../../core/branding/branding.service';
 
 /**
  * La columna izquierda del escritorio: el perfil propio y los atajos, con los
@@ -51,7 +52,7 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
         <a routerLink="/politics/privacy">{{ 'PRIVACY_POLICY' | translate }}</a> ·
         <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a> ·
         <a routerLink="/about">{{ 'NAV.ABOUT_US' | translate }}</a> ·
-        <a routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a> · Respet © {{ year }}
+        <a routerLink="/developers">{{ 'NAV.DEVELOPERS' | translate }}</a> · {{ appName() }} © {{ year }}
       </p>
     </nav>
   `,
@@ -105,6 +106,9 @@ import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
   `,
 })
 export class LeftRailComponent {
+  /** El nombre de la instalación, para el aviso de copyright. */
+  readonly appName = inject(BrandingService).name;
+
   readonly auth = inject(AuthService);
   readonly navigation = inject(NavigationService);
   readonly year = new Date().getFullYear();

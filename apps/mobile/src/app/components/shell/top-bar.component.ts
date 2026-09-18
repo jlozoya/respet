@@ -3,7 +3,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonPopover } from '@ionic/angular/ion-popover';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Conversation } from '@respet/shared';
+import type { Conversation } from '@social-network/shared';
 
 import { ChatService } from '../../core/api/chat.service';
 import { NotificationsService } from '../../core/api/notifications.service';

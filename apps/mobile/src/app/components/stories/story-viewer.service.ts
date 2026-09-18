@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular/modal-controller';
-import type { Story, UserSummary } from '@respet/shared';
+import type { Story, UserSummary } from '@social-network/shared';
 
 import { StoryViewerComponent } from './story-viewer.component';
 

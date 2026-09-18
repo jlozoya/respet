@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular/ion-content';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { BrandComponent } from '../../components/shell/brand.component';
+import { BrandingService } from '../../core/branding/branding.service';
 
 /**
  * El marco de las pantallas de acceso, el de la portada de Facebook: la marca
@@ -21,7 +22,7 @@ import { BrandComponent } from '../../components/shell/brand.component';
           @if (showPitch()) {
             <section class="pitch">
               <app-brand [wordmark]="true" class="brand" />
-              <h1>{{ 'LANDING.TAGLINE' | translate }}</h1>
+              <h1>{{ tagline() }}</h1>
             </section>
           } @else {
             <app-brand [wordmark]="true" class="brand solo-brand" />
@@ -40,7 +41,7 @@ import { BrandComponent } from '../../components/shell/brand.component';
           <a routerLink="/about">{{ 'NAV.ABOUT_US' | translate }}</a>
           <a routerLink="/politics/privacy">{{ 'PRIVACY_POLICY' | translate }}</a>
           <a routerLink="/politics/end_user_agreement">{{ 'TERMS_AND_CONDITIONS' | translate }}</a>
-          <span>Respet © {{ year }}</span>
+          <span>{{ appName() }} © {{ year }}</span>
         </footer>
       </div>
     </ion-content>
@@ -144,6 +145,13 @@ import { BrandComponent } from '../../components/shell/brand.component';
   `,
 })
 export class AuthLayoutComponent {
+  /** El nombre de la instalación, para el aviso de copyright. */
+  private readonly branding = inject(BrandingService);
+
+  /** El nombre y el lema de la instalación, que se configuran al desplegar. */
+  readonly appName = this.branding.name;
+  readonly tagline = computed(() => this.branding.branding().tagline);
+
   readonly showPitch = input(true);
   readonly year = new Date().getFullYear();
 }

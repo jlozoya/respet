@@ -11,7 +11,7 @@ import type {
   SupportTicket,
   UpdateBulletinRequest,
   UsersRegistrationPoint,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   BULLETIN_FRAGMENTS,

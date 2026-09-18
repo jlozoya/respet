@@ -4,7 +4,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { SearchResults } from '@respet/shared';
+import type { SearchResults } from '@social-network/shared';
 
 import { PostCardComponent } from '../../components/feed/post-card.component';
 import { SocialService } from '../../core/api/social.service';

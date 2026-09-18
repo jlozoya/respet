@@ -8,7 +8,7 @@ import type {
   Message,
   MessagePage,
   UserSummary,
-} from '@respet/shared';
+} from '@social-network/shared';
 import type { Subscription } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';

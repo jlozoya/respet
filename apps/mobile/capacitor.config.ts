@@ -8,8 +8,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
  * `cordova` ya no hace falta: la app usa plugins nativos de Capacitor.
  */
 const config: CapacitorConfig = {
-  appId: 'io.lozoya.respet',
-  appName: 'Respet',
+  appId: 'io.lozoya.socialnetwork',
+  appName: 'Social Network',
   webDir: 'www',
   plugins: {
     SplashScreen: {

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Paginated, SecurityEvent as SecurityEventDto } from '@respet/shared';
+import type { Paginated, SecurityEvent as SecurityEventDto } from '@social-network/shared';
 
 import type { ClientInfo } from '../../common/decorators/index.js';
 import { toIso } from '../../common/mappers.js';

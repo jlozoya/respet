@@ -22,7 +22,7 @@ services:
   #   docker compose exec mongo mongosh --quiet --eval "rs.initiate()"
   mongo:
     image: mongo:8
-    container_name: respet-mongo
+    container_name: social-network-mongo
     restart: unless-stopped
     command: ["--replSet", "rs0", "--bind_ip_all"]
     ports:
@@ -48,7 +48,7 @@ services:
   # desarrollo es opcional: sin `REDIS_URL` la API los guarda en memoria.
   redis:
     image: redis:8-alpine
-    container_name: respet-redis
+    container_name: social-network-redis
     restart: unless-stopped
     ports:
       - '6380:6379'
@@ -58,7 +58,7 @@ services:
   # tener que abrir un rango entero en Docker.
   livekit:
     image: livekit/livekit-server:v1.9
-    container_name: respet-livekit
+    container_name: social-network-livekit
     restart: unless-stopped
     command: ['--dev', '--bind', '0.0.0.0', '--node-ip', '127.0.0.1']
     ports:

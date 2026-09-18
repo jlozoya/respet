@@ -1,4 +1,4 @@
-# Respet — aplicación
+# Aplicación
 
 Ionic 9 sobre Angular 22, empaquetada con Capacitor 8. Es una red social
 completa: muro, historias, directos, mensajería y la plataforma para
@@ -32,7 +32,7 @@ src/app/
 
 Todo pasa por GraphQL: consultas, mutaciones, archivos y avisos en tiempo real.
 Nada de URLs escritas a mano en las pantallas; cada área tiene su servicio en
-`core/api` y los tipos salen de `@respet/shared`:
+`core/api` y los tipos salen de `@social-network/shared`:
 
 ```ts
 private readonly posts = inject(PostsService);
@@ -146,7 +146,7 @@ esquema, de donde sale también la de las suscripciones cambiando `http` por
 Facebook.
 
 Lo que cambia al desplegar no obliga a recompilar: `src/env.js` declara
-`window.__RESPET_ENV__`, la imagen de Docker lo reescribe al arrancar con sus
+`window.__APP_ENV__`, la imagen de Docker lo reescribe al arrancar con sus
 variables de entorno y `runtimeEnvironment()` lo mezcla encima del archivo.
 
 Para que funcione el acceso con Google y Facebook hay que rellenar

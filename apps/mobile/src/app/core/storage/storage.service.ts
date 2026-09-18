@@ -9,26 +9,26 @@ import { Preferences } from '@capacitor/preferences';
  * servida desde el mismo origen en la versión web.
  */
 export const StorageKey = {
-  AccessToken: 'respet.accessToken',
-  RefreshToken: 'respet.refreshToken',
-  SessionId: 'respet.sessionId',
-  User: 'respet.user',
+  AccessToken: 'app.accessToken',
+  RefreshToken: 'app.refreshToken',
+  SessionId: 'app.sessionId',
+  User: 'app.user',
   /**
    * El token del dispositivo de confianza de cada cuenta, por correo.
    *
    * Sobrevive al cierre de sesión a propósito: es justo lo que evita que se
    * vuelva a pedir el código al entrar otra vez en este dispositivo.
    */
-  TrustedDevices: 'respet.trustedDevices',
-  Language: 'respet.language',
-  Theme: 'respet.theme',
-  HasSeenTutorial: 'respet.hasSeenTutorial',
-  CartOrderId: 'respet.cartOrderId',
+  TrustedDevices: 'app.trustedDevices',
+  Language: 'app.language',
+  Theme: 'app.theme',
+  HasSeenTutorial: 'app.hasSeenTutorial',
+  CartOrderId: 'app.cartOrderId',
   /** Mensajes del chat que aún no han llegado al servidor. */
-  ChatOutbox: 'respet.chatOutbox',
+  ChatOutbox: 'app.chatOutbox',
   /** Borradores de lo que se estaba escribiendo en cada conversación. */
-  ChatDrafts: 'respet.chatDrafts',
-  RecentSearches: 'respet.recentSearches',
+  ChatDrafts: 'app.chatDrafts',
+  RecentSearches: 'app.recentSearches',
 } as const;
 
 export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey];

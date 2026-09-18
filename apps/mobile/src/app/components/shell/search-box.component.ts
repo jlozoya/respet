@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Hashtag, PublicProfile } from '@respet/shared';
+import type { Hashtag, PublicProfile } from '@social-network/shared';
 
 import { SocialService } from '../../core/api/social.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';

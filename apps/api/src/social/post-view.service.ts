@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Comment as CommentDto, Post as PostDto } from '@respet/shared';
+import type { Comment as CommentDto, Post as PostDto } from '@social-network/shared';
 
 import { toComment, toPost, type CommentDoc, type PostDoc } from '../common/mappers.js';
 import { fuzzyPoint } from '../common/utils/geo.js';

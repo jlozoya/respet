@@ -1,5 +1,5 @@
 import { Field, Float, ID, InputType, Int, OmitType, PartialType } from '@nestjs/graphql';
-import type { CreatePostRequest, PostListQuery, UpdatePostRequest } from '@respet/shared';
+import type { CreatePostRequest, PostListQuery, UpdatePostRequest } from '@social-network/shared';
 import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,

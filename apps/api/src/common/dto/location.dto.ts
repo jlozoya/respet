@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import type { LocationInput } from '@respet/shared';
+import type { LocationInput } from '@social-network/shared';
 import { IsNumber, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 
 /**

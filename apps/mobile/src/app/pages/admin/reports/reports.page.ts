@@ -7,7 +7,7 @@ import { IonInfiniteScroll } from '@ionic/angular/ion-infinite-scroll';
 import { IonInfiniteScrollContent } from '@ionic/angular/ion-infinite-scroll-content';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Report, ReportStatus } from '@respet/shared';
+import type { Report, ReportStatus } from '@social-network/shared';
 
 import { ModerationService } from '../../../core/api/content.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ALL_OAUTH_SCOPES } from '@respet/shared';
+import { ALL_OAUTH_SCOPES } from '@social-network/shared';
 import type { Response } from 'express';
 
 import { Public, RateLimit } from '../common/decorators/index.js';
@@ -21,7 +21,7 @@ interface TokenRequestBody {
  * Los extremos de OAuth que dicta el estándar.
  *
  * Son HTTP y no GraphQL por la misma razón que el aviso de PayPal: quien los
- * llama no es la aplicación de Respet sino bibliotecas de terceros —AppAuth,
+ * llama no es la aplicación oficial sino bibliotecas de terceros —AppAuth,
  * Passport, oauth2-client…— que esperan `POST /oauth/token` con un formulario
  * y una respuesta con la forma exacta de RFC 6749. Lo mismo está disponible
  * por el esquema (`exchangeOAuthCode`, `refreshOAuthToken`) para quien prefiera

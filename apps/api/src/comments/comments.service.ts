@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Comment, CommentLikeResult, Paginated } from '@respet/shared';
+import type { Comment, CommentLikeResult, Paginated } from '@social-network/shared';
 
 import type { AuthenticatedUser } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';

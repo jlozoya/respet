@@ -4,7 +4,12 @@
  * Se escriben como funciones de TypeScript en lugar de archivos Handlebars:
  * el compilador comprueba que no falte ninguna variable, no hay que copiar
  * plantillas al `dist` al empaquetar y el juego de idiomas queda explícito.
+ *
+ * Ninguna nombra la marca: reciben la de la instalación —nombre, color e
+ * icono— y la meten donde los textos dejan el hueco `{app}`, de modo que el
+ * mismo correo vale para cualquiera que despliegue esto.
  */
+import type { Branding } from '@social-network/shared';
 
 export interface RenderedMail {
   subject: string;
@@ -18,6 +23,11 @@ export function resolveLang(lang: string | null | undefined): Lang {
   return lang?.toLowerCase().startsWith('en') ? 'en' : 'es';
 }
 
+/** Pone el nombre de la marca donde el texto deja el hueco `{app}`. */
+function fill(text: string, app: string): string {
+  return text.replaceAll('{app}', app);
+}
+
 /** Escapa el texto que se interpola dentro del HTML del correo. */
 function escape(value: string): string {
   return value
@@ -28,18 +38,28 @@ function escape(value: string): string {
     .replace(/'/g, '&#39;');
 }
 
-function layout(options: { title: string; body: string; action?: { label: string; url: string } }): string {
+function layout(options: {
+  title: string;
+  body: string;
+  brand: Branding;
+  action?: { label: string; url: string };
+}): string {
+  const { brand } = options;
+  const logo = brand.iconUrl
+    ? `<img src="${brand.iconUrl}" alt="${escape(brand.name)}" width="48" height="48"
+            style="border-radius:12px;display:block;margin:0 0 16px">`
+    : '';
   const button = options.action
     ? `<p style="margin:32px 0;text-align:center">
          <a href="${options.action.url}"
-            style="background:#ff6b35;border-radius:8px;color:#ffffff;display:inline-block;
+            style="background:${brand.brandColor};border-radius:8px;color:#ffffff;display:inline-block;
                    font-weight:600;padding:14px 28px;text-decoration:none">
            ${escape(options.action.label)}
          </a>
        </p>
        <p style="color:#6b7280;font-size:13px;line-height:1.6">
          ${escape(options.action.label)}:<br>
-         <a href="${options.action.url}" style="color:#ff6b35;word-break:break-all">${options.action.url}</a>
+         <a href="${options.action.url}" style="color:${brand.brandColor};word-break:break-all">${options.action.url}</a>
        </p>`
     : '';
 
@@ -48,27 +68,34 @@ function layout(options: { title: string; body: string; action?: { label: string
   <body style="background:#f5f5f4;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;padding:24px">
     <table role="presentation" style="background:#ffffff;border-radius:12px;margin:0 auto;max-width:560px;padding:32px">
       <tr><td>
+        ${logo}
         <h1 style="color:#1f2937;font-size:22px;margin:0 0 16px">${escape(options.title)}</h1>
         <div style="color:#374151;font-size:15px;line-height:1.7">${options.body}</div>
         ${button}
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0 16px">
-        <p style="color:#9ca3af;font-size:12px;margin:0">Respet</p>
+        <p style="color:#9ca3af;font-size:12px;margin:0">${escape(brand.name)}</p>
       </td></tr>
     </table>
   </body>
 </html>`;
 }
 
-export function verifyEmailMail(params: { name: string; url: string; lang: Lang }): RenderedMail {
-  const { name, url, lang } = params;
+export function verifyEmailMail(params: {
+  name: string;
+  url: string;
+  lang: Lang;
+  brand: Branding;
+}): RenderedMail {
+  const { name, url, lang, brand } = params;
 
   if (lang === 'en') {
     return {
       subject: 'Confirm your email address',
       html: layout({
         title: `Welcome, ${escape(name)}`,
-        body: '<p>Confirm this address to finish setting up your Respet account.</p><p>The link is valid for 24 hours.</p>',
+        body: `<p>Confirm this address to finish setting up your ${escape(brand.name)} account.</p><p>The link is valid for 24 hours.</p>`,
         action: { label: 'Confirm email', url },
+        brand,
       }),
       text: `Welcome, ${name}. Confirm your email address: ${url} (valid for 24 hours).`,
     };
@@ -78,15 +105,21 @@ export function verifyEmailMail(params: { name: string; url: string; lang: Lang 
     subject: 'Confirma tu correo electrónico',
     html: layout({
       title: `Te damos la bienvenida, ${escape(name)}`,
-      body: '<p>Confirma esta dirección para terminar de activar tu cuenta de Respet.</p><p>El enlace caduca en 24 horas.</p>',
+      body: `<p>Confirma esta dirección para terminar de activar tu cuenta de ${escape(brand.name)}.</p><p>El enlace caduca en 24 horas.</p>`,
       action: { label: 'Confirmar correo', url },
+      brand,
     }),
     text: `Te damos la bienvenida, ${name}. Confirma tu correo: ${url} (caduca en 24 horas).`,
   };
 }
 
-export function resetPasswordMail(params: { name: string; url: string; lang: Lang }): RenderedMail {
-  const { name, url, lang } = params;
+export function resetPasswordMail(params: {
+  name: string;
+  url: string;
+  lang: Lang;
+  brand: Branding;
+}): RenderedMail {
+  const { name, url, lang, brand } = params;
 
   if (lang === 'en') {
     return {
@@ -96,6 +129,7 @@ export function resetPasswordMail(params: { name: string; url: string; lang: Lan
         body: `<p>Hi ${escape(name)}, we received a request to reset your password.</p>
                <p>The link is valid for one hour. If it wasn't you, ignore this message: your password stays unchanged.</p>`,
         action: { label: 'Choose a new password', url },
+        brand,
       }),
       text: `Hi ${name}. Reset your password here: ${url} (valid for one hour). If it wasn't you, ignore this message.`,
     };
@@ -108,13 +142,18 @@ export function resetPasswordMail(params: { name: string; url: string; lang: Lan
       body: `<p>Hola ${escape(name)}, hemos recibido una solicitud para cambiar tu contraseña.</p>
              <p>El enlace caduca en una hora. Si no has sido tú, ignora este mensaje: tu contraseña seguirá igual.</p>`,
       action: { label: 'Elegir una contraseña nueva', url },
+      brand,
     }),
     text: `Hola ${name}. Restablece tu contraseña aquí: ${url} (caduca en una hora). Si no has sido tú, ignora este mensaje.`,
   };
 }
 
-export function supportConfirmationMail(params: { name: string; lang: Lang }): RenderedMail {
-  const { name, lang } = params;
+export function supportConfirmationMail(params: {
+  name: string;
+  lang: Lang;
+  brand: Branding;
+}): RenderedMail {
+  const { name, lang, brand } = params;
 
   if (lang === 'en') {
     return {
@@ -122,6 +161,7 @@ export function supportConfirmationMail(params: { name: string; lang: Lang }): R
       html: layout({
         title: 'Thanks for writing to us',
         body: `<p>Hi ${escape(name)}, your message reached us and we will reply as soon as we can.</p>`,
+        brand,
       }),
       text: `Hi ${name}, your message reached us and we will reply as soon as we can.`,
     };
@@ -132,6 +172,7 @@ export function supportConfirmationMail(params: { name: string; lang: Lang }): R
     html: layout({
       title: 'Gracias por escribirnos',
       body: `<p>Hola ${escape(name)}, tu mensaje nos ha llegado y te responderemos lo antes posible.</p>`,
+      brand,
     }),
     text: `Hola ${name}, tu mensaje nos ha llegado y te responderemos lo antes posible.`,
   };
@@ -142,8 +183,9 @@ export function supportNotificationMail(params: {
   email: string;
   phone: string | null;
   message: string;
+  brand: Branding;
 }): RenderedMail {
-  const { name, email, phone, message } = params;
+  const { name, email, phone, message, brand } = params;
 
   return {
     subject: `Nuevo mensaje de contacto de ${name}`,
@@ -152,7 +194,8 @@ export function supportNotificationMail(params: {
       body: `<p><strong>Nombre:</strong> ${escape(name)}<br>
              <strong>Correo:</strong> ${escape(email)}<br>
              <strong>Teléfono:</strong> ${escape(phone ?? '—')}</p>
-             <p style="background:#f9fafb;border-left:3px solid #ff6b35;padding:12px 16px;white-space:pre-wrap">${escape(message)}</p>`,
+             <p style="background:#f9fafb;border-left:3px solid ${brand.brandColor};padding:12px 16px;white-space:pre-wrap">${escape(message)}</p>`,
+      brand,
     }),
     text: `Nuevo mensaje de ${name} <${email}> (tel. ${phone ?? '—'}):\n\n${message}`,
   };
@@ -163,8 +206,9 @@ export function paymentConfirmationMail(params: {
   orderId: string;
   total: string;
   lang: Lang;
+  brand: Branding;
 }): RenderedMail {
-  const { name, orderId, total, lang } = params;
+  const { name, orderId, total, lang, brand } = params;
 
   if (lang === 'en') {
     return {
@@ -173,6 +217,7 @@ export function paymentConfirmationMail(params: {
         title: 'Payment confirmed',
         body: `<p>Hi ${escape(name)}, we received your payment of <strong>${escape(total)}</strong> for order #${orderId}.</p>
                <p>We will let you know as soon as it ships.</p>`,
+        brand,
       }),
       text: `Hi ${name}, we received your payment of ${total} for order #${orderId}.`,
     };
@@ -184,6 +229,7 @@ export function paymentConfirmationMail(params: {
       title: 'Pago confirmado',
       body: `<p>Hola ${escape(name)}, hemos recibido tu pago de <strong>${escape(total)}</strong> por el pedido n.º ${orderId}.</p>
              <p>Te avisaremos en cuanto salga para su entrega.</p>`,
+      brand,
     }),
     text: `Hola ${name}, hemos recibido tu pago de ${total} por el pedido n.º ${orderId}.`,
   };
@@ -202,11 +248,11 @@ const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; b
   es: {
     new_login: {
       subject: 'Nuevo inicio de sesión en tu cuenta',
-      body: 'Alguien ha entrado en tu cuenta de Respet desde un dispositivo que no habíamos visto antes.',
+      body: 'Alguien ha entrado en tu cuenta de {app} desde un dispositivo que no habíamos visto antes.',
     },
     password_changed: {
       subject: 'Tu contraseña ha cambiado',
-      body: 'La contraseña de tu cuenta de Respet se acaba de cambiar y se han cerrado las demás sesiones.',
+      body: 'La contraseña de tu cuenta de {app} se acaba de cambiar y se han cerrado las demás sesiones.',
     },
     mfa_enabled: {
       subject: 'Verificación en dos pasos activada',
@@ -214,7 +260,7 @@ const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; b
     },
     mfa_disabled: {
       subject: 'Verificación en dos pasos desactivada',
-      body: 'Se ha desactivado la verificación en dos pasos de tu cuenta de Respet.',
+      body: 'Se ha desactivado la verificación en dos pasos de tu cuenta de {app}.',
     },
     session_hijack: {
       subject: 'Hemos cerrado una sesión sospechosa',
@@ -222,17 +268,17 @@ const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; b
     },
     app_authorized: {
       subject: 'Has conectado una aplicación a tu cuenta',
-      body: 'Una aplicación de terceros tiene ahora acceso a tu cuenta de Respet con los permisos que aprobaste.',
+      body: 'Una aplicación de terceros tiene ahora acceso a tu cuenta de {app} con los permisos que aprobaste.',
     },
   },
   en: {
     new_login: {
       subject: 'New sign-in to your account',
-      body: 'Someone signed in to your Respet account from a device we had not seen before.',
+      body: 'Someone signed in to your {app} account from a device we had not seen before.',
     },
     password_changed: {
       subject: 'Your password was changed',
-      body: 'The password of your Respet account was just changed and your other sessions were signed out.',
+      body: 'The password of your {app} account was just changed and your other sessions were signed out.',
     },
     mfa_enabled: {
       subject: 'Two-step verification turned on',
@@ -240,7 +286,7 @@ const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; b
     },
     mfa_disabled: {
       subject: 'Two-step verification turned off',
-      body: 'Two-step verification was turned off for your Respet account.',
+      body: 'Two-step verification was turned off for your {app} account.',
     },
     session_hijack: {
       subject: 'We closed a suspicious session',
@@ -248,7 +294,7 @@ const SECURITY_COPY: Record<Lang, Record<SecurityAlertKind, { subject: string; b
     },
     app_authorized: {
       subject: 'You connected an app to your account',
-      body: 'A third-party app now has access to your Respet account with the permissions you approved.',
+      body: 'A third-party app now has access to your {app} account with the permissions you approved.',
     },
   },
 };
@@ -260,8 +306,11 @@ export function securityAlertMail(params: {
   /** Líneas de detalle: el dispositivo, la IP, la aplicación. */
   details: string[];
   url: string;
+  brand: Branding;
 }): RenderedMail {
+  const { brand } = params;
   const copy = SECURITY_COPY[params.lang][params.kind];
+  const body = fill(copy.body, brand.name);
   const greeting = params.lang === 'en' ? `Hi ${params.name},` : `Hola ${params.name}:`;
   const notYou =
     params.lang === 'en'
@@ -274,11 +323,12 @@ export function securityAlertMail(params: {
     subject: copy.subject,
     html: layout({
       title: copy.subject,
-      body: `<p>${escape(greeting)}</p><p>${escape(copy.body)}</p>
+      body: `<p>${escape(greeting)}</p><p>${escape(body)}</p>
              ${details ? `<ul style="color:#6b7280;font-size:14px">${details}</ul>` : ''}
              <p>${escape(notYou)}</p>`,
       action: { label, url: params.url },
+      brand,
     }),
-    text: [greeting, copy.body, ...params.details, notYou, params.url].join('\n'),
+    text: [greeting, body, ...params.details, notYou, params.url].join('\n'),
   };
 }

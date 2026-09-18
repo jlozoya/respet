@@ -7,7 +7,7 @@ describe('passwordValidator', () => {
   const validate = passwordValidator();
 
   it('exige ocho caracteres con letra y número', () => {
-    expect(validate(new FormControl('respet1234'))).toBeNull();
+    expect(validate(new FormControl('social1234'))).toBeNull();
     expect(validate(new FormControl('corta1'))).toEqual({ weakPassword: true });
     expect(validate(new FormControl('sinnumeros'))).toEqual({ weakPassword: true });
   });
@@ -42,7 +42,7 @@ describe('phoneValidator', () => {
 describe('matchFields', () => {
   it('marca el error en el campo de confirmación', () => {
     const group = new FormGroup(
-      { password: new FormControl('respet1234'), confirmation: new FormControl('otra1234') },
+      { password: new FormControl('social1234'), confirmation: new FormControl('otra1234') },
       { validators: matchFields('password', 'confirmation') },
     );
 

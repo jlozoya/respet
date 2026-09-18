@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Paginated, SupportTicket as SupportTicketDto } from '@respet/shared';
+import type { Paginated, SupportTicket as SupportTicketDto } from '@social-network/shared';
 import type { Model } from '../database/mongoose.js';
 
 import { toSupportTicket } from '../common/mappers.js';

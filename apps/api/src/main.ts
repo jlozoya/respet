@@ -2,6 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import type { Branding } from '@social-network/shared';
 import compression from 'compression';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import helmet from 'helmet';
@@ -113,7 +114,7 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(port, '0.0.0.0');
 
-  logger.log(`Respet API escuchando en http://localhost:${port}/graphql`);
+  logger.log(`API de ${config.getOrThrow<Branding>('branding').name} escuchando en http://localhost:${port}/graphql`);
 }
 
 void bootstrap();

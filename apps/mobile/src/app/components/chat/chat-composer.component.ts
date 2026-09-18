@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Message } from '@respet/shared';
+import type { Message } from '@social-network/shared';
 
 import { toAttachment, type LocalAttachment, type OutgoingMessage } from '../../core/api/chat.service';
 import { VoiceRecorder } from '../../core/media/voice-recorder';

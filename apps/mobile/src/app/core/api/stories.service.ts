@@ -7,7 +7,7 @@ import type {
   StoryGroup,
   StoryHighlight,
   StoryViewer,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   MEDIA_FRAGMENTS,

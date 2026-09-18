@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output } from '@angular/cor
 import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Post } from '@respet/shared';
+import type { Post } from '@social-network/shared';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';

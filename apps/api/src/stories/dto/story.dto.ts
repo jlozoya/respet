@@ -1,6 +1,6 @@
 import { Field, ID, InputType, Int } from '@nestjs/graphql';
-import type { CreateStoryRequest } from '@respet/shared';
-import { STORY_BACKGROUNDS, STORY_FONTS } from '@respet/shared';
+import type { CreateStoryRequest } from '@social-network/shared';
+import { STORY_BACKGROUNDS, STORY_FONTS } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,

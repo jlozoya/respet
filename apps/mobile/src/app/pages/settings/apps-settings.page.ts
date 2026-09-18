@@ -4,7 +4,7 @@ import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { AuthorizedApp } from '@respet/shared';
+import type { AuthorizedApp } from '@social-network/shared';
 
 import { SecurityService } from '../../core/api/security.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

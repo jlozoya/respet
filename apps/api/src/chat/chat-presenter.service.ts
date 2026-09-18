@@ -7,7 +7,7 @@ import type {
   Message as MessageDto,
   MessageReactionGroup,
   Post as PostDto,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   POPULATE_POST,

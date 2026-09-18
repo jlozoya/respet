@@ -7,7 +7,7 @@ import { IonRefresher } from '@ionic/angular/ion-refresher';
 import { IonRefresherContent } from '@ionic/angular/ion-refresher-content';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LiveStream } from '@respet/shared';
+import type { LiveStream } from '@social-network/shared';
 
 import { LiveService } from '../../core/api/live.service';
 import { AvatarComponent } from '../../shared/components/avatar.component';

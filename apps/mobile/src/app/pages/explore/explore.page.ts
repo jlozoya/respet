@@ -7,7 +7,7 @@ import { IonRefresher } from '@ionic/angular/ion-refresher';
 import { IonRefresherContent } from '@ionic/angular/ion-refresher-content';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Hashtag } from '@respet/shared';
+import type { Hashtag } from '@social-network/shared';
 
 import { PostGridComponent } from '../../components/feed/post-grid.component';
 import { SocialService } from '../../core/api/social.service';

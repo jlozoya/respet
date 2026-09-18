@@ -14,7 +14,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Bulletin } from '@respet/shared';
+import type { Bulletin } from '@social-network/shared';
 
 import { BulletinsService } from '../../../core/api/content.service';
 import { ImagePickerService } from '../../../core/media/image-picker.service';

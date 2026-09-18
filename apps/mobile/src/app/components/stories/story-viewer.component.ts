@@ -19,7 +19,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { Story } from '@respet/shared';
+import type { Story } from '@social-network/shared';
 
 import { StoriesService } from '../../core/api/stories.service';
 import { AuthService } from '../../core/auth/auth.service';

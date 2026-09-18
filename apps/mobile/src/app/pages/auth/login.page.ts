@@ -8,7 +8,7 @@ import { IonInput } from '@ionic/angular/ion-input';
 import { IonInputPasswordToggle } from '@ionic/angular/ion-input-password-toggle';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { MfaChallenge, MfaMethod } from '@respet/shared';
+import type { MfaChallenge, MfaMethod } from '@social-network/shared';
 
 import { environment } from '../../../environments/environment';
 import { ApiError } from '../../core/api/api-error';

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, type OnDestroy, computed, input, output, signal } from '@angular/core';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { ReactionType } from '@respet/shared';
+import type { ReactionType } from '@social-network/shared';
 
 import { REACTIONS, reactionColor, reactionEmoji, reactionLabel } from '../../shared/utils/reactions';
 

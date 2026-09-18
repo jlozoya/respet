@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Respet</title>
+  <title>Social Network</title>
 
   <!--
     La raíz, no una ruta relativa: con `./`, una dirección de dos tramos
@@ -20,25 +20,31 @@
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#242526" media="(prefers-color-scheme: dark)">
 
-  <meta name="description" content="Respet: la red social para compartir, ayudar y encontrar a quienes cuidan de los animales.">
-  <meta name="application-name" content="Respet">
+  <meta name="description" content="Una red social para contar lo que pasa a tu alrededor, seguir a quien te interesa y hablar con quien quieras.">
+  <meta name="application-name" content="Social Network">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Respet">
+  <meta name="apple-mobile-web-app-title" content="Social Network">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <meta property="og:title" content="Respet">
-  <meta property="og:site_name" content="Respet">
+  <meta property="og:title" content="Social Network">
+  <meta property="og:site_name" content="Social Network">
   <meta property="og:type" content="website">
-  <meta property="og:description" content="La red social para compartir, ayudar y encontrar a quienes cuidan de los animales.">
+  <meta property="og:description" content="Una red social para contar lo que pasa a tu alrededor, seguir a quien te interesa y hablar con quien quieras.">
   <meta property="og:image" content="assets/imgs/landing.png">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" type="image/png" href="assets/icon/favicon.png">
 
   <!--
-    Direcciones y claves que se deciden al desplegar, no al compilar. La imagen
-    de Docker lo reescribe al arrancar; en desarrollo va vacío.
+    El nombre, la descripción y el icono de aquí son sólo el punto de partida:
+    `BrandingService` los reescribe con los de la instalación en cuanto arranca
+    la aplicación.
+  -->
+
+  <!--
+    Direcciones, claves y marca que se deciden al desplegar, no al compilar. La
+    imagen de Docker lo reescribe al arrancar; en desarrollo va vacío.
   -->
   <script src="env.js"></script>
 
@@ -53,7 +59,7 @@
   <script>
     (function () {
       try {
-        var raw = localStorage.getItem('CapacitorStorage.respet.theme');
+        var raw = localStorage.getItem('CapacitorStorage.app.theme');
         var preference = raw ? JSON.parse(raw) : 'system';
         var dark = preference === 'dark' ||
           (preference !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);

@@ -9,7 +9,7 @@ import { IonList } from '@ionic/angular/ion-list';
 import { IonNote } from '@ionic/angular/ion-note';
 import { IonThumbnail } from '@ionic/angular/ion-thumbnail';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { LocationInput, OrderItem } from '@respet/shared';
+import type { LocationInput, OrderItem } from '@social-network/shared';
 
 import { OrdersService } from '../../../core/api/store.service';
 import { FeedbackService } from '../../../core/ui/feedback.service';

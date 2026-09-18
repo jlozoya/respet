@@ -7,7 +7,7 @@ import type {
   ReportTarget,
   SearchResults,
   UserSuggestion,
-} from '@respet/shared';
+} from '@social-network/shared';
 import type { Observable } from 'rxjs';
 
 import { RealtimeService } from '../realtime/realtime.service';

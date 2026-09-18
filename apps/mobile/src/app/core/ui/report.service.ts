@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular/alert-controller';
 import { TranslateService } from '@ngx-translate/core';
-import type { ReportTarget } from '@respet/shared';
+import type { ReportTarget } from '@social-network/shared';
 
 import { SocialService } from '../api/social.service';
 import { FeedbackService } from './feedback.service';

@@ -11,7 +11,7 @@ import type {
   UserPermissions,
   UserPhone,
   UserSummary,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { ReauthDto } from '../auth/dto/auth.dto.js';
 import { ReauthService } from '../auth/reauth.service.js';

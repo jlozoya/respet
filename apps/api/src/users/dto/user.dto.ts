@@ -7,7 +7,7 @@ import type {
   UpdateLocationRequest,
   UpdatePermissionsRequest,
   UpdateProfileRequest,
-} from '@respet/shared';
+} from '@social-network/shared';
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,

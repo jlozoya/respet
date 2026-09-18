@@ -3,7 +3,7 @@
 # Se construye desde la raíz del monorepo, porque la API depende del paquete
 # de contratos compartidos:
 #
-#   docker build -f apps/api/Dockerfile -t respet-api .
+#   docker build -f apps/api/Dockerfile -t social-network-api .
 #
 # Tres etapas: dependencias, compilación y ejecución. La última sólo lleva lo
 # que hace falta para correr —dependencias de producción, el `dist` y FFmpeg
@@ -22,7 +22,7 @@ COPY apps/mobile/package.json apps/mobile/
 
 # Sólo los espacios de trabajo de la API y los contratos: la aplicación no hace
 # falta aquí y sus dependencias son las más pesadas.
-RUN npm ci --workspace @respet/shared --workspace @respet/api --include-workspace-root
+RUN npm ci --workspace @social-network/shared --workspace @social-network/api --include-workspace-root
 
 # --- Compilación ----------------------------------------------------------------
 FROM deps AS build
@@ -31,9 +31,9 @@ WORKDIR /app
 COPY packages/shared packages/shared
 COPY apps/api apps/api
 
-RUN npm run build --workspace @respet/shared \
- && npm run build --workspace @respet/api \
- && npm prune --omit=dev --workspace @respet/shared --workspace @respet/api --include-workspace-root
+RUN npm run build --workspace @social-network/shared \
+ && npm run build --workspace @social-network/api \
+ && npm prune --omit=dev --workspace @social-network/shared --workspace @social-network/api --include-workspace-root
 
 # --- Ejecución ------------------------------------------------------------------
 FROM node:${NODE_VERSION}-bookworm-slim AS runtime

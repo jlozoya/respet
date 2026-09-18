@@ -1,4 +1,4 @@
-import type { ChatEvent, NotificationEvent } from '@respet/shared';
+import type { ChatEvent, NotificationEvent } from '@social-network/shared';
 
 /**
  * Lo que viaja por el tema privado de cada persona.

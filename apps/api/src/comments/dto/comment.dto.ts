@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import type { CommentListQuery, CreateCommentRequest, UpdateCommentRequest } from '@respet/shared';
+import type { CommentListQuery, CreateCommentRequest, UpdateCommentRequest } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsMongoId, IsOptional, IsString, Length } from 'class-validator';
 

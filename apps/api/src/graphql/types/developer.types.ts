@@ -10,7 +10,7 @@ import type {
   OAuthTokenResponse,
   WebhookConfig,
   WebhookDelivery,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { OAuthAppStatus, OAuthClientType, WebhookDeliveryStatus } from '../enums.js';
 import { MediaType, Paginated } from './common.types.js';

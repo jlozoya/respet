@@ -9,7 +9,7 @@ import { IonRefresher } from '@ionic/angular/ion-refresher';
 import { IonRefresherContent } from '@ionic/angular/ion-refresher-content';
 import { IonRow } from '@ionic/angular/ion-row';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Bulletin } from '@respet/shared';
+import type { Bulletin } from '@social-network/shared';
 
 import { BulletinsService } from '../../core/api/content.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

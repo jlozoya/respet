@@ -13,8 +13,8 @@ import type {
   SocialLoginRequest,
   User,
   UserRole,
-} from '@respet/shared';
-import { ROLE_HIERARCHY } from '@respet/shared';
+} from '@social-network/shared';
+import { ROLE_HIERARCHY } from '@social-network/shared';
 
 import { ApiError } from '../api/api-error';
 import { USER_FRAGMENTS, gql } from '../api/fragments';

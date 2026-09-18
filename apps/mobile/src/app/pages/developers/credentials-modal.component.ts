@@ -7,7 +7,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { AppCredentials } from '@respet/shared';
+import type { AppCredentials } from '@social-network/shared';
 
 import { FeedbackService } from '../../core/ui/feedback.service';
 

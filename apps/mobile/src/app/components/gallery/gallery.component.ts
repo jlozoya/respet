@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ModalController } from '@ionic/angular/modal-controller';
-import type { Media } from '@respet/shared';
+import type { Media } from '@social-network/shared';
 
 import { ImgModalComponent } from './img-modal/img-modal.component';
 

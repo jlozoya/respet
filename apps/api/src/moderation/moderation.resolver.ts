@@ -1,5 +1,5 @@
 import { Args, Field, ID, InputType, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { CreateReportRequest, Paginated, Report } from '@respet/shared';
+import type { CreateReportRequest, Paginated, Report } from '@social-network/shared';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsMongoId, IsString, Length } from 'class-validator';
 

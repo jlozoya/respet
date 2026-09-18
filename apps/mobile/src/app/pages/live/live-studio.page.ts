@@ -8,7 +8,7 @@ import { IonSelect } from '@ionic/angular/ion-select';
 import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Audience, LiveComment, LiveStream } from '@respet/shared';
+import type { Audience, LiveComment, LiveStream } from '@social-network/shared';
 import type { LocalAudioTrack, LocalVideoTrack, Room } from 'livekit-client';
 import type { Subscription } from 'rxjs';
 

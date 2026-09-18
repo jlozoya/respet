@@ -5,7 +5,7 @@ import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { FollowRequest } from '@respet/shared';
+import type { FollowRequest } from '@social-network/shared';
 
 import { UsersService } from '../../core/api/users.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

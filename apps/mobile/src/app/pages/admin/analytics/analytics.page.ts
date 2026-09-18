@@ -12,7 +12,7 @@ import { IonRow } from '@ionic/angular/ion-row';
 import { IonSegment } from '@ionic/angular/ion-segment';
 import { IonSegmentButton } from '@ionic/angular/ion-segment-button';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Analytics, UsersRegistrationPoint } from '@respet/shared';
+import type { Analytics, UsersRegistrationPoint } from '@social-network/shared';
 import type { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 

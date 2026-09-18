@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import type { AccessTokenPayload, UserRole } from '@respet/shared';
+import type { AccessTokenPayload, UserRole } from '@social-network/shared';
 
 /** Lo mínimo que hace falta de una cuenta para firmar su token. */
 export interface TokenSubject {

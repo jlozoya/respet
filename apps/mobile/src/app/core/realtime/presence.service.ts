@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal, type Signal } from '@angular/core';
-import type { OnlineContact, PresencePayload } from '@respet/shared';
+import type { OnlineContact, PresencePayload } from '@social-network/shared';
 import type { Subscription } from 'rxjs';
 
 import { SocialService } from '../api/social.service';

@@ -1,5 +1,5 @@
 import { Args, ID, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Media, Paginated, Post, PostReactor, ReactionResult } from '@respet/shared';
+import type { Media, Paginated, Post, PostReactor, ReactionResult } from '@social-network/shared';
 
 import {
   CurrentUser,

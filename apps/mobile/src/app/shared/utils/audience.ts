@@ -1,4 +1,4 @@
-import type { Audience } from '@respet/shared';
+import type { Audience } from '@social-network/shared';
 
 /** El icono que acompaña a quién puede ver algo: el mundo, la gente o un candado. */
 export function audienceIcon(audience: Audience): string {

@@ -4,7 +4,7 @@ import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonInfiniteScroll } from '@ionic/angular/ion-infinite-scroll';
 import { IonInfiniteScrollContent } from '@ionic/angular/ion-infinite-scroll-content';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Paginated, PostListQuery } from '@respet/shared';
+import type { Paginated, PostListQuery } from '@social-network/shared';
 
 import { PostsService, type PostGridItem } from '../../core/api/posts.service';
 import { CompactNumberPipe } from '../../shared/pipes/compact-number.pipe';

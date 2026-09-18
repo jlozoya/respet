@@ -13,7 +13,7 @@ import type {
   UserPhone as UserPhoneDto,
   UserRole,
   UserSummary,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { AuthService } from '../auth/auth.service.js';
 import { SessionService } from '../auth/session/session.service.js';

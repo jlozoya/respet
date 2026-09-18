@@ -17,7 +17,7 @@ import type {
   UpdateProductRequest,
   UpdateWarehouseRequest,
   Warehouse,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   MEDIA_FRAGMENTS,

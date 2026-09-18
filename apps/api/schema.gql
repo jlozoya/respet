@@ -131,6 +131,37 @@ type BlockedUser {
   user: UserSummary!
 }
 
+"""Nombre, colores, logotipo y enlaces de esta instalación."""
+type Branding {
+  address: String
+
+  """Color principal, en hexadecimal."""
+  brandColor: String!
+
+  """Degradado de los adornos."""
+  brandGradient: String!
+
+  """Dos o tres líneas para la página «acerca de»."""
+  description: String!
+  facebook: String
+
+  """Icono cuadrado para la pestaña y los correos."""
+  iconUrl: String
+  instagram: String
+
+  """Logotipo horizontal para la cabecera."""
+  logoUrl: String
+
+  """El nombre, tal cual aparece en los textos."""
+  name: String!
+  phone: String
+  publicMail: String
+
+  """Una línea, debajo del nombre en la pantalla de entrada."""
+  tagline: String!
+  website: String
+}
+
 """Aviso publicado por la administración."""
 type Bulletin {
   createdAt: String!
@@ -1540,6 +1571,9 @@ type Query {
   """Aplicaciones que tienen acceso a tu cuenta."""
   authorizedApps: [AuthorizedApp!]!
   blockedUsers: [BlockedUser!]!
+
+  """Nombre, colores, logotipo y enlaces de esta instalación."""
+  branding: Branding!
   bulletin(id: ID!): Bulletin!
 
   """Avisos publicados, del más reciente al más antiguo."""

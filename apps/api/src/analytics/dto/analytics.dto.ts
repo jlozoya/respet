@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import type { AnalyticsQuery } from '@respet/shared';
+import type { AnalyticsQuery } from '@social-network/shared';
 import { IsDateString, IsEnum, IsOptional } from 'class-validator';
 
 import { RegistrationInterval } from '../../graphql/enums.js';

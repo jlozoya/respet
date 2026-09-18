@@ -9,7 +9,7 @@ import type {
   MessageReference,
   StoryReference,
   SystemEventInfo,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   ChatEventType,

@@ -15,7 +15,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Media, Product, Warehouse } from '@respet/shared';
+import type { Media, Product, Warehouse } from '@social-network/shared';
 
 import { ProductsService, WarehousesService } from '../../../core/api/store.service';
 import { ImagePickerService } from '../../../core/media/image-picker.service';

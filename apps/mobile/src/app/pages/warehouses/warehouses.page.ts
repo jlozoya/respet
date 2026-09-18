@@ -12,7 +12,7 @@ import { IonRow } from '@ionic/angular/ion-row';
 import { IonSearchbar } from '@ionic/angular/ion-searchbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Warehouse } from '@respet/shared';
+import type { Warehouse } from '@social-network/shared';
 
 import { WarehousesService } from '../../core/api/store.service';
 import { AuthService } from '../../core/auth/auth.service';

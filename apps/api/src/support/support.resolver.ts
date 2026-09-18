@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { Paginated, SupportTicket } from '@respet/shared';
+import type { Paginated, SupportTicket } from '@social-network/shared';
 
 import { Public, RateLimit, Roles } from '../common/decorators/index.js';
 import { SupportTicketPage, SupportTicketType } from '../graphql/types/content.types.js';

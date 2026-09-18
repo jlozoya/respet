@@ -1,4 +1,4 @@
-import type { Paginated, PaginationMeta } from '@respet/shared';
+import type { Paginated, PaginationMeta } from '@social-network/shared';
 
 export const DEFAULT_PER_PAGE = 20;
 export const MAX_PER_PAGE = 100;

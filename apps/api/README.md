@@ -1,4 +1,4 @@
-# Respet — API
+# API
 
 NestJS 12 sobre MongoDB, con un esquema de GraphQL. Sustituye al backend en
 Lumen, y también a la primera versión de este mismo servidor, que hablaba REST
@@ -33,7 +33,7 @@ src/
 
 Cada dominio tiene su resolutor (`*.resolver.ts`) y su servicio. Los servicios
 no saben que existe GraphQL: reciben y devuelven los tipos de
-`@respet/shared`, igual que cuando los llamaba un controlador.
+`@social-network/shared`, igual que cuando los llamaba un controlador.
 
 ## Decisiones que conviene conocer
 
@@ -68,7 +68,7 @@ las rutas REST que quedan: `src/common/execution-context.ts` es quien sabe
 sacar la petición de un sitio o del otro.
 
 **Los roles son jerárquicos.** `@Roles('supervisor')` deja pasar también a
-`admin`, según el orden de `ROLE_HIERARCHY` en `@respet/shared`.
+`admin`, según el orden de `ROLE_HIERARCHY` en `@social-network/shared`.
 
 **Los errores llevan una clave, no un mensaje.** Viajan dentro de `errors[]`
 con `extensions.code` —`SERVER.INCORRECT_USER`— y `extensions.statusCode`, que

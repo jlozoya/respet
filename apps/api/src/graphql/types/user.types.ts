@@ -14,7 +14,7 @@ import type {
   UserPhone,
   UserSuggestion,
   UserSummary,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { AuthProvider, FollowState, Gender, MessagePolicy, UserRole } from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';

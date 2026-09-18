@@ -9,7 +9,7 @@ import { IonRefresherContent } from '@ionic/angular/ion-refresher-content';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { PublicProfile, StoryHighlight } from '@respet/shared';
+import type { PublicProfile, StoryHighlight } from '@social-network/shared';
 
 import { CreateService } from '../../components/feed/create.service';
 import { PostFeedComponent } from '../../components/feed/post-feed.component';

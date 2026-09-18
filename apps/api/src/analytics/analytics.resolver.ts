@@ -1,5 +1,5 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import type { Analytics, UsersRegistrationPoint } from '@respet/shared';
+import type { Analytics, UsersRegistrationPoint } from '@social-network/shared';
 
 import { Roles } from '../common/decorators/index.js';
 import { AnalyticsType, UsersRegistrationPointType } from '../graphql/types/content.types.js';

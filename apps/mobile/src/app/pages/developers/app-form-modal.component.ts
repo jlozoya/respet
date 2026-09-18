@@ -15,7 +15,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { DeveloperApp, OAuthClientType, OAuthScopeInfo } from '@respet/shared';
+import type { DeveloperApp, OAuthClientType, OAuthScopeInfo } from '@social-network/shared';
 
 import { DevelopersService } from '../../core/api/developers.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

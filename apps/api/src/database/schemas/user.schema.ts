@@ -271,7 +271,7 @@ export class DeviceInfo {
   @Prop({ type: String, enum: Object.values(DeviceType), default: DeviceType.Unknown })
   type!: DeviceType;
 
-  /** «Chrome en Windows», «App de Respet en Android»… */
+  /** «Chrome en Windows», «App · Android»… */
   @Prop({ default: 'Unknown device' })
   name!: string;
 

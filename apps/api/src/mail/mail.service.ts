@@ -1,6 +1,7 @@
 import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createTransport, type Transporter } from 'nodemailer';
+import type { Branding } from '@social-network/shared';
 
 import {
   paymentConfirmationMail,
@@ -31,16 +32,21 @@ export class MailService implements OnModuleDestroy {
 
   constructor(private readonly config: ConfigService) {}
 
+  /** La marca de esta instalación: da nombre, color e icono a todos los correos. */
+  private brand(): Branding {
+    return this.config.getOrThrow<Branding>('branding');
+  }
+
   async sendVerifyEmail(to: string, name: string, url: string, lang: string): Promise<void> {
-    await this.send(to, verifyEmailMail({ name, url, lang: resolveLang(lang) }));
+    await this.send(to, verifyEmailMail({ name, url, lang: resolveLang(lang), brand: this.brand() }));
   }
 
   async sendPasswordReset(to: string, name: string, url: string, lang: string): Promise<void> {
-    await this.send(to, resetPasswordMail({ name, url, lang: resolveLang(lang) }));
+    await this.send(to, resetPasswordMail({ name, url, lang: resolveLang(lang), brand: this.brand() }));
   }
 
   async sendSupportConfirmation(to: string, name: string, lang: string): Promise<void> {
-    await this.send(to, supportConfirmationMail({ name, lang: resolveLang(lang) }));
+    await this.send(to, supportConfirmationMail({ name, lang: resolveLang(lang), brand: this.brand() }));
   }
 
   /** Avisa al buzón de soporte. No hace nada si `SUPPORT_MAIL` está vacío. */
@@ -56,7 +62,7 @@ export class MailService implements OnModuleDestroy {
       return;
     }
 
-    await this.send(inbox, supportNotificationMail(params), params.email);
+    await this.send(inbox, supportNotificationMail({ ...params, brand: this.brand() }), params.email);
   }
 
   async sendPaymentConfirmation(
@@ -65,7 +71,7 @@ export class MailService implements OnModuleDestroy {
   ): Promise<void> {
     await this.send(
       to,
-      paymentConfirmationMail({ ...params, lang: resolveLang(params.lang) }),
+      paymentConfirmationMail({ ...params, lang: resolveLang(params.lang), brand: this.brand() }),
     );
   }
 
@@ -83,7 +89,7 @@ export class MailService implements OnModuleDestroy {
 
     await this.send(
       to,
-      securityAlertMail({ ...params, lang: resolveLang(params.lang), url }),
+      securityAlertMail({ ...params, lang: resolveLang(params.lang), url, brand: this.brand() }),
     );
   }
 

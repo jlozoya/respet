@@ -18,7 +18,7 @@ export class WebhookSettings {
    * Secreto con el que se firma cada entrega, cifrado.
    *
    * La aplicación lo usa para comprobar que el aviso viene de verdad de
-   * Respet; hay que poder recuperarlo para firmar, así que no basta un hash.
+   * la API; hay que poder recuperarlo para firmar, así que no basta un hash.
    */
   @Prop({ type: String, default: null })
   secretCiphertext!: string | null;

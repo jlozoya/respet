@@ -1,5 +1,5 @@
 import type { HttpErrorResponse } from '@angular/common/http';
-import type { ApiErrorBody } from '@respet/shared';
+import type { ApiErrorBody } from '@social-network/shared';
 
 /**
  * Un error del servidor, ya interpretado.

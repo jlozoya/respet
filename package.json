@@ -1,13 +1,13 @@
 {
-  "name": "respet",
+  "name": "social-network",
   "version": "2.0.0",
   "private": true,
-  "description": "Respet — red social para el cuidado, adopción y reporte de mascotas. Monorepo con app Ionic/Angular y API NestJS.",
+  "description": "Social Network — red social con API GraphQL. Monorepo con app Ionic/Angular y API NestJS.",
   "license": "MIT",
   "author": "Fernando Lozoya",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jlozoya/respet.git"
+    "url": "git+https://github.com/jlozoya/social-network.git"
   },
   "workspaces": [
     "packages/*",

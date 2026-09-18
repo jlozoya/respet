@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import type { AuthSession, AuthTokens, LoginResult, MfaLoginResult, User } from '@respet/shared';
+import type { AuthSession, AuthTokens, LoginResult, MfaLoginResult, User } from '@social-network/shared';
 
 import {
   Client,

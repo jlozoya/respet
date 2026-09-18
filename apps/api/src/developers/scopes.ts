@@ -1,4 +1,4 @@
-import { OAuthScope, type OAuthScopeInfo } from '@respet/shared';
+import { OAuthScope, type OAuthScopeInfo } from '@social-network/shared';
 
 /**
  * Los permisos que puede pedir una aplicación, con lo que se enseña en la

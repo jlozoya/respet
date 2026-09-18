@@ -8,7 +8,7 @@ import type {
   RecoveryCodes,
   SecurityEvent,
   TotpSetup,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { DEVICE_FRAGMENTS, MEDIA_FRAGMENTS, PAGE_META_FRAGMENTS, SCOPE_FRAGMENTS, gql } from './fragments';
 import { GraphqlClientService } from './graphql-client.service';

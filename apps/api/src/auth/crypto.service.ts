@@ -46,7 +46,7 @@ export class CryptoService {
         'MFA_ENCRYPTION_KEY no está definida: se deriva de JWT_REFRESH_SECRET (sólo apto para desarrollo)',
       );
       this.encryptionKey = Buffer.from(
-        hkdfSync('sha256', refreshSecret, 'respet', 'mfa-encryption', 32),
+        hkdfSync('sha256', refreshSecret, 'social-network', 'mfa-encryption', 32),
       );
     }
   }

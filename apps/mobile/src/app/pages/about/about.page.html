@@ -2,18 +2,17 @@
 
 <ion-content>
   <div class="intro">
+    <app-brand [wordmark]="true" />
     <h1>{{ 'ABOUT.TITLE' | translate }}</h1>
-    <p>{{ 'ABOUT.DESCRIPTION' | translate }}</p>
-  </div>
+    <p class="tagline">{{ branding().tagline }}</p>
+    <p>{{ branding().description }}</p>
 
-  <div class="address">
-    <h2>{{ office.name }}</h2>
-    @for (line of office.address; track line) {
-      <p>{{ line }}</p>
+    @if (branding().website; as website) {
+      <p>
+        <a [href]="website" target="_blank" rel="noopener noreferrer">{{ website }}</a>
+      </p>
     }
   </div>
-
-  <div #mapCanvas class="map-canvas"></div>
 
   <app-footer />
 </ion-content>

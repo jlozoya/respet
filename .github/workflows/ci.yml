@@ -84,7 +84,7 @@ jobs:
       - name: Ejecutar
         run: npm run test:e2e
         env:
-          E2E_DATABASE_URL: mongodb://127.0.0.1:27017/respet_e2e?directConnection=true
+          E2E_DATABASE_URL: mongodb://127.0.0.1:27017/social_network_e2e?directConnection=true
 
       - name: El esquema versionado coincide con el código
         # Al arrancar, la API reescribe `schema.gql` a partir de las clases. Si

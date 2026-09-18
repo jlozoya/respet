@@ -6,11 +6,12 @@ import { IonInput } from '@ionic/angular/ion-input';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { IonToggle } from '@ionic/angular/ion-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { DeviceInfo, DeviceSession, MfaStatus, SecurityEvent, TotpSetup } from '@respet/shared';
+import type { DeviceInfo, DeviceSession, MfaStatus, SecurityEvent, TotpSetup } from '@social-network/shared';
 
 import { SecurityService } from '../../core/api/security.service';
 import { UsersService } from '../../core/api/users.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { BrandingService } from '../../core/branding/branding.service';
 import { FeedbackService } from '../../core/ui/feedback.service';
 import { ReauthService } from '../../core/ui/reauth.service';
 import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
@@ -124,6 +125,7 @@ export class SecuritySettingsPage implements OnInit {
   private readonly users = inject(UsersService);
   private readonly reauth = inject(ReauthService);
   private readonly feedback = inject(FeedbackService);
+  private readonly branding = inject(BrandingService);
 
   readonly mfa = signal<MfaStatus | null>(null);
   readonly sessions = signal<DeviceSession[]>([]);
@@ -229,11 +231,11 @@ export class SecuritySettingsPage implements OnInit {
   }
 
   downloadCodes(): void {
-    const blob = new Blob([`Respet — ${this.auth.user()?.email ?? ''}\n\n${this.recoveryCodes().join('\n')}\n`], { type: 'text/plain' });
+    const blob = new Blob([`${this.branding.name()} — ${this.auth.user()?.email ?? ''}\n\n${this.recoveryCodes().join('\n')}\n`], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'respet-codigos-de-recuperacion.txt';
+    link.download = 'social-network-codigos-de-recuperacion.txt';
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular/alert-controller';
 import { TranslateService } from '@ngx-translate/core';
-import type { ReauthRequest } from '@respet/shared';
+import type { ReauthRequest } from '@social-network/shared';
 
 import { ApiError } from '../api/api-error';
 import { AuthService } from '../auth/auth.service';

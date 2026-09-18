@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { ReauthRequest } from '@respet/shared';
+import type { ReauthRequest } from '@social-network/shared';
 
 import type { AuthenticatedUser, ClientInfo } from '../common/decorators/index.js';
 import { AppException, ErrorCode } from '../common/errors.js';

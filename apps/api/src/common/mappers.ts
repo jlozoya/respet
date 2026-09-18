@@ -17,7 +17,7 @@ import type {
   UserPermissions,
   UserSummary,
   Warehouse,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { MessagePolicy, ReactionType } from '../database/schemas/enums.js';
 import type {

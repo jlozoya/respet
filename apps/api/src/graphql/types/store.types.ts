@@ -6,7 +6,7 @@ import type {
   Payment,
   Product,
   Warehouse,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { OrderState, PaymentProvider, PaymentStatus } from '../enums.js';
 import { LocationType, MediaType, Paginated } from './common.types.js';

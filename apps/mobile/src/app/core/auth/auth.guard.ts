@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import type { UserRole } from '@respet/shared';
+import type { UserRole } from '@social-network/shared';
 
 import { AuthService } from './auth.service';
 

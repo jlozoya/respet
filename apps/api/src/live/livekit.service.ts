@@ -12,7 +12,7 @@ export interface LiveKitIdentity {
 /**
  * El servidor de vídeo de los directos.
  *
- * Respet no mueve ni un fotograma: quien emite y quien mira se conectan a
+ * La API no mueve ni un fotograma: quien emite y quien mira se conectan a
  * LiveKit, un servidor WebRTC que se despliega junto a la API. Aquí sólo se
  * crean y cierran salas y se firman los pases para entrar en ellas —con
  * permiso para emitir quien retransmite, sólo para mirar el resto—.

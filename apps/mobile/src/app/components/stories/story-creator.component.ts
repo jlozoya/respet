@@ -7,7 +7,7 @@ import { IonSelectOption } from '@ionic/angular/ion-select-option';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import { STORY_BACKGROUNDS, STORY_FONTS, type Audience } from '@respet/shared';
+import { STORY_BACKGROUNDS, STORY_FONTS, type Audience } from '@social-network/shared';
 
 import { StoriesService } from '../../core/api/stories.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

@@ -12,7 +12,7 @@ import { IonTitle } from '@ionic/angular/ion-title';
 import { IonToolbar } from '@ionic/angular/ion-toolbar';
 import { ModalController } from '@ionic/angular/modal-controller';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { FollowState, UserSummary } from '@respet/shared';
+import type { FollowState, UserSummary } from '@social-network/shared';
 
 import { AvatarComponent } from './avatar.component';
 import { FollowButtonComponent } from './follow-button.component';

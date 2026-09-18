@@ -5,7 +5,7 @@ import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { Notification } from '@respet/shared';
+import type { Notification } from '@social-network/shared';
 
 import { NotificationsService, notificationLink } from '../../core/api/notifications.service';
 import { NotificationItemComponent } from './notification-item.component';

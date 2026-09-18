@@ -5,7 +5,7 @@ import type {
   Conversation as ConversationDto,
   Message as MessageDto,
   MessagePage,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { AppException, ErrorCode } from '../common/errors.js';
 import { escapeRegex } from '../common/utils/regex.js';

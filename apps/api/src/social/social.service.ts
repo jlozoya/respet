@@ -6,7 +6,7 @@ import type {
   OnlineContact,
   SearchResults,
   UserSuggestion,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import { AppException, ErrorCode } from '../common/errors.js';
 import { POPULATE_POST, toIso, toUserSummary } from '../common/mappers.js';

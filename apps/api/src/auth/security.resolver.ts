@@ -6,7 +6,7 @@ import type {
   RecoveryCodes,
   SecurityEvent,
   TotpSetup,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   Client,

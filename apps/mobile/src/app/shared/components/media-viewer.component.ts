@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, computed, inject, inp
 import { IonContent } from '@ionic/angular/ion-content';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { ModalController } from '@ionic/angular/modal-controller';
-import type { Media } from '@respet/shared';
+import type { Media } from '@social-network/shared';
 
 /**
  * Visor de fotos y vídeos a pantalla completa.

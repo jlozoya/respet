@@ -4,7 +4,7 @@ import { IonButton } from '@ionic/angular/ion-button';
 import { IonIcon } from '@ionic/angular/ion-icon';
 import { IonSpinner } from '@ionic/angular/ion-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import type { BlockedUser } from '@respet/shared';
+import type { BlockedUser } from '@social-network/shared';
 
 import { SocialService } from '../../core/api/social.service';
 import { FeedbackService } from '../../core/ui/feedback.service';

@@ -12,7 +12,7 @@ import type {
   SecurityEvent,
   TotpSetup,
   TrustedDeviceInfo,
-} from '@respet/shared';
+} from '@social-network/shared';
 
 import {
   AuthMethod,
