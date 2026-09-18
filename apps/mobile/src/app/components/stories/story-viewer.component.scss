@@ -61,13 +61,9 @@
 }
 
 .zones {
-  bottom: 80px;
-  left: 0;
+  inset: 72px 0 80px;
   position: absolute;
-  right: 0;
-  top: 72px;
   touch-action: none;
-  -webkit-user-select: none;
   user-select: none;
 }
 

@@ -21,7 +21,6 @@ import { ImageCropperComponent, type ImageCroppedEvent } from 'ngx-image-cropper
 @Component({
   selector: 'app-crop-img',
   templateUrl: 'crop-img.component.html',
-  styleUrls: ['crop-img.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslatePipe,

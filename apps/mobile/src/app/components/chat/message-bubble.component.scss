@@ -66,11 +66,11 @@
 }
 
 /* Las esquinas del lado de quien habla se aplanan dentro de un grupo de burbujas. */
-:host(:not(.own):not(.first)) .bubble {
+:host(:not(.own, .first)) .bubble {
   border-top-left-radius: 4px;
 }
 
-:host(:not(.own):not(.last)) .bubble {
+:host(:not(.own, .last)) .bubble {
   border-bottom-left-radius: 4px;
 }
 

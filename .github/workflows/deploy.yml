@@ -129,7 +129,7 @@ jobs:
       - name: Comprobar que la API responde
         if: vars.API_DOMAIN != ''
         run: |
-          for attempt in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -fsS "https://${{ vars.API_DOMAIN }}/health" | grep -q '"status":"ok"'; then
               echo "La API responde"
               exit 0

@@ -10,8 +10,7 @@
   .track {
     display: flex;
     height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: auto hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }

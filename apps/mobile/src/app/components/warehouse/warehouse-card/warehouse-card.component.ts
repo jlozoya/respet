@@ -22,7 +22,6 @@ import { WarehouseFormComponent } from '../warehouse-form/warehouse-form.compone
 @Component({
   selector: 'app-warehouse-card',
   templateUrl: './warehouse-card.component.html',
-  styleUrls: ['./warehouse-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslatePipe,

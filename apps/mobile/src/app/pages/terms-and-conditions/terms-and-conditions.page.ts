@@ -14,7 +14,6 @@ type Section = (typeof SECTIONS)[number];
 @Component({
   selector: 'app-terms-and-conditions',
   templateUrl: 'terms-and-conditions.page.html',
-  styleUrls: ['terms-and-conditions.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslatePipe,

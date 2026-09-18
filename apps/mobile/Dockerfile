@@ -38,4 +38,7 @@ RUN chmod +x /docker-entrypoint.d/40-app-env.sh
 
 EXPOSE 80
 
+# La comprobación necesita un intérprete: convierte cualquier fallo en el
+# código 1, que es el único que Docker entiende como «no está sano».
+# hadolint ignore=DL3025
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://127.0.0.1/healthz || exit 1

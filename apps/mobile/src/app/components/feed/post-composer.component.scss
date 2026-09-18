@@ -21,6 +21,7 @@
   --padding-end: 8px;
   --padding-start: 10px;
   --padding-top: 0;
+
   background: var(--rs-surface-2);
   border-radius: 6px;
   font-size: 0.8125rem;
@@ -30,6 +31,7 @@
 
 .text {
   --padding-start: 0;
+
   font-size: 1.375rem;
   min-height: 80px;
 }

@@ -1,0 +1,21 @@
+# Lo que genera una herramienta se queda como lo deja ella.
+node_modules/
+dist/
+www/
+coverage/
+.angular/
+package-lock.json
+apps/api/schema.gql
+apps/api/storage/
+
+# Bibliotecas de terceros copiadas tal cual.
+apps/mobile/src/assets/js/
+
+# Las plataformas nativas se regeneran con Capacitor.
+apps/mobile/android/
+apps/mobile/ios/
+
+# Configuración de servicios de Google, que no se versiona.
+apps/mobile/credentials.json
+apps/mobile/google-services.json
+apps/mobile/GoogleService-Info.plist

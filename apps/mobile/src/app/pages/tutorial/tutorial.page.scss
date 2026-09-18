@@ -2,35 +2,44 @@
   .slide-height {
     height: 100%;
   }
+
   .slide-image {
     width: 100%;
     max-width: 230px;
     height: auto;
   }
+
   .slide-title {
     margin-top: 50px;
   }
+
   b {
     font-weight: 500;
   }
+
   p, h1 {
     padding: 0 40px;
   }
+
   p {
     font-size: 16px;
     line-height: 1.5;
     color: var(--ion-color-dark);
+
     b {
       color: var(--ion-color-dark);
     }
   }
+
   @media (max-width: 600px) {
     .slide-image {
       width: 50%;
     }
+
     .slide-title {
       margin-top: 5px;
     }
+
     p {
       line-height: 1;
     }

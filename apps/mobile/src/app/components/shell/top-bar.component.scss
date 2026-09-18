@@ -58,12 +58,9 @@
 
 .tab::before {
   border-radius: 8px;
-  bottom: 4px;
+  inset: 4px 0;
   content: '';
-  left: 0;
   position: absolute;
-  right: 0;
-  top: 4px;
   transition: background-color 0.12s ease;
 }
 

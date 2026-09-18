@@ -1,0 +1,12 @@
+# Reglas de hadolint para los Dockerfile del repositorio.
+#
+# DL3008 pide fijar la versión de cada paquete de apt. En Debian las versiones
+# viejas desaparecen de los repositorios en cuanto sale un parche, así que
+# fijarlas sólo consigue que la imagen deje de construirse un día cualquiera;
+# lo que da estabilidad es la etiqueta de la imagen base.
+ignored:
+  - DL3008
+
+# Los avisos informativos —como usar el usuario `node` por su nombre— no
+# rompen el CI; los avisos y errores, sí.
+failure-threshold: warning

@@ -65,7 +65,7 @@ jobs:
         working-directory: apps/mobile/android/app/build/outputs
         run: |
           echo "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/release.jks"
-          BUILD_TOOLS="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
 
           "$BUILD_TOOLS/zipalign" -f 4 apk/release/app-release-unsigned.apk apk/release/app-release-aligned.apk
           "$BUILD_TOOLS/apksigner" sign \

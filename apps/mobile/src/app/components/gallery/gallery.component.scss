@@ -3,6 +3,7 @@
 
   .cuadricula {
     display: grid;
+
     // Un hilo de separación, como en cualquier álbum: suficiente para saber
     // dónde acaba una foto y empieza la siguiente sin abrir un hueco.
     gap: 2px;
@@ -21,6 +22,7 @@
     overflow: hidden;
     padding: 0;
     position: relative;
+
     // Cuadradas, que es lo que deja las filas parejas sin importar cómo venga
     // cada foto; la proporción real se ve al abrirlas.
     aspect-ratio: 1;

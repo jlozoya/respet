@@ -9,12 +9,10 @@
  */
 
 @import '@ionic/angular/css/core.css';
-
 @import '@ionic/angular/css/normalize.css';
 @import '@ionic/angular/css/structure.css';
 @import '@ionic/angular/css/typography.css';
 @import '@ionic/angular/css/display.css';
-
 @import '@ionic/angular/css/padding.css';
 @import '@ionic/angular/css/float-elements.css';
 @import '@ionic/angular/css/text-alignment.css';
@@ -88,7 +86,7 @@ ion-textarea.ion-valid {
 input.native-input:-webkit-autofill,
 input.native-input:-webkit-autofill:hover,
 input.native-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 100vh var(--rs-surface) inset;
+  box-shadow: 0 0 0 100vh var(--rs-surface) inset;
   -webkit-text-fill-color: var(--ion-text-color);
   caret-color: var(--ion-text-color);
   transition: background-color 100000s ease-in-out 0s;
@@ -240,6 +238,7 @@ ion-button.rs-tinted {
 ion-button {
   --border-radius: var(--rs-radius-sm);
   --box-shadow: none;
+
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;

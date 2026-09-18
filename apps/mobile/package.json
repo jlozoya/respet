@@ -14,6 +14,8 @@
     "e2e": "playwright test",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
+    "lint:styles": "stylelint \"src/**/*.scss\" --max-warnings 0",
+    "lint:styles:fix": "stylelint \"src/**/*.scss\" --fix",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "sync": "npm run build:prod && cap sync",
     "clean": "rimraf www .angular dist"
@@ -69,6 +71,8 @@
     "eslint": "^10.10.0",
     "jsdom": "^30.0.1",
     "rimraf": "^6.0.1",
+    "stylelint": "^17.15.0",
+    "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.70.0",
     "vitest": "^4.1.11"

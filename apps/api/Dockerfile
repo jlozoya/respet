@@ -64,6 +64,9 @@ WORKDIR /app/apps/api
 EXPOSE 3000
 VOLUME ["/data/uploads"]
 
+# La comprobación necesita un intérprete: convierte cualquier fallo en el
+# código 1, que es el único que Docker entiende como «no está sano».
+# hadolint ignore=DL3025
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=5 \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 

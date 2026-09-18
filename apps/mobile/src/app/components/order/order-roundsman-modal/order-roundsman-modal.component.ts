@@ -24,7 +24,6 @@ import { FeedbackService } from '../../../core/ui/feedback.service';
 @Component({
   selector: 'app-order-roundsman-modal',
   templateUrl: './order-roundsman-modal.component.html',
-  styleUrls: ['./order-roundsman-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslatePipe,

@@ -1,8 +1,10 @@
 # Integración continua.
 #
-# Se ejecuta en cada rama y en cada pull request. Tres trabajos en paralelo:
+# Se ejecuta en cada rama y en cada pull request. Cuatro trabajos en paralelo:
 #
-# - checks: tipos, lint y pruebas unitarias de los tres paquetes.
+# - checks: tipos, lint —ESLint, Stylelint, traducciones y formato con
+#           Prettier— y pruebas unitarias de los tres paquetes.
+# - infra:  los flujos de GitHub, los Dockerfile y los guiones de shell.
 # - e2e:    la API entera contra un Mongo de verdad, recorriendo sesiones,
 #           2FA, subidas, chat, historias y OAuth por GraphQL.
 # - build:  compila API y aplicación como se compilan para desplegar.
@@ -53,6 +55,17 @@ jobs:
 
       - name: Pruebas unitarias de la API
         run: npm run test:api
+
+  infra:
+    name: Flujos, Dockerfile y guiones
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # actionlint, hadolint y shellcheck, cada uno en su imagen de Docker con
+      # la versión fijada: lo mismo que `npm run lint:infra` en local.
+      - name: Revisar
+        run: node scripts/lint-infra.mjs
 
   e2e:
     name: Pruebas de extremo a extremo
