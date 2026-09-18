@@ -11,6 +11,11 @@
 # volcar una base antigua se levanta aparte y se apunta `MYSQL_URL` a ella;
 # `npm run migrate:mongo` la lee sin modificarla.
 
+# El nombre del proyecto va fijo: si no, Docker lo saca del nombre de la
+# carpeta, y clonar el repositorio con otro nombre —o renombrarla— dejaría los
+# datos en unos volúmenes que ya no se usan.
+name: social-network
+
 services:
   # Base de datos de la aplicación.
   #
@@ -18,11 +23,15 @@ services:
   # así, y aquí hacen falta: el inventario y los pedidos no pueden quedarse a
   # medias. El puerto 27019 es para no chocar con otros Mongo de la máquina.
   #
-  # La primera vez hay que iniciar el conjunto, una sola vez:
-  #   docker compose exec mongo mongosh --quiet --eval "rs.initiate()"
+  # El conjunto se inicia solo la primera vez que arranca, desde la
+  # comprobación de salud. Su único miembro es `mongo:27017` —de ahí el
+  # `hostname` fijo—: con el nombre que Docker da por defecto, que es el id del
+  # contenedor, recrearlo dejaría a Mongo sin reconocerse en su propia
+  # configuración y sin aceptar escrituras.
   mongo:
     image: mongo:8
     container_name: social-network-mongo
+    hostname: mongo
     restart: unless-stopped
     command: ['--replSet', 'rs0', '--bind_ip_all']
     ports:
@@ -30,8 +39,14 @@ services:
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      # Pasa sólo cuando el nodo ya es primario y admite escrituras.
-      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.hello().isWritablePrimary || quit(1)']
+      # Pasa sólo cuando el nodo ya es primario y admite escrituras; si el
+      # conjunto aún no existe, lo crea y avisa de que todavía no está listo.
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { db.hello().isWritablePrimary || quit(1) } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }); quit(1) }"
       interval: 5s
       timeout: 5s
       retries: 20

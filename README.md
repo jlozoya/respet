@@ -43,11 +43,16 @@ credenciales ya coinciden con las del archivo de ejemplo:
 docker compose up -d
 ```
 
-La primera vez hay que iniciar el conjunto de réplica, una sola vez —Mongo
-sólo ofrece transacciones así, y el inventario las necesita—:
+Mongo arranca en «replica set» de un nodo —sólo así ofrece transacciones, y el
+inventario las necesita— y el conjunto se inicia solo la primera vez: basta con
+esperar a que el contenedor salga como `healthy`.
+
+Si vienes de una versión anterior del `docker-compose.yml`, el conjunto guardaba
+como miembro el id del contenedor viejo y Mongo no se reconocerá en él. Se
+arregla una vez:
 
 ```bash
-docker compose exec mongo mongosh --quiet --eval "rs.initiate()"
+docker compose exec mongo mongosh --quiet --eval "db.getMongo().setReadPref('secondaryPreferred'); const c = db.getSiblingDB('local').system.replset.findOne(); c.members[0].host = 'mongo:27017'; db.adminCommand({ replSetReconfig: c, force: true })"
 ```
 
 Si prefieres tu propio **MongoDB 8**, ajusta `DATABASE_URL` en el paso
